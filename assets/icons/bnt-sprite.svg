@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+<symbol id="home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-5v-6h-5v6h-5A1.5 1.5 0 0 1 3 19.5v-9Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+<symbol id="dispatcher" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="equipment" viewBox="0 0 24 24"><path d="M9.5 3h5l.7 2.2 2 .8 2-1 2.5 4.3-1.8 1.5.1 2.3 1.8 1.5-2.5 4.3-2-1-2 .8-.7 2.3h-5l-.7-2.3-2-.8-2 1L2.4 14.6l1.8-1.5-.1-2.3-1.8-1.5L4.8 5l2 1 2-.8L9.5 3Z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+<symbol id="analytics" viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19V3" stroke="currentColor" stroke-width="1.8"/><path d="m3 14 7-5 6 2 6-6" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+<symbol id="maintenance" viewBox="0 0 24 24"><path d="m14.2 5.1 4.7-2.2-.6 5-3.2 3.2-3.1-.7-7.5 7.5a2.1 2.1 0 0 0 3 3l7.5-7.5-.7-3.1 3.2-3.2 5-.6-2.2 4.7" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+<symbol id="logistics" viewBox="0 0 24 24"><path d="M3 6h12v10H3zM15 9h3l3 3v4h-6z" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="7" cy="18" r="2" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="18" cy="18" r="2" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+<symbol id="procurement" viewBox="0 0 24 24"><path d="M4 7h16l-1 14H5L4 7Zm4 0V5a4 4 0 0 1 8 0v2" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+<symbol id="reports" viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M15 3v5h4M8 12h8M8 16h8" stroke="currentColor" stroke-width="1.7"/></symbol>
+<symbol id="templates" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 8h8M8 12h5M8 16h7" stroke="currentColor" stroke-width="1.7"/></symbol>
+<symbol id="builder" viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v4h-7zM13 10h7v10h-7zM4 13h7v7H4z" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+<symbol id="data" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 5v7c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12v7c0 1.7 3.6 3 8 3s8-1.3 8-3v-7" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+<symbol id="mailings" viewBox="0 0 24 24"><path d="M3 5h18v14H3z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m4 7 8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+<symbol id="sync" viewBox="0 0 24 24"><path d="M20 7V3l-2 2a8 8 0 0 0-13.3 3M4 17v4l2-2a8 8 0 0 0 13.3-3" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+<symbol id="search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m15.5 15.5 5 5" stroke="currentColor" stroke-width="1.8"/></symbol>
+<symbol id="refresh" viewBox="0 0 24 24"><path d="M20 7V3l-2 2a8 8 0 1 0 2 8" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+</svg>
