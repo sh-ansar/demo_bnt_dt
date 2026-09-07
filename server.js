@@ -1,216 +1,439 @@
-﻿const http =
-  require("http");
+﻿const http = require("http");
+const fs = require("fs");
+const path = require("path");
 
-const fs =
-  require("fs");
+const ROOT = path.resolve(__dirname);
 
-const path =
-  require("path");
+const PORT =
+  Number(process.env.PORT || 8080);
 
-const root =
-  __dirname;
+const ROUTES = {
+  "/": "dispatcher.html",
 
-const port =
-  Number(
-    process.env.PORT || 8080
-  );
+  "/dispatcher": "dispatcher.html",
 
-const mime = {
+  // backwards compatibility only
+  "/digital-twin": "dispatcher.html",
 
-  ".html":
-    "text/html; charset=utf-8",
+  "/equipment": "equipment.html",
+  "/equipment-detail": "equipment-detail.html",
 
-  ".js":
-    "application/javascript; charset=utf-8",
+  "/analytics": "analytics.html",
 
-  ".css":
-    "text/css; charset=utf-8",
+  "/toir": "toir.html",
 
-  ".json":
-    "application/json; charset=utf-8",
+  "/logistics": "logistics.html",
 
-  ".svg":
-    "image/svg+xml",
+  "/procurement": "procurement.html",
 
-  ".png":
-    "image/png",
+  "/reports": "reports.html",
 
-  ".jpg":
-    "image/jpeg",
+  "/templates": "templates.html",
 
-  ".jpeg":
-    "image/jpeg"
+  "/builder": "builder.html",
+
+  "/data": "data.html",
+
+  "/mailings": "mailings.html",
+
+  "/sync": "sync.html"
 };
 
-function readLocalConfig() {
+const MIME = {
+  ".html": "text/html; charset=utf-8",
+  ".js": "application/javascript; charset=utf-8",
+  ".mjs": "application/javascript; charset=utf-8",
+  ".css": "text/css; charset=utf-8",
+  ".json": "application/json; charset=utf-8",
+  ".svg": "image/svg+xml",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".webp": "image/webp",
+  ".ico": "image/x-icon",
+  ".txt": "text/plain; charset=utf-8",
+  ".woff": "font/woff",
+  ".woff2": "font/woff2"
+};
 
-  const file =
+function sendJson(res, status, data) {
+  res.writeHead(status, {
+    "Content-Type": "application/json; charset=utf-8",
+    "Cache-Control": "no-store"
+  });
+
+  res.end(JSON.stringify(data));
+}
+
+function loadConfig() {
+
+  const localConfig =
     path.join(
-      root,
+      ROOT,
       "config.local.json"
     );
 
-  if (!fs.existsSync(file)) {
+  let config = {
+    googleMapsApiKey: "",
+    googleMapsMapId: "DEMO_MAP_ID",
 
-    return {
-      googleMapsApiKey: "",
-      googleMapsMapId:
-        "DEMO_MAP_ID",
+    center: {
+      lat: 41.6438169,
+      lng: 41.6605911
+    },
 
-      center: {
-        lat: 41.6438169,
-        lng: 41.6605911
-      },
+    zoom: 17
+  };
 
-      zoom: 17
-    };
+  if (
+    fs.existsSync(localConfig)
+  ) {
+
+    try {
+
+      config = {
+        ...config,
+        ...JSON.parse(
+          fs.readFileSync(
+            localConfig,
+            "utf8"
+          )
+        )
+      };
+
+    }
+    catch (error) {
+
+      console.error(
+        "config.local.json:",
+        error.message
+      );
+    }
   }
 
-  try {
-    return JSON.parse(
-      fs.readFileSync(file, "utf8")
-        .replace(/^\uFEFF/, "")
+  if (
+    process.env.GOOGLE_MAPS_API_KEY
+  ) {
+    config.googleMapsApiKey =
+      process.env.GOOGLE_MAPS_API_KEY;
+  }
+
+  if (
+    process.env.GOOGLE_MAPS_MAP_ID
+  ) {
+    config.googleMapsMapId =
+      process.env.GOOGLE_MAPS_MAP_ID;
+  }
+
+  return config;
+}
+
+function safeFilePath(requestPath) {
+
+  const decoded =
+    decodeURIComponent(
+      requestPath
     );
+
+  const relative =
+    decoded.replace(
+      /^\/+/,
+      ""
+    );
+
+  const resolved =
+    path.resolve(
+      ROOT,
+      relative
+    );
+
+  if (
+    !resolved.startsWith(ROOT)
+  ) {
+    return null;
   }
-  catch (_) {
-    return {
-      googleMapsApiKey: "",
-      googleMapsMapId: "DEMO_MAP_ID",
-      center: { lat: 41.6438169, lng: 41.6605911 },
-      zoom: 17
-    };
+
+  return resolved;
+}
+
+function serveFile(
+  filePath,
+  res
+) {
+
+  if (
+    !filePath ||
+    !fs.existsSync(filePath)
+  ) {
+
+    res.writeHead(
+      404,
+      {
+        "Content-Type":
+          "text/plain; charset=utf-8"
+      }
+    );
+
+    res.end(
+      "404 Not Found"
+    );
+
+    return;
   }
+
+  const stat =
+    fs.statSync(filePath);
+
+  if (
+    stat.isDirectory()
+  ) {
+
+    const index =
+      path.join(
+        filePath,
+        "index.html"
+      );
+
+    if (
+      fs.existsSync(index)
+    ) {
+      return serveFile(
+        index,
+        res
+      );
+    }
+
+    res.writeHead(404);
+    res.end("404 Not Found");
+
+    return;
+  }
+
+  const ext =
+    path.extname(
+      filePath
+    )
+    .toLowerCase();
+
+  res.writeHead(
+    200,
+    {
+      "Content-Type":
+        MIME[ext] ||
+        "application/octet-stream",
+
+      "Cache-Control":
+        ext === ".html"
+          ? "no-store"
+          : "public, max-age=60"
+    }
+  );
+
+  fs.createReadStream(
+    filePath
+  )
+  .pipe(res);
 }
 
 const server =
   http.createServer(
     (req, res) => {
 
-      const url =
-        new URL(
-          req.url,
-          "http://localhost"
+      try {
+
+        const url =
+          new URL(
+            req.url,
+            `http://${req.headers.host || "localhost"}`
+          );
+
+        let pathname =
+          url.pathname;
+
+        // -----------------------------------
+        // Runtime configuration
+        // -----------------------------------
+
+        if (
+          pathname ===
+          "/api/config"
+        ) {
+
+          return sendJson(
+            res,
+            200,
+            loadConfig()
+          );
+        }
+
+
+        // -----------------------------------
+        // Clean application routes
+        // -----------------------------------
+
+        if (
+          Object.prototype
+            .hasOwnProperty
+            .call(
+              ROUTES,
+              pathname
+            )
+        ) {
+
+          return serveFile(
+            path.join(
+              ROOT,
+              ROUTES[pathname]
+            ),
+            res
+          );
+        }
+
+
+        // -----------------------------------
+        // Also support /analytics/
+        // -----------------------------------
+
+        if (
+          pathname.length > 1 &&
+          pathname.endsWith("/")
+        ) {
+
+          const clean =
+            pathname.slice(
+              0,
+              -1
+            );
+
+          if (
+            Object.prototype
+              .hasOwnProperty
+              .call(
+                ROUTES,
+                clean
+              )
+          ) {
+
+            return serveFile(
+              path.join(
+                ROOT,
+                ROUTES[clean]
+              ),
+              res
+            );
+          }
+        }
+
+
+        // -----------------------------------
+        // Static files
+        // -----------------------------------
+
+        const filePath =
+          safeFilePath(
+            pathname
+          );
+
+        return serveFile(
+          filePath,
+          res
         );
 
-      if (
-        url.pathname ===
-        "/api/config"
-      ) {
+      }
+      catch (error) {
 
-        const config =
-          readLocalConfig();
+        console.error(error);
 
         res.writeHead(
-          200,
+          500,
           {
             "Content-Type":
-              "application/json; charset=utf-8",
-
-            "Cache-Control":
-              "no-store"
+              "text/plain; charset=utf-8"
           }
         );
 
         res.end(
-          JSON.stringify(config)
+          "500 Internal Server Error"
         );
-
-        return;
       }
-
-      let requestPath =
-        decodeURIComponent(
-          url.pathname
-        );
-
-      if (
-        requestPath === "/"
-      ) {
-        requestPath =
-          "/index.html";
-      }
-
-      if (requestPath === "/digital-twin") {
-        res.writeHead(308, { Location: "/dispatcher" });
-        res.end();
-        return;
-      }
-
-      if (!path.extname(requestPath)) {
-        requestPath += ".html";
-      }
-
-      const filePath =
-        path.normalize(
-          path.join(
-            root,
-            requestPath
-          )
-        );
-
-      if (
-        !filePath.startsWith(root)
-      ) {
-
-        res.writeHead(403);
-        res.end("Forbidden");
-        return;
-      }
-
-      if (
-        !fs.existsSync(filePath) ||
-        fs.statSync(filePath)
-          .isDirectory()
-      ) {
-
-        res.writeHead(404);
-        res.end("Not found");
-        return;
-      }
-
-      const ext =
-        path.extname(filePath)
-          .toLowerCase();
-
-      res.writeHead(
-        200,
-        {
-          "Content-Type":
-            mime[ext] ||
-            "application/octet-stream"
-        }
-      );
-
-      fs.createReadStream(
-        filePath
-      )
-      .pipe(res);
     }
   );
 
+
+server.on(
+  "error",
+  error => {
+
+    if (
+      error.code ===
+      "EADDRINUSE"
+    ) {
+
+      console.error("");
+      console.error(
+        `Port ${PORT} is already in use.`
+      );
+
+      console.error(
+        "Stop the previous server or use another port."
+      );
+
+      console.error("");
+
+      process.exit(1);
+    }
+
+    throw error;
+  }
+);
+
+
 server.listen(
-  port,
+  PORT,
+  "127.0.0.1",
   () => {
 
     console.log("");
     console.log(
-      "BNT Enterprise v8"
+      "======================================"
     );
 
     console.log(
-      "Main:"
+      " BNT Enterprise"
     );
 
     console.log(
-      `http://localhost:${port}`
+      "======================================"
+    );
+
+    console.log("");
+
+    console.log(
+      `Dispatcher:        http://localhost:${PORT}/dispatcher`
     );
 
     console.log(
-      "Digital Twin:"
+      `Equipment:         http://localhost:${PORT}/equipment`
     );
 
     console.log(
-      `http://localhost:${port}/digital-twin`
+      `Analytics:         http://localhost:${PORT}/analytics`
+    );
+
+    console.log(
+      `TOiR:              http://localhost:${PORT}/toir`
+    );
+
+    console.log(
+      `Logistics:         http://localhost:${PORT}/logistics`
+    );
+
+    console.log(
+      `Procurement:       http://localhost:${PORT}/procurement`
+    );
+
+    console.log(
+      `Reports:           http://localhost:${PORT}/reports`
     );
 
     console.log("");
