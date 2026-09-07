@@ -1,4 +1,4 @@
-﻿const http = require("http");
+const http = require("http");
 const fs = require("fs");
 const path = require("path");
 
@@ -94,10 +94,9 @@ function loadConfig() {
       config = {
         ...config,
         ...JSON.parse(
-          fs.readFileSync(
-            localConfig,
-            "utf8"
-          )
+          fs.readFileSync(localConfig, "utf8")
+            .replace(/^\uFEFF/, "")
+            .trim()
         )
       };
 
@@ -223,7 +222,7 @@ function serveFile(
         "application/octet-stream",
 
       "Cache-Control":
-        ext === ".html"
+        [".html", ".js", ".css", ".json"].includes(ext)
           ? "no-store"
           : "public, max-age=60"
     }
