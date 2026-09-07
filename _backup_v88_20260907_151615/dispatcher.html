@@ -1,0 +1,362 @@
+﻿<!doctype html>
+
+<html lang="ru">
+
+<head>
+
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
+
+  <title>
+    BNT — Диспетчерский центр
+  </title>
+
+
+  <link
+    rel="stylesheet"
+    href="/assets/css/tokens.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/assets/css/layout.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/assets/css/components.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/assets/css/pages/dispatcher-v87.css"
+  >
+
+</head>
+
+
+<body data-page="dispatcher">
+
+
+<main
+  id="page-content"
+  class="page-content flush"
+>
+
+
+<section class="dt-stage">
+
+
+  <div
+    id="dt-viewport"
+    class="dt-viewport"
+  >
+
+
+    <div
+      id="dt-artboard"
+      class="dt-artboard"
+    >
+
+
+      <img
+        src="/assets/terminal-map-reference.jpg"
+        alt="Схема терминала BNT"
+        draggable="false"
+      >
+
+
+      <svg
+        id="dt-overlay"
+        viewBox="0 0 100 56.25"
+        preserveAspectRatio="none"
+      >
+
+
+        <g
+          data-layer-group="zones"
+        >
+
+
+          <polygon
+            class="dt-zone"
+            points="
+              5,27
+              23,27
+              25,38
+              5,40
+            "
+          />
+
+
+          <polygon
+            class="dt-zone blue"
+            points="
+              29,31
+              61,28
+              63,49
+              30,48
+            "
+          />
+
+
+          <polygon
+            class="dt-zone green"
+            points="
+              55,10
+              92,10
+              91,36
+              61,35
+            "
+          />
+
+
+          <polygon
+            class="dt-zone green"
+            points="
+              31,38
+              60,35
+              58,53
+              30,51
+            "
+          />
+
+
+        </g>
+
+
+        <g
+          data-layer-group="logistics"
+        >
+
+
+          <polyline
+            class="dt-route"
+            points="
+              11,24
+              30,28
+              43,36
+              58,34
+              77,39
+              89,32
+            "
+          />
+
+
+        </g>
+
+
+      </svg>
+
+
+      <div
+        id="dt-markers"
+        class="dt-markers"
+      >
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+
+  <div class="dt-toolbar">
+
+
+    <label class="dt-search">
+
+      <span>
+        ⌕
+      </span>
+
+      <input
+        id="dt-search"
+        placeholder="Н-101, К-24, R-16, склад..."
+      >
+
+    </label>
+
+
+    <button
+      id="dt-reset"
+      class="btn"
+    >
+      Весь терминал
+    </button>
+
+
+    <button
+      id="dt-risks"
+      class="btn btn-primary"
+    >
+      Критические риски
+    </button>
+
+
+    <span class="dt-mode">
+
+      <i></i>
+
+      Vector · Live demo
+
+    </span>
+
+
+  </div>
+
+
+
+  <aside class="dt-layers">
+
+
+    <div class="dt-layer-head">
+
+      <div>
+
+        <span>
+          Цифровой двойник
+        </span>
+
+        <strong>
+          Слои терминала
+        </strong>
+
+      </div>
+
+
+      <small id="dt-scale">
+        100%
+      </small>
+
+    </div>
+
+
+    <div
+      id="dt-layer-buttons"
+      class="dt-layer-buttons"
+    >
+    </div>
+
+
+    <p>
+      Схема работает локально без зависимости
+      от внешних картографических сервисов.
+    </p>
+
+
+  </aside>
+
+
+
+  <div class="dt-zoom">
+
+    <button id="dt-plus">
+      +
+    </button>
+
+    <button id="dt-minus">
+      −
+    </button>
+
+    <button id="dt-home">
+      ⌂
+    </button>
+
+  </div>
+
+
+
+  <section class="dt-kpis">
+
+    <article>
+      <span>Доступность</span>
+      <strong>92%</strong>
+      <small>+2,4 п.п.</small>
+    </article>
+
+    <article>
+      <span>Риск простоя</span>
+      <strong class="red">7</strong>
+      <small>3 критических</small>
+    </article>
+
+    <article>
+      <span>План приема</span>
+      <strong>241K</strong>
+      <small>м³ / 90 дней</small>
+    </article>
+
+    <article>
+      <span>Подача вагонов</span>
+      <strong>48 / 63</strong>
+      <small>76% подтверждено</small>
+    </article>
+
+    <article>
+      <span>Бюджет ТОиР</span>
+      <strong>$241K</strong>
+      <small>38% использовано</small>
+    </article>
+
+  </section>
+
+
+
+  <aside
+    id="dt-drawer"
+    class="dt-drawer"
+    aria-hidden="true"
+  >
+
+    <div class="dt-drawer-head">
+
+      <div>
+
+        <span id="dt-drawer-type">
+          Объект
+        </span>
+
+        <h2 id="dt-drawer-title">
+          Объект
+        </h2>
+
+      </div>
+
+      <button id="dt-drawer-close">
+        ×
+      </button>
+
+    </div>
+
+
+    <div
+      id="dt-drawer-body"
+      class="dt-drawer-body"
+    >
+    </div>
+
+  </aside>
+
+
+</section>
+
+
+</main>
+
+
+<script src="/assets/js/navigation.js"></script>
+<script src="/assets/js/ui.js"></script>
+<script src="/assets/js/pages/dispatcher-v87.js"></script>
+<script src="/assets/js/shell.js"></script>
+
+
+</body>
+
+</html>

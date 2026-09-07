@@ -1,0 +1,119 @@
+﻿/* ==========================================================
+   BNT shared shell fix
+   ========================================================== */
+
+.app-sidebar svg,
+.app-topbar svg {
+
+    display: block !important;
+
+    width: 17px !important;
+    height: 17px !important;
+
+    min-width: 17px !important;
+    min-height: 17px !important;
+
+    max-width: 17px !important;
+    max-height: 17px !important;
+
+    flex: 0 0 17px !important;
+
+    overflow: hidden !important;
+}
+
+
+.app-sidebar .nav-icon {
+
+    width: 28px !important;
+    height: 28px !important;
+
+    min-width: 28px !important;
+
+    flex: 0 0 28px !important;
+
+    display: grid !important;
+
+    place-items: center !important;
+
+    overflow: hidden !important;
+
+    border-radius: 8px !important;
+}
+
+
+.app-sidebar .nav-icon svg {
+
+    width: 16px !important;
+    height: 16px !important;
+
+    min-width: 16px !important;
+    min-height: 16px !important;
+
+    max-width: 16px !important;
+    max-height: 16px !important;
+}
+
+
+.nav-link {
+
+    min-height: 42px !important;
+
+    gap: 10px !important;
+
+    border-radius: 10px !important;
+}
+
+
+.nav-link.active {
+
+    box-shadow:
+        0 7px 18px
+        rgba(10,120,215,.18) !important;
+}
+
+
+.app-topbar {
+
+    min-height: 70px !important;
+
+    padding:
+        10px 20px !important;
+}
+
+
+.app-topbar .shell-action {
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    gap: 7px !important;
+}
+
+
+.app-topbar .shell-action svg {
+
+    width: 14px !important;
+    height: 14px !important;
+
+    min-width: 14px !important;
+    min-height: 14px !important;
+}
+
+
+.app-topbar .avatar {
+
+    background:
+        #eaf6fd !important;
+
+    color:
+        #168eea !important;
+}
+
+
+.page-content {
+
+    background:
+        #f4f8fb;
+}
+

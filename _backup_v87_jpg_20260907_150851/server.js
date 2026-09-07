@@ -1,4 +1,4 @@
-﻿const http = require("http");
+const http = require("http");
 const fs = require("fs");
 const path = require("path");
 
@@ -38,4 +38,3 @@ const server=http.createServer((req,res)=>{
 });
 server.on("error",error=>{if(error.code==="EADDRINUSE"){console.error(`Port ${PORT} is already in use.`);process.exit(1);}throw error;});
 server.listen(PORT,"127.0.0.1",()=>{console.log(`BNT Enterprise: http://localhost:${PORT}/`);console.log(`Dispatcher:     http://localhost:${PORT}/dispatcher`);});
-

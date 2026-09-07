@@ -1,0 +1,995 @@
+﻿.dt-stage {
+
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    min-height: 620px;
+
+    overflow: hidden;
+
+    background:
+        #081d31;
+}
+
+
+.dt-viewport {
+
+    position: absolute;
+
+    inset: 0;
+
+    overflow: hidden;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    cursor: grab;
+}
+
+
+.dt-viewport.dragging {
+    cursor: grabbing;
+}
+
+
+.dt-artboard {
+
+    position: absolute;
+
+    transform-origin:
+        50% 50%;
+
+    will-change:
+        transform;
+
+    user-select: none;
+
+    background:
+        #123b62;
+
+    box-shadow:
+        0 30px 90px
+        rgba(0,0,0,.3);
+}
+
+
+.dt-artboard > img {
+
+    position: absolute;
+
+    inset: 0;
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    pointer-events: none;
+}
+
+
+.dt-artboard > svg {
+
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    pointer-events: none;
+
+    overflow: visible;
+}
+
+
+.dt-zone {
+
+    fill:
+        rgba(22,142,234,.025);
+
+    stroke:
+        rgba(52,171,235,.53);
+
+    stroke-width: .13;
+
+    vector-effect:
+        non-scaling-stroke;
+}
+
+
+.dt-zone.green {
+
+    fill:
+        rgba(28,190,122,.02);
+
+    stroke:
+        rgba(58,204,142,.52);
+}
+
+
+.dt-route {
+
+    fill: none;
+
+    stroke:
+        #2ed18c;
+
+    stroke-width: .28;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    stroke-dasharray:
+        1.1 .7;
+
+    vector-effect:
+        non-scaling-stroke;
+}
+
+
+.dt-markers {
+
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+}
+
+
+.dt-marker {
+
+    position: absolute;
+
+    z-index: 5;
+
+    transform:
+        translate(-50%,-50%);
+
+    padding: 0;
+
+    border: 0;
+
+    background:
+        transparent;
+
+    pointer-events: auto;
+
+    cursor: pointer;
+}
+
+
+.dt-marker-dot {
+
+    position: relative;
+
+    width: 26px;
+    height: 26px;
+
+    display: grid;
+
+    place-items: center;
+
+    border:
+        2px solid #fff;
+
+    border-radius: 50%;
+
+    background:
+        #168eea;
+
+    color: #fff;
+
+    font-size: 7px;
+    font-weight: 900;
+
+    box-shadow:
+        0 7px 17px
+        rgba(4,23,40,.32);
+}
+
+
+.dt-marker.red
+.dt-marker-dot {
+    background: #e94759;
+}
+
+
+.dt-marker.orange
+.dt-marker-dot {
+    background: #e99a19;
+}
+
+
+.dt-marker.green
+.dt-marker-dot {
+    background: #16a76c;
+}
+
+
+.dt-marker.risk
+.dt-marker-dot::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: -8px;
+
+    border:
+        1.5px solid
+        rgba(233,71,89,.75);
+
+    border-radius: 50%;
+
+    animation:
+        dtPulse
+        1.7s
+        ease-out
+        infinite;
+}
+
+
+@keyframes dtPulse {
+
+    from {
+        transform: scale(.7);
+        opacity: 1;
+    }
+
+    to {
+        transform: scale(1.65);
+        opacity: 0;
+    }
+}
+
+
+.dt-marker-label {
+
+    position: absolute;
+
+    left: 50%;
+    top: 31px;
+
+    transform:
+        translateX(-50%);
+
+    min-width:
+        max-content;
+
+    padding:
+        3px 6px;
+
+    border:
+        1px solid
+        rgba(207,223,233,.85);
+
+    border-radius: 5px;
+
+    background:
+        rgba(255,255,255,.95);
+
+    color:
+        #24455f;
+
+    font-size: 6.5px;
+    font-weight: 800;
+
+    box-shadow:
+        0 4px 12px
+        rgba(7,32,51,.16);
+}
+
+
+.dt-marker.detail {
+    display: none;
+}
+
+
+.dt-stage.detail-on
+.dt-marker.detail {
+
+    display: block;
+}
+
+
+.dt-toolbar {
+
+    position: absolute;
+
+    z-index: 20;
+
+    left: 16px;
+    right: 16px;
+    top: 14px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    pointer-events: none;
+}
+
+
+.dt-toolbar > * {
+    pointer-events: auto;
+}
+
+
+.dt-search {
+
+    width:
+        min(420px,39vw);
+
+    height: 41px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding:
+        0 12px;
+
+    border:
+        1px solid
+        rgba(210,224,234,.95);
+
+    border-radius: 10px;
+
+    background:
+        rgba(255,255,255,.97);
+
+    box-shadow:
+        0 8px 25px
+        rgba(3,26,47,.17);
+}
+
+
+.dt-search input {
+
+    min-width: 0;
+
+    flex: 1;
+
+    border: 0;
+
+    outline: 0;
+
+    background:
+        transparent;
+
+    font-size: 10px;
+}
+
+
+.dt-mode {
+
+    margin-left: auto;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding:
+        7px 10px;
+
+    border:
+        1px solid
+        rgba(210,224,234,.8);
+
+    border-radius: 99px;
+
+    background:
+        rgba(255,255,255,.95);
+
+    color:
+        #486a84;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    box-shadow:
+        0 8px 25px
+        rgba(3,26,47,.15);
+}
+
+
+.dt-mode i {
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background:
+        #20c982;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(32,201,130,.11);
+}
+
+
+.dt-layers {
+
+    position: absolute;
+
+    z-index: 20;
+
+    left: 16px;
+    top: 65px;
+
+    width: 270px;
+
+    padding: 12px;
+
+    border:
+        1px solid
+        rgba(210,224,234,.92);
+
+    border-radius: 12px;
+
+    background:
+        rgba(255,255,255,.96);
+
+    box-shadow:
+        0 10px 30px
+        rgba(3,26,47,.16);
+}
+
+
+.dt-layer-head {
+
+    display: flex;
+
+    align-items: end;
+
+    justify-content:
+        space-between;
+
+    gap: 10px;
+}
+
+
+.dt-layer-head span {
+
+    display: block;
+
+    color: #7e96a9;
+
+    font-size: 7px;
+    font-weight: 900;
+
+    text-transform: uppercase;
+}
+
+
+.dt-layer-head strong {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: #193b56;
+
+    font-size: 11px;
+}
+
+
+.dt-layer-buttons {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 6px;
+
+    margin-top: 10px;
+}
+
+
+.dt-layer-btn {
+
+    min-height: 34px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding:
+        7px 8px;
+
+    border:
+        1px solid #dce7ee;
+
+    border-radius: 8px;
+
+    background: #fff;
+
+    color: #58758e;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+.dt-layer-btn i {
+
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #168eea;
+}
+
+
+.dt-layer-btn[data-layer="risks"] i {
+    background: #e94759;
+}
+
+
+.dt-layer-btn[data-layer="toir"] i {
+    background: #e99a19;
+}
+
+
+.dt-layer-btn[data-layer="logistics"] i {
+    background: #16a76c;
+}
+
+
+.dt-layer-btn.active {
+
+    border-color:
+        #a9d4ef;
+
+    background:
+        #eef8ff;
+
+    color:
+        #1477be;
+}
+
+
+.dt-layers p {
+
+    margin:
+        9px 0 0;
+
+    color:
+        #7a91a5;
+
+    font-size: 7px;
+    line-height: 1.45;
+}
+
+
+.dt-zoom {
+
+    position: absolute;
+
+    z-index: 20;
+
+    right: 17px;
+    top: 72px;
+
+    display: grid;
+
+    gap: 6px;
+}
+
+
+.dt-zoom button {
+
+    width: 38px;
+    height: 38px;
+
+    border:
+        1px solid #d9e5ed;
+
+    border-radius: 9px;
+
+    background: #fff;
+
+    color:
+        #24465f;
+
+    box-shadow:
+        0 7px 18px
+        rgba(3,26,47,.16);
+
+    font-size: 17px;
+    font-weight: 850;
+
+    cursor: pointer;
+}
+
+
+.dt-kpis {
+
+    position: absolute;
+
+    z-index: 15;
+
+    left: 16px;
+    right: 16px;
+    bottom: 14px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            5,
+            minmax(0,1fr)
+        );
+
+    gap: 8px;
+
+    pointer-events: none;
+}
+
+
+.dt-kpis article {
+
+    min-height: 72px;
+
+    padding:
+        11px 12px;
+
+    border:
+        1px solid
+        rgba(218,231,239,.88);
+
+    border-radius: 11px;
+
+    background:
+        rgba(255,255,255,.94);
+
+    box-shadow:
+        0 9px 25px
+        rgba(4,26,44,.14);
+}
+
+
+.dt-kpis span,
+.dt-kpis strong,
+.dt-kpis small {
+
+    display: block;
+}
+
+
+.dt-kpis span {
+
+    color: #7a92a6;
+
+    font-size: 7px;
+}
+
+
+.dt-kpis strong {
+
+    margin-top: 4px;
+
+    color: #193b55;
+
+    font-size: 19px;
+}
+
+
+.dt-kpis strong.red {
+    color: #e94759;
+}
+
+
+.dt-kpis small {
+
+    margin-top: 2px;
+
+    color: #7890a4;
+
+    font-size: 7px;
+}
+
+
+.dt-drawer {
+
+    position: absolute;
+
+    z-index: 40;
+
+    right: 0;
+    top: 0;
+
+    width:
+        min(385px,100%);
+
+    height: 100%;
+
+    transform:
+        translateX(103%);
+
+    transition:
+        transform .22s ease;
+
+    background: #fff;
+
+    border-left:
+        1px solid #d8e4ec;
+
+    box-shadow:
+        -18px 0 50px
+        rgba(5,28,45,.18);
+}
+
+
+.dt-drawer.open {
+    transform: translateX(0);
+}
+
+
+.dt-drawer-head {
+
+    height: 76px;
+
+    padding:
+        14px 16px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content:
+        space-between;
+
+    border-bottom:
+        1px solid #dde7ee;
+}
+
+
+.dt-drawer-head span {
+
+    color: #168eea;
+
+    font-size: 7px;
+    font-weight: 900;
+
+    text-transform: uppercase;
+}
+
+
+.dt-drawer-head h2 {
+
+    margin:
+        4px 0 0;
+
+    color: #173a55;
+
+    font-size: 19px;
+}
+
+
+.dt-drawer-head button {
+
+    width: 31px;
+    height: 31px;
+
+    border:
+        1px solid #dde7ee;
+
+    border-radius: 8px;
+
+    background: #fff;
+
+    color: #68849b;
+
+    font-size: 17px;
+
+    cursor: pointer;
+}
+
+
+.dt-drawer-body {
+
+    padding: 16px;
+
+    overflow: auto;
+
+    max-height:
+        calc(100% - 76px);
+}
+
+
+.dt-status {
+
+    display: inline-flex;
+
+    padding:
+        5px 8px;
+
+    border-radius: 99px;
+
+    background: #e8f8f1;
+
+    color: #16945f;
+
+    font-size: 8px;
+    font-weight: 900;
+}
+
+
+.dt-status.red {
+
+    background: #fff0f2;
+
+    color: #e94759;
+}
+
+
+.dt-status.orange {
+
+    background: #fff5e7;
+
+    color: #d98500;
+}
+
+
+.dt-metric-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap: 7px;
+
+    margin-top: 13px;
+}
+
+
+.dt-metric-grid div {
+
+    padding: 10px;
+
+    border:
+        1px solid #e2ebf1;
+
+    border-radius: 9px;
+
+    background: #f8fbfd;
+}
+
+
+.dt-metric-grid span,
+.dt-metric-grid strong {
+
+    display: block;
+}
+
+
+.dt-metric-grid span {
+
+    color: #7a91a5;
+
+    font-size: 7px;
+}
+
+
+.dt-metric-grid strong {
+
+    margin-top: 4px;
+
+    color: #21435d;
+
+    font-size: 13px;
+}
+
+
+.dt-reco {
+
+    margin-top: 11px;
+
+    padding: 11px;
+
+    border:
+        1px solid #d1e8f7;
+
+    border-radius: 10px;
+
+    background: #f0f8fe;
+}
+
+
+.dt-reco strong {
+
+    color: #1d4665;
+
+    font-size: 9px;
+}
+
+
+.dt-reco p {
+
+    margin:
+        5px 0 0;
+
+    color: #5f7b91;
+
+    font-size: 8px;
+    line-height: 1.55;
+}
+
+
+.dt-links {
+
+    display: grid;
+
+    margin-top: 12px;
+}
+
+
+.dt-links a {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    padding:
+        11px 2px;
+
+    border-bottom:
+        1px solid #e8eff4;
+
+    color: #43647e;
+
+    font-size: 9px;
+    font-weight: 800;
+}
+
+
+.dt-links a:hover {
+    color: #168eea;
+}
+
+
+@media(max-width:800px) {
+
+    .dt-layers {
+        width: 240px;
+    }
+
+    .dt-mode {
+        display: none;
+    }
+
+    .dt-kpis {
+
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .dt-kpis article:nth-child(n+3) {
+        display: none;
+    }
+}
+
