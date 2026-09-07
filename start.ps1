@@ -2,22 +2,44 @@
     [int]$Port = 8080
 )
 
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference =
+    "Stop"
+
+Set-Location $PSScriptRoot
+
+if (
+    -not (
+        Get-Command node `
+        -ErrorAction SilentlyContinue
+    )
+) {
+
+    Write-Host ""
+    Write-Host "Node.js не найден." `
+        -ForegroundColor Red
+
+    Write-Host `
+        "Установи Node.js LTS и повтори запуск."
+
+    exit 1
+}
 
 Write-Host ""
-Write-Host "BNT Enterprise Digital Twin"
-Write-Host "Local server: http://localhost:$Port"
+Write-Host "BNT Enterprise v8" `
+    -ForegroundColor Cyan
+
+Write-Host ""
+Write-Host `
+    "http://localhost:$Port"
+
+Write-Host `
+    "http://localhost:$Port/digital-twin"
+
 Write-Host ""
 
-Start-Process "http://localhost:$Port"
+Start-Process `
+    "http://localhost:$Port/digital-twin"
 
-if (Get-Command py -ErrorAction SilentlyContinue) {
-    py -m http.server $Port
-}
-elseif (Get-Command python -ErrorAction SilentlyContinue) {
-    python -m http.server $Port
-}
-else {
-    Write-Host "Python не найден."
-    Write-Host "Установи Python либо используй: npx serve ."
-}
+$env:PORT = $Port
+
+node server.js

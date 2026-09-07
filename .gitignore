@@ -2,7 +2,9 @@
 .env
 .env.local
 .env.*.local
+config.local.json
 node_modules
 *.log
 .DS_Store
 Thumbs.db
+_backup_before_v8_*
