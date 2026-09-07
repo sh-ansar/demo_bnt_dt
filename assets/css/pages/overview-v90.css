@@ -1,0 +1,33 @@
+
+/* BNT v9.0 overview refinements */
+.ov-map img {
+  object-position:center center;
+  filter:saturate(.92) contrast(1.02) brightness(.97);
+}
+
+.ov-icon {
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.02em;
+}
+
+.ov-card.primary .ov-icon {
+  color:#fff;
+}
+
+.ov-strip article,
+.ov-card,
+.ov-bottom > article {
+  box-shadow:0 8px 22px rgba(23,56,84,.045);
+}
+
+.ov-copy h2 {
+  letter-spacing:-.025em;
+}
+
+.ov-strip span,
+.ov-card p,
+.attention span,
+.report-box p {
+  line-height:1.45;
+}
