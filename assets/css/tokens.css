@@ -1,0 +1,37 @@
+:root {
+  --bg: #f3f7fb;
+  --surface: #ffffff;
+  --surface-soft: #f7fafc;
+  --surface-blue: #edf7ff;
+  --ink: #102b4e;
+  --ink-2: #345472;
+  --muted: #718aa1;
+  --line: #dbe7f0;
+  --line-soft: #eaf0f5;
+  --blue: #0b82e9;
+  --blue-dark: #0869c0;
+  --cyan: #20b9ee;
+  --green: #16a76c;
+  --green-soft: #e8f8f1;
+  --orange: #e99919;
+  --orange-soft: #fff5e3;
+  --red: #e94759;
+  --red-soft: #fff0f2;
+  --purple: #705ac8;
+  --sidebar: 224px;
+  --topbar: 72px;
+  --radius: 14px;
+  --shadow: 0 8px 28px rgba(24, 66, 103, .08);
+  --shadow-sm: 0 3px 13px rgba(24, 66, 103, .06);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+html { background: var(--bg); }
+body, button, input, select, textarea { font-family: Inter, "Segoe UI", Arial, sans-serif; }
+body { color: var(--ink); background: var(--bg); font-size: 14px; }
+button, input, select, textarea { color: inherit; font-size: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+a { color: inherit; }
+img { max-width: 100%; }
+

@@ -1,0 +1,12 @@
+.report-host { max-width: none; padding: 14px 18px 28px; }
+.report-host > #app > .app { display: block; min-height: auto; }
+.report-host > #app > .app > .sidebar, .report-host > #app > .app > main > header { display: none !important; }
+.report-host > #app > .app > main { margin: 0; min-width: 0; }
+.report-host > #app > .app > main > .content { max-width: 1720px; margin: auto; padding: 0; }
+.report-host .page-head { margin-bottom: 14px; }
+.report-host .page-head h1 { color: var(--ink); }
+.app-sidebar .brand { height: var(--topbar); padding: 14px 16px; }
+.app-sidebar .brand-mark { color: #fff; }
+.app-topbar .btn { min-height: 36px; border-radius: 9px; }
+.app-topbar .profile .avatar { width: 36px; height: 36px; }
+@media(max-width:680px){.report-host{padding:10px}.report-host .filterbar{overflow:auto}.report-host .page-head{align-items:flex-start}}

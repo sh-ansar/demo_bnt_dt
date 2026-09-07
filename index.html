@@ -1,67 +1,37 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>BNT вЂ” Р”РёСЃРїРµС‚С‡РµСЂСЃРєРёР№ С†РµРЅС‚СЂ / Р¦РёС„СЂРѕРІРѕР№ РґРІРѕР№РЅРёРє</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BNT Enterprise — Операционный обзор</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/pages/enterprise.css">
 </head>
-<body>
-  <div id="app"></div>
-  <div id="modal-root"></div>
-  <div id="toast-root" class="toast-root"></div>
-  <script src="app.js"></script>
-
-<!-- BNT_DIGITAL_TWIN_ENTRY -->
-
-<a
-  href="/digital-twin"
-  style="
-    position:fixed;
-    right:22px;
-    bottom:22px;
-    z-index:99999;
-
-    display:flex;
-    align-items:center;
-    gap:9px;
-
-    padding:13px 17px;
-
-    border-radius:12px;
-
-    color:white;
-    text-decoration:none;
-
-    background:
-      linear-gradient(
-        180deg,
-        #148ff2,
-        #0875d2
-      );
-
-    box-shadow:
-      0 10px 28px
-      rgba(12,131,237,.30);
-
-    font-family:
-      Inter,
-      Segoe UI,
-      Arial,
-      sans-serif;
-
-    font-size:12px;
-    font-weight:800;
-  "
->
-  ◉ Цифровой двойник
-</a>
-
-<!-- /BNT_DIGITAL_TWIN_ENTRY -->
-
-
-<script src="/module-router.js"></script>
+<body data-page="home">
+  <main id="page-content" class="page-content">
+    <section class="hero-band">
+      <div><span class="eyebrow">BNT Enterprise · смена 07 сентября</span><h2>Терминал работает устойчиво</h2><p>Ключевые мощности доступны на 92%. Три риска требуют решения до начала следующего окна приема.</p></div>
+      <a class="btn btn-primary" href="/dispatcher">Открыть цифровой двойник →</a>
+    </section>
+    <section class="kpi-grid overview-kpis">
+      <article class="card kpi"><span class="label">Доступность мощностей</span><strong>92%</strong><small class="delta-up">+2,4 п.п. к плану</small></article>
+      <article class="card kpi"><span class="label">Плановый прием</span><strong>241 тыс. м³</strong><small>горизонт 90 дней</small></article>
+      <article class="card kpi"><span class="label">Риск простоев</span><strong>7 объектов</strong><small class="delta-down">3 требуют решения</small></article>
+      <article class="card kpi"><span class="label">Бюджет ТОиР</span><strong>$241 тыс.</strong><small>38% использовано</small></article>
+    </section>
+    <section class="module-launcher">
+      <a class="card launch-card primary" href="/dispatcher"><span>LIVE</span><h3>Диспетчерский центр</h3><p>Карта объектов, потоков, рисков и работ на терминале.</p><b>Перейти →</b></a>
+      <a class="card launch-card" href="/equipment"><span>148 активов</span><h3>Оборудование</h3><p>Паспорта, нагрузка, износ, ремонты и связанные узлы.</p><b>Открыть реестр →</b></a>
+      <a class="card launch-card" href="/analytics"><span>5 сценариев</span><h3>Аналитика</h3><p>Прогноз простоев, ремонтные окна и what-if модель.</p><b>Сравнить →</b></a>
+      <a class="card launch-card" href="/logistics"><span>63 вагона</span><h3>Логистика</h3><p>Недельный план, емкости и предупреждения очереди.</p><b>Открыть план →</b></a>
+      <a class="card launch-card" href="/procurement"><span>3 критические</span><h3>Закупки</h3><p>ЗИП, покрытие склада, тендеры и поставщики.</p><b>К действиям →</b></a>
+      <a class="card launch-card" href="/reports"><span>Report Studio v5</span><h3>Управленческие отчеты</h3><p>Рабочие шаблоны, конструктор, экспорт и рассылки.</p><b>Открыть отчеты →</b></a>
+    </section>
+  </main>
+  <script src="/assets/js/navigation.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/shell.js"></script>
 </body>
 </html>
-
-

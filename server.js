@@ -66,12 +66,20 @@ function readLocalConfig() {
     };
   }
 
-  return JSON.parse(
-    fs.readFileSync(
-      file,
-      "utf8"
-    )
-  );
+  try {
+    return JSON.parse(
+      fs.readFileSync(file, "utf8")
+        .replace(/^\uFEFF/, "")
+    );
+  }
+  catch (_) {
+    return {
+      googleMapsApiKey: "",
+      googleMapsMapId: "DEMO_MAP_ID",
+      center: { lat: 41.6438169, lng: 41.6605911 },
+      zoom: 17
+    };
+  }
 }
 
 const server =
@@ -122,12 +130,14 @@ const server =
           "/index.html";
       }
 
-      if (
-        requestPath ===
-        "/digital-twin"
-      ) {
-        requestPath =
-          "/digital-twin.html";
+      if (requestPath === "/digital-twin") {
+        res.writeHead(308, { Location: "/dispatcher" });
+        res.end();
+        return;
+      }
+
+      if (!path.extname(requestPath)) {
+        requestPath += ".html";
       }
 
       const filePath =
