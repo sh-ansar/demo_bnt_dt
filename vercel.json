@@ -3,27 +3,75 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/digital-twin", "destination": "/dispatcher", "permanent": true }
+    {
+      "source": "/digital-twin",
+      "destination": "/dispatcher",
+      "permanent": true
+    }
   ],
   "rewrites": [
-    { "source": "/dispatcher", "destination": "/dispatcher.html" },
-    { "source": "/equipment", "destination": "/equipment.html" },
-    { "source": "/equipment-detail", "destination": "/equipment-detail.html" },
-    { "source": "/analytics", "destination": "/analytics.html" },
-    { "source": "/toir", "destination": "/toir.html" },
-    { "source": "/logistics", "destination": "/logistics.html" },
-    { "source": "/procurement", "destination": "/procurement.html" },
-    { "source": "/reports", "destination": "/reports.html" },
-    { "source": "/templates", "destination": "/templates.html" },
-    { "source": "/builder", "destination": "/builder.html" },
-    { "source": "/data", "destination": "/data.html" },
-    { "source": "/mailings", "destination": "/mailings.html" },
-    { "source": "/sync", "destination": "/sync.html" }
+    {
+      "source": "/dispatcher",
+      "destination": "/dispatcher.html"
+    },
+    {
+      "source": "/equipment",
+      "destination": "/equipment.html"
+    },
+    {
+      "source": "/equipment-detail",
+      "destination": "/equipment-detail.html"
+    },
+    {
+      "source": "/analytics",
+      "destination": "/analytics.html"
+    },
+    {
+      "source": "/toir",
+      "destination": "/toir.html"
+    },
+    {
+      "source": "/logistics",
+      "destination": "/logistics.html"
+    },
+    {
+      "source": "/procurement",
+      "destination": "/procurement.html"
+    },
+    {
+      "source": "/reports",
+      "destination": "/reports.html"
+    },
+    {
+      "source": "/templates",
+      "destination": "/templates.html"
+    },
+    {
+      "source": "/builder",
+      "destination": "/builder.html"
+    },
+    {
+      "source": "/data",
+      "destination": "/data.html"
+    },
+    {
+      "source": "/mailings",
+      "destination": "/mailings.html"
+    },
+    {
+      "source": "/sync",
+      "destination": "/sync.html"
+    }
   ],
   "headers": [
     {
-      "source": "/api/config",
-      "headers": [{ "key": "Cache-Control", "value": "no-store" }]
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
     }
   ]
 }

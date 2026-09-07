@@ -1,1 +1,193 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BNT Enterprise — Операционный обзор</title><link rel="stylesheet" href="/assets/css/tokens.css"><link rel="stylesheet" href="/assets/css/layout.css"><link rel="stylesheet" href="/assets/css/components.css"><link rel="stylesheet" href="/assets/css/pages/enterprise.css"><link rel="stylesheet" href="/assets/css/pages/overview-v86.css"></head><body data-page="home"><main id="page-content" class="page-content overview-page"><section class="ov-hero"><div class="ov-copy"><span class="ov-eye"><i></i>Операционный контур · 07 сентября 2026</span><h2>Терминал работает устойчиво</h2><p>Единая управленческая картина эксплуатации, прогнозирования, логистики, ТОиР и закупок.</p><div class="ov-actions"><a class="btn btn-primary" href="/dispatcher">Открыть диспетчерский центр</a><a class="btn btn-secondary" href="/analytics">Прогноз и сценарии</a></div></div><div class="ov-map"><img src="/assets/terminal-map.svg" alt="Схема терминала"><div class="ov-stat"><span>Доступность</span><strong>92%</strong><small>+2,4 п.п.</small></div></div></section><section class="ov-strip"><article><span>Плановый прием</span><strong>241 тыс. м³</strong><small>90 дней</small></article><article><span>Подача вагонов</span><strong>48 / 63</strong><small>76% подтверждено</small></article><article><span>ТОиР</span><strong>12 работ</strong><small>3 критических окна</small></article><article><span>Критический ЗИП</span><strong>3 позиции</strong><small>риск до $86K</small></article><article><span>Бюджет ремонта</span><strong>$241K</strong><small>38% использовано</small></article></section><div class="ov-head"><div><span>Рабочие модули</span><h3>Управление предприятием</h3></div><p>Каждый раздел открывается как отдельная страница. Карта остается только в диспетчерском центре.</p></div><section class="ov-modules"><a class="ov-card primary" href="/dispatcher"><div class="ov-icon"><svg><use href="/assets/icons/bnt-sprite.svg#dispatcher"></use></svg></div><span>LIVE · Digital Twin</span><h3>Диспетчерский центр</h3><p>Резервуары, оборудование, потоки, риски и технологические ограничения.</p><b>Открыть →</b></a><a class="ov-card" href="/equipment"><div class="ov-icon"><svg><use href="/assets/icons/bnt-sprite.svg#equipment"></use></svg></div><span>148 активов</span><h3>Оборудование</h3><p>Паспорта, техническое состояние, узлы и история ремонтов.</p><b>Реестр →</b></a><a class="ov-card" href="/analytics"><div class="ov-icon"><svg><use href="/assets/icons/bnt-sprite.svg#analytics"></use></svg></div><span>5 сценариев</span><h3>Предиктивная аналитика</h3><p>Риски простоев, износ, бюджет и what-if моделирование.</p><b>Сценарии →</b></a><a class="ov-card" href="/toir"><div class="ov-icon"><svg><use href="/assets/icons/bnt-sprite.svg#maintenance"></use></svg></div><span>12 работ</span><h3>ТОиР</h3><p>Заявки, наряды, формы обслуживания и качество ремонта.</p><b>План →</b></a><a class="ov-card" href="/logistics"><div class="ov-icon"><svg><use href="/assets/icons/bnt-sprite.svg#logistics"></use></svg></div><span>63 вагона</span><h3>Логистика</h3><p>Подача вагонов, входящие объемы и емкостные ограничения.</p><b>Открыть →</b></a><a class="ov-card" href="/procurement"><div class="ov-icon"><svg><use href="/assets/icons/bnt-sprite.svg#procurement"></use></svg></div><span>3 критические</span><h3>Закупки и ЗИП</h3><p>Склад, тендеры, сроки поставки и влияние на простой.</p><b>К действиям →</b></a></section><section class="ov-bottom"><article><div class="ov-head compact"><div><span>Приоритеты смены</span><h3>Что требует внимания</h3></div></div><div class="attention"><a href="/equipment-detail?id=pump101"><i class="high"></i><div><strong>Насос Н-101</strong><span>Риск отказа 82% · вибрация +28%</span></div><em>До 11 сен</em></a><a href="/procurement"><i class="high"></i><div><strong>Подшипник 6312</strong><span>Остаток 2 / минимум 8</span></div><em>Закупка</em></a><a href="/logistics"><i class="medium"></i><div><strong>Ж/д эстакада</strong><span>Очередь до 6 часов</span></div><em>11–13 сен</em></a></div></article><article class="report-box"><span>Report Studio v5</span><h3>Управленческая отчетность</h3><p>Готовые отчеты, шаблоны, конструктор, данные, рассылки и синхронизация.</p><a href="/reports">Открыть отчеты →</a></article></section></main><script src="/assets/js/navigation.js"></script><script src="/assets/js/ui.js"></script><script src="/assets/js/shell.js"></script></body></html>
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BNT Enterprise — Текущее исполнение</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/pages/enterprise.css">
+  <link rel="stylesheet" href="/assets/css/pages/overview-v86.css">
+  <link rel="stylesheet" href="/assets/css/pages/overview-v90.css?v=9001">
+</head>
+
+<body data-page="home">
+<main id="page-content" class="page-content overview-page">
+
+<section class="ov-hero">
+  <div class="ov-copy">
+    <span class="ov-eye"><i></i>Текущее исполнение · 07 сентября 2026</span>
+    <h2>Текущее состояние терминала</h2>
+    <p>
+      Единая оперативная картина по оборудованию, загрузке, логистике,
+      ТОиР, критическому ЗИП и управленческой отчетности.
+    </p>
+
+    <div class="ov-actions">
+      <a class="btn btn-primary" href="/dispatcher">Диспетчерский центр</a>
+      <a class="btn btn-secondary" href="/analytics">Аналитика и сценарии</a>
+    </div>
+  </div>
+
+  <div class="ov-map">
+    <img src="/assets/terminal-map-reference.jpg" alt="Текущая схема терминала">
+    <div class="ov-stat">
+      <span>Текущая доступность</span>
+      <strong>92%</strong>
+      <small>+2,4 п.п. к базовой</small>
+    </div>
+  </div>
+</section>
+
+<section class="ov-strip">
+  <article>
+    <span>Текущее исполнение приема</span>
+    <strong>241 тыс. м³</strong>
+    <small>операционный контур</small>
+  </article>
+
+  <article>
+    <span>Подача вагонов</span>
+    <strong>48 / 63</strong>
+    <small>76% подтверждено</small>
+  </article>
+
+  <article>
+    <span>Работы ТОиР</span>
+    <strong>12</strong>
+    <small>3 критических окна</small>
+  </article>
+
+  <article>
+    <span>Критический ЗИП</span>
+    <strong>3 позиции</strong>
+    <small>ниже страхового минимума</small>
+  </article>
+
+  <article>
+    <span>Исполнение бюджета ТОиР</span>
+    <strong>38%</strong>
+    <small>из $241K планового бюджета</small>
+  </article>
+</section>
+
+<div class="ov-head">
+  <div>
+    <span>Рабочие модули</span>
+    <h3>Операционное управление</h3>
+  </div>
+
+  <p>
+    Диспетчерский центр дает общую картину, остальные разделы
+    открываются как самостоятельные рабочие модули.
+  </p>
+</div>
+
+<section class="ov-modules">
+  <a class="ov-card primary" href="/dispatcher">
+    <div class="ov-icon">DT</div>
+    <span>Текущее исполнение</span>
+    <h3>Диспетчерский центр</h3>
+    <p>Зоны терминала, оборудование, риски, ТОиР, логистика и критический ЗИП.</p>
+    <b>Открыть →</b>
+  </a>
+
+  <a class="ov-card" href="/equipment">
+    <div class="ov-icon">EQ</div>
+    <span>148 активов</span>
+    <h3>Оборудование</h3>
+    <p>Паспорта, техническое состояние, связанные узлы и история ремонтов.</p>
+    <b>Реестр →</b>
+  </a>
+
+  <a class="ov-card" href="/analytics">
+    <div class="ov-icon">AI</div>
+    <span>Сценарный анализ</span>
+    <h3>Предиктивная аналитика</h3>
+    <p>Риск простоя, износ, бюджет, ремонтные решения и what-if сценарии.</p>
+    <b>Сценарии →</b>
+  </a>
+
+  <a class="ov-card" href="/toir">
+    <div class="ov-icon">MR</div>
+    <span>12 работ</span>
+    <h3>ТОиР</h3>
+    <p>Заявки, наряды, плановые работы, история и контроль качества ремонта.</p>
+    <b>План работ →</b>
+  </a>
+
+  <a class="ov-card" href="/logistics">
+    <div class="ov-icon">LG</div>
+    <span>48 / 63 вагона</span>
+    <h3>Логистика</h3>
+    <p>Подача вагонов, текущие объемы, загрузка и ограничения терминала.</p>
+    <b>Открыть →</b>
+  </a>
+
+  <a class="ov-card" href="/procurement">
+    <div class="ov-icon">SP</div>
+    <span>3 критические позиции</span>
+    <h3>Закупки и ЗИП</h3>
+    <p>Склад, дефицит, сроки поставки и влияние запчастей на ремонтные окна.</p>
+    <b>К действиям →</b>
+  </a>
+</section>
+
+<section class="ov-bottom">
+  <article>
+    <div class="ov-head compact">
+      <div>
+        <span>Текущие приоритеты</span>
+        <h3>Что требует внимания</h3>
+      </div>
+    </div>
+
+    <div class="attention">
+      <a href="/equipment-detail?id=pump101">
+        <i class="high"></i>
+        <div>
+          <strong>Насос Н-101</strong>
+          <span>Риск отказа 82% · рост вибрации</span>
+        </div>
+        <em>Приоритет 1</em>
+      </a>
+
+      <a href="/procurement">
+        <i class="high"></i>
+        <div>
+          <strong>Критический ЗИП</strong>
+          <span>3 позиции ниже страхового минимума</span>
+        </div>
+        <em>Закупка</em>
+      </a>
+
+      <a href="/logistics">
+        <i class="medium"></i>
+        <div>
+          <strong>Ж/д приемка</strong>
+          <span>48 из 63 вагонов подтверждено</span>
+        </div>
+        <em>Контроль</em>
+      </a>
+    </div>
+  </article>
+
+  <article class="report-box">
+    <span>Report Studio v5</span>
+    <h3>Управленческая отчетность</h3>
+    <p>
+      Рабочие отчеты, шаблоны, конструктор, данные,
+      автоматические рассылки и синхронизация.
+    </p>
+    <a href="/reports">Открыть отчетность →</a>
+  </article>
+</section>
+
+</main>
+
+<script src="/assets/js/navigation.js"></script>
+<script src="/assets/js/ui.js"></script>
+<script src="/assets/js/shell.js"></script>
+</body>
+</html>

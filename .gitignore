@@ -8,3 +8,5 @@ node_modules
 .DS_Store
 Thumbs.db
 _backup_before_v8_*
+.npm-cache-vercel/
+_backup_v*/

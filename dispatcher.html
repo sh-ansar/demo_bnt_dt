@@ -1,607 +1,163 @@
-﻿<!doctype html>
-
+<!doctype html>
 <html lang="ru">
-
 <head>
-
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BNT — Диспетчерский центр</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width,initial-scale=1"
-  >
-
-  <title>
-    BNT — Диспетчерский центр
-  </title>
-
-
-  <link
-    rel="stylesheet"
-    href="/assets/css/tokens.css"
-  >
-
-  <link
-    rel="stylesheet"
-    href="/assets/css/layout.css"
-  >
-
-  <link
-    rel="stylesheet"
-    href="/assets/css/components.css"
-  >
-
-  <link
-    rel="stylesheet"
-    href="/assets/css/pages/dispatcher-v87.css"
-  >
-
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/pages/dispatcher-v87.css">
+  <link rel="stylesheet" href="/assets/css/pages/dispatcher-v90.css?v=9001">
 </head>
 
-
 <body data-page="dispatcher">
-
-
-<main
-  id="page-content"
-  class="page-content flush"
->
-
+<main id="page-content" class="page-content flush">
 
 <section class="dt-stage">
 
-
-  <div
-    id="dt-viewport"
-    class="dt-viewport"
-  >
-
-
-    <div
-      id="dt-artboard"
-      class="dt-artboard"
-    >
-
+  <div id="dt-viewport" class="dt-viewport">
+    <div id="dt-artboard" class="dt-artboard">
 
       <img
         src="/assets/terminal-map-reference.jpg"
-        alt="Схема терминала BNT"
+        alt="Операционная схема терминала BNT"
         draggable="false"
       >
 
-
       <svg
-  id="dt-overlay"
-  viewBox="0 0 100 56.25"
-  preserveAspectRatio="none"
->
-
-  <!-- =====================================================
-       OPERATIONAL ZONES
-       ===================================================== -->
-
-  <g data-layer-group="zones">
-
-    <!-- Rail reception -->
-    <polygon
-      class="dt-zone orange"
-      points="
-        4,16
-        43,15
-        45,29
-        8,34
-      "
-    />
-
-
-    <!-- Western / auxiliary park -->
-    <polygon
-      class="dt-zone"
-      points="
-        4,27
-        24,27
-        25,39
-        5,40
-      "
-    />
-
-
-    <!-- Central tank park -->
-    <polygon
-      class="dt-zone"
-      points="
-        29,31
-        61,27
-        63,49
-        30,49
-      "
-    />
-
-
-    <!-- Eastern tank park -->
-    <polygon
-      class="dt-zone green"
-      points="
-        55,9
-        93,9
-        91,37
-        61,36
-      "
-    />
-
-
-    <!-- Maintenance / warehouse -->
-    <polygon
-      class="dt-zone purple"
-      points="
-        29,39
-        58,36
-        59,54
-        30,52
-      "
-    />
-
-
-    <!-- Pier -->
-    <polygon
-      class="dt-zone green"
-      points="
-        77,38
-        96,34
-        99,49
-        82,55
-      "
-    />
-
-  </g>
-
-
-
-  <!-- =====================================================
-       ZONE LABELS
-       ===================================================== -->
-
-  <g
-    class="dt-zone-labels"
-    data-layer-group="zones"
-  >
-
-    <g
-      class="dt-zone-badge"
-      transform="translate(21 17)"
-    >
-
-      <rect
-        x="-6.5"
-        y="-1.8"
-        width="13"
-        height="3.6"
-      />
-
-      <text y="-.35">
-        Ж/д приемка
-      </text>
-
-      <text
-        class="sub"
-        y=".85"
+        id="dt-overlay"
+        viewBox="0 0 100 56.25"
+        preserveAspectRatio="none"
+        aria-hidden="true"
       >
-        48 / 63 вагона
-      </text>
-
-    </g>
-
-
-    <g
-      class="dt-zone-badge"
-      transform="translate(14 30)"
-    >
-
-      <rect
-        x="-7"
-        y="-1.8"
-        width="14"
-        height="3.6"
-      />
-
-      <text y="-.35">
-        Западный парк
-      </text>
-
-      <text
-        class="sub"
-        y=".85"
-      >
-        прием / хранение
-      </text>
-
-    </g>
-
-
-    <g
-      class="dt-zone-badge"
-      transform="translate(46 33)"
-    >
-
-      <rect
-        x="-8"
-        y="-1.8"
-        width="16"
-        height="3.6"
-      />
-
-      <text y="-.35">
-        Центральный парк
-      </text>
-
-      <text
-        class="sub"
-        y=".85"
-      >
-        резервуарный контур
-      </text>
-
-    </g>
-
-
-    <g
-      class="dt-zone-badge"
-      transform="translate(74 14)"
-    >
-
-      <rect
-        x="-8"
-        y="-1.8"
-        width="16"
-        height="3.6"
-      />
-
-      <text y="-.35">
-        Восточный парк
-      </text>
-
-      <text
-        class="sub"
-        y=".85"
-      >
-        основной резерв
-      </text>
-
-    </g>
-
-
-    <g
-      class="dt-zone-badge"
-      transform="translate(43 48)"
-    >
-
-      <rect
-        x="-8"
-        y="-1.8"
-        width="16"
-        height="3.6"
-      />
-
-      <text y="-.35">
-        Склад / ремонт
-      </text>
-
-      <text
-        class="sub"
-        y=".85"
-      >
-        МТР и ремонтная зона
-      </text>
-
-    </g>
-
-
-    <g
-      class="dt-zone-badge"
-      transform="translate(88 44)"
-    >
-
-      <rect
-        x="-7"
-        y="-1.8"
-        width="14"
-        height="3.6"
-      />
-
-      <text y="-.35">
-        Причальный комплекс
-      </text>
-
-      <text
-        class="sub"
-        y=".85"
-      >
-        стендеры / отгрузка
-      </text>
-
-    </g>
-
-  </g>
-
-
-
-  <!-- =====================================================
-       LOGISTICS
-       ===================================================== -->
-
-  <g
-    data-layer-group="logistics"
-    style="display:none"
-  >
-
-    <polyline
-      class="dt-route"
-      points="
-        9,20
-        28,25
-        42,36
-        58,34
-        75,40
-        90,42
-      "
-    />
-
-  </g>
-
-
-
-  <!-- =====================================================
-       MAINTENANCE WINDOWS
-       ===================================================== -->
-
-  <g
-    data-layer-group="toir"
-    style="display:none"
-  >
-
-    <circle
-      class="dt-toir-ring"
-      cx="59"
-      cy="50"
-      r="4.2"
-    />
-
-    <circle
-      class="dt-toir-dot"
-      cx="59"
-      cy="50"
-      r=".55"
-    />
-
-
-    <circle
-      class="dt-toir-ring"
-      cx="62"
-      cy="30"
-      r="4.5"
-    />
-
-    <circle
-      class="dt-toir-dot"
-      cx="62"
-      cy="30"
-      r=".55"
-    />
-
-
-    <circle
-      class="dt-toir-ring"
-      cx="84"
-      cy="54"
-      r="3.6"
-    />
-
-    <circle
-      class="dt-toir-dot"
-      cx="84"
-      cy="54"
-      r=".55"
-    />
-
-  </g>
-
-
-
-  <!-- =====================================================
-       CRITICAL SPARES
-       ===================================================== -->
-
-  <g
-    data-layer-group="spares"
-    style="display:none"
-  >
-
-    <polyline
-      class="dt-spare-link"
-      points="
-        36,50
-        47,53
-        56,57
-      "
-    />
-
-    <polyline
-      class="dt-spare-link"
-      points="
-        36,50
-        50,52
-        59,50
-      "
-    />
-
-
-    <circle
-      class="dt-spare-node"
-      cx="36"
-      cy="50"
-      r=".6"
-    />
-
-
-    <circle
-      class="dt-spare-node"
-      cx="56"
-      cy="57"
-      r=".6"
-    />
-
-
-    <circle
-      class="dt-spare-node"
-      cx="59"
-      cy="50"
-      r=".6"
-    />
-
-  </g>
-
-
-</svg>
-
-
-      <div
-        id="dt-markers"
-        class="dt-markers"
-      >
+        <g data-layer-group="zones">
+          <polygon class="dt-zone dt-zone-rail"
+            points="8,18 44,17 44.5,22 9,24" />
+          <polygon class="dt-zone dt-zone-blue"
+            points="4.5,30.5 24,30 25,43 5,44" />
+          <polygon class="dt-zone dt-zone-blue"
+            points="28,30.5 60,27 62,42.5 31,45" />
+          <polygon class="dt-zone dt-zone-green"
+            points="55,9 91,9 89,38 61,36" />
+          <polygon class="dt-zone dt-zone-purple"
+            points="30,40 53,37.5 54,52.5 30,52" />
+        </g>
+
+        <g data-layer-group="logistics" style="display:none">
+          <polyline
+            class="dt-route"
+            points="10,20 29,23 42,33 57,32 73,39 85,41"
+          />
+        </g>
+
+        <g data-layer-group="toir" style="display:none">
+          <circle class="dt-toir-ring" cx="59" cy="50" r="3.6"/>
+          <circle class="dt-toir-dot" cx="59" cy="50" r=".48"/>
+
+          <circle class="dt-toir-ring" cx="62" cy="30" r="3.7"/>
+          <circle class="dt-toir-dot" cx="62" cy="30" r=".48"/>
+
+          <circle class="dt-toir-ring" cx="56" cy="57" r="3.2"/>
+          <circle class="dt-toir-dot" cx="56" cy="57" r=".48"/>
+        </g>
+
+        <g data-layer-group="spares" style="display:none">
+          <polyline class="dt-spare-link" points="36,50 47,52 56,57"/>
+          <polyline class="dt-spare-link" points="36,50 49,51 59,50"/>
+          <circle class="dt-spare-node" cx="36" cy="50" r=".52"/>
+          <circle class="dt-spare-node" cx="56" cy="57" r=".52"/>
+          <circle class="dt-spare-node" cx="59" cy="50" r=".52"/>
+        </g>
+      </svg>
+
+      <div class="dt-zone-labels" data-layer-group="zones">
+        <div class="dt-zone-label rail">
+          <strong>Ж/д приемка</strong>
+          <small>48 / 63 вагона</small>
+        </div>
+
+        <div class="dt-zone-label west">
+          <strong>Западный парк</strong>
+          <small>прием и хранение</small>
+        </div>
+
+        <div class="dt-zone-label central">
+          <strong>Центральный парк</strong>
+          <small>основной резервуарный контур</small>
+        </div>
+
+        <div class="dt-zone-label east">
+          <strong>Восточный парк</strong>
+          <small>резерв и оперативная емкость</small>
+        </div>
+
+        <div class="dt-zone-label repair">
+          <strong>Ремонтная зона</strong>
+          <small>МТР и подготовка ТОиР</small>
+        </div>
       </div>
 
-
+      <div id="dt-markers" class="dt-markers"></div>
     </div>
-
-
   </div>
-
-
 
   <div class="dt-toolbar">
-
-
     <label class="dt-search">
-
-      <span>
-        ⌕
-      </span>
-
-      <input
-        id="dt-search"
-        placeholder="Н-101, К-24, R-16, склад..."
-      >
-
+      <span>⌕</span>
+      <input id="dt-search" placeholder="Н-101, К-24, R-16, склад...">
     </label>
 
-
-    <button
-      id="dt-reset"
-      class="btn"
-    >
-      Весь терминал
-    </button>
-
-
-    <button
-      id="dt-risks"
-      class="btn btn-primary"
-    >
-      Критические риски
-    </button>
-
+    <button id="dt-reset" class="btn">Весь терминал</button>
+    <button id="dt-risks" class="btn btn-primary">Критические риски</button>
 
     <span class="dt-mode">
-
       <i></i>
-
-      Vector · Live demo
-
+      Текущее исполнение
     </span>
-
-
   </div>
-
-
 
   <aside class="dt-layers">
-
-
     <div class="dt-layer-head">
-
       <div>
-
-        <span>
-          Цифровой двойник
-        </span>
-
-        <strong>
-          Слои терминала
-        </strong>
-
+        <span>Цифровой двойник</span>
+        <strong>Слои терминала</strong>
       </div>
-
-
-      <small id="dt-scale">
-        100%
-      </small>
-
+      <small id="dt-scale">100%</small>
     </div>
 
-
-    <div
-      id="dt-layer-buttons"
-      class="dt-layer-buttons"
-    >
-    </div>
-
+    <div id="dt-layer-buttons" class="dt-layer-buttons"></div>
 
     <p>
-      Схема работает локально без зависимости
-      от внешних картографических сервисов.
+      Схема отображает текущее состояние объектов и
+      демонстрационные управленческие слои терминала.
     </p>
-
-
   </aside>
 
-
-
   <div class="dt-zoom">
-
-    <button id="dt-plus">
-      +
-    </button>
-
-    <button id="dt-minus">
-      −
-    </button>
-
-    <button id="dt-home">
-      ⌂
-    </button>
-
+    <button id="dt-plus" aria-label="Увеличить">+</button>
+    <button id="dt-minus" aria-label="Уменьшить">−</button>
+    <button id="dt-home" aria-label="Сбросить масштаб">⌂</button>
   </div>
 
-
-
   <section class="dt-kpis">
-
     <article>
-      <span>Доступность</span>
+      <span>Текущая доступность</span>
       <strong>92%</strong>
-      <small>+2,4 п.п.</small>
+      <small>+2,4 п.п. к базовой</small>
     </article>
 
     <article>
-      <span>Риск простоя</span>
+      <span>Объекты в зоне риска</span>
       <strong class="red">7</strong>
       <small>3 критических</small>
     </article>
 
     <article>
-      <span>План приема</span>
+      <span>Текущее исполнение приема</span>
       <strong>241K</strong>
-      <small>м³ / 90 дней</small>
+      <small>м³ в расчетном контуре</small>
     </article>
 
     <article>
@@ -611,64 +167,36 @@
     </article>
 
     <article>
-      <span>Бюджет ТОиР</span>
-      <strong>$241K</strong>
-      <small>38% использовано</small>
+      <span>Исполнение бюджета ТОиР</span>
+      <strong>38%</strong>
+      <small>$241K планового бюджета</small>
     </article>
-
   </section>
 
+  <div class="dt-map-legend">
+    <span><i class="blue"></i>Резервуарные парки</span>
+    <span><i class="green"></i>Эксплуатация</span>
+    <span><i class="orange"></i>Ж/д и ТОиР</span>
+    <span><i class="purple"></i>Ремонт / ЗИП</span>
+  </div>
 
-
-  <aside
-    id="dt-drawer"
-    class="dt-drawer"
-    aria-hidden="true"
-  >
-
+  <aside id="dt-drawer" class="dt-drawer" aria-hidden="true">
     <div class="dt-drawer-head">
-
       <div>
-
-        <span id="dt-drawer-type">
-          Объект
-        </span>
-
-        <h2 id="dt-drawer-title">
-          Объект
-        </h2>
-
+        <span id="dt-drawer-type">Объект</span>
+        <h2 id="dt-drawer-title">Объект</h2>
       </div>
-
-      <button id="dt-drawer-close">
-        ×
-      </button>
-
+      <button id="dt-drawer-close" aria-label="Закрыть">×</button>
     </div>
-
-
-    <div
-      id="dt-drawer-body"
-      class="dt-drawer-body"
-    >
-    </div>
-
+    <div id="dt-drawer-body" class="dt-drawer-body"></div>
   </aside>
 
-
 </section>
-
-
 </main>
-
 
 <script src="/assets/js/navigation.js"></script>
 <script src="/assets/js/ui.js"></script>
-<script src="/assets/js/pages/dispatcher-v87.js"></script>
+<script src="/assets/js/pages/dispatcher-v90.js?v=9001"></script>
 <script src="/assets/js/shell.js"></script>
-
-
 </body>
-
 </html>
-
