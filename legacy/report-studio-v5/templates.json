@@ -1,0 +1,122 @@
+[
+  {
+    "id":"cf-main",
+    "name":"CF — Отчет о движении денежных средств",
+    "description":"Форма заказчика: поступления, выбытия, динамика Net Cash Flow и итоговый waterfall.",
+    "tag":"Финансы",
+    "reportTitle":"Отчет о движении денежных средств (CF)",
+    "filters":{"source":1,"year":2026,"monthFrom":1,"monthTo":7,"currency":"USD","unit":"thousand"},
+    "sourceLabel":"1С / Управленческая отчетность",
+    "blocks":["transshipment","inflow","netflow","outflow","waterfall"]
+  },
+  {
+    "id":"is-pdf",
+    "name":"IS — Отчет о прибылях и убытках",
+    "description":"Готовая форма январь–август 2026 с реальными значениями из предоставленного отчета.",
+    "tag":"Финансы",
+    "reportTitle":"Отчет о прибылях и убытках (IS) (январь - август 2026 год)",
+    "filters":{"source":1,"year":2026,"monthFrom":1,"monthTo":8,"currency":"USD","unit":"thousand"},
+    "sourceLabel":"1С / Управленческая отчетность",
+    "blocks":["is_income","is_core_income","is_transshipment","is_expenses","is_cogs","is_oar"]
+  },
+  {
+    "id":"general-pdf",
+    "name":"Общие показатели",
+    "description":"Производственные и финансовые KPI за 8 месяцев 2026 с фактом 2025 и планом 2026.",
+    "tag":"Руководство",
+    "reportTitle":"Общие показатели (январь - август 2026 год)",
+    "filters":{"source":1,"year":2026,"monthFrom":1,"monthTo":8,"currency":"USD","unit":"thousand"},
+    "sourceLabel":"1С + Pelogas",
+    "blocks":["general_oil","general_oil_dry","general_total_cargo","general_net_profit","general_ebitda","general_margin","general_cogs","general_oar","general_capex"]
+  },
+  {
+    "id":"consolidated-pdf",
+    "name":"Консолидированные показатели БНТ",
+    "description":"Производство, финансы, CAPEX и ФОТ в формате консолидированной формы заказчика.",
+    "tag":"Консолидация",
+    "reportTitle":"Консолидированные показатели ООО «Батумский нефтяной терминал» на уровне АО «КазТрансОйл» (январь - июль 2026 год)",
+    "filters":{"source":3,"year":2026,"monthFrom":1,"monthTo":7,"currency":"USD","unit":"thousand"},
+    "sourceLabel":"1С + Pelogas",
+    "blocks":["cons_production","cons_finance","cons_capex","cons_payroll"]
+  },
+  {
+    "id":"pelogas-production",
+    "name":"Pelogas — Производственная отчетность",
+    "description":"Отдельный производственный шаблон: нефть, светлые/темные нефтепродукты, сухие и контейнерные грузы.",
+    "tag":"Производство",
+    "reportTitle":"Производственные показатели БНТ",
+    "filters":{"source":1,"year":2026,"monthFrom":1,"monthTo":8,"currency":"USD","unit":"thousand"},
+    "sourceLabel":"Pelogas / производственные данные",
+    "blocks":["general_oil","general_oil_dry","general_total_cargo","cons_production"]
+  },
+  {
+    "id":"cfo",
+    "name":"CFO 360",
+    "description":"KPI, план/факт, денежные потоки, баланс и CAPEX для руководителя.",
+    "tag":"Руководство",
+    "reportTitle":"CFO 360 — управленческий обзор",
+    "filters":{"source":1,"year":2026,"monthFrom":1,"monthTo":7,"currency":"USD","unit":"thousand"},
+    "sourceLabel":"1С / Управленческая отчетность",
+    "blocks":["kpi","metricTrend","planFact","waterfall","balance","capex"]
+  },
+  {
+    "id":"budget",
+    "name":"Бюджет vs Факт",
+    "description":"Сравнение факта с бюджетом по ключевым финансовым показателям.",
+    "tag":"ПЭО",
+    "reportTitle":"Бюджет vs Факт",
+    "filters":{"source":1,"year":2026,"monthFrom":1,"monthTo":7,"currency":"USD","unit":"thousand"},
+    "sourceLabel":"1С / Бюджеты",
+    "blocks":["planFact","metricTrend","finance","capex"]
+  },
+  {
+    "id":"operations",
+    "name":"Операционный мониторинг",
+    "description":"Перевалка, структура поступлений и операционная динамика.",
+    "tag":"Операции",
+    "reportTitle":"Операционный мониторинг БНТ",
+    "filters":{"source":1,"year":2026,"monthFrom":1,"monthTo":7,"currency":"USD","unit":"thousand"},
+    "sourceLabel":"1С + Pelogas",
+    "blocks":["transshipment","inflow","operations","metricTrend"]
+  },
+  {
+    "id":"capex",
+    "name":"CAPEX контроль",
+    "description":"Инвестиционная программа, крупнейшие статьи и план/факт исполнения.",
+    "tag":"CAPEX",
+    "reportTitle":"CAPEX — контроль инвестиционной программы",
+    "filters":{"source":1,"year":2026,"monthFrom":1,"monthTo":7,"currency":"USD","unit":"thousand"},
+    "sourceLabel":"1С / CAPEX",
+    "blocks":["capex","balance","planFact"]
+  },
+  {
+    "id":"balance",
+    "name":"Баланс и ликвидность",
+    "description":"Активы, денежные средства, ликвидность и финансовые коэффициенты.",
+    "tag":"Финансы",
+    "reportTitle":"Баланс и ликвидность",
+    "filters":{"source":1,"year":2026,"monthFrom":1,"monthTo":7,"currency":"USD","unit":"thousand"},
+    "sourceLabel":"1С / Управленческая отчетность",
+    "blocks":["balance","liquidity","metricTrend"]
+  },
+  {
+    "id":"management",
+    "name":"Ежемесячная управленческая отчетность",
+    "description":"Сводный пакет для ежемесячного рассмотрения руководством.",
+    "tag":"Общий",
+    "reportTitle":"Ежемесячная управленческая отчетность",
+    "filters":{"source":1,"year":2026,"monthFrom":1,"monthTo":7,"currency":"USD","unit":"thousand"},
+    "sourceLabel":"1С + Pelogas",
+    "blocks":["kpi","transshipment","inflow","outflow","waterfall","planFact","capex"]
+  },
+  {
+    "id":"compact",
+    "name":"Краткий отчет директора",
+    "description":"Только ключевые цифры и динамика без детальных таблиц.",
+    "tag":"Руководство",
+    "reportTitle":"Краткий отчет директора",
+    "filters":{"source":1,"year":2026,"monthFrom":1,"monthTo":7,"currency":"USD","unit":"thousand"},
+    "sourceLabel":"1С / Управленческая отчетность",
+    "blocks":["kpi","metricTrend","netflow","waterfall"]
+  }
+]
