@@ -12,7 +12,7 @@
   >
 
   <title>
-    BNT — Диспетчерский центр
+    BNT Enterprise — Digital Twin
   </title>
 
   <link
@@ -22,207 +22,293 @@
 
 </head>
 
+
 <body>
 
+
 <div class="dt-app">
+
+
+  <!-- SIDEBAR -->
 
   <aside class="dt-sidebar">
 
     <div class="dt-brand">
 
-      <div class="dt-brand-row">
+      <div class="dt-logo">
+        BNT
+      </div>
 
-        <div class="dt-logo">
+      <div>
+
+        <h1>
           BNT
-        </div>
+        </h1>
 
-        <div>
-
-          <h1>
-            BNT
-          </h1>
-
-          <p>
-            Enterprise Digital Twin
-          </p>
-
-        </div>
+        <p>
+          Enterprise Management
+        </p>
 
       </div>
 
     </div>
 
+
     <nav class="dt-nav">
+
+      <div class="dt-nav-label">
+        Предприятие
+      </div>
+
+
+      <button
+        class="dt-nav-item active"
+      >
+
+        <span class="dt-nav-icon">
+          ◉
+        </span>
+
+        <span>
+          Диспетчерский центр
+        </span>
+
+      </button>
+
+
+      <button
+        class="dt-nav-item"
+        onclick="
+          BNTDigitalTwin.openObject(
+            'pump101'
+          )
+        "
+      >
+
+        <span class="dt-nav-icon">
+          ⚙
+        </span>
+
+        <span>
+          Оборудование
+        </span>
+
+      </button>
+
+
+      <button
+        class="dt-nav-item"
+        onclick="
+          BNTDigitalTwin.openObject(
+            'pump101'
+          );
+
+          BNTDigitalTwin.showObjectTab(
+            'prediction'
+          );
+        "
+      >
+
+        <span class="dt-nav-icon">
+          ↗
+        </span>
+
+        <span>
+          Аналитика
+        </span>
+
+      </button>
+
+
+      <button
+        class="dt-nav-item"
+        onclick="
+          BNTDigitalTwin.openObject(
+            'pump101'
+          );
+
+          BNTDigitalTwin.showObjectTab(
+            'toir'
+          );
+        "
+      >
+
+        <span class="dt-nav-icon">
+          🔧
+        </span>
+
+        <span>
+          ТОиР
+        </span>
+
+      </button>
+
+
+      <button
+        class="dt-nav-item"
+        onclick="
+          BNTDigitalTwin.activeLayers.add(
+            'logistics'
+          );
+
+          BNTDigitalTwin.updateLayers();
+
+          BNTDigitalTwin.toast(
+            'Логистика',
+            'Показаны маршруты и подача вагонов'
+          );
+        "
+      >
+
+        <span class="dt-nav-icon">
+          🚃
+        </span>
+
+        <span>
+          Логистика
+        </span>
+
+      </button>
+
+
+      <button
+        class="dt-nav-item"
+        onclick="
+          BNTDigitalTwin.activeLayers.add(
+            'procurement'
+          );
+
+          BNTDigitalTwin.updateLayers();
+
+          BNTDigitalTwin.toast(
+            'Закупки',
+            'Показаны критические позиции ЗИП'
+          );
+        "
+      >
+
+        <span class="dt-nav-icon">
+          ◫
+        </span>
+
+        <span>
+          Закупки
+        </span>
+
+      </button>
+
 
       <div class="dt-nav-label">
         Управление
       </div>
 
-      <button
-        class="dt-nav-item active"
-      >
-        <span>
-          Диспетчерский центр
-        </span>
-      </button>
 
       <button
         class="dt-nav-item"
         onclick="
-          BNTDigitalTwin.openModule(
-            'equipment'
-          )
+          window.location.href =
+          '/?module=reports'
         "
       >
-        <span>
-          Оборудование
+
+        <span class="dt-nav-icon">
+          ▤
         </span>
-      </button>
 
-      <button
-        class="dt-nav-item"
-        onclick="
-          BNTDigitalTwin.openModule(
-            'analytics'
-          )
-        "
-      >
-        <span>
-          Аналитика
-        </span>
-      </button>
-
-      <button
-        class="dt-nav-item"
-        onclick="
-          BNTDigitalTwin.openModule(
-            'toir'
-          )
-        "
-      >
-        <span>
-          ТОиР
-        </span>
-      </button>
-
-      <button
-        class="dt-nav-item"
-        onclick="
-          BNTDigitalTwin.openModule(
-            'logistics'
-          )
-        "
-      >
-        <span>
-          Логистика
-        </span>
-      </button>
-
-      <button
-        class="dt-nav-item"
-        onclick="
-          BNTDigitalTwin.openModule(
-            'procurement'
-          )
-        "
-      >
-        <span>
-          Закупки
-        </span>
-      </button>
-
-      <div class="dt-nav-label">
-        Управленческий контур
-      </div>
-
-      <button
-        class="dt-nav-item"
-        onclick="
-          BNTDigitalTwin.openModule(
-            'reports'
-          )
-        "
-      >
         <span>
           Отчеты
         </span>
+
       </button>
+
 
       <button
         class="dt-nav-item"
         onclick="
-          BNTDigitalTwin.openModule(
-            'templates'
-          )
+          window.location.href =
+          '/?module=templates'
         "
       >
+
+        <span class="dt-nav-icon">
+          ◧
+        </span>
+
         <span>
           Шаблоны
         </span>
+
       </button>
+
 
       <button
         class="dt-nav-item"
         onclick="
-          BNTDigitalTwin.openModule(
-            'builder'
-          )
+          window.location.href =
+          '/?module=builder'
         "
       >
+
+        <span class="dt-nav-icon">
+          ◩
+        </span>
+
         <span>
           Конструктор
         </span>
+
       </button>
+
 
       <button
         class="dt-nav-item"
         onclick="
-          BNTDigitalTwin.openModule(
-            'data'
-          )
+          window.location.href =
+          '/?module=data'
         "
       >
+
+        <span class="dt-nav-icon">
+          ≡
+        </span>
+
         <span>
           Данные
         </span>
+
       </button>
+
 
       <button
         class="dt-nav-item"
         onclick="
-          BNTDigitalTwin.openModule(
-            'schedules'
-          )
+          window.location.href =
+          '/?module=sync'
         "
       >
-        <span>
-          Рассылки
+
+        <span class="dt-nav-icon">
+          ↻
         </span>
-      </button>
 
-      <button
-        class="dt-nav-item"
-        onclick="
-          BNTDigitalTwin.openModule(
-            'sync'
-          )
-        "
-      >
         <span>
           Синхронизация
         </span>
+
       </button>
 
     </nav>
 
+
     <div class="dt-sidebar-bottom">
 
-      <div class="dt-system-status">
+      <div class="dt-online">
 
-        <span class="dt-online"></span>
+        <span class="dt-online-dot">
+        </span>
 
         <span>
-          Система онлайн
+          Данные обновляются
         </span>
 
       </div>
@@ -231,228 +317,327 @@
 
   </aside>
 
+
+
+  <!-- MAIN -->
+
   <main class="dt-main">
 
-    <div
-      id="bnt-google-map"
-      class="dt-map"
-    ></div>
+
+    <!-- REAL GOOGLE MAP -->
 
     <div
-      id="bnt-map-fallback"
-      class="dt-fallback"
+      id="dt-google-map"
+      class="dt-map"
       style="display:none"
+    >
+    </div>
+
+
+    <!-- FALLBACK GOOGLE SATELLITE -->
+
+    <div
+      id="dt-fallback"
+      class="dt-fallback"
     >
 
       <iframe
         src="https://www.google.com/maps?q=41.6438169,41.6605911&z=17&t=k&output=embed"
-        loading="lazy"
-      ></iframe>
+        loading="eager"
+      >
+      </iframe>
 
     </div>
+
+
+    <!-- ALWAYS-DRAWN FALLBACK DIGITAL TWIN -->
+
+    <div
+      id="dt-overlay-stage"
+      class="dt-overlay-stage"
+    >
+    </div>
+
+
+
+    <!-- TOP BAR -->
 
     <div class="dt-topbar">
 
       <input
         id="dt-search"
         class="dt-search"
-        placeholder="Поиск: Насос Н-101, склад, причал..."
+        placeholder="Поиск: Насос Н-101, Р-3, К-24, склад..."
       >
+
 
       <button
         class="dt-button"
         onclick="
-          BNTDigitalTwin.renderTerminal()
-        "
-      >
-        Обновить
-      </button>
-
-      <button
-        class="dt-button primary"
-        onclick="
-          BNTDigitalTwin.focus(
-            {
-              lat: 41.6438169,
-              lng: 41.6605911
-            },
-            17
-          )
+          BNTDigitalTwin.focusTerminal()
         "
       >
         Весь терминал
       </button>
 
-    </div>
 
-    <div class="dt-layer-box">
+      <button
+        class="dt-button primary"
+        onclick="
+          BNTDigitalTwin.activeLayers.add(
+            'risk'
+          );
 
-      <div class="dt-layer-title">
-        Слои цифрового двойника
+          BNTDigitalTwin.updateLayers();
+        "
+      >
+        Показать риски
+      </button>
+
+
+      <div class="dt-live">
+
+        <span class="dt-live-dot">
+        </span>
+
+        <span>
+          LIVE
+        </span>
+
+        <strong id="dt-time">
+          --:--:--
+        </strong>
+
       </div>
 
-      <div class="dt-layer-grid">
+    </div>
+
+
+
+    <!-- LAYERS -->
+
+    <section class="dt-layer-panel">
+
+      <div class="dt-layer-heading">
+
+        <strong>
+          Слои цифрового двойника
+        </strong>
+
+        <span
+          id="dt-mode"
+          class="dt-mode-badge"
+        >
+          Satellite
+        </span>
+
+      </div>
+
+
+      <div class="dt-layers">
 
         <button
           class="dt-layer active"
-          onclick="
-            BNTDigitalTwin.setLayer(
-              'operations',
-              this
-            )
-          "
+          data-layer="objects"
         >
+
+          <span class="dt-layer-dot">
+          </span>
+
           Объекты
+
         </button>
 
+
         <button
-          class="dt-layer"
-          onclick="
-            BNTDigitalTwin.setLayer(
-              'risk',
-              this
-            )
-          "
+          class="dt-layer active"
+          data-layer="risk"
         >
+
+          <span class="dt-layer-dot">
+          </span>
+
           Риски
+
         </button>
+
 
         <button
           class="dt-layer"
-          onclick="
-            BNTDigitalTwin.setLayer(
-              'maintenance',
-              this
-            )
-          "
+          data-layer="maintenance"
         >
+
+          <span class="dt-layer-dot">
+          </span>
+
           ТОиР
+
         </button>
 
+
         <button
-          class="dt-layer"
-          onclick="
-            BNTDigitalTwin.setLayer(
-              'logistics',
-              this
-            )
-          "
+          class="dt-layer active"
+          data-layer="logistics"
         >
+
+          <span class="dt-layer-dot">
+          </span>
+
           Логистика
+
         </button>
+
 
         <button
           class="dt-layer"
-          onclick="
-            BNTDigitalTwin.setLayer(
-              'procurement',
-              this
-            )
-          "
+          data-layer="procurement"
         >
+
+          <span class="dt-layer-dot">
+          </span>
+
           ЗИП
+
         </button>
 
       </div>
 
-    </div>
 
-    <div class="dt-kpi-strip">
+      <div
+        id="dt-map-status"
+        class="dt-map-status"
+      >
+        Загрузка слоев...
+      </div>
+
+    </section>
+
+
+
+    <!-- KPI -->
+
+    <section class="dt-kpis">
+
 
       <div class="dt-kpi">
 
-        <span class="dt-kpi-label">
+        <div class="dt-kpi-label">
           Доступность мощностей
-        </span>
+        </div>
 
-        <strong class="dt-kpi-value">
+        <strong class="green">
           92%
         </strong>
 
-        <div class="dt-kpi-meta">
-          с учетом прогнозных ремонтов
+        <small>
+          с учетом ТОиР
+        </small>
+
+        <div class="dt-kpi-progress">
+          <i style="width:92%">
+          </i>
         </div>
 
       </div>
 
+
       <div class="dt-kpi">
 
-        <span class="dt-kpi-label">
-          Прогноз простоев
-        </span>
+        <div class="dt-kpi-label">
+          Риск простоев
+        </div>
 
-        <strong
-          class="dt-kpi-value dt-risk"
-        >
+        <strong class="red">
           7
         </strong>
 
-        <div class="dt-kpi-meta">
+        <small>
           объектов в зоне риска
-        </div>
+        </small>
 
       </div>
 
+
       <div class="dt-kpi">
 
-        <span class="dt-kpi-label">
-          Плановые объемы
-        </span>
+        <div class="dt-kpi-label">
+          Плановый прием
+        </div>
 
-        <strong class="dt-kpi-value">
-          241 000 м³
+        <strong>
+          241 000
         </strong>
 
-        <div
-          class="dt-kpi-meta dt-success"
-        >
-          +12% к периоду
-        </div>
+        <small>
+          м³ · +12%
+        </small>
 
       </div>
 
+
       <div class="dt-kpi">
 
-        <span class="dt-kpi-label">
+        <div class="dt-kpi-label">
           Подача вагонов
-        </span>
+        </div>
 
-        <strong class="dt-kpi-value">
+        <strong>
           48 / 63
         </strong>
 
-        <div class="dt-kpi-meta">
+        <small>
           подтверждено 76%
-        </div>
+        </small>
 
       </div>
+
 
       <div class="dt-kpi">
 
-        <span class="dt-kpi-label">
-          Критический ЗИП
-        </span>
+        <div class="dt-kpi-label">
+          Бюджет ТОиР
+        </div>
 
-        <strong
-          class="dt-kpi-value dt-risk"
-        >
-          3
+        <strong>
+          $241K
         </strong>
 
-        <div class="dt-kpi-meta">
-          позиции требуют закупки
-        </div>
+        <small>
+          горизонт 6 месяцев
+        </small>
 
       </div>
 
-    </div>
+
+      <div class="dt-kpi">
+
+        <div class="dt-kpi-label">
+          Критические ЗИП
+        </div>
+
+        <strong class="red">
+          3
+        </strong>
+
+        <small>
+          позиции требуют закупки
+        </small>
+
+      </div>
+
+
+    </section>
+
+
+
+    <!-- DETAILS DRAWER -->
 
     <aside
       id="dt-drawer"
       class="dt-drawer"
     >
 
-      <div class="dt-drawer-header">
+      <div class="dt-drawer-head">
 
         <div>
 
@@ -466,6 +651,7 @@
 
         </div>
 
+
         <button
           class="dt-close"
           onclick="
@@ -477,25 +663,36 @@
 
       </div>
 
+
       <div
         id="dt-drawer-body"
         class="dt-drawer-body"
-      ></div>
+      >
+      </div>
 
     </aside>
+
+
+
+    <!-- TOAST -->
 
     <div
       id="dt-toast"
       class="dt-toast"
-    ></div>
+    >
+    </div>
+
 
   </main>
 
 </div>
 
+
 <script
   src="/modules/digital-twin/google-map.js"
-></script>
+>
+</script>
+
 
 </body>
 

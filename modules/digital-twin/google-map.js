@@ -1,208 +1,584 @@
 ﻿window.BNTDigitalTwin = {
 
-  config: null,
-
   map: null,
 
-  overlays: [],
+  config: null,
 
-  markers: [],
+  mode: "fallback",
 
-  currentLayer: "operations",
+  googleLayers: {
+    objects: [],
+    risk: [],
+    maintenance: [],
+    logistics: [],
+    procurement: []
+  },
 
-  equipment: [
-    {
-      id: "pump-101",
-      title: "Насос Н-101",
-      type: "Центробежный насос",
-      status: "Высокий риск",
-      statusColor: "red",
+  activeLayers:
+    new Set([
+      "objects",
+      "risk",
+      "logistics"
+    ]),
 
-      position: {
-        lat: 41.64395,
-        lng: 41.65880
+  selectedObject: null,
+
+  DATA: {
+
+    sections: [
+      {
+        id: "section1",
+
+        title: "Секция 1",
+
+        subtitle:
+          "Резервуарный парк",
+
+        risk: "Высокий",
+
+        color: "#1287ea",
+
+        center: {
+          lat: 41.64495,
+          lng: 41.65900
+        },
+
+        path: [
+          {
+            lat: 41.64560,
+            lng: 41.65775
+          },
+          {
+            lat: 41.64565,
+            lng: 41.66015
+          },
+          {
+            lat: 41.64430,
+            lng: 41.66015
+          },
+          {
+            lat: 41.64425,
+            lng: 41.65775
+          }
+        ],
+
+        load: "68%",
+
+        volume: "54 400 м³",
+
+        capacity: "80 000 м³",
+
+        freeCapacity: "25 600 м³"
       },
 
-      load: "85%",
-      wear: "72%",
-      nextMaintenance: "11.09.2024",
-      downtimeRisk: "82%",
-      repairCost: "$18 400",
+      {
+        id: "section2",
 
-      recommendation:
-        "Провести вибродиагностику " +
-        "и подготовить подшипниковый " +
-        "узел к замене."
-    },
+        title: "Секция 2",
 
-    {
-      id: "pump-102",
-      title: "Насос Н-102",
-      type: "Центробежный насос",
-      status: "Работает",
-      statusColor: "green",
+        subtitle:
+          "Резервуарный парк",
 
-      position: {
-        lat: 41.64410,
-        lng: 41.65920
+        risk: "Средний",
+
+        color: "#16a66c",
+
+        center: {
+          lat: 41.64485,
+          lng: 41.66115
+        },
+
+        path: [
+          {
+            lat: 41.64545,
+            lng: 41.66020
+          },
+          {
+            lat: 41.64550,
+            lng: 41.66215
+          },
+          {
+            lat: 41.64410,
+            lng: 41.66215
+          },
+          {
+            lat: 41.64410,
+            lng: 41.66020
+          }
+        ],
+
+        load: "58%",
+
+        volume: "46 400 м³",
+
+        capacity: "80 000 м³",
+
+        freeCapacity: "33 600 м³"
+      }
+    ],
+
+
+    equipment: [
+
+      {
+        id: "pump101",
+
+        code: "Н-101",
+
+        title: "Насос Н-101",
+
+        type:
+          "Центробежный насос",
+
+        zone:
+          "Насосная станция №1",
+
+        status:
+          "Высокий риск",
+
+        statusColor:
+          "red",
+
+        x: 31,
+        y: 70,
+
+        position: {
+          lat: 41.64390,
+          lng: 41.65865
+        },
+
+        wear: 72,
+
+        load: 85,
+
+        risk: 82,
+
+        nextTo:
+          "11.09.2024",
+
+        repairCost:
+          "$18 400",
+
+        stock:
+          "2 / 8",
+
+        recommendation:
+          "Рост вибрации +28%. " +
+          "Рекомендуется провести " +
+          "вибродиагностику и заменить " +
+          "подшипниковый узел при " +
+          "ближайшем ремонтном окне."
       },
 
-      load: "63%",
-      wear: "48%",
-      nextMaintenance: "28.09.2024",
-      downtimeRisk: "18%",
-      repairCost: "$6 240",
+      {
+        id: "pump102",
 
-      recommendation:
-        "Продолжить эксплуатацию " +
-        "по плановому графику."
-    },
+        code: "Н-102",
 
-    {
-      id: "rail-rack",
-      title: "Ж/д эстакада",
-      type: "Логистический объект",
-      status: "Работает",
-      statusColor: "green",
+        title: "Насос Н-102",
 
-      position: {
-        lat: 41.64625,
-        lng: 41.65700
+        type:
+          "Центробежный насос",
+
+        zone:
+          "Насосная станция №1",
+
+        status:
+          "Работает",
+
+        statusColor:
+          "green",
+
+        x: 36,
+        y: 68,
+
+        position: {
+          lat: 41.64405,
+          lng: 41.65900
+        },
+
+        wear: 48,
+
+        load: 63,
+
+        risk: 18,
+
+        nextTo:
+          "28.09.2024",
+
+        repairCost:
+          "$6 240",
+
+        stock:
+          "8 / 8",
+
+        recommendation:
+          "Отклонений не выявлено. " +
+          "Продолжить эксплуатацию " +
+          "по плановому графику."
       },
 
-      load: "76%",
-      wear: "31%",
-      nextMaintenance: "02.10.2024",
-      downtimeRisk: "22%",
-      repairCost: "$12 300",
+      {
+        id: "tankP3",
 
-      recommendation:
-        "Контролировать очередь " +
-        "на 12–13 сентября."
-    },
+        code: "Р-3",
 
-    {
-      id: "warehouse",
-      title: "Склад МТР",
-      type: "Склад запасных частей",
-      status: "Требует внимания",
-      statusColor: "orange",
+        title: "Резервуар Р-3",
 
-      position: {
-        lat: 41.64295,
-        lng: 41.66090
+        type:
+          "Вертикальный резервуар",
+
+        zone:
+          "Секция 1",
+
+        status:
+          "Требует внимания",
+
+        statusColor:
+          "orange",
+
+        x: 52,
+        y: 35,
+
+        position: {
+          lat: 41.64495,
+          lng: 41.65925
+        },
+
+        wear: 58,
+
+        load: 72,
+
+        risk: 61,
+
+        nextTo:
+          "12.10.2024",
+
+        repairCost:
+          "$9 450",
+
+        stock:
+          "5 / 4",
+
+        recommendation:
+          "При ожидаемом поступлении " +
+          "рекомендуется ограничить " +
+          "загрузку резервуара до 85%."
       },
 
-      load: "78%",
-      wear: "—",
-      nextMaintenance: "—",
-      downtimeRisk: "3 позиции",
-      repairCost: "$186 000",
+      {
+        id: "valve24",
 
-      recommendation:
-        "Ускорить закупку подшипников " +
-        "6312 и уплотнений MTG-45."
-    },
+        code: "К-24",
 
-    {
-      id: "pier",
-      title: "Причал / Стендер",
-      type: "Отгрузочный объект",
-      status: "Работает",
-      statusColor: "green",
+        title: "Клапан К-24",
 
-      position: {
-        lat: 41.64260,
-        lng: 41.66320
+        type:
+          "Предохранительный клапан",
+
+        zone:
+          "Эстакада №2",
+
+        status:
+          "Высокий риск",
+
+        statusColor:
+          "red",
+
+        x: 47,
+        y: 57,
+
+        position: {
+          lat: 41.64425,
+          lng: 41.65995
+        },
+
+        wear: 78,
+
+        load: 69,
+
+        risk: 78,
+
+        nextTo:
+          "17.09.2024",
+
+        repairCost:
+          "$7 600",
+
+        stock:
+          "1 / 4",
+
+        recommendation:
+          "Критический дефицит ЗИП. " +
+          "Необходимо ускорить поставку " +
+          "ремкомплекта клапана."
       },
 
-      load: "54%",
-      wear: "50%",
-      nextMaintenance: "13.09.2024",
-      downtimeRisk: "21%",
-      repairCost: "$9 700",
+      {
+        id: "cabinet101",
 
-      recommendation:
-        "Совместить диагностику " +
-        "с ближайшим технологическим окном."
-    }
-  ],
+        code: "ШУ-101",
 
-  sections: [
-    {
-      id: "section-1",
-      title: "Секция 1",
+        title:
+          "Шкаф управления ШУ-101",
 
-      color: "#1683e8",
+        type:
+          "Электротехническое оборудование",
 
-      path: [
-        { lat: 41.64560, lng: 41.65780 },
-        { lat: 41.64565, lng: 41.66025 },
-        { lat: 41.64435, lng: 41.66025 },
-        { lat: 41.64430, lng: 41.65780 }
-      ],
+        zone:
+          "Насосная станция №1",
 
-      load: "68%",
-      volume: "54 400 м³",
-      capacity: "80 000 м³",
-      risk: "Высокий",
-      equipmentCount: "24 объекта"
-    },
+        status:
+          "Работает",
 
-    {
-      id: "section-2",
-      title: "Секция 2",
+        statusColor:
+          "green",
 
-      color: "#17a66c",
+        x: 28,
+        y: 62,
 
-      path: [
-        { lat: 41.64545, lng: 41.66030 },
-        { lat: 41.64550, lng: 41.66210 },
-        { lat: 41.64415, lng: 41.66210 },
-        { lat: 41.64415, lng: 41.66030 }
-      ],
+        position: {
+          lat: 41.64425,
+          lng: 41.65825
+        },
 
-      load: "58%",
-      volume: "46 400 м³",
-      capacity: "80 000 м³",
-      risk: "Средний",
-      equipmentCount: "21 объект"
-    }
-  ],
+        wear: 31,
+
+        load: 55,
+
+        risk: 14,
+
+        nextTo:
+          "24.09.2024",
+
+        repairCost:
+          "$2 100",
+
+        stock:
+          "6 / 4",
+
+        recommendation:
+          "Работа в пределах нормы. " +
+          "Проверить контакторы " +
+          "в рамках планового ТО."
+      },
+
+      {
+        id: "rail",
+
+        code: "ЖД",
+
+        title:
+          "Ж/д эстакада",
+
+        type:
+          "Логистический объект",
+
+        zone:
+          "Прием нефтепродуктов",
+
+        status:
+          "Работает",
+
+        statusColor:
+          "green",
+
+        x: 23,
+        y: 20,
+
+        position: {
+          lat: 41.64620,
+          lng: 41.65710
+        },
+
+        wear: 31,
+
+        load: 76,
+
+        risk: 22,
+
+        nextTo:
+          "02.10.2024",
+
+        repairCost:
+          "$12 300",
+
+        stock:
+          "—",
+
+        recommendation:
+          "Прогнозируется очередь " +
+          "до 18 вагонов 11 сентября."
+      },
+
+      {
+        id: "warehouse",
+
+        code: "МТР",
+
+        title:
+          "Склад МТР",
+
+        type:
+          "Запасные части",
+
+        zone:
+          "Складской комплекс",
+
+        status:
+          "Требует внимания",
+
+        statusColor:
+          "orange",
+
+        x: 61,
+        y: 79,
+
+        position: {
+          lat: 41.64295,
+          lng: 41.66085
+        },
+
+        wear: 0,
+
+        load: 78,
+
+        risk: 42,
+
+        nextTo:
+          "—",
+
+        repairCost:
+          "$186 000",
+
+        stock:
+          "78%",
+
+        recommendation:
+          "Три критические позиции " +
+          "имеют остаток ниже " +
+          "страхового минимума."
+      },
+
+      {
+        id: "pier",
+
+        code: "П-3",
+
+        title:
+          "Причал / Стендер №3",
+
+        type:
+          "Отгрузочный объект",
+
+        zone:
+          "Причальный комплекс",
+
+        status:
+          "Работает",
+
+        statusColor:
+          "green",
+
+        x: 86,
+        y: 71,
+
+        position: {
+          lat: 41.64265,
+          lng: 41.66300
+        },
+
+        wear: 50,
+
+        load: 54,
+
+        risk: 21,
+
+        nextTo:
+          "13.09.2024",
+
+        repairCost:
+          "$9 700",
+
+        stock:
+          "4 / 4",
+
+        recommendation:
+          "Диагностику рекомендуется " +
+          "выполнить в технологическое " +
+          "окно 13 сентября."
+      }
+    ]
+  },
+
 
   async init() {
 
-    this.bindUI();
+    this.renderFallbackObjects();
+
+    this.bindLayerButtons();
+
+    this.bindSearch();
+
+    this.startClock();
 
     try {
 
       await this.loadConfig();
 
-      if (!this.config.googleMapsApiKey) {
-        this.showFallback();
-        return;
+      if (
+        this.config.googleMapsApiKey
+      ) {
+
+        await this.loadGoogleMaps();
+
+        this.createGoogleMap();
+
+        this.buildGoogleLayers();
+
+        this.mode = "google";
+
+        document
+          .getElementById(
+            "dt-overlay-stage"
+          )
+          .classList
+          .add("google-active");
+
+        document
+          .getElementById(
+            "dt-fallback"
+          )
+          .style.display = "none";
+
+        document
+          .getElementById(
+            "dt-google-map"
+          )
+          .style.display = "block";
+
+        this.updateModeLabel(
+          "Google Maps · Live"
+        );
+
+      }
+      else {
+
+        this.activateFallback();
       }
 
-      await this.loadGoogleMaps();
-
-      this.createMap();
-
-      this.renderTerminal();
-
     }
-    catch (error) {
+    catch(error) {
 
       console.error(error);
 
-      this.showFallback();
-
-      this.toast(
-        "Google Maps API",
-        "Используется fallback-карта. " +
-        error.message
-      );
+      this.activateFallback();
     }
+
+    this.updateLayers();
+
   },
+
 
   async loadConfig() {
 
@@ -211,7 +587,7 @@
 
     if (!response.ok) {
       throw new Error(
-        "Не удалось загрузить /api/config"
+        "/api/config недоступен"
       );
     }
 
@@ -219,24 +595,28 @@
       await response.json();
   },
 
+
   loadGoogleMaps() {
 
     return new Promise(
       (resolve, reject) => {
 
         if (
-          window.google &&
-          window.google.maps
+          window.google?.maps
         ) {
+
           resolve();
+
           return;
         }
 
-        window.__bntMapsReady =
+        window.__BNT_MAP_READY =
           () => resolve();
 
         const script =
-          document.createElement("script");
+          document.createElement(
+            "script"
+          );
 
         script.src =
           "https://maps.googleapis.com/maps/api/js" +
@@ -244,7 +624,8 @@
           encodeURIComponent(
             this.config.googleMapsApiKey
           ) +
-          "&callback=__bntMapsReady" +
+          "&callback=__BNT_MAP_READY" +
+          "&libraries=marker" +
           "&v=weekly";
 
         script.async = true;
@@ -254,30 +635,42 @@
         script.onerror =
           () => reject(
             new Error(
-              "Google Maps JavaScript API " +
+              "Google Maps API " +
               "не загрузился"
             )
           );
 
-        document.head.appendChild(script);
+        document.head.appendChild(
+          script
+        );
       }
     );
   },
 
-  createMap() {
+
+  createGoogleMap() {
 
     this.map =
       new google.maps.Map(
         document.getElementById(
-          "bnt-google-map"
+          "dt-google-map"
         ),
         {
-          center: this.config.center,
+          center:
+            this.config.center || {
+              lat: 41.6438169,
+              lng: 41.6605911
+            },
 
           zoom:
             this.config.zoom || 17,
 
-          mapTypeId: "satellite",
+          mapTypeId:
+            "satellite",
+
+          mapId:
+            this.config.googleMapsMapId ||
+            "DEMO_MAP_ID",
 
           tilt: 0,
 
@@ -289,65 +682,155 @@
 
           fullscreenControl: false,
 
+          scaleControl: true,
+
           zoomControl: true,
 
-          gestureHandling: "greedy"
+          gestureHandling:
+            "greedy"
         }
       );
   },
 
-  renderTerminal() {
 
-    this.clear();
+  activateFallback() {
 
-    this.drawSections();
+    this.mode =
+      "fallback";
 
-    this.drawPipelines();
+    document
+      .getElementById(
+        "dt-google-map"
+      )
+      .style.display =
+      "none";
 
-    this.drawEquipment();
+    document
+      .getElementById(
+        "dt-fallback"
+      )
+      .style.display =
+      "block";
 
+    document
+      .getElementById(
+        "dt-overlay-stage"
+      )
+      .classList
+      .remove(
+        "google-active"
+      );
+
+    this.updateModeLabel(
+      "Satellite · Demo"
+    );
   },
 
-  clear() {
 
-    this.overlays.forEach(
-      item => item.setMap?.(null)
-    );
+  buildGoogleLayers() {
 
-    this.markers.forEach(
-      item => item.setMap?.(null)
-    );
+    this.resetGoogleLayers();
 
-    this.overlays = [];
+    this.drawGoogleSections();
 
-    this.markers = [];
+    this.drawGoogleEquipment();
+
+    this.drawGoogleRisk();
+
+    this.drawGoogleMaintenance();
+
+    this.drawGoogleLogistics();
+
+    this.drawGoogleProcurement();
   },
 
-  drawSections() {
 
-    this.sections.forEach(
-      section => {
+  resetGoogleLayers() {
+
+    Object.values(
+      this.googleLayers
+    )
+    .flat()
+    .forEach(
+      item =>
+        item.setVisible(false)
+    );
+
+    Object.keys(
+      this.googleLayers
+    )
+    .forEach(
+      key =>
+        this.googleLayers[key] = []
+    );
+  },
+
+
+  pushGoogleLayer(
+    layer,
+    object
+  ) {
+
+    this.googleLayers[layer]
+      .push(object);
+  },
+
+
+  mapObjectAdapter(object) {
+
+    return {
+      setVisible:
+        visible => {
+
+          object.setMap(
+            visible
+              ? this.map
+              : null
+          );
+        }
+    };
+  },
+
+
+  advancedMarkerAdapter(marker) {
+
+    return {
+      setVisible:
+        visible => {
+
+          marker.map =
+            visible
+              ? this.map
+              : null;
+        }
+    };
+  },
+
+
+  drawGoogleSections() {
+
+    this.DATA.sections
+      .forEach(section => {
 
         const polygon =
           new google.maps.Polygon({
-            map: this.map,
-
             paths:
               section.path,
 
             strokeColor:
               section.color,
 
-            strokeOpacity: .95,
+            strokeOpacity:
+              .95,
 
-            strokeWeight: 3,
+            strokeWeight:
+              3,
 
             fillColor:
               section.color,
 
-            fillOpacity: .16,
-
-            clickable: true
+            fillOpacity:
+              .16
           });
 
         polygon.addListener(
@@ -355,8 +838,8 @@
           () => {
 
             polygon.setOptions({
-              fillOpacity: .32,
-              strokeWeight: 4
+              fillOpacity: .30,
+              strokeWeight: 5
             });
           }
         );
@@ -376,187 +859,1161 @@
           "click",
           () => {
 
-            this.openSection(section);
-
-            const bounds =
-              new google.maps.LatLngBounds();
-
-            section.path.forEach(
-              point =>
-                bounds.extend(point)
-            );
-
-            this.map.fitBounds(
-              bounds,
-              80
+            this.openSection(
+              section.id
             );
           }
         );
 
-        this.overlays.push(
-          polygon
+        this.pushGoogleLayer(
+          "objects",
+          this.mapObjectAdapter(
+            polygon
+          )
         );
-      }
-    );
+
+        this.addGoogleMarker(
+          "objects",
+          {
+            title:
+              section.title,
+
+            code:
+              section.title,
+
+            position:
+              section.center,
+
+            color:
+              "green",
+
+            click:
+              () =>
+                this.openSection(
+                  section.id
+                )
+          }
+        );
+      });
   },
 
-  drawPipelines() {
 
-    const lines = [
-      {
-        color: "#24a7f3",
+  drawGoogleEquipment() {
 
-        path: [
+    this.DATA.equipment
+      .forEach(item => {
+
+        this.addGoogleMarker(
+          "objects",
           {
-            lat: 41.64620,
-            lng: 41.65670
-          },
-          {
-            lat: 41.64535,
-            lng: 41.65790
-          },
-          {
-            lat: 41.64500,
-            lng: 41.66030
-          },
-          {
-            lat: 41.64420,
-            lng: 41.66210
-          },
-          {
-            lat: 41.64270,
-            lng: 41.66310
-          }
-        ]
-      },
+            title:
+              item.title,
 
-      {
-        color: "#28c985",
-
-        path: [
-          {
-            lat: 41.64405,
-            lng: 41.65870
-          },
-          {
-            lat: 41.64470,
-            lng: 41.65930
-          },
-          {
-            lat: 41.64435,
-            lng: 41.66110
-          },
-          {
-            lat: 41.64320,
-            lng: 41.66225
-          }
-        ]
-      }
-    ];
-
-    lines.forEach(
-      item => {
-
-        const line =
-          new google.maps.Polyline({
-            map: this.map,
-
-            path: item.path,
-
-            strokeColor:
-              item.color,
-
-            strokeOpacity: .95,
-
-            strokeWeight: 5
-          });
-
-        this.overlays.push(
-          line
-        );
-      }
-    );
-  },
-
-  drawEquipment() {
-
-    this.equipment.forEach(
-      item => {
-
-        const color =
-          item.statusColor === "red"
-            ? "#ed4657"
-            : item.statusColor === "orange"
-              ? "#f0a12d"
-              : "#1683e8";
-
-        const marker =
-          new google.maps.Marker({
-            map: this.map,
+            code:
+              item.code,
 
             position:
               item.position,
 
-            title:
-              item.title,
+            color:
+              item.statusColor,
 
-            icon: {
-              path:
-                google.maps.SymbolPath.CIRCLE,
-
-              scale: 12,
-
-              fillColor:
-                color,
-
-              fillOpacity: 1,
-
-              strokeColor:
-                "#ffffff",
-
-              strokeWeight: 3
-            }
-          });
-
-        marker.addListener(
-          "click",
-          () => {
-
-            this.openEquipment(
-              item
-            );
-
-            this.focus(
-              item.position,
-              20
-            );
+            click:
+              () =>
+                this.openObject(
+                  item.id
+                )
           }
         );
+      });
+  },
 
-        this.markers.push(
+
+  addGoogleMarker(
+    layer,
+    options
+  ) {
+
+    const content =
+      document.createElement(
+        "button"
+      );
+
+    content.className =
+      "gm-bnt-marker " +
+      options.color;
+
+    content.dataset.title =
+      options.title;
+
+    content.innerHTML =
+      `<span class="gm-bnt-pin">
+         ${options.code}
+       </span>`;
+
+    content.addEventListener(
+      "click",
+      event => {
+
+        event.stopPropagation();
+
+        options.click?.();
+      }
+    );
+
+    if (
+      google.maps.marker
+      ?.AdvancedMarkerElement
+    ) {
+
+      const marker =
+        new google.maps
+        .marker
+        .AdvancedMarkerElement({
+          position:
+            options.position,
+
+          content:
+            content,
+
+          title:
+            options.title
+        });
+
+      this.pushGoogleLayer(
+        layer,
+        this.advancedMarkerAdapter(
           marker
+        )
+      );
+
+      return;
+    }
+
+    const marker =
+      new google.maps.Marker({
+        position:
+          options.position,
+
+        title:
+          options.title
+      });
+
+    marker.addListener(
+      "click",
+      options.click
+    );
+
+    this.pushGoogleLayer(
+      layer,
+      this.mapObjectAdapter(
+        marker
+      )
+    );
+  },
+
+
+  drawGoogleRisk() {
+
+    this.DATA.equipment
+      .filter(
+        item =>
+          item.risk >= 50
+      )
+      .forEach(item => {
+
+        const circle =
+          new google.maps.Circle({
+            center:
+              item.position,
+
+            radius:
+              38,
+
+            strokeColor:
+              "#ec4658",
+
+            strokeOpacity:
+              .9,
+
+            strokeWeight:
+              2,
+
+            fillColor:
+              "#ec4658",
+
+            fillOpacity:
+              .16
+          });
+
+        circle.addListener(
+          "click",
+          () =>
+            this.openObject(
+              item.id
+            )
         );
+
+        this.pushGoogleLayer(
+          "risk",
+          this.mapObjectAdapter(
+            circle
+          )
+        );
+      });
+  },
+
+
+  drawGoogleMaintenance() {
+
+    [
+      {
+        position: {
+          lat: 41.64385,
+          lng: 41.65835
+        },
+
+        title:
+          "ТО насосной станции №2",
+
+        code:
+          "ТО",
+
+        color:
+          "orange"
+      },
+
+      {
+        position: {
+          lat: 41.64495,
+          lng: 41.65940
+        },
+
+        title:
+          "Осмотр резервуара Р-3",
+
+        code:
+          "12.10",
+
+        color:
+          "orange"
+      },
+
+      {
+        position: {
+          lat: 41.64275,
+          lng: 41.66280
+        },
+
+        title:
+          "Диагностика причала №3",
+
+        code:
+          "13.09",
+
+        color:
+          "orange"
+      }
+    ]
+    .forEach(item => {
+
+      this.addGoogleMarker(
+        "maintenance",
+        {
+          ...item,
+
+          click:
+            () =>
+              this.toast(
+                "ТОиР",
+                item.title
+              )
+        }
+      );
+    });
+  },
+
+
+  drawGoogleLogistics() {
+
+    const path = [
+      {
+        lat: 41.64625,
+        lng: 41.65650
+      },
+      {
+        lat: 41.64575,
+        lng: 41.65710
+      },
+      {
+        lat: 41.64520,
+        lng: 41.65860
+      },
+      {
+        lat: 41.64460,
+        lng: 41.66020
+      },
+      {
+        lat: 41.64330,
+        lng: 41.66200
+      },
+      {
+        lat: 41.64265,
+        lng: 41.66300
+      }
+    ];
+
+    const line =
+      new google.maps.Polyline({
+        path,
+
+        geodesic: true,
+
+        strokeColor:
+          "#20c982",
+
+        strokeOpacity:
+          .95,
+
+        strokeWeight:
+          5
+      });
+
+    this.pushGoogleLayer(
+      "logistics",
+      this.mapObjectAdapter(
+        line
+      )
+    );
+
+    this.addGoogleMarker(
+      "logistics",
+      {
+        title:
+          "48 вагонов подтверждено",
+
+        code:
+          "48 ЖД",
+
+        color:
+          "green",
+
+        position: {
+          lat: 41.64590,
+          lng: 41.65735
+        },
+
+        click:
+          () =>
+            this.toast(
+              "Логистика",
+              "48 из 63 вагонов подтверждено"
+            )
       }
     );
   },
 
-  focus(position, zoom = 19) {
 
-    if (!this.map) {
+  drawGoogleProcurement() {
+
+    [
+      {
+        title:
+          "Подшипник 6312",
+
+        code:
+          "2/8",
+
+        position: {
+          lat: 41.64384,
+          lng: 41.65865
+        }
+      },
+
+      {
+        title:
+          "Клапан К-24",
+
+        code:
+          "1/4",
+
+        position: {
+          lat: 41.64422,
+          lng: 41.65996
+        }
+      },
+
+      {
+        title:
+          "Уплотнение MTG-45",
+
+        code:
+          "0/4",
+
+        position: {
+          lat: 41.64394,
+          lng: 41.65840
+        }
+      }
+    ]
+    .forEach(item => {
+
+      this.addGoogleMarker(
+        "procurement",
+        {
+          ...item,
+
+          color:
+            "red",
+
+          click:
+            () =>
+              this.toast(
+                "Дефицит ЗИП",
+                item.title +
+                ": " +
+                item.code
+              )
+        }
+      );
+    });
+  },
+
+
+  renderFallbackObjects() {
+
+    const stage =
+      document.getElementById(
+        "dt-overlay-stage"
+      );
+
+    const equipmentHtml =
+      this.DATA.equipment
+      .map(item => `
+        <button
+          class="
+            dt-object-marker
+            ${
+              item.risk >= 70
+                ? "risk"
+                : ""
+            }
+          "
+          style="
+            left:${item.x}%;
+            top:${item.y}%;
+          "
+          data-object="${item.id}"
+        >
+
+          <span
+            class="
+              dt-object-pin
+              ${item.statusColor}
+            "
+          >
+            ${item.code}
+          </span>
+
+          <span class="dt-marker-label">
+            ${item.title}
+          </span>
+
+          <span class="dt-marker-tooltip">
+
+            <strong>
+              ${item.title}
+            </strong>
+
+            <span>
+              ${item.zone}
+            </span>
+
+            <span>
+              Загрузка:
+              ${item.load}%
+              · Износ:
+              ${item.wear}%
+            </span>
+
+            <span>
+              Риск простоя:
+              ${item.risk}%
+            </span>
+
+          </span>
+
+        </button>
+      `)
+      .join("");
+
+    stage.innerHTML = `
+
+      <svg
+        class="dt-stage-svg"
+        viewBox="0 0 1000 620"
+        preserveAspectRatio="none"
+      >
+
+        <defs>
+
+          <filter id="softGlow">
+
+            <feGaussianBlur
+              stdDeviation="4"
+              result="blur"
+            />
+
+            <feMerge>
+
+              <feMergeNode
+                in="blur"
+              />
+
+              <feMergeNode
+                in="SourceGraphic"
+              />
+
+            </feMerge>
+
+          </filter>
+
+        </defs>
+
+
+        <g
+          class="dt-stage-group"
+          data-stage-layer="objects"
+        >
+
+          <polygon
+            class="dt-zone"
+            data-section="section1"
+            points="
+              365,135
+              590,145
+              575,335
+              355,325
+            "
+          ></polygon>
+
+          <polygon
+            class="dt-zone green"
+            data-section="section2"
+            points="
+              590,145
+              755,160
+              745,340
+              575,335
+            "
+          ></polygon>
+
+          <polygon
+            class="dt-zone purple"
+            points="
+              730,55
+              890,72
+              850,195
+              740,175
+            "
+          ></polygon>
+
+
+          <polyline
+            class="dt-pipeline"
+            points="
+              190,110
+              330,125
+              430,175
+              535,170
+              625,245
+              795,300
+              860,435
+            "
+          ></polyline>
+
+          <polyline
+            class="
+              dt-pipeline-flow
+            "
+            points="
+              190,110
+              330,125
+              430,175
+              535,170
+              625,245
+              795,300
+              860,435
+            "
+          ></polyline>
+
+          <polyline
+            class="
+              dt-pipeline
+              secondary
+            "
+            points="
+              310,435
+              390,400
+              450,350
+              520,265
+              615,245
+              670,360
+              825,420
+            "
+          ></polyline>
+
+          <polyline
+            class="
+              dt-pipeline-flow
+            "
+            points="
+              310,435
+              390,400
+              450,350
+              520,265
+              615,245
+              670,360
+              825,420
+            "
+          ></polyline>
+
+        </g>
+
+
+        <g
+          class="dt-stage-group"
+          data-stage-layer="risk"
+        >
+
+          <circle
+            cx="310"
+            cy="435"
+            r="34"
+            fill="rgba(236,70,88,.15)"
+            stroke="#ec4658"
+            stroke-width="3"
+            filter="url(#softGlow)"
+          ></circle>
+
+          <circle
+            cx="470"
+            cy="355"
+            r="29"
+            fill="rgba(236,70,88,.14)"
+            stroke="#ec4658"
+            stroke-width="3"
+          ></circle>
+
+          <circle
+            cx="520"
+            cy="218"
+            r="33"
+            fill="rgba(242,160,39,.14)"
+            stroke="#f2a027"
+            stroke-width="3"
+          ></circle>
+
+        </g>
+
+
+        <g
+          class="
+            dt-stage-group
+            hidden
+          "
+          data-stage-layer="logistics"
+        >
+
+          <polyline
+            points="
+              150,100
+              260,145
+              355,210
+              455,270
+              605,330
+              725,385
+              860,435
+            "
+            fill="none"
+            stroke="#22c982"
+            stroke-width="9"
+            opacity=".8"
+            stroke-linecap="round"
+          ></polyline>
+
+          <polyline
+            points="
+              150,100
+              260,145
+              355,210
+              455,270
+              605,330
+              725,385
+              860,435
+            "
+            fill="none"
+            stroke="white"
+            stroke-width="3"
+            stroke-dasharray="3 18"
+            class="dt-pipeline-flow"
+          ></polyline>
+
+        </g>
+
+
+        <g
+          class="
+            dt-stage-group
+            hidden
+          "
+          data-stage-layer="procurement"
+        >
+
+          <line
+            x1="610"
+            y1="490"
+            x2="310"
+            y2="435"
+            stroke="#7358d6"
+            stroke-width="3"
+            stroke-dasharray="7 8"
+          ></line>
+
+          <line
+            x1="610"
+            y1="490"
+            x2="470"
+            y2="355"
+            stroke="#7358d6"
+            stroke-width="3"
+            stroke-dasharray="7 8"
+          ></line>
+
+        </g>
+
+      </svg>
+
+
+      <div
+        class="dt-stage-group"
+        data-stage-layer="objects"
+      >
+
+        ${equipmentHtml}
+
+      </div>
+
+
+      <div
+        class="
+          dt-stage-group
+          hidden
+        "
+        data-stage-layer="maintenance"
+      >
+
+        <button
+          class="dt-floating-badge"
+          style="
+            left:29%;
+            top:75%;
+          "
+        >
+          ТО · 10–12 сен
+        </button>
+
+        <button
+          class="dt-floating-badge"
+          style="
+            left:53%;
+            top:29%;
+          "
+        >
+          Осмотр · 12 окт
+        </button>
+
+        <button
+          class="dt-floating-badge"
+          style="
+            left:84%;
+            top:70%;
+          "
+        >
+          Диагностика · 13 сен
+        </button>
+
+      </div>
+
+
+      <div
+        class="
+          dt-stage-group
+          hidden
+        "
+        data-stage-layer="logistics"
+      >
+
+        <button
+          class="dt-wagon"
+          style="
+            left:18%;
+            top:18%;
+          "
+        >
+          🚃 12
+        </button>
+
+        <button
+          class="dt-wagon"
+          style="
+            left:29%;
+            top:28%;
+          "
+        >
+          🚃 8
+        </button>
+
+        <button
+          class="dt-wagon"
+          style="
+            left:40%;
+            top:40%;
+          "
+        >
+          🚃 14
+        </button>
+
+      </div>
+
+
+      <div
+        class="
+          dt-stage-group
+          hidden
+        "
+        data-stage-layer="procurement"
+      >
+
+        <button
+          class="
+            dt-floating-badge
+            purple
+          "
+          style="
+            left:31%;
+            top:62%;
+          "
+        >
+          Подшипник 2/8
+        </button>
+
+        <button
+          class="
+            dt-floating-badge
+            red
+          "
+          style="
+            left:48%;
+            top:51%;
+          "
+        >
+          К-24 · 1/4
+        </button>
+
+        <button
+          class="
+            dt-floating-badge
+            purple
+          "
+          style="
+            left:61%;
+            top:78%;
+          "
+        >
+          Склад · 78%
+        </button>
+
+      </div>
+    `;
+
+
+    stage
+      .querySelectorAll(
+        "[data-object]"
+      )
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () =>
+            this.openObject(
+              button.dataset.object
+            )
+        );
+      });
+
+
+    stage
+      .querySelectorAll(
+        "[data-section]"
+      )
+      .forEach(section => {
+
+        section.style
+          .pointerEvents =
+          "auto";
+
+        section.addEventListener(
+          "click",
+          () =>
+            this.openSection(
+              section.dataset.section
+            )
+        );
+      });
+  },
+
+
+  bindLayerButtons() {
+
+    document
+      .querySelectorAll(
+        ".dt-layer"
+      )
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            const layer =
+              button.dataset.layer;
+
+            if (
+              this.activeLayers
+              .has(layer)
+            ) {
+
+              if (
+                layer !==
+                "objects"
+              ) {
+
+                this.activeLayers
+                  .delete(layer);
+              }
+
+            }
+            else {
+
+              this.activeLayers
+                .add(layer);
+            }
+
+            this.updateLayers();
+          }
+        );
+      });
+  },
+
+
+  updateLayers() {
+
+    document
+      .querySelectorAll(
+        ".dt-layer"
+      )
+      .forEach(button => {
+
+        button.classList.toggle(
+          "active",
+
+          this.activeLayers.has(
+            button.dataset.layer
+          )
+        );
+      });
+
+
+    document
+      .querySelectorAll(
+        "[data-stage-layer]"
+      )
+      .forEach(group => {
+
+        const visible =
+          this.activeLayers.has(
+            group.dataset.stageLayer
+          );
+
+        group.classList.toggle(
+          "hidden",
+          !visible
+        );
+      });
+
+
+    if (
+      this.mode === "google"
+    ) {
+
+      Object.entries(
+        this.googleLayers
+      )
+      .forEach(
+        ([layer, items]) => {
+
+          const visible =
+            this.activeLayers.has(
+              layer
+            );
+
+          items.forEach(
+            item =>
+              item.setVisible(
+                visible
+              )
+          );
+        }
+      );
+    }
+
+
+    const labels = [];
+
+    if (
+      this.activeLayers
+      .has("risk")
+    ) {
+      labels.push(
+        "7 объектов риска"
+      );
+    }
+
+    if (
+      this.activeLayers
+      .has("maintenance")
+    ) {
+      labels.push(
+        "12 работ ТОиР"
+      );
+    }
+
+    if (
+      this.activeLayers
+      .has("logistics")
+    ) {
+      labels.push(
+        "48 вагонов"
+      );
+    }
+
+    if (
+      this.activeLayers
+      .has("procurement")
+    ) {
+      labels.push(
+        "3 критических ЗИП"
+      );
+    }
+
+    document
+      .getElementById(
+        "dt-map-status"
+      )
+      .innerHTML =
+      "<strong>Отображается:</strong> " +
+      (
+        labels.length
+          ? labels.join(" · ")
+          : "объекты предприятия"
+      );
+  },
+
+
+  bindSearch() {
+
+    document
+      .getElementById(
+        "dt-search"
+      )
+      .addEventListener(
+        "keydown",
+        event => {
+
+          if (
+            event.key !==
+            "Enter"
+          ) {
+            return;
+          }
+
+          const value =
+            event.target.value
+            .trim()
+            .toLowerCase();
+
+          const object =
+            this.DATA.equipment
+            .find(
+              item =>
+                item.title
+                .toLowerCase()
+                .includes(value) ||
+
+                item.code
+                .toLowerCase()
+                .includes(value)
+            );
+
+          if (object) {
+
+            this.openObject(
+              object.id
+            );
+
+            if (
+              this.mode ===
+              "google"
+            ) {
+
+              this.map.panTo(
+                object.position
+              );
+
+              this.map.setZoom(
+                20
+              );
+            }
+
+            return;
+          }
+
+          this.toast(
+            "Поиск",
+            "Объект не найден"
+          );
+        }
+      );
+  },
+
+
+  openObject(id) {
+
+    const item =
+      this.DATA.equipment
+      .find(
+        object =>
+          object.id === id
+      );
+
+    if (!item) {
       return;
     }
 
-    this.map.panTo(
-      position
-    );
-
-    setTimeout(
-      () => this.map.setZoom(zoom),
-      180
-    );
-  },
-
-  openEquipment(item) {
+    this.selectedObject =
+      item;
 
     const drawer =
       document.getElementById(
@@ -575,59 +2032,66 @@
         "dt-drawer-subtitle"
       )
       .textContent =
-      item.type;
+      item.type +
+      " · " +
+      item.zone;
 
     document
       .getElementById(
         "dt-drawer-body"
       )
       .innerHTML = `
+
         <span
-          class="dt-status
-          ${item.statusColor}"
+          class="
+            dt-status
+            ${item.statusColor}
+          "
         >
           ${item.status}
         </span>
 
-        <div class="dt-object-grid">
+
+        <div class="dt-metric-grid">
 
           ${this.metric(
-            "Текущая загрузка",
-            item.load
+            "Загрузка",
+            item.load + "%"
           )}
 
           ${this.metric(
-            "Расчетный износ",
-            item.wear
-          )}
-
-          ${this.metric(
-            "Следующее ТО",
-            item.nextMaintenance
+            "Износ",
+            item.wear + "%"
           )}
 
           ${this.metric(
             "Риск простоя",
-            item.downtimeRisk
+            item.risk + "%"
           )}
 
           ${this.metric(
-            "Стоимость ремонтов",
+            "Следующее ТО",
+            item.nextTo
+          )}
+
+          ${this.metric(
+            "Ремонты",
             item.repairCost
           )}
 
           ${this.metric(
-            "Состояние данных",
-            "Онлайн"
+            "ЗИП",
+            item.stock
           )}
 
         </div>
 
+
         <div class="dt-recommendation">
 
-          <b>
-            Рекомендация системы
-          </b>
+          <strong>
+            Предиктивная рекомендация
+          </strong>
 
           <p>
             ${item.recommendation}
@@ -635,65 +2099,380 @@
 
         </div>
 
-        <div class="dt-drawer-actions">
+
+        <div class="dt-tabs">
 
           <button
-            class="dt-button primary"
-            onclick="
-              BNTDigitalTwin.openModule(
-                'equipment'
-              )
-            "
+            class="dt-tab active"
+            data-detail-tab="events"
           >
-            Карточка оборудования
+            События
           </button>
 
           <button
-            class="dt-button"
-            onclick="
-              BNTDigitalTwin.openModule(
-                'toir'
-              )
-            "
+            class="dt-tab"
+            data-detail-tab="toir"
           >
             ТОиР
           </button>
 
           <button
-            class="dt-button"
-            onclick="
-              BNTDigitalTwin.openModule(
-                'analytics'
-              )
-            "
+            class="dt-tab"
+            data-detail-tab="prediction"
           >
             Прогноз
           </button>
 
-          <b            class="dt-button"
-            onclick="
-              BNTDigitalTwin.openModule(
-                'procurement'
-              )
-            "
+          <button
+            class="dt-tab"
+            data-detail-tab="parts"
           >
-            ЗИП / Закупки
+            ЗИП
           </button>
 
         </div>
-      `;
+
+
+        <div
+          id="dt-tab-content"
+          class="dt-tab-content"
+        ></div>
+
+
+        <div class="dt-drawer-actions">
+
+          <button
+            class="dt-button primary"
+            onclick="
+              BNTDigitalTwin.showObjectTab(
+                'prediction'
+              )
+            "
+          >
+            Анализ объекта
+          </button>
+
+          <button
+            class="dt-button"
+            onclick="
+              BNTDigitalTwin.showObjectTab(
+                'toir'
+              )
+            "
+          >
+            Открыть ТОиР
+          </button>
+
+        </div>
+    `;
+
+    drawer.classList.add(
+      "visible"
+    );
+
 
     drawer
-      .classList
-      .add("visible");
+      .querySelectorAll(
+        "[data-detail-tab]"
+      )
+      .forEach(tab => {
+
+        tab.addEventListener(
+          "click",
+          () => {
+
+            this.showObjectTab(
+              tab.dataset.detailTab
+            );
+          }
+        );
+      });
+
+
+    this.showObjectTab(
+      "events"
+    );
   },
 
-  openSection(section) {
 
-    const drawer =
+  showObjectTab(tab) {
+
+    if (
+      !this.selectedObject
+    ) {
+      return;
+    }
+
+    const item =
+      this.selectedObject;
+
+    document
+      .querySelectorAll(
+        ".dt-tab"
+      )
+      .forEach(button => {
+
+        button.classList.toggle(
+          "active",
+
+          button.dataset
+            .detailTab === tab
+        );
+      });
+
+
+    const target =
       document.getElementById(
-        "dt-drawer"
+        "dt-tab-content"
       );
+
+    if (!target) {
+      return;
+    }
+
+
+    if (
+      tab === "events"
+    ) {
+
+      target.innerHTML = `
+        ${this.event(
+          "10:42",
+          "Вибрация",
+          "4.2 мм/с · рост +28%"
+        )}
+
+        ${this.event(
+          "09:30",
+          "Температура",
+          "76 °C · в пределах нормы"
+        )}
+
+        ${this.event(
+          "08:15",
+          "Нагрузка",
+          item.load + "% мощности"
+        )}
+
+        ${this.event(
+          "Вчера",
+          "Диагностика",
+          "Сформирована новая рекомендация"
+        )}
+      `;
+    }
+
+
+    if (
+      tab === "toir"
+    ) {
+
+      target.innerHTML = `
+
+        ${this.event(
+          "11.09",
+          "Диагностика",
+          "Вибродиагностика оборудования"
+        )}
+
+        ${this.event(
+          "17.09",
+          "Ремонт",
+          "Замена критического узла"
+        )}
+
+        ${this.event(
+          "28.09",
+          "ТО",
+          "Регламентное обслуживание"
+        )}
+
+        <button
+          class="dt-button primary"
+          style="
+            width:100%;
+            margin-top:9px;
+          "
+          onclick="
+            BNTDigitalTwin.toast(
+              'ТОиР',
+              'Работа добавлена в план'
+            )
+          "
+        >
+          + Создать работу ТОиР
+        </button>
+      `;
+    }
+
+
+    if (
+      tab === "prediction"
+    ) {
+
+      target.innerHTML = `
+
+        <div class="dt-object-grid">
+
+          <div class="dt-object-row">
+
+            <div>
+
+              <strong>
+                Вероятность отказа
+              </strong>
+
+              <small>
+                горизонт 90 дней
+              </small>
+
+            </div>
+
+            <b>
+              ${item.risk}%
+            </b>
+
+          </div>
+
+          <div class="dt-object-row">
+
+            <div>
+
+              <strong>
+                Прогноз износа
+              </strong>
+
+              <small>
+                при текущей загрузке
+              </small>
+
+            </div>
+
+            <b>
+              ${
+                Math.min(
+                  98,
+                  item.wear + 11
+                )
+              }%
+            </b>
+
+          </div>
+
+          <div class="dt-object-row">
+
+            <div>
+
+              <strong>
+                Возможный простой
+              </strong>
+
+              <small>
+                без выполнения рекомендаций
+              </small>
+
+            </div>
+
+            <b>
+              18 ч
+            </b>
+
+          </div>
+
+          <div class="dt-object-row">
+
+            <div>
+
+              <strong>
+                Потенциальные потери
+              </strong>
+
+              <small>
+                оценка модели
+              </small>
+
+            </div>
+
+            <b>
+              $18 400
+            </b>
+
+          </div>
+
+        </div>
+      `;
+    }
+
+
+    if (
+      tab === "parts"
+    ) {
+
+      target.innerHTML = `
+
+        ${this.event(
+          "Критично",
+          "Подшипник 6312",
+          "2 шт. на складе · минимум 8"
+        )}
+
+        ${this.event(
+          "Высокий",
+          "Уплотнение MTG-45",
+          "0 шт. · поставка 17 дней"
+        )}
+
+        ${this.event(
+          "Норма",
+          "Ремкомплект",
+          "4 шт. · запас достаточен"
+        )}
+
+        <button
+          class="dt-button primary"
+          style="
+            width:100%;
+            margin-top:9px;
+          "
+          onclick="
+            BNTDigitalTwin.toast(
+              'Закупки',
+              'Открыта потребность по активу'
+            )
+          "
+        >
+          Открыть потребность
+        </button>
+      `;
+    }
+  },
+
+
+  openSection(id) {
+
+    const section =
+      this.DATA.sections
+      .find(
+        item =>
+          item.id === id
+      );
+
+    if (!section) {
+      return;
+    }
+
+    const related =
+      this.DATA.equipment
+      .filter(
+        item =>
+          item.zone.includes(
+            "Секция"
+          ) ||
+          item.zone.includes(
+            "Насосная"
+          )
+      );
+
 
     document
       .getElementById(
@@ -707,26 +2486,32 @@
         "dt-drawer-subtitle"
       )
       .textContent =
-      "Резервуарный парк";
+      section.subtitle;
+
 
     document
       .getElementById(
         "dt-drawer-body"
       )
       .innerHTML = `
+
         <span
-          class="dt-status
-          ${
-            section.risk === "Высокий"
-              ? "red"
-              : "orange"
-          }"
+          class="
+            dt-status
+            ${
+              section.risk ===
+              "Высокий"
+                ? "red"
+                : "orange"
+            }
+          "
         >
           Риск:
           ${section.risk}
         </span>
 
-        <div class="dt-object-grid">
+
+        <div class="dt-metric-grid">
 
           ${this.metric(
             "Загрузка",
@@ -739,71 +2524,120 @@
           )}
 
           ${this.metric(
-            "Общая емкость",
+            "Емкость",
             section.capacity
           )}
 
           ${this.metric(
-            "Объекты",
-            section.equipmentCount
+            "Свободно",
+            section.freeCapacity
+          )}
+
+          ${this.metric(
+            "План прихода",
+            "+12 000 м³"
+          )}
+
+          ${this.metric(
+            "Риск простоев",
+            "7 объектов"
           )}
 
         </div>
 
+
         <div class="dt-recommendation">
 
-          <b>
-            Оперативный вывод
-          </b>
+          <strong>
+            Рекомендация диспетчерского центра
+          </strong>
 
           <p>
-            План поступления необходимо
-            сопоставить со свободной
-            емкостью и ремонтными окнами.
-            При превышении 85% загрузки
-            система предлагает перенос
-            части потока на соседнюю секцию.
+            При текущем графике поставок
+            загрузка секции достигнет 89%.
+            Рекомендуется перенести часть
+            поступления в Секцию 2 и
+            совместить обслуживание Н-101
+            с плановым технологическим окном.
           </p>
 
         </div>
 
-        <div class="dt-drawer-actions">
 
-          <button
-            class="dt-button primary"
-            onclick="
-              BNTDigitalTwin.toast(
-                'Секция',
-                'Детальный уровень секции открыт'
-              )
-            "
-          >
-            Открыть секцию
-          </button>
+        <div
+          style="
+            margin-top:13px;
+            font-size:9px;
+            font-weight:900;
+          "
+        >
+          Оборудование секции
+        </div>
 
-          <button
-            class="dt-button"
-            onclick="
-              BNTDigitalTwin.openModule(
-                'analytics'
-              )
-            "
-          >
-            Сценарии
-          </button>
+
+        <div class="dt-object-list">
+
+          ${
+            related
+            .map(item => `
+
+              <button
+                class="dt-object-row"
+                onclick="
+                  BNTDigitalTwin.openObject(
+                    '${item.id}'
+                  )
+                "
+              >
+
+                <div>
+
+                  <strong>
+                    ${item.title}
+                  </strong>
+
+                  <small>
+                    ${item.type}
+                  </small>
+
+                </div>
+
+                <span
+                  class="
+                    dt-status
+                    ${item.statusColor}
+                  "
+                >
+                  ${item.risk}%
+                </span>
+
+              </button>
+
+            `)
+            .join("")
+          }
 
         </div>
       `;
 
-    drawer
+
+    document
+      .getElementById(
+        "dt-drawer"
+      )
       .classList
       .add("visible");
   },
 
-  metric(label, value) {
+
+  metric(
+    label,
+    value
+  ) {
 
     return `
-      <div class="dt-object-metric">
+
+      <div class="dt-metric">
 
         <span>
           ${label}
@@ -817,6 +2651,38 @@
     `;
   },
 
+
+  event(
+    time,
+    title,
+    description
+  ) {
+
+    return `
+
+      <div class="dt-event">
+
+        <time>
+          ${time}
+        </time>
+
+        <div>
+
+          <strong>
+            ${title}
+          </strong>
+
+          <span>
+            ${description}
+          </span>
+
+        </div>
+
+      </div>
+    `;
+  },
+
+
   closeDrawer() {
 
     document
@@ -827,152 +2693,83 @@
       .remove("visible");
   },
 
-  openModule(module) {
+
+  focusTerminal() {
+
+    if (
+      this.mode === "google"
+    ) {
+
+      this.map.panTo({
+        lat: 41.6438169,
+        lng: 41.6605911
+      });
+
+      this.map.setZoom(17);
+
+    }
 
     this.toast(
-      "Переход",
-      "Модуль: " + module
+      "Карта",
+      "Показана территория терминала"
     );
+  },
 
-    const oldApp =
-      window.location.origin + "/";
 
-    setTimeout(
+  updateModeLabel(
+    text
+  ) {
+
+    document
+      .getElementById(
+        "dt-mode"
+      )
+      .textContent =
+      text;
+  },
+
+
+  startClock() {
+
+    const update =
       () => {
 
-        window.location.href =
-          oldApp +
-          "?module=" +
-          encodeURIComponent(module);
+        const now =
+          new Date();
 
-      },
-      500
-    );
-  },
-
-  setLayer(layer, button) {
-
-    this.currentLayer =
-      layer;
-
-    document
-      .querySelectorAll(
-        ".dt-layer"
-      )
-      .forEach(
-        item =>
-          item.classList.remove(
-            "active"
+        document
+          .getElementById(
+            "dt-time"
           )
-      );
+          .textContent =
+          now.toLocaleTimeString(
+            "ru-RU",
+            {
+              hour:
+                "2-digit",
 
-    button.classList.add(
-      "active"
-    );
+              minute:
+                "2-digit",
 
-    let message = "";
+              second:
+                "2-digit"
+            }
+          );
+      };
 
-    if (layer === "operations") {
-      message =
-        "Показаны технологические объекты.";
-    }
+    update();
 
-    if (layer === "risk") {
-      message =
-        "Выделены объекты с повышенным риском.";
-    }
-
-    if (layer === "maintenance") {
-      message =
-        "Показаны плановые окна ТОиР.";
-    }
-
-    if (layer === "logistics") {
-      message =
-        "Показаны логистические ограничения.";
-    }
-
-    if (layer === "procurement") {
-      message =
-        "Показаны объекты с дефицитом ЗИП.";
-    }
-
-    this.toast(
-      "Слой карты",
-      message
+    setInterval(
+      update,
+      1000
     );
   },
 
-  showFallback() {
 
-    document
-      .getElementById(
-        "bnt-google-map"
-      )
-      .style.display =
-      "none";
-
-    document
-      .getElementById(
-        "bnt-map-fallback"
-      )
-      .style.display =
-      "block";
-  },
-
-  bindUI() {
-
-    const search =
-      document.getElementById(
-        "dt-search"
-      );
-
-    search.addEventListener(
-      "keydown",
-      event => {
-
-        if (
-          event.key !== "Enter"
-        ) {
-          return;
-        }
-
-        const value =
-          search.value
-            .trim()
-            .toLowerCase();
-
-        const found =
-          this.equipment.find(
-            item =>
-              item.title
-                .toLowerCase()
-                .includes(value)
-          );
-
-        if (found) {
-
-          this.openEquipment(
-            found
-          );
-
-          this.focus(
-            found.position,
-            20
-          );
-
-          return;
-        }
-
-        this.toast(
-          "Поиск",
-          "Объект не найден"
-        );
-      }
-    );
-  },
-
-  toast(title, message) {
+  toast(
+    title,
+    message
+  ) {
 
     const toast =
       document.getElementById(
@@ -980,13 +2777,19 @@
       );
 
     toast.innerHTML = `
-      <b>${title}</b>
-      <span>${message}</span>
+
+      <strong>
+        ${title}
+      </strong>
+
+      <span>
+        ${message}
+      </span>
     `;
 
-    toast
-      .classList
-      .add("visible");
+    toast.classList.add(
+      "visible"
+    );
 
     clearTimeout(
       this.toastTimer
@@ -995,17 +2798,19 @@
     this.toastTimer =
       setTimeout(
         () =>
-          toast
-            .classList
-            .remove("visible"),
-        2600
+          toast.classList.remove(
+            "visible"
+          ),
+        2700
       );
   }
+
 };
+
 
 window.addEventListener(
   "DOMContentLoaded",
-  () => {
-    BNTDigitalTwin.init();
-  }
+  () =>
+    BNTDigitalTwin.init()
 );
+
