@@ -1,36 +1,125 @@
-﻿<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BNT вЂ” РђРЅР°Р»РёС‚РёРєР°</title><link rel="stylesheet" href="/assets/css/tokens.css"><link rel="stylesheet" href="/assets/css/layout.css"><link rel="stylesheet" href="/assets/css/components.css"><link rel="stylesheet" href="/assets/css/pages/enterprise.css"><link rel="stylesheet" href="/assets/css/pages/analytics-v88.css?v=88"></head><body data-page="analytics"><main id="page-content" class="page-content"><div class="page-actions"><div><h2>РЎС†РµРЅР°СЂРЅРѕРµ РјРѕРґРµР»РёСЂРѕРІР°РЅРёРµ</h2><p>РЎСЂР°РІРЅРёС‚Рµ РІР»РёСЏРЅРёРµ РѕР±СЉРµРјР°, РїРѕСЃС‚Р°РІРѕРє Р—РРџ Рё СЂРµРјРѕРЅС‚РЅС‹С… РѕРєРѕРЅ</p></div><button id="accept-scenario" class="btn btn-primary">РџСЂРёРЅСЏС‚СЊ СЃС†РµРЅР°СЂРёР№</button></div><div id="analytics-kpis" class="kpi-grid"></div><section class="analytics-layout"><article class="card"><div class="card-head"><div><h3>РЎС†РµРЅР°СЂРёРё Рё СЃСЂР°РІРЅРµРЅРёРµ</h3><small>РќР°Р¶РјРёС‚Рµ СЃС‚СЂРѕРєСѓ РґР»СЏ РїСЂРѕСЃРјРѕС‚СЂР° Рё РёР·РјРµРЅРёС‚Рµ РёРЅС‚РµРЅСЃРёРІРЅРѕСЃС‚СЊ what-if</small></div></div><div class="table-wrap"><table class="data-table"><thead><tr><th>РЎС†РµРЅР°СЂРёР№</th><th>Р РёСЃРє</th><th>Р‘СЋРґР¶РµС‚</th><th>Р”РѕСЃС‚СѓРїРЅРѕСЃС‚СЊ</th><th>Р РµРјРѕРЅС‚С‹</th><th>Р•РјРєРѕСЃС‚СЊ</th></tr></thead><tbody id="scenario-rows"></tbody></table></div></article><aside class="card scenario-panel"><div class="card-head"><h3>What-if</h3></div><div id="scenario-detail" class="card-body"></div></aside></section><section class="grid-3 analytics-bottom"><article class="card"><div class="card-head"><h3>Р РµР№С‚РёРЅРі СЂРёСЃРєР°</h3></div><div id="risk-ranking" class="ranking"></div></article><article class="card"><div class="card-head"><h3>РџСЂРѕРіРЅРѕР· СЂРµРјРѕРЅС‚РЅС‹С… РѕРєРѕРЅ</h3></div><div id="repair-windows" class="timeline"></div></article><article class="card"><div class="card-head"><h3>РџР»Р°РЅ РїРѕСЃС‚СѓРїР»РµРЅРёР№ Рё РµРјРєРѕСЃС‚СЊ</h3></div><div id="capacity-forecast" class="card-body"></div></article></section>
-<section class="analytics-evidence">
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BNT — Предиктивная аналитика</title>
 
-  <div class="analytics-evidence-head">
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/pages/enterprise.css">
+  <link rel="stylesheet" href="/assets/css/pages/analytics-v88.css?v=88">
+  <link rel="stylesheet" href="/assets/css/pages/analytics-v91.css?v=9101">
+  
+<link rel="stylesheet" href="/assets/css/shell-v91.css?v=9101"></head>
 
+<body data-page="analytics">
+<main id="page-content" class="page-content analytics-page">
+
+  <div class="page-actions analytics-page-actions">
     <div>
-
-      <span>
-        Фактическая база
-      </span>
-
-      <h3>
-        На чем строятся сценарии
-      </h3>
-
+      <span class="analytics-eyebrow">Управленческий контур</span>
+      <h2>Сценарное моделирование</h2>
+      <p>
+        Сравните влияние эксплуатационной нагрузки, обеспеченности ЗИП
+        и ремонтных решений на риск простоя, бюджет и доступность.
+      </p>
     </div>
 
-    <p>
-      В демонстрационной модели фактические показатели
-      используются как исходные параметры, а результат
-      сценария является расчетной what-if оценкой.
-    </p>
-
+    <button id="accept-scenario" class="btn btn-primary">
+      Принять сценарий
+    </button>
   </div>
 
+  <div id="analytics-kpis" class="kpi-grid analytics-kpis"></div>
 
-  <div
-    id="analytics-evidence"
-    class="analytics-evidence-grid"
-  >
-  </div>
+  <section class="analytics-layout">
+    <article class="card scenario-table-card">
+      <div class="card-head">
+        <div>
+          <h3>Сценарии и сравнение</h3>
+          <small>
+            Выберите сценарий для просмотра и измените интенсивность what-if.
+          </small>
+        </div>
+      </div>
 
-</section>
-</main><script src="/assets/js/navigation.js"></script><script src="/assets/js/ui.js"></script><script src="/assets/js/data/assets.js"></script><script src="/assets/js/data/scenarios.js"></script><script src="/assets/js/pages/analytics.js"></script><script src="/assets/js/shell.js"></script></body></html>
+      <div class="table-wrap">
+        <table class="data-table analytics-table">
+          <thead>
+            <tr>
+              <th>Сценарий</th>
+              <th>Риск</th>
+              <th>Бюджет</th>
+              <th>Доступность</th>
+              <th>Ремонты</th>
+              <th>Резерв</th>
+            </tr>
+          </thead>
+          <tbody id="scenario-rows"></tbody>
+        </table>
+      </div>
+    </article>
 
+    <aside class="card scenario-panel">
+      <div class="card-head">
+        <div>
+          <span class="panel-eyebrow">What-if</span>
+          <h3>Параметры сценария</h3>
+        </div>
+      </div>
+      <div id="scenario-detail" class="card-body"></div>
+    </aside>
+  </section>
 
+  <section class="grid-3 analytics-bottom">
+    <article class="card">
+      <div class="card-head">
+        <h3>Рейтинг риска</h3>
+      </div>
+      <div id="risk-ranking" class="ranking"></div>
+    </article>
+
+    <article class="card">
+      <div class="card-head">
+        <h3>Прогноз ремонтных окон</h3>
+      </div>
+      <div id="repair-windows" class="timeline"></div>
+    </article>
+
+    <article class="card">
+      <div class="card-head">
+        <h3>Доступность и свободная емкость</h3>
+      </div>
+      <div id="capacity-forecast" class="card-body"></div>
+    </article>
+  </section>
+
+  <section class="analytics-evidence">
+    <div class="analytics-evidence-head">
+      <div>
+        <span>Фактическая база</span>
+        <h3>На чем строятся сценарии</h3>
+      </div>
+
+      <p>
+        Фактические показатели используются как исходные параметры,
+        а результат сценария является демонстрационной what-if оценкой
+        для сравнения управленческих решений.
+      </p>
+    </div>
+
+    <div id="analytics-evidence" class="analytics-evidence-grid"></div>
+  </section>
+
+</main>
+
+<script src="/assets/js/navigation.js"></script>
+<script src="/assets/js/ui.js"></script>
+<script src="/assets/js/data/assets.js"></script>
+<script src="/assets/js/data/scenarios.js"></script>
+<script src="/assets/js/pages/analytics.js"></script>
+<script src="/assets/js/shell.js?v=9101"></script>
+</body>
+</html>
