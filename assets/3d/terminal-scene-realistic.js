@@ -1,249 +1,245 @@
 import * as T from 'three';
 import {OrbitControls} from './vendor/OrbitControls.js';
 import {tankPixels} from './layout.js';
-
-export function createTerminalScene(container,onSelect,rendererFactory=()=>new T.WebGLRenderer({antialias:true,alpha:false})){
-  const renderer=rendererFactory();
-  renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));
-  renderer.setSize(container.clientWidth,container.clientHeight);
-  renderer.shadowMap.enabled=true;
-  renderer.shadowMap.type=T.PCFSoftShadowMap;
-  renderer.toneMapping=T.ACESFilmicToneMapping;
-  renderer.toneMappingExposure=1.08;
-  if('outputColorSpace' in renderer) renderer.outputColorSpace=T.SRGBColorSpace;
-  container.append(renderer.domElement);
-
-  const scene=new T.Scene();
-  scene.background=new T.Color('#b8c8d0');
-  scene.fog=new T.FogExp2('#b8c8d0',0.0019);
-
-  const camera=new T.PerspectiveCamera(34,container.clientWidth/container.clientHeight,.2,1400);
-  const homeTarget=new T.Vector3(-34,0,-44);
-  const home=new T.Vector3(132,116,168);
-  camera.position.copy(home);
-
-  const controls=new OrbitControls(camera,renderer.domElement);
-  controls.target.copy(homeTarget);
-  controls.enableDamping=true;
-  controls.dampingFactor=.075;
-  controls.minDistance=18;
-  controls.maxDistance=520;
-  controls.maxPolarAngle=Math.PI*.49;
-  controls.minPolarAngle=.08;
-
-  scene.add(new T.HemisphereLight('#eff8ff','#47545b',2.15));
-  const sun=new T.DirectionalLight('#fff3df',4.1);
-  sun.position.set(-145,205,115);
-  sun.castShadow=true;
-  sun.shadow.mapSize.set(2048,2048);
-  Object.assign(sun.shadow.camera,{left:-220,right:220,top:220,bottom:-220,near:1,far:650});
-  sun.shadow.bias=-.00035;
-  sun.shadow.normalBias=.08;
-  scene.add(sun);
-  const fillLight=new T.DirectionalLight('#b9dcff',1.05);fillLight.position.set(140,90,-180);scene.add(fillLight);
-
-  const fixed=new T.Group(),dynamic=new T.Group(),selectionGroup=new T.Group();
-  scene.add(fixed,dynamic,selectionGroup);
-
-  function seededTexture(kind,size=256){
-    const c=document.createElement('canvas');c.width=c.height=size;const x=c.getContext('2d');
-    if(kind==='asphalt'){
-      x.fillStyle='#4f565b';x.fillRect(0,0,size,size);
-      for(let i=0;i<9000;i++){const v=55+Math.random()*65;x.fillStyle=`rgba(${v},${v},${v},${.08+Math.random()*.16})`;x.fillRect(Math.random()*size,Math.random()*size,1+Math.random()*2,1+Math.random()*2)}
-      x.strokeStyle='rgba(230,230,220,.055)';x.lineWidth=1;
-      for(let i=0;i<18;i++){x.beginPath();x.moveTo(Math.random()*size,Math.random()*size);x.lineTo(Math.random()*size,Math.random()*size);x.stroke()}
-    }else if(kind==='concrete'){
-      x.fillStyle='#9da2a2';x.fillRect(0,0,size,size);
-      for(let i=0;i<5000;i++){const v=130+Math.random()*55;x.fillStyle=`rgba(${v},${v},${v},${.08+Math.random()*.12})`;x.fillRect(Math.random()*size,Math.random()*size,1,1)}
-      x.strokeStyle='rgba(68,74,77,.20)';for(let p=0;p<size;p+=64){x.beginPath();x.moveTo(p,0);x.lineTo(p,size);x.stroke();x.beginPath();x.moveTo(0,p);x.lineTo(size,p);x.stroke()}
-    }else{
-      x.fillStyle='#c4c7c8';x.fillRect(0,0,size,size);
-      for(let i=0;i<220;i++){const y=Math.random()*size;x.fillStyle=`rgba(70,74,77,${.03+Math.random()*.055})`;x.fillRect(0,y,size,.5+Math.random()*1.2)}
-      for(let i=0;i<500;i++){x.fillStyle='rgba(255,255,255,.045)';x.fillRect(Math.random()*size,Math.random()*size,1,Math.random()*8+1)}
-    }
-    const t=new T.CanvasTexture(c);t.wrapS=t.wrapT=T.RepeatWrapping;t.colorSpace=T.SRGBColorSpace;return t;
-  }
-
-  const asphaltTex=seededTexture('asphalt'),concreteTex=seededTexture('concrete'),metalTex=seededTexture('metal');
-  asphaltTex.repeat.set(24,24);concreteTex.repeat.set(16,16);metalTex.repeat.set(3,8);
-  const mat=(color,opts={})=>new T.MeshStandardMaterial({color,roughness:.6,metalness:.12,...opts});
-  const asphalt=mat('#4d5357',{map:asphaltTex,bumpMap:asphaltTex,bumpScale:.075,roughness:.92,metalness:.02});
-  const concrete=mat('#9ea4a4',{map:concreteTex,bumpMap:concreteTex,bumpScale:.05,roughness:.9,metalness:.01});
-  const steel=mat('#bfc5c7',{map:metalTex,metalness:.72,roughness:.36});
-  const tankSteel=mat('#c7cbca',{map:metalTex,metalness:.52,roughness:.48});
-  const brightSteel=mat('#d7dcdd',{metalness:.82,roughness:.26});
-  const dark=mat('#283036',{metalness:.5,roughness:.52});
-  const railMat=mat('#555e63',{metalness:.9,roughness:.32});
-  const sleeperMat=mat('#3d4245',{roughness:.95});
-  const glass=mat('#6d8792',{metalness:.55,roughness:.16,transparent:true,opacity:.88});
-  const rubber=mat('#171a1c',{roughness:.95});
-  const yellow=mat('#d6a62c',{metalness:.18,roughness:.54});
-  const blue=mat('#2d6684',{metalness:.45,roughness:.38});
-  const green=mat('#3d7463',{metalness:.22,roughness:.48});
-  const red=mat('#9b4740',{metalness:.2,roughness:.5});
-  const white=mat('#e2e3df',{roughness:.58,metalness:.18});
-  const grass=mat('#76866d',{roughness:1});
-  const water=mat('#497a8d',{metalness:.28,roughness:.22});
-
-  const boxGeo=new T.BoxGeometry(1,1,1),cylGeo=new T.CylinderGeometry(1,1,1,28),sphereGeo=new T.SphereGeometry(1,18,12);
-  function mesh(geo,m,x=0,y=0,z=0,parent=fixed){const o=new T.Mesh(geo,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
-  function box(x,z,w,d,h,m=white,y=0,parent=fixed){const o=mesh(boxGeo,m,x,y+h/2,z,parent);o.scale.set(w,h,d);return o}
-  function cyl(x,z,r,h,m=steel,y=0,parent=fixed){const o=mesh(cylGeo,m,x,y+h/2,z,parent);o.scale.set(r,h,r);return o}
-  function sphere(x,y,z,r,m=steel,parent=fixed){const o=mesh(sphereGeo,m,x,y,z,parent);o.scale.setScalar(r);return o}
-  function pipe(a,b,r=.11,m=brightSteel,parent=fixed){const va=new T.Vector3(...a),vb=new T.Vector3(...b),mid=va.clone().add(vb).multiplyScalar(.5),len=va.distanceTo(vb);const o=mesh(cylGeo,m,mid.x,mid.y,mid.z,parent);o.scale.set(r,len,r);o.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),vb.clone().sub(va).normalize());return o}
-  function tube(points,r=.11,m=brightSteel,parent=fixed){const curve=new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p)),false,'centripetal');return mesh(new T.TubeGeometry(curve,Math.max(24,points.length*12),r,7,false),m,0,0,0,parent)}
-  function plane(w,d,m,y=0,parent=fixed){const o=mesh(new T.PlaneGeometry(w,d),m,0,y,0,parent);o.rotation.x=-Math.PI/2;return o}
-  function plan(x,y){return [-(x-700)*.27+(y-460)*.14,-(x-700)*.14-(y-460)*.27]}
-  const pos=tankPixels.map(([x,y])=>plan(x,y));
-
-  plane(470,360,grass,-.48);
-  const sea=plane(470,118,water,-.36);sea.position.z=-138;
-  box(0,46,376,196,.22,concrete,-.12);
-  box(-18,10,308,146,.24,asphalt,.01);
-  box(-62,84,270,56,.25,asphalt,.03);
-  box(92,20,72,128,.25,asphalt,.035);
-
-  const mark=mat('#d6d6c4',{roughness:.8});
-  for(let z=-35;z<=70;z+=18) box(116,z,30,.13,.025,mark,.19);
-  for(const z of [-58,-50,78,94]) box(-22,z,230,.11,.024,mark,.19);
-  for(const x of [-149,140]) box(x,12,.18,146,.25,concrete,.16);
-
-  function curve(points){return new T.CatmullRomCurve3(points.map(([x,z])=>new T.Vector3(x,.36,z)),false,'centripetal')}
-  function track(points){const c=curve(points),len=c.getLength();
-    for(let u=0;u<1;u+=1/Math.max(60,len/.9)){const p=c.getPointAt(u),t=c.getTangentAt(u),s=box(p.x,p.z,1.55,.18,.14,sleeperMat,.20);s.rotation.y=Math.atan2(t.x,t.z)}
-    for(const side of [-.5,.5]){const pts=[];for(let i=0;i<=100;i++){const p=c.getPointAt(i/100),t=c.getTangentAt(i/100),n=new T.Vector3(t.z,0,-t.x).multiplyScalar(side);pts.push(p.clone().add(n))}mesh(new T.TubeGeometry(new T.CatmullRomCurve3(pts),140,.055,5,false),railMat,0,0,0)}
-    return c;
-  }
-  const railCurves=[];
-  for(let i=0;i<5;i++) railCurves.push(track([[-155,61+i*6],[-72,60+i*6],[8,57+i*5],[82,51+i*4],[146,39+i*2]]));
-  const movingRail=track([[-156,102],[-88,100],[-12,92],[66,78],[150,63]]);
-
-  function road(points,width=7){for(let i=1;i<points.length;i++){const [x,z]=points[i-1],[xx,zz]=points[i],r=box((x+xx)/2,(z+zz)/2,width,Math.hypot(xx-x,zz-z),.13,asphalt,.10);r.rotation.y=Math.atan2(xx-x,zz-z)}}
-  road([[-158,-44],[-75,-46],[12,-43],[100,-30],[155,-10]],8);
-  road([[104,-52],[109,-10],[115,31],[125,76]],7);
-  road([[-142,118],[-60,122],[18,121],[94,110],[155,90]],8);
-
-  const tanks=[];
-  function tankModel(x,z,r,h,index){const g=new T.Group();g.position.set(x,0,z);dynamic.add(g);
-    cyl(0,0,r+.28,.25,concrete,0,g);
-    const shell=cyl(0,0,r,h,tankSteel,.25,g);
-    for(let y=.8;y<h;y+=1.1){const ring=new T.Mesh(new T.TorusGeometry(r+.025,.025,5,40),brightSteel);ring.position.set(0,.25+y,0);ring.rotation.x=Math.PI/2;ring.castShadow=true;g.add(ring)}
-    cyl(0,0,r+.02,.16,brightSteel,h+.25,g);
-    cyl(0,0,.42,.24,dark,h+.40,g);
-    const cat=index%4;const category=[blue,yellow,green,red][cat];
-    const fill=cyl(0,0,r+.04,1,category,.26,g);fill.material=category.clone();fill.material.transparent=true;fill.material.opacity=.45;fill.visible=false;
-    const a=new T.Group();a.rotation.y=(index%7)*.61;g.add(a);const ox=r+.34;
-    for(const sx of [-.20,.20]) pipe([sx,.35,ox],[sx,h+.62,ox],.025,yellow,a);
-    for(let yy=.55;yy<h+.55;yy+=.32) pipe([-.20,yy,ox],[.20,yy,ox],.021,yellow,a);
-    box(0,ox-.22,1.05,.62,.09,dark,h+.42,a);
-    for(let sx=-.5;sx<=.5;sx+=.5) for(const zz of [ox-.5,ox+.08]) pipe([sx,h+.5,zz],[sx,h+1.05,zz],.018,yellow,a);
-    for(const zz of [ox-.5,ox+.08]) pipe([-.5,h+1.0,zz],[.5,h+1.0,zz],.018,yellow,a);
-    const t={group:g,shell,fill,r,h,index};setTankFill(t,[.28,.62,.84,.45,.72,.18][index%6]);tanks.push(t);return t;
-  }
-  function setTankFill(t,f){f=T.MathUtils.clamp(f,0,1);t.fill.visible=f>0;if(f<=0)return;t.fill.scale.y=Math.max(.04,t.h*f);t.fill.position.y=.26+(t.h*f)/2;t.fill.userData.fill=f}
-  pos.forEach(([x,z],i)=>{const p=tankPixels[i],r=Math.max(2.2,p[2]*.49),h=5.1+r*.62;tankModel(x,z,r,h,i)});
-
-  const pipeColors=[brightSteel,blue,yellow,green];
-  function pipeRack(a,b,levels=3){const va=new T.Vector3(...a),vb=new T.Vector3(...b),len=va.distanceTo(vb),dir=vb.clone().sub(va).normalize(),mid=va.clone().add(vb).multiplyScalar(.5),angle=Math.atan2(dir.x,dir.z);
-    const g=new T.Group();g.position.copy(mid);g.rotation.y=angle;fixed.add(g);
-    const span=3.2;for(let z=-len/2;z<=len/2;z+=8){for(const x of [-span/2,span/2]) pipe([x,.2,z],[x,4.6,z],.055,dark,g);pipe([-span/2,4.55,z],[span/2,4.55,z],.055,dark,g)}
-    for(let l=0;l<levels;l++){const y=3.15+l*.52;for(let c=0;c<4;c++) pipe([-.9+c*.6,y,-len/2],[-.9+c*.6,y,len/2],.075,pipeColors[c],g)}
-  }
-  pipeRack([-132,0,-45],[126,0,-45]);
-  pipeRack([-128,0,20],[120,0,20]);
-  pipeRack([-118,0,45],[105,0,45]);
-  pipeRack([48,0,-60],[48,0,82]);
-  pipeRack([-56,0,-60],[-56,0,76],2);
-
-  const pumpGroups=[];
-  function pumpSkid(x,z,rot=0,cat=0){const g=new T.Group();g.position.set(x,0,z);g.rotation.y=rot;fixed.add(g);box(0,0,5.2,3.3,.22,concrete,.22,g);
-    for(const dz of [-.8,.8]){box(-.35,dz,2.6,.95,.22,dark,.5,g);const motor=cyl(-.75,dz,.43,1.55,blue,.63,g);motor.rotation.z=Math.PI/2;const body=cyl(.75,dz,.5,1.15,steel,.66,g);body.rotation.z=Math.PI/2;sphere(1.34,1.16,dz,.44,steel,g);pipe([1.35,1.17,dz],[2.55,1.17,dz],.13,pipeColors[cat],g);pipe([-1.55,1.17,dz],[-2.55,1.17,dz],.13,pipeColors[cat],g)}
-    for(const sx of [-2.45,2.45]) pipe([sx,.25,-1.45],[sx,2.35,-1.45],.045,yellow,g);
-    pumpGroups.push(g);return g;
-  }
-  const pumpSites=[[-78,-24,.0,0],[-20,-24,.0,1],[38,-24,.0,2],[94,-8,.45,3],[-88,36,.0,1],[-26,36,.0,2],[44,36,.0,0]];
-  pumpSites.forEach(p=>pumpSkid(...p));
-  for(let i=0;i<tanks.length;i+=3){const t=tanks[i],p=t.group.position,targetZ=p.z<0?-45:(p.z<38?20:45);tube([[p.x,1.0,p.z],[p.x,1.0,p.z+(targetZ-p.z)*.45],[p.x,2.7,targetZ],[p.x,3.15,targetZ]],.095,pipeColors[i%4]);}
-  pumpSites.forEach(([x,z],i)=>{const hz=z<0?-45:20;tube([[x+2.55,1.17,z],[x+4,1.17,z],[x+4,3.15,hz]],.11,pipeColors[i%4]);});
-
-  function gantry(x,z,w=92){const g=new T.Group();g.position.set(x,0,z);fixed.add(g);
-    for(let xx=-w/2;xx<=w/2;xx+=8){for(const zz of [-10,10]) pipe([xx,.2,zz],[xx,6.4,zz],.055,dark,g);pipe([xx,6.35,-10],[xx,6.35,10],.055,dark,g)}
-    for(const zz of [-7,-2,3,8]) pipe([-w/2,5.6,zz],[w/2,5.6,zz],.085,[brightSteel,yellow,green,blue][Math.abs(zz)%4],g);
-    box(0,0,w,1.4,.18,dark,6.2,g);
-    for(let xx=-w/2+4;xx<w/2;xx+=10){pipe([xx,5.55,-2],[xx,2.55,-2],.07,brightSteel,g);pipe([xx,2.55,-2],[xx,2.15,0],.07,brightSteel,g)}
-    return g;
-  }
-  const railRack=gantry(-34,75,176);
-
-  const wheelGeo=new T.CylinderGeometry(.28,.28,.18,18);
-  function wagon(cat=0){const g=new T.Group();fixed.add(g);const body=new T.Group();g.add(body);
-    box(0,0,1.55,4.45,.26,dark,.48,body);
-    const tank=new T.Mesh(new T.CapsuleGeometry(.69,2.95,5,18),white);tank.rotation.x=Math.PI/2;tank.position.y=1.48;tank.castShadow=true;tank.receiveShadow=true;body.add(tank);
-    for(const z of [-1.28,1.28]){const rr=new T.Mesh(new T.TorusGeometry(.705,.07,7,28),pipeColors[cat]);rr.position.set(0,1.48,z);body.add(rr)}
-    cyl(0,0,.16,.14,dark,2.16,body);box(0,0,.55,.55,.05,dark,2.28,body);
-    for(const x of [-.78,.78])for(const z of [-1.55,-1.05,1.05,1.55]){const w=mesh(wheelGeo,rubber,x,.3,z,body);w.rotation.z=Math.PI/2}
-    return g;
-  }
-  function onCurve(g,c,u){u=(u%1+1)%1;const p=c.getPointAt(u),d=c.getTangentAt(u);g.position.copy(p);g.rotation.y=Math.atan2(d.x,d.z)}
-  for(let line=0;line<4;line++){const c=railCurves[line],count=9;for(let n=0;n<count;n++){const w=wagon((line+n)%4);onCurve(w,c,.08+n*.075)}}
-  const train=new T.Group();dynamic.add(train);const trainCars=[];for(let n=0;n<7;n++){const w=wagon((n+1)%4);w.removeFromParent();train.add(w);trainCars.push(w)}
-  function positionTrain(u){for(let n=0;n<trainCars.length;n++){const car=trainCars[n],uu=(u-n*.032+1)%1,p=movingRail.getPointAt(uu),d=movingRail.getTangentAt(uu);car.position.copy(p);car.rotation.y=Math.atan2(d.x,d.z)}}
-
-  function truck(cat=0){const g=new T.Group();dynamic.add(g);box(0,0,1.7,3.8,.34,dark,.42,g);box(0,1.28,1.58,1.25,1.45,white,.66,g);box(0,1.94,1.46,.18,.62,glass,1.28,g);const tank=cyl(0,-.65,.68,2.45,white,.92,g);tank.rotation.x=Math.PI/2;for(const x of [-.82,.82])for(const z of [-1.15,-.35,.65,1.4]){const w=mesh(wheelGeo,rubber,x,.3,z,g);w.rotation.z=Math.PI/2}box(0,-.62,1.76,.08,.12,pipeColors[cat],1.50,g);return g}
-  const truckCurve=curve([[-132,-40],[-55,-42],[15,-38],[78,-28],[120,-8],[124,42],[130,88]]);
-  const trucks=[{g:truck(1),u:.12},{g:truck(2),u:.55}];trucks.forEach(v=>onCurve(v.g,truckCurve,v.u));
-
-  function building(x,z,w,d,h){const g=new T.Group();g.position.set(x,0,z);fixed.add(g);box(0,0,w,d,h,white,0,g);box(0,0,w+.5,d+.5,.26,dark,h,g);for(let xx=-w/2+1.5;xx<w/2;xx+=3) box(xx,d/2+.03,1.25,.06,.8,glass,h*.52,g);return g}
-  building(-132,-32,18,8,4.3);building(68,-52,22,9,4.6);building(126,65,18,8,4.1);building(-118,112,30,10,4.5);
-  const canopy=new T.Group();canopy.position.set(116,7,0);fixed.add(canopy);box(0,0,28,13,.45,blue,5.0,canopy);for(const x of [-12,-4,4,12])for(const z of [-5,5])pipe([x,.2,z],[x,5,z],.11,dark,canopy);
-  for(const x of [-10,-2,6]){const t=truck((x+10)/8%4);t.removeFromParent();canopy.add(t);t.position.set(x,0,0);t.rotation.y=Math.PI/2;}
-
-  function tree(x,z,s=1){cyl(x,z,.15,2,dark,0);sphere(x,3,z,1.4*s,grass);sphere(x+.7,2.6,z-.4,1.0*s,grass)}
-  for(const [x,z] of [[-170,-74],[-153,-82],[-130,-76],[-108,-82],[-84,-77],[-4,-78],[22,-82],[52,-75],[78,-80],[151,-63],[164,-47],[162,104],[-165,128],[-135,135],[-91,137]]) tree(x,z,.8);
-
-  const records=new Map(),pickables=[];
-  function tag(group,id){group.traverse(o=>{if(o.isMesh){o.userData.entityId=id;pickables.push(o)}})}
-  function equipmentNode(node,parentTank,index){const base=parentTank?.group.position||new T.Vector3(-104,0,108);const g=new T.Group();g.position.set(base.x+(index%3-1)*2.0,0,base.z+4.5+Math.floor(index/3)*1.5);fixed.add(g);const tone=node.asset?.tone==='red'?red:node.asset?.tone==='orange'?yellow:node.type==='valve'?yellow:blue;box(0,0,2.5,1.55,.18,dark,.2,g);
-    if(node.type==='pump'||node.type==='motor'){const m=cyl(-.45,0,.42,1.2,tone,.58,g);m.rotation.z=Math.PI/2;const b=cyl(.6,0,.48,.9,steel,.6,g);b.rotation.z=Math.PI/2;pipe([1.0,1.08,0],[2.0,1.08,0],.09,brightSteel,g)}
-    else if(node.type==='valve'){pipe([-1,1,0],[1,1,0],.12,brightSteel,g);sphere(0,1,0,.36,tone,g);const wh=new T.Mesh(new T.TorusGeometry(.43,.05,5,18),tone);wh.position.set(0,1.65,0);wh.rotation.x=Math.PI/2;g.add(wh)}
-    else if(node.type==='sensor'){pipe([0,.25,0],[0,1.6,0],.055,brightSteel,g);box(0,0,.55,.42,.6,tone,1.55,g)}
-    else if(node.type==='cabinet'){box(0,0,1.0,.7,1.7,tone,.25,g)}
-    else {box(0,0,1.8,1.1,1.1,tone,.25,g)}
-    tag(g,node.id);records.set(node.id,{group:g});return g;
-  }
-  let catalog,currentId='terminal',selectionBox=null,cameraGoal=null,isLight=true,animating=!matchMedia('(prefers-reduced-motion: reduce)').matches,last=performance.now(),trainU=.83,raf;
-  function bind(nodes){catalog=nodes;records.set('terminal',{group:fixed});
-    for(const node of nodes.values()) if(node.type==='tank'){const t=tanks[node.tankIndex-1];if(!t)continue;setTankFill(t,node.fill/100);records.set(node.id,{group:t.group,tank:t});tag(t.group,node.id)}
-    for(const node of nodes.values()) if(node.type==='zone'){const ids=node.children.map(id=>records.get(id)?.group).filter(Boolean);if(ids.length){const b=new T.Box3();ids.forEach(g=>b.expandByObject(g));const c=b.getCenter(new T.Vector3()),s=b.getSize(new T.Vector3());const proxy=new T.Group();proxy.position.copy(c);fixed.add(proxy);box(0,0,Math.max(8,s.x),Math.max(8,s.z),.18,new T.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}),.02,proxy);records.set(node.id,{group:proxy,bounds:b});tag(proxy,node.id)}}
-    let eq=0;for(const node of nodes.values()){if(records.has(node.id)||node.id==='terminal'||node.type==='zone')continue;if(node.id==='rail-rack'){records.set(node.id,{group:railRack});tag(railRack,node.id);continue}if(node.id==='warehouse'){const g=building(-118,112,30,10,4.5);records.set(node.id,{group:g});tag(g,node.id);continue}let p=node.parent;while(p&&catalog.get(p)?.type!=='tank')p=catalog.get(p)?.parent;const pt=p?records.get(p)?.tank:null;equipmentNode(node,pt,eq++%5)}
-  }
-  function boundsOf(id){const rec=records.get(id);if(rec?.bounds)return rec.bounds.clone();if(rec?.group)return new T.Box3().setFromObject(rec.group);if(id==='terminal')return new T.Box3(new T.Vector3(-175,0,-90),new T.Vector3(175,20,140));return null}
-  function focusBounds(b){if(!b)return;const c=b.getCenter(new T.Vector3()),s=b.getSize(new T.Vector3()),radius=Math.max(s.x,s.y,s.z),dist=Math.max(18,radius*2.05),dir=new T.Vector3(1,.72,1.15).normalize();cameraGoal={pos:c.clone().add(dir.multiplyScalar(dist)),target:c.clone()}}
-  function clearSelection(){if(selectionBox){selectionGroup.remove(selectionBox);selectionBox.geometry?.dispose?.();selectionBox.material?.dispose?.();selectionBox=null}}
-  function selectEntity(id,focus=true){currentId=id;clearSelection();if(id!=='terminal'){const b=boundsOf(id);if(b){selectionBox=new T.Box3Helper(b,new T.Color('#39c6e9'));selectionGroup.add(selectionBox);if(focus)focusBounds(b)}}else if(focus){cameraGoal={pos:home.clone(),target:homeTarget.clone()}}}
-
-  const ray=new T.Raycaster(),pointer=new T.Vector2(),down=new T.Vector2();
-  renderer.domElement.addEventListener('pointerdown',e=>down.set(e.clientX,e.clientY));
-  renderer.domElement.addEventListener('pointerup',e=>{if(Math.hypot(e.clientX-down.x,e.clientY-down.y)>6)return;const r=renderer.domElement.getBoundingClientRect();pointer.set(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1);ray.setFromCamera(pointer,camera);const hit=ray.intersectObjects(pickables,false).find(h=>h.object.userData.entityId);if(hit)onSelect(hit.object.userData.entityId)});
-  renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();container.dispatchEvent(new CustomEvent('scene-error',{detail:'3D временно недоступно. Перезагрузите страницу для восстановления.'}))});
-
-  function resize(){const w=container.clientWidth,h=container.clientHeight;if(!w||!h)return;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h)}
-  const observer=new ResizeObserver(resize);observer.observe(container);
-  function zoom(f){const p=camera.position.clone().sub(controls.target);p.setLength(T.MathUtils.clamp(p.length()*f,controls.minDistance,controls.maxDistance));cameraGoal={pos:p.add(controls.target),target:controls.target.clone()}}
-  function theme(){isLight=!isLight;const bg=isLight?'#b8c8d0':'#0c1c24';scene.background.set(bg);scene.fog.color.set(bg);renderer.toneMappingExposure=isLight?1.08:.78;return isLight}
-  controls.addEventListener('start',()=>cameraGoal=null);
-
-  function frame(now){raf=requestAnimationFrame(frame);if(document.hidden){last=now;return}const dt=Math.min((now-last)/1000,.05);last=now;
-    if(animating){trainU=(trainU+dt*.012)%1;positionTrain(trainU);for(const v of trucks){v.u=(v.u+dt*.009)%1;onCurve(v.g,truckCurve,v.u)}}
-    if(cameraGoal){const a=1-Math.exp(-dt*5.2);camera.position.lerp(cameraGoal.pos,a);controls.target.lerp(cameraGoal.target,a);if(camera.position.distanceTo(cameraGoal.pos)<.06)cameraGoal=null}
-    controls.update();renderer.render(scene,camera)
-  }
-  positionTrain(trainU);raf=requestAnimationFrame(frame);
-
-  return {tanks,bind,select:selectEntity,zoom,theme,
-    setFill(id,value){const rec=records.get(id);if(rec?.tank)setTankFill(rec.tank,value/100)},
-    view(mode){if(mode==='top'){const target=controls.target.clone();cameraGoal={pos:target.clone().add(new T.Vector3(.1,Math.max(70,camera.position.distanceTo(target)),.1)),target}}else if(mode==='port'){cameraGoal={pos:home.clone(),target:homeTarget.clone()}}else selectEntity(currentId,true)},
-    pause(){animating=!animating;return animating},get animating(){return animating},
-    dispose(){cancelAnimationFrame(raf);observer.disconnect();controls.dispose();renderer.dispose();[asphaltTex,concreteTex,metalTex].forEach(t=>t.dispose());scene.traverse(o=>{o.geometry?.dispose?.();if(Array.isArray(o.material))o.material.forEach(m=>m?.dispose?.());else o.material?.dispose?.()});renderer.domElement.remove()}
-  };
+export function createTerminalScene(container, onSelect, rendererFactory = () => new T.WebGLRenderer({antialias:true})) {
+const colors=['#29AAE1','#FFB228','#55C98C','#A782EF'],names=['Газ','Дизтопливо','Бензин','Нефть'];
+const renderer=rendererFactory();
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.setSize(container.clientWidth,container.clientHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFShadowMap;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;container.append(renderer.domElement);
+const scene=new T.Scene();scene.background=new T.Color('#aebdc4');scene.fog=new T.Fog('#aebdc4',440,780);
+const camera=new T.PerspectiveCamera(38,container.clientWidth/container.clientHeight,.2,1200),home=new T.Vector3(12,248,305),openingTarget=new T.Vector3(-43,0,-65),openingCamera=openingTarget.clone().add(new T.Vector3(10,98,122));camera.position.copy(openingCamera);
+const controls=new OrbitControls(camera,renderer.domElement);controls.target.copy(openingTarget);controls.enableDamping=true;controls.minDistance=14;controls.maxDistance=620;controls.maxPolarAngle=Math.PI*.485;controls.minPolarAngle=.03;
+scene.add(new T.HemisphereLight('#e7f4ff','#9eaaa3',2.6));const sun=new T.DirectionalLight('#fff8ee',3);sun.position.set(-110,200,-70);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-205,right:205,top:160,bottom:-160,near:1,far:500});sun.shadow.bias=-.00025;sun.shadow.normalBias=.12;scene.add(sun);
+const fixed=new T.Group(),dynamic=new T.Group();scene.add(fixed,dynamic);
+const mat=(color,opts={})=>new T.MeshStandardMaterial({color,roughness:.6,metalness:.15,...opts});
+const white=mat('#d9dcdb',{roughness:.54,metalness:.22}),silver=mat('#aeb8bb',{metalness:.78,roughness:.32}),asphalt=mat('#4f565b',{roughness:.93,metalness:.02}),paving=mat('#8d9495',{roughness:.88,metalness:.03}),ground=mat('#7f8b80',{roughness:.98}),dark=mat('#222b30',{metalness:.58,roughness:.48}),rail=mat('#515b60',{metalness:.9,roughness:.3}),sleeper=mat('#414548',{roughness:.96}),grass=mat('#6f8068',{roughness:1}),foliage=mat('#5f7658',{roughness:1}),categories=colors.map(c=>mat(c,{roughness:.42,metalness:.35})),windows=mat('#5b7581',{metalness:.58,roughness:.18});
+const boxGeo=new T.BoxGeometry(1,1,1),cylGeo=new T.CylinderGeometry(1,1,1,32),ballGeo=new T.SphereGeometry(1,16,12),ringCache=new Map();
+function add(geo,m,x,y,z,parent=fixed){const o=new T.Mesh(geo,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
+function box(x,z,w,d,h,m=white,y=0,parent=fixed){const o=add(boxGeo,m,x,y+h/2,z,parent);o.scale.set(w,h,d);return o}
+function cylinder(x,z,r,h,m=silver,y=0,parent=fixed){const o=add(cylGeo,m,x,y+h/2,z,parent);o.scale.set(r,h,r);return o}
+function sphere(x,y,z,r,m,parent=fixed){const o=add(ballGeo,m,x,y,z,parent);o.scale.setScalar(r);return o}
+function ring(x,y,z,r,th,m,parent=fixed){const key=r+':'+th;if(!ringCache.has(key))ringCache.set(key,new T.TorusGeometry(r,th,6,40));const o=add(ringCache.get(key),m,x,y,z,parent);o.rotation.x=Math.PI/2;return o}
+function line(a,b,r,m=silver,parent=fixed){const va=new T.Vector3(...a),vb=new T.Vector3(...b),mid=va.clone().add(vb).multiplyScalar(.5);const o=add(cylGeo,m,mid.x,mid.y,mid.z,parent);o.scale.set(r,va.distanceTo(vb),r);o.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),vb.sub(va).normalize());return o}
+function poly(points,m,y=0){const s=new T.Shape();points.forEach(([x,z],i)=>i?s.lineTo(x,-z):s.moveTo(x,-z));s.closePath();const o=add(new T.ShapeGeometry(s),m,0,y,0);o.rotation.x=-Math.PI/2;return o}
+function strip(points,width,m,y=.04){for(let i=1;i<points.length;i++){const [x,z]=points[i-1],[xx,zz]=points[i],o=box((x+xx)/2,(z+zz)/2,width,Math.hypot(xx-x,zz-z),.09,m,y);o.rotation.y=Math.atan2(xx-x,zz-z)}}
+// Visual trace of the Google Maps satellite view, 8 September 2026.
+// Pixel coordinates preserve spatial relationships, not survey accuracy.
+function plan(x,y){return [-(x-700)*.27+(y-460)*.14,-(x-700)*.14-(y-460)*.27]}
+const path=pts=>pts.map(p=>plan(...p));
+const coast=path([[170,270],[183,391],[300,389],[420,365],[477,362],[540,380],[620,410],[744,402],[746,324],[696,262],[628,218],[555,239],[326,266],[317,240],[551,199],[728,106],[776,154],[810,218],[926,273],[1038,183]]);
+poly([...coast,...path([[1240,170],[1310,820],[160,820]])],ground);
+const water=mat('#a9cbd6',{metalness:.22,roughness:.52});poly([...coast,...path([[1060,-90],[40,-90],[40,270]])],water,-.45);
+water.onBeforeCompile=s=>{s.uniforms.waveTime={value:0};water.userData.shader=s;s.vertexShader='varying vec3 wavePos;\n'+s.vertexShader.replace('#include <worldpos_vertex>','#include <worldpos_vertex>\nwavePos=(modelMatrix*vec4(transformed,1.0)).xyz;');s.fragmentShader='uniform float waveTime; varying vec3 wavePos;\n'+s.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\nfloat ripple=sin(wavePos.x*2.8+wavePos.z*5.0+waveTime*.65)*sin(wavePos.z*3.8-waveTime*.5);diffuseColor.rgb+=ripple*.012;')};
+strip(coast,.6,silver);
+const mainRoad=path([[200,423],[358,454],[585,460],[791,432],[920,348],[1083,251],[1200,104]]),dockRoad=path([[192,405],[355,419],[590,444],[757,413],[782,340],[735,275]]);
+strip(mainRoad,5.5,asphalt);strip(dockRoad,2.7,asphalt);
+strip(path([[234,552],[416,593],[601,632],[809,675],[1015,737],[1175,800]]),4,asphalt);
+strip(path([[778,661],[840,548],[950,466],[1079,467],[1192,601],[1027,737]]),2.6,asphalt);
+const washMaterial=new T.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{night:{value:0}},vertexShader:`varying vec3 wp;void main(){wp=(modelMatrix*vec4(position,1.)).xyz;gl_Position=projectionMatrix*viewMatrix*vec4(wp,1.);}`,fragmentShader:`
+ varying vec3 wp;uniform float night;
+ float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+ float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
+ float fbm(vec2 p){return noise(p)*.52+noise(p*2.04)*.27+noise(p*4.11)*.14+noise(p*8.2)*.07;}
+ void main(){vec2 p=wp.xz;float n=fbm(p*.032),fine=fbm(p*.23);float sea=smoothstep(-12.,55.,p.y);float edge=length(p/vec2(222.,163.));float alpha=(1.-smoothstep(.65+n*.22,1.18+n*.18,edge))*(.18+.52*n);vec3 land=mix(vec3(.71,.76,.69),vec3(.52,.64,.51),fine);vec3 water=mix(vec3(.78,.89,.94),vec3(.53,.75,.84),fine);vec3 color=mix(land,water,sea);color=mix(color,color*.36,night);gl_FragColor=vec4(color,alpha);}`});
+const wash=add(new T.PlaneGeometry(590,480),washMaterial,0,-.65,0);wash.rotation.x=-Math.PI/2;wash.castShadow=false;wash.receiveShadow=false;wash.visible=false;
+for(const m of [ground,water]){const previous=m.onBeforeCompile;m.onBeforeCompile=shader=>{previous.call(m,shader);shader.vertexShader='varying vec3 edgePosition;\n'+shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nedgePosition=(modelMatrix*vec4(position,1.)).xyz;');shader.fragmentShader='varying vec3 edgePosition;\n'+shader.fragmentShader.replace('#include <dithering_fragment>','#include <dithering_fragment>\nfloat edge=length(edgePosition.xz/vec2(189.,143.));float grain=sin(edgePosition.x*.24)*sin(edgePosition.z*.31)*.025;gl_FragColor.a*=1.-smoothstep(.87,1.12,edge+grain);');};m.transparent=true;}
+function curve(p,y=.25){return new T.CatmullRomCurve3(p.map(([x,z])=>new T.Vector3(x,y,z)),false,'centripetal')}
+function track(points){const c=curve(points),n=Math.ceil(c.getLength()/1.4);for(let k=0;k<n;k++){const p=c.getPointAt(k/n),v=c.getTangentAt(k/n),b=box(p.x,p.z,1.6,.23,.14,sleeper);b.rotation.y=Math.atan2(v.x,v.z)}for(let side of [-.53,.53]){const pp=[];for(let i=0;i<=120;i++){const p=c.getPointAt(i/120),v=c.getTangentAt(i/120);pp.push(p.add(new T.Vector3(v.z,0,-v.x).multiplyScalar(side)))}add(new T.TubeGeometry(new T.CatmullRomCurve3(pp),160,.065,4,false),rail,0,0,0)}return c}
+const tracks=[];for(let j=0;j<13;j++)tracks.push(track(path([[221,511+j*3.3],[430,503+j*3.3],[672,466+j*3.3],[866,435+j*2.1],[981,407+j*1.2],[1081,327+j*.8]])));
+const depot=track(path([[789,628],[845,571],[905,521],[962,468],[989,430]]));
+track(path([[971,419],[1018,455],[1098,493],[1151,564]]));
+function warehouse(x,z,w,d,h,rot=0){const g=new T.Group();g.position.set(x,0,z);g.rotation.y=rot;fixed.add(g);box(0,0,w,d,h,white,0,g);box(0,0,w+.7,d+.5,.4,silver,h,g);for(let a=-w/2+1;a<w/2;a+=2)box(a,0,.075,d,.1,white,h+.4,g);for(let a=-w/2+2;a<w/2-1;a+=5){box(a,d/2+.025,3,.06,1.2,windows,h*.52,g);box(a,-d/2-.025,3,.06,1.2,windows,h*.52,g)}return g}
+function mappedWarehouse(px,py,w,d,h,angle=0){const [x,z]=plan(px,py);return warehouse(x,z,w,d,h,angle)}
+mappedWarehouse(500,399,58,13,5.2,-.47);mappedWarehouse(554,420,17,8,4.1,-.47);
+mappedWarehouse(723,279,25,8,3.8,-.48);mappedWarehouse(886,553,52,10,5.0,.77);mappedWarehouse(835,610,18,8,4.0,.77);mappedWarehouse(1020,690,20,9,4.2,.65);
+mappedWarehouse(359,523,22,5,3.3,-.48);mappedWarehouse(482,510,21,5,3.2,-.48);
+mappedWarehouse(571,501,16,5,3.2,-.48);mappedWarehouse(668,524,12,6,3,-.48);
+mappedWarehouse(762,503,18,4,3,-.48);
+const contextGround=mat('#dce0df');
+for(const pts of [[[250,588],[451,620],[422,723],[224,684]],[[476,632],[641,669],[601,777],[451,735]],[[661,678],[794,710],[758,820],[616,792]]])poly(path(pts),contextGround,.015);
+let seed=1024;function rand(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}
+const tanks=[],hits=[];
+function setFill(t,f){t.fill=T.MathUtils.clamp(f,0,1);const h=t.h*t.fill;t.body.visible=t.fill>0;t.body.scale.y=h;t.body.position.y=.55+h/2;}
+function storage(x,z,r,h,cat,f){
+ const g=new T.Group();g.position.set(x,0,z);dynamic.add(g);
+ const steel=mat('#c5c9c8',{metalness:.62,roughness:.42}),ribSteel=mat('#9ea6a8',{metalness:.7,roughness:.34});
+ cylinder(0,0,r+.78,.10,asphalt,-.02,g);
+ cylinder(0,0,r+.32,.18,paving,.08,g);cylinder(0,0,r+.13,.39,steel,.22,g);
+ const shell=cylinder(0,0,r,h,steel,.55,g);
+ const body=cylinder(0,0,r+.006,1,categories[cat],.55,g);
+ const rim=add(new T.CylinderGeometry(r+.014,r+.014,.14,64,1,true),categories[cat],0,h+.55,0,g);
+ const roof=add(new T.CylinderGeometry(r+.015,r+.015,.085,64),mat('#e5e3df',{metalness:.32,roughness:.58}),0,h+.67,0,g);
+ ring(0,h+.62,0,r,.022,ribSteel,g);
+ for(let k=1;k<=15;k++)ring(0,.55+h*k/16,0,r+.014,.015,ribSteel,g);
+ const access=new T.Group();g.add(access);access.rotation.y=.67;
+ const out=r+.065,top=h+.7;
+ for(let xx of [-.2,.2])line([xx,.25,out],[xx,top+.12,out],.024,categories[cat],access);
+ for(let y=.38;y<top;y+=.22)line([-.2,y,out],[.2,y,out],.023,categories[cat],access);
+ box(0,out-.22,.98,.56,.07,steel,top-.02,access);
+ for(let xx of [-.49,0,.49])for(let zz of [out-.5,out+.07])line([xx,top,zz],[xx,top+.36,zz],.014,categories[cat],access);
+ for(let yy of [top+.18,top+.36]){for(let zz of [out-.5,out+.07])line([-.49,yy,zz],[.49,yy,zz],.014,categories[cat],access);for(let xx of [-.49,.49])line([xx,yy,out-.5],[xx,yy,out+.07],.014,categories[cat],access);}
+ const pipes=new T.Group();g.add(pipes);pipes.rotation.y=-.67;
+ for(let xx of [-.15,.15]){const pts=[new T.Vector3(xx,.2,r+.12),new T.Vector3(xx,top-.14,r+.12),new T.Vector3(xx,top+.14,r+.09),new T.Vector3(xx,top+.2,r-.08),new T.Vector3(xx,top+.16,r-.23)];add(new T.TubeGeometry(new T.CatmullRomCurve3(pts),40,.043,8,false),categories[cat],0,0,0,pipes);cylinder(xx,r+.12,.065,.045,ribSteel,.17,pipes);}
+ const t={id:tanks.length+1,group:g,r,h,cat,fill:f,shell,body,roof,rim};for(const o of [shell,body,roof,rim]){o.userData.tank=t;hits.push(o)}tanks.push(t);setFill(t,f);return t;
+}
+const placements=tankPixels.map(([px,py,r],i)=>[...plan(px,py),r*.29,Math.max(2.2,r*.29*1.05),i%4,[.2,.65,0,.85,1,.4][i%6]]);
+placements.forEach(a=>storage(...a));
+function fenceRect(minX,maxX,minZ,maxZ){
+ const postH=1.45, step=4.8;
+ const seg=(x1,z1,x2,z2)=>{const len=Math.hypot(x2-x1,z2-z1),n=Math.max(2,Math.ceil(len/step));for(let i=0;i<=n;i++){const t=i/n,x=x1+(x2-x1)*t,z=z1+(z2-z1)*t;line([x,.12,z],[x,postH,z],.025,dark)}for(const y of [.55,1.28])line([x1,y,z1],[x2,y,z2],.022,silver)};
+ seg(minX,minZ,maxX,minZ);seg(maxX,minZ,maxX,maxZ);seg(maxX,maxZ,minX,maxZ);seg(minX,maxZ,minX,minZ);
+}
+function parkInfrastructure(from,to,cat){
+ const subset=tanks.slice(from-1,to), b=new T.Box3();subset.forEach(t=>b.expandByObject(t.group));
+ const c=b.getCenter(new T.Vector3()), sz=b.getSize(new T.Vector3()), mx=3.6,mz=3.6;
+ box(c.x,c.z,sz.x+mx*2,sz.z+mz*2,.08,asphalt,-.06);
+ fenceRect(b.min.x-mx,b.max.x+mx,b.min.z-mz,b.max.z+mz);
+ const trunkZ=b.max.z+mz-1.15;line([b.min.x-mx+1,2.25,trunkZ],[b.max.x+mx-1,2.25,trunkZ],.09,categories[cat]);
+ for(const t of subset){const p=t.group.position;line([p.x,.55,p.z],[p.x,2.25,trunkZ],.065,silver)}
+ const px=b.max.x+mx-2.4,pz=b.min.z-mz+2.5;box(px,pz,4.8,3.1,.18,paving,.02);
+ for(let k=0;k<2;k++){const zz=pz-.65+k*1.3;box(px-.2,zz,2.6,.8,.22,dark,.22);const m=cylinder(px-.65,zz,.36,1.25,categories[cat],.52);m.rotation.z=Math.PI/2;const pump=cylinder(px+.65,zz,.42,.9,silver,.54);pump.rotation.z=Math.PI/2;line([px+1.1,1.0,zz],[px+2.1,1.0,zz],.09,categories[cat])}
+}
+parkInfrastructure(1,16,0);parkInfrastructure(17,27,1);parkInfrastructure(28,49,2);parkInfrastructure(50,55,3);
+for(const pts of [[[847,664],[925,637],[947,655]],[[938,630],[1014,602],[1026,558]],[[1010,714],[1071,721],[1102,671]],[[719,624],[792,643]]])strip(path(pts),.23,silver,.6);
+function tree(x,z,s=1){cylinder(x,z,.11,1.9,dark);const a=sphere(x,2.3,z,s,foliage);a.scale.y=s*1.25}
+for(const [px,py] of [[790,648],[813,620],[805,650],[824,674],[830,652],[855,684],[871,691],[959,694],[981,716],[1020,731],[1057,710],[1065,671],[998,551],[980,498],[750,267],[766,302],[775,340],[757,379],[705,421],[631,439],[580,444],[535,437],[453,415]]){const [x,z]=plan(px,py);tree(x,z,.7);}
+const capGeo=new T.CapsuleGeometry(.72,3.6,4,16);
+function wagon(cat,parent=fixed){const g=new T.Group();parent.add(g);g.scale.setScalar(.82);box(0,0,1.55,5.4,.3,dark,.55,g);const tank=add(capGeo,white,0,1.6,0,g);tank.rotation.x=Math.PI/2;for(const z of [-1.45,1.45]){const rr=ring(0,1.6,z,.735,.105,categories[cat],g);rr.rotation.x=0}for(let x of [-.8,.8])for(let z of [-1.75,-1.15,1.15,1.75]){const w=cylinder(x,z,.26,.17,dark,.2,g);w.rotation.z=Math.PI/2}cylinder(0,0,.18,.14,silver,2.33,g);box(0,2.9,.25,.5,.12,dark,.6,g);box(0,-2.9,.25,.5,.12,dark,.6,g);return g}
+function onCurve(g,c,u){const p=c.getPointAt(u),d=c.getTangentAt(u);g.position.copy(p);g.rotation.y=Math.atan2(d.x,d.z)}
+for(const [j,cat,start,count] of [[1,0,.07,17],[4,1,.14,20],[7,3,.25,19],[10,2,.47,15]]){const c=tracks[j],step=6.2/c.getLength();for(let n=0;n<count;n++)onCurve(wagon(cat),c,start+n*step)}
+for(let n=0;n<12;n++)onCurve(wagon(Math.floor(n/4)%4),depot,.025+n*6.2/depot.getLength());
+const movingWagons=[];
+for(let n=0;n<6;n++){const g=wagon((n+1)%4,dynamic);g.scale.setScalar(.82);movingWagons.push({g,offset:n*.022});}
+let trainU=.78;
+const profileCache=new Map();
+function profile(points,width,m,parent,x=0){const key=JSON.stringify([points,width]);let geo=profileCache.get(key);if(!geo){const sh=new T.Shape();points.forEach(([z,y],i)=>i?sh.lineTo(z,y):sh.moveTo(z,y));sh.closePath();geo=new T.ExtrudeGeometry(sh,{depth:width,bevelEnabled:true,bevelThickness:.018,bevelSize:.018,bevelSegments:2,steps:1});geo.rotateY(-Math.PI/2);profileCache.set(key,geo);}return add(geo,m,x+width/2,0,0,parent);}
+const tire=mat('#242728',{roughness:.87,metalness:.05}),glass=mat('#344149',{roughness:.23,metalness:.4}),headlamp=mat('#f3f7ff',{emissive:'#bac7d7',emissiveIntensity:.25}),amber=mat('#ffad20');
+function truck(cat,parent=fixed){
+ const g=new T.Group();parent.add(g);g.scale.setScalar(.25);
+ box(0,-.2,1.1,6.9,.24,dark,.63,g);
+ const tank=add(new T.CapsuleGeometry(.78,3.7,8,24),categories[cat],0,1.76,-1.19,g);tank.rotation.x=Math.PI/2;
+ for(let side of [-1,1]){box(side*.767,-1.19,.024,3.8,.12,white,1.53,g);box(side*.69,-1.65,.12,2.05,.12,dark,.94,g);}
+ for(let z of [-2.65,.3]){const rr=ring(0,1.76,z,.792,.035,categories[cat],g);rr.rotation.x=0;}
+ box(0,-1.2,.7,2.5,.08,categories[cat],2.51,g);cylinder(0,-1.55,.25,.055,categories[cat],2.59,g);
+ for(let side of [-1,1]){line([side*.38,2.87,-2.5],[side*.38,2.87,.08],.023,categories[cat],g);for(let z of [-2.5,-1.65,-.8,.08])line([side*.38,2.56,z],[side*.38,2.87,z],.018,categories[cat],g);}
+ for(let z of [-2.5,.08])line([-.38,2.87,z],[.38,2.87,z],.023,categories[cat],g);
+ for(let y=1.2;y<2.6;y+=.19){line([.78,y,-1.4],[.78,y,-1.08],.018,categories[cat],g);}
+ profile([[1.12,.79],[3.11,.79],[3.2,1.03],[3.08,1.72],[2.67,2.62],[1.23,2.62]],1.46,white,g);
+ profile([[1.12,2.62],[1.4,3.02],[1.83,3.12],[2.74,2.64]],1.35,white,g);
+ profile([[3.092,1.76],[2.716,2.55],[2.708,2.55],[3.08,1.76]],1.26,glass,g);
+ for(const side of [-1,1]){profile([[1.38,1.87],[1.38,2.47],[2.55,2.47],[2.84,1.85]],.018,glass,g,side*.743);line([side*.76,1.23,1.38],[side*.76,1.77,1.38],.012,silver,g);box(side*.766,1.57,.023,.18,.035,dark,1.72,g);box(side*.76,1.66,.18,.62,.08,silver,.85,g);box(side*.77,1.66,.2,.58,.06,silver,.65,g);line([side*.74,2.25,2.73],[side*.98,2.24,2.8],.032,dark,g);box(side*1.0,2.8,.12,.17,.38,dark,2.0,g);}
+ profile([[3.22,.84],[3.23,1.53],[3.15,1.7],[3.14,.84]],.73,dark,g);
+ for(let yy=.95;yy<1.58;yy+=.10)box(0,3.249,.65,.024,.027,silver,yy,g);
+ box(0,3.24,1.5,.15,.16,dark,.68,g);
+ for(let side of [-1,1]){box(side*.59,3.205,.21,.045,.25,headlamp,.92,g);box(side*.73,3.21,.047,.052,.19,amber,.94,g);line([side*.53,1.91,3.05],[side*.12,1.97,3.02],.013,dark,g);}
+ box(0,3.279,.2,.018,.057,white,1.31,g);
+ for(let xx of [-.32,0,.32])box(xx,2.68,.06,.07,.03,amber,2.67,g);
+ cylinder(-.48,1.75,.055,.12,amber,3.00,g);
+ for(let z of [-2.76,-1.94,.42,1.18,2.57])for(let side of [-1,1]){const wheel=add(new T.CylinderGeometry(.34,.34,.23,24),tire,side*.75,.35,z,g);wheel.rotation.z=Math.PI/2;const hub=add(new T.CylinderGeometry(.22,.22,.026,20),silver,side*.876,.35,z,g);hub.rotation.z=Math.PI/2;const cap=add(new T.CylinderGeometry(.1,.1,.035,16),dark,side*.896,.35,z,g);cap.rotation.z=Math.PI/2;for(let i=0;i<6;i++){const aa=i*Math.PI/3;sphere(side*.897,.35+Math.sin(aa)*.15,z+Math.cos(aa)*.15,.022,white,g);}}
+ for(let side of [-1,1]){box(side*.79,-2.34,.23,1.76,.095,categories[cat],.84,g);box(side*.79,.8,.23,1.58,.09,dark,.85,g);box(side*.7,-3.17,.13,.055,.08,amber,.71,g);}
+ return g;
+}
+const truckCurve=curve(mainRoad,.14),vehicles=[];for(let i=0;i<9;i++){const g=truck(i%4,dynamic);vehicles.push({g,curve:truckCurve,u:.035+i*.106});onCurve(g,truckCurve,.035+i*.106)}for(let i=0;i<13;i++)onCurve(truck(i%4),curve(dockRoad,.12),.06+i*.067);
+const containerMats=['#b9c4b3','#d7ba8e','#d6c9ad','#a9bcc7'].map(c=>mat(c));for(let row=0;row<10;row++)for(let col=0;col<3;col++){const [x,z]=plan(735+col*12,292+row*8);const c=box(x,z,2.7,1.7,1.1,containerMats[(row+col)%4]);c.rotation.y=-.48;}
+function vessel(x,z,L,W,cat,rot){const g=new T.Group();g.position.set(x,-.4,z);g.rotation.y=rot;fixed.add(g);const s=new T.Shape();s.moveTo(-W*.42,-L*.48);s.lineTo(W*.42,-L*.48);s.lineTo(W*.5,L*.25);s.quadraticCurveTo(W*.43,L*.43,0,L*.52);s.quadraticCurveTo(-W*.43,L*.43,-W*.5,L*.25);s.closePath();
+ const hull=add(new T.ExtrudeGeometry(s,{depth:2.3,bevelEnabled:true,bevelSize:.25,bevelThickness:.2,bevelSegments:2,steps:1}),categories[cat],0,.3,0,g);hull.rotation.x=-Math.PI/2;const deck=add(new T.ShapeGeometry(s),silver,0,2.72,0,g);deck.rotation.x=-Math.PI/2;
+ box(0,L*.32,W*.7,L*.15,3.4,white,2.75,g);box(0,L*.32,W*.77,L*.13,.22,categories[cat],6.15,g);box(0,L*.402,W*.65,.08,.7,windows,5.1,g);box(0,L*.3,W*.45,L*.09,1.5,white,6.3,g);cylinder(0,L*.27,.45,2.5,dark,7.7,g);line([0,7.8,L*.29],[0,11,L*.29],.05,silver,g);
+ if(cat===0){for(let q=0;q<4;q++){const zz=-L*.31+q*L*.15;const dome=sphere(0,3.7,zz,W*.35,white,g);dome.scale.y=W*.3;ring(0,3.45,zz,W*.36,.08,categories[cat],g)}}else{for(let q=0;q<6;q++){const zz=-L*.33+q*L*.09;box(0,zz,W*.64,.35,.12,categories[cat],3,g);cylinder(0,zz,.45,.2,white,3.1,g)}for(let xx of [-.7,0,.7])line([xx,3.1,-L*.37],[xx,3.1,L*.16],.1,silver,g)}
+ for(let side of [-1,1]){line([side*W*.43,3.4,-L*.42],[side*W*.44,3.4,L*.23],.035,white,g);for(let q=0;q<12;q++){const zz=-L*.42+q*L*.057;line([side*W*.44,2.8,zz],[side*W*.44,3.5,zz],.03,white,g)}box(side*W*.47,L*.22,.55,1.8,.5,categories[cat],4,g)}return g}
+function mappedVessel(px,py,L,W,cat,rot){const [x,z]=plan(px,py);return vessel(x,z,L,W,cat,rot)}
+mappedVessel(672,302,41,7.8,3,-.03);mappedVessel(583,367,34,8,0,1.03);mappedVessel(462,349,27,5.7,1,1.04);mappedVessel(309,371,31,5.6,2,1.04);mappedVessel(229,362,23,5.1,0,1.03);
+function crane(x,z,rot=0){const g=new T.Group();g.position.set(x,0,z);g.rotation.y=rot;fixed.add(g);for(let xx of [-2,2])for(let zz of [-2.1,2.1])line([xx,0,zz],[xx*.5,9,zz*.7],.12,silver,g);box(0,0,4.8,4,.5,silver,8.5,g);line([0,9,0],[0,15,1.5],.15,silver,g);line([0,15,1.5],[0,11,-11],.14,silver,g);line([0,15,1.5],[0,10,6],.11,silver,g);line([0,11,-11],[0,3,-11],.026,dark,g);box(1,0,1.3,1.8,1.5,windows,9,g)}
+for(const [px,py,angle] of [[719,309,1.4],[735,341,1.4],[510,380,-.5],[360,390,-.5]]){const [x,z]=plan(px,py);crane(x,z,angle);}
+for(const root of dynamic.children){root.updateMatrixWorld(true);const inverse=root.matrixWorld.clone().invert(),groups=new Map();root.traverse(o=>{if(!o.isMesh||o.userData.tank)return;const key=o.geometry.uuid+o.material.uuid;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(o);});for(const items of groups.values()){if(items.length<3)continue;const inst=new T.InstancedMesh(items[0].geometry,items[0].material,items.length);items.forEach((o,i)=>inst.setMatrixAt(i,inverse.clone().multiply(o.matrixWorld)));inst.castShadow=true;inst.receiveShadow=true;inst.computeBoundingSphere();items.forEach(o=>o.removeFromParent());root.add(inst);}}
+fixed.updateMatrixWorld(true);const batches=new Map(),remove=[];fixed.traverse(o=>{if(!o.isMesh||o.material.transparent)return;const key=o.geometry.uuid+o.material.uuid;let b=batches.get(key);if(!b)batches.set(key,b={geo:o.geometry,mat:o.material,items:[]});b.items.push(o)});for(const b of batches.values()){if(b.items.length<3)continue;const inst=new T.InstancedMesh(b.geo,b.mat,b.items.length);b.items.forEach((o,i)=>{inst.setMatrixAt(i,o.matrixWorld);remove.push(o)});inst.castShadow=true;inst.receiveShadow=true;inst.computeBoundingSphere();scene.add(inst)}remove.forEach(o=>o.removeFromParent());
+const records=new Map(), pickables=[],zoneMeshes=[],equipmentRoot=new T.Group();scene.add(equipmentRoot);
+let catalog, currentId='terminal', selectionBox=null,down=null,animating=!matchMedia('(prefers-reduced-motion: reduce)').matches,isLight=true,clock=0,last=0,cameraGoal=null,frameId;
+const ray=new T.Raycaster(),pointer=new T.Vector2();
+const highlightMaterial=new T.MeshBasicMaterial({color:'#13bfd9',transparent:true,opacity:.13,depthWrite:false});
+const selectionGroup=new T.Group();scene.add(selectionGroup);
+function go(pos,target){cameraGoal={pos:pos.clone(),target:target.clone()};}
+controls.addEventListener('start',()=>cameraGoal=null);
+function tagged(group,id){group.traverse(o=>{if(o.isMesh){o.userData.entityId=id;pickables.push(o);}});}
+function equipment(node,pos) {
+ const g=new T.Group();g.position.copy(pos);equipmentRoot.add(g);
+ const m=mat(node.asset?.tone==='red'?'#dd745d':node.type==='valve'?'#efa832':'#267f9d');
+ box(0,0,2.8,1.6,.15,dark,0,g);
+ if(node.type==='pump'||node.type==='motor'||node.id==='compressor'){
+  const body=cylinder(0,0,.52,1.65,m,.6,g);body.rotation.z=Math.PI/2;
+  for(let x of [-.5,.5])box(x,0,.25,1.1,.4,silver,.15,g);
+  cylinder(-1,0,.4,.75,silver,.4,g);line([1,1,0],[1,1,1.4],.16,silver,g);
+  for(let x=-.6;x<.7;x+=.2){const rr=ring(x,1.425,0,.54,.035,silver,g);rr.rotation.z=Math.PI/2;rr.rotation.x=0;}
+ }else if(node.type==='valve'){
+  line([-1.4,.65,0],[1.4,.65,0],.25,silver,g);cylinder(0,0,.38,.7,m,.5,g);line([0,1,0],[0,1.8,0],.06,silver,g);ring(0,1.8,0,.5,.065,m,g);
+ }else if(node.type==='sensor'){
+  cylinder(0,0,.19,1.5,silver,.2,g);box(0,0,.65,.48,.65,m,1.65,g);box(0,.245,.4,.025,.3,windows,1.85,g);
+ }else if(node.type==='coupling'){
+  const c=cylinder(0,0,.42,1.1,m,.6,g);c.rotation.z=Math.PI/2;
+ }else{box(0,0,node.id==='warehouse'?9:1.8,node.id==='warehouse'?5:1, node.id==='warehouse'?4:2.4,m,.2,g);}
+ tagged(g,node.id);return g;
+}
+function bind(nodes) {
+ catalog=nodes;
+ for(const node of nodes.values()){
+  if(node.type!=='tank')continue;
+  const tank=tanks[node.tankIndex-1]; setFill(tank,node.fill/100);
+  records.set(node.id,{group:tank.group,tank});
+  for(const mesh of [tank.shell,tank.roof,tank.rim,tank.body]){mesh.userData.entityId=node.id;pickables.push(mesh);}
+ }
+ for(const node of nodes.values()){
+  if(['terminal','zone','tank'].includes(node.type))continue;
+  const parent=records.get(node.parent),siblings=catalog.get(node.parent).children,index=siblings.indexOf(node.id);
+  let position;
+  if(parent){const base=parent.group.position;const radius=parent.tank?parent.tank.r+3.8:3.3;const a=-Math.PI*.2+index*.85;position=new T.Vector3(base.x+Math.cos(a)*radius,0,base.z+Math.sin(a)*radius);}
+  else {const coords=node.parent==='rail'?plan(545,480):node.parent==='port'?plan(725,320):plan(812,535);position=new T.Vector3(coords[0]+index*6,0,coords[1]);}
+  const group=equipment(node,position);records.set(node.id,{group});
+ }
+ for(const zone of [...catalog.values()].filter(n=>n.type==='zone')){
+  const bounds=new T.Box3();
+  for(const id of zone.children){const rec=records.get(id);if(rec)bounds.expandByObject(rec.group);}
+  bounds.min.y=0;bounds.max.y=6;bounds.expandByScalar(3);
+  const size=bounds.getSize(new T.Vector3()),center=bounds.getCenter(new T.Vector3());
+  const plane=new T.Mesh(new T.PlaneGeometry(size.x,size.z),new T.MeshBasicMaterial({color:zone.color,transparent:true,opacity:.07,depthWrite:false,side:T.DoubleSide}));
+  plane.rotation.x=-Math.PI/2;plane.position.set(center.x,.08,center.z);plane.userData.entityId=zone.id;scene.add(plane);zoneMeshes.push(plane);
+  const outline=new T.LineLoop(new T.BufferGeometry().setFromPoints([new T.Vector3(bounds.min.x,.13,bounds.min.z),new T.Vector3(bounds.max.x,.13,bounds.min.z),new T.Vector3(bounds.max.x,.13,bounds.max.z),new T.Vector3(bounds.min.x,.13,bounds.max.z)]),new T.LineBasicMaterial({color:zone.color,transparent:true,opacity:.5}));scene.add(outline);
+  records.set(zone.id,{bounds,plane,outline});
+ }
+}
+function isWithin(id,ancestor){for(let n=catalog.get(id);n;n=catalog.get(n.parent))if(n.id===ancestor)return true;return false;}
+function visible(object){for(let o=object;o;o=o.parent)if(!o.visible)return false;return true;}
+function selectEntity(id,focus=true){
+ if(!catalog.has(id))return;currentId=id;
+ const node=catalog.get(id);let activeTank=node;
+ while(activeTank&&activeTank.type!=='tank')activeTank=catalog.get(activeTank.parent);
+ for(const [key,rec] of records){const n=catalog.get(key);
+  if(n.type==='zone'){rec.plane.material.opacity=isWithin(id,key)?.16:.035;rec.outline.material.opacity=isWithin(id,key)?.85:.25;continue;}
+  if(n.type==='tank'){rec.tank.roof.visible=!(activeTank?.id===key);continue;}
+  rec.group.visible=['zone','terminal'].includes(catalog.get(n.parent)?.type)||!!activeTank&&isWithin(key,activeTank.id);
+ }
+ while(selectionGroup.children.length){const o=selectionGroup.children[0];selectionGroup.remove(o);o.geometry?.dispose();o.material?.dispose();}
+ const record=records.get(id);
+ if(record){
+  const bounds=record.bounds?.clone()||new T.Box3().setFromObject(record.group);bounds.expandByScalar(.45);
+  const helper=new T.Box3Helper(bounds,new T.Color('#008fca'));helper.material.depthTest=false;helper.material.transparent=true;helper.material.opacity=.9;helper.renderOrder=10;selectionGroup.add(helper);
+  const size=bounds.getSize(new T.Vector3()),center=bounds.getCenter(new T.Vector3());
+  const fill=new T.Mesh(new T.BoxGeometry(size.x,size.y,size.z),highlightMaterial.clone());fill.position.copy(center);selectionGroup.add(fill);
+  if(focus){const span=Math.max(size.x,size.z,10),distance=Math.max(16,span*(node.type==='zone'?1.25:1.7));go(center.clone().add(new T.Vector3(distance*.25,distance,distance*1.2)),center);}
+ }else if(focus)go(openingCamera,openingTarget);
+ container.dataset.selectedId=id;
+}
+function pointerUp(e){if(!down||Math.hypot(e.clientX-down.x,e.clientY-down.y)>5)return;const r=renderer.domElement.getBoundingClientRect();pointer.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(pointer,camera);const hit=ray.intersectObjects(pickables.filter(visible),false)[0]||ray.intersectObjects(zoneMeshes,false)[0];if(hit)onSelect(hit.object.userData.entityId);}
+renderer.domElement.addEventListener('pointerdown',e=>down={x:e.clientX,y:e.clientY});renderer.domElement.addEventListener('pointerup',pointerUp);
+renderer.domElement.setAttribute('aria-label','3D-модель терминала. Для выбора с клавиатуры используйте список объектов.');
+renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();container.dispatchEvent(new CustomEvent('scene-error',{detail:'3D временно недоступно. Перезагрузите страницу для восстановления.'}));});
+function resize(){const w=container.clientWidth,h=container.clientHeight;if(!w||!h)return;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h);}
+const observer=new ResizeObserver(resize);observer.observe(container);
+function zoom(f){const p=camera.position.clone().sub(controls.target);p.setLength(T.MathUtils.clamp(p.length()*f,controls.minDistance,controls.maxDistance));go(p.add(controls.target),controls.target);}
+function theme(){isLight=!isLight;const bg=isLight?'#aebdc4':'#092634';scene.background.set(bg);scene.fog.color.set(bg);ground.color.set(isLight?'#7f8b80':'#20404d');asphalt.color.set(isLight?'#4f565b':'#48606b');water.color.set(isLight?'#a9cbd6':'#204f65');washMaterial.uniforms.night.value=isLight?0:1;return isLight;}
+function frame(now){frameId=requestAnimationFrame(frame);if(document.hidden){last=now;return;}const dt=Math.min((now-last)/1000,.05);last=now;if(animating)clock+=dt;if(cameraGoal){const a=1-Math.exp(-dt*5);camera.position.lerp(cameraGoal.pos,a);controls.target.lerp(cameraGoal.target,a);if(camera.position.distanceTo(cameraGoal.pos)<.05)cameraGoal=null;}if(water.userData.shader)water.userData.shader.uniforms.waveTime.value=clock;if(animating)trainU=(trainU+dt*.010)%1;for(const w of movingWagons)onCurve(w.g,tracks[12],(trainU-w.offset+1)%1);for(const v of vehicles){if(animating)v.u=(v.u+dt*.006)%1;onCurve(v.g,v.curve,v.u);}controls.update();renderer.render(scene,camera);}
+frameId=requestAnimationFrame(frame);
+return {tanks,bind,select:selectEntity,zoom,theme,
+ setFill(id,value){const rec=records.get(id);if(rec?.tank)setFill(rec.tank,value/100);},
+ view(mode){if(mode==='top'){const target=controls.target.clone();go(target.clone().add(new T.Vector3(0,Math.max(25,camera.position.distanceTo(target)),.1)),target);}else if(mode==='port')go(home,new T.Vector3());else selectEntity(currentId);},
+ pause(){animating=!animating;return animating;},get animating(){return animating;},
+ dispose(){cancelAnimationFrame(frameId);observer.disconnect();controls.dispose();renderer.dispose();scene.traverse(o=>{o.geometry?.dispose();if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material?.dispose();});renderer.domElement.remove();}
+};
 }
