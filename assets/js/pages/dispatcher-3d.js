@@ -1,8 +1,8 @@
 import {createHierarchy,ancestors,descendants} from '/assets/3d/hierarchy.js';
 import {tankDescriptors} from '/assets/3d/layout.js';
 const $=s=>document.querySelector(s), viewport=$('#dt-viewport');
-const labels={terminal:'Терминал',zone:'Зона',tank:'Резервуар',pump:'Насос',valve:'Клапан',sensor:'Датчик',motor:'Электродвигатель',coupling:'Муфта',cabinet:'Шкаф управления',equipment:'Оборудование'};
-const icons={zone:'ЗОНА',tank:'РВС',pump:'Н',valve:'К',sensor:'КИП',motor:'М',coupling:'МФ',cabinet:'ШУ',equipment:'ОБ'};
+const labels={building:'Здание',terminal:'Терминал',zone:'Зона',tank:'Резервуар',pump:'Насос',valve:'Клапан',sensor:'Датчик',motor:'Электродвигатель',coupling:'Муфта',cabinet:'Шкаф управления',equipment:'Оборудование'};
+const icons={building:'ЗД',zone:'ЗОНА',tank:'РВС',pump:'Н',valve:'К',sensor:'КИП',motor:'М',coupling:'МФ',cabinet:'ШУ',equipment:'ОБ'};
 const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let scene,nodes=createHierarchy(tankDescriptors,window.BNT_DATA.assets),current='terminal',riskOnly=false;
 function error(message){$('#dt-loading').hidden=true;$('#dt-scene-error').hidden=false;$('#dt-scene-error p').textContent=message;}
@@ -21,6 +21,7 @@ function render(){
  if(asset){html+=`<span class="dt3-status ${escape(asset.tone)}">${escape(asset.status)}</span><p class="dt3-note">${escape(asset.location)} · ${escape(asset.model)}<br>Показатели из демонстрационного реестра БНТ</p><div class="dt3-metrics">${metric('Загрузка',asset.load+'%')}${metric('Износ',asset.wear+'%')}${metric('Следующее ТО',asset.nextService)}${metric('Расходы на ремонт',asset.cost)}</div>`;}
  else if(node.type==='terminal'){html+='<p class="dt3-note">Выберите зону на модели или в списке. Затем откройте резервуар и связанное оборудование.</p><div class="dt3-metrics">'+metric('Зоны',6)+metric('Резервуары',tankDescriptors.length)+'</div>';}
  else if(node.type==='zone'){const all=descendants(nodes,node.id);html+=`<div class="dt3-metrics">${metric('Резервуары',all.filter(n=>n.type==='tank').length)}${metric('Объекты с риском',all.filter(isRisk).length)}</div><p class="dt3-note">Границы и размещение оборудования показаны условно. Выберите объект для детального просмотра.</p>`;}
+ else if(node.type==='building'){html+='<p class="dt3-note">Контур здания перенесён со спутникового снимка. Назначение и высота требуют сверки с паспортом объекта.</p><div class="dt3-metrics">'+metric('Высота · оценка',node.estimatedHeight+' м')+'</div>';}
  else if(node.type==='tank'){html+=`<span class="dt3-status">${escape(node.product)}</span><p class="dt3-note">Демонстрационный резервуар. Технические показатели не подключены к реестру.</p>`;}
  else html+=`<p class="dt3-note">${escape(node.note||'Демонстрационная компоновка. Паспорт и технические показатели не заведены.')}</p>`;
  if(node.type==='tank')html+=`<div class="dt3-fill"><label for="dt-fill">Наполнение · демо <strong id="dt-fill-value">${node.fill}%</strong></label><input id="dt-fill" type="range" min="0" max="100" value="${node.fill}" aria-label="Демонстрационное наполнение резервуара"><p class="dt3-note" style="margin-bottom:0">Изменяет только 3D-визуализацию, без записи в реестр.</p></div>`;
@@ -46,7 +47,7 @@ $('#dt-risks').addEventListener('click',()=>{riskOnly=!riskOnly;$('#dt-risks').s
 $('#dt-drawer-close').addEventListener('click',()=>select('terminal'));
 $('#dt-reset').addEventListener('click',()=>select('terminal'));
 $('#dt-plus').addEventListener('click',()=>scene.zoom(.8));$('#dt-minus').addEventListener('click',()=>scene.zoom(1.25));
-$('#dt-iso').addEventListener('click',()=>scene.view('iso'));$('#dt-top').addEventListener('click',()=>scene.view('top'));$('#dt-port').addEventListener('click',()=>scene.view('port'));
+$('#dt-iso').addEventListener('click',()=>scene.view('iso'));$('#dt-top').addEventListener('click',()=>scene.view('top'));$('#dt-plan').addEventListener('click',()=>scene.view('plan'));$('#dt-port').addEventListener('click',()=>scene.view('port'));
 $('#dt-theme').addEventListener('click',()=>{const light=scene.theme();$('.dt3-model').classList.toggle('dark',!light);$('#dt-theme').textContent=light?'Тёмная тема':'Светлая тема';});
 $('#dt-motion').textContent='Пауза движения';$('#dt-motion').addEventListener('click',()=>{$('#dt-motion').textContent=scene.pause()?'Пауза движения':'Продолжить движение';});
 $('#dt-drawer-body').addEventListener('input',e=>{if(e.target.id!=='dt-fill')return;const fill=Number(e.target.value);nodes.get(current).fill=fill;scene?.setFill(current,fill);$('#dt-fill-value').textContent=fill+'%';});

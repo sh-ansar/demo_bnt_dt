@@ -1,3 +1,4 @@
+import {tankZone,buildings} from './site-plan.js';
 // Spatial grouping and unregistered equipment are illustrative, not an as-built registry.
 export function createHierarchy(tanks, assets) {
   const nodes = new Map();
@@ -13,7 +14,7 @@ export function createHierarchy(tanks, assets) {
   ];
   for (const [id,name,from,to,color] of zoneDefs) add({id,name,code:name,type:'zone',parent:'terminal',from,to,color});
   for (const tank of tanks) {
-    const zone=zoneDefs.find(z=>tank.id>=z[2]&&tank.id<=z[3]);
+    const zone=zoneDefs.find(z=>z[0]===tankZone(tank.id));
     const asset=tank.id===3?assets.find(a=>a.id==='tankp3'):null;
     const id=asset?'tankp3':`r-${tank.id}`;
     add({id,name:asset?.name||`Резервуар R-${String(tank.id).padStart(2,'0')}`,code:asset?.code||`R-${String(tank.id).padStart(2,'0')}`,type:'tank',parent:zone[0],tankIndex:tank.id,asset,product:['Газ','Дизтопливо','Бензин','Нефть'][tank.cat],fill:asset?.load??Math.round(tank.fill*100),color:zone[4]});
@@ -37,6 +38,8 @@ export function createHierarchy(tanks, assets) {
       add({id:`${pump.id}-${type}`,name:`${label} ${code}`,code,type,parent:pump.id,illustrative:!pump.asset,note:pump.asset?`Связанный узел ${pump.code} · ${status}`:'Демонстрационный узел'});
     }
   }
+const buildingNames={"main-shed": "Главный производственный корпус", "port-shed": "Портовый склад", "quay-shed": "Причальный склад", "quay-office": "Припортовый корпус", "west-office": "Западный служебный корпус", "west-service": "Западное техническое здание", "pump-house-w": "Насосный корпус западного парка", "pump-house-c": "Технический корпус центрального парка", "rail-service": "Служебное здание ж/д зоны", "rail-loading": "Здание вдоль ж/д эстакады", "east-service": "Восточный служебный корпус", "east-electric": "Восточное техническое здание", "south-service": "Южный служебный корпус", "south-electric": "Южное техническое здание", "rail-office": "Ж/д служебное здание 1", "rail-office-2": "Ж/д служебное здание 2", "port-office": "Служебное здание порта", "port-workshop": "Портовая мастерская", "west-workshop": "Западная мастерская", "rail-store": "Ж/д склад 1", "rail-store-2": "Ж/д склад 2", "rail-store-3": "Ж/д склад 3", "berth-office": "Причальное служебное здание"};
+for(const [id,points,height] of buildings){if(id==='warehouse')continue;const y=points.reduce((s,p)=>s+p[1],0)/4;add({id:'building-'+id,name:buildingNames[id]||id,code:id,type:'building',parent:y<300?'port':'service',buildingId:id,estimatedHeight:height,illustrative:true});}
   return nodes;
 }
 export function ancestors(nodes,id) { const path=[]; for(let n=nodes.get(id);n;n=nodes.get(n.parent))path.unshift(n); return path; }
