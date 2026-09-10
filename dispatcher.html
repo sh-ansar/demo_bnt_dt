@@ -3,51 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>BNT — Диспетчерский центр 3D</title>
-  <link rel="stylesheet" href="/assets/css/tokens.css">
-  <link rel="stylesheet" href="/assets/css/layout.css">
-  <link rel="stylesheet" href="/assets/css/components.css">
-  <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9101">
-  <link rel="stylesheet" href="/assets/css/pages/dispatcher-3d.css?v=10001">
-  <script type="importmap">{"imports":{"three":"/assets/3d/vendor/three.module.js"}}</script>
+  <meta http-equiv="refresh" content="0;url=/digital-twin">
+  <link rel="canonical" href="/digital-twin">
+  <title>BNT — Цифровой двойник</title>
 </head>
-<body data-page="dispatcher">
-<main id="page-content" class="page-content flush">
-<section class="dt3-workspace" aria-label="Цифровой двойник терминала">
-  <div class="dt3-toolbar">
-    <div class="dt3-title"><span class="dt3-mark">3D</span><div><strong>Цифровой двойник</strong><small>Зоны · резервуары · оборудование</small></div></div>
-    <label class="dt3-search"><span>Поиск объекта</span><input id="dt-search" type="search" placeholder="Н-101, резервуар, клапан…" autocomplete="off"></label>
-    <button id="dt-risks" type="button" class="btn" aria-pressed="false">Объекты с риском</button>
-    <button id="dt-reset" type="button" class="btn">Весь терминал</button>
-  </div>
-  <div class="dt3-body">
-    <section class="dt3-model" aria-label="Область 3D-модели">
-      <nav id="dt-zone-buttons" class="dt3-zones" aria-label="Зоны терминала"></nav>
-      <div id="dt-viewport" class="dt3-viewport"></div>
-      <div id="dt-loading" class="dt3-loading" role="status"><span class="dt3-spinner"></span><strong>Подготовка 3D-терминала…</strong></div>
-      <div id="dt-scene-error" class="dt3-error" role="alert" hidden><strong>Не удалось открыть 3D</strong><p></p><button class="btn" type="button" onclick="location.reload()">Повторить</button></div>
-      <div class="dt3-camera" aria-label="Управление камерой">
-        <button id="dt-plus" type="button" aria-label="Приблизить">+</button><button id="dt-minus" type="button" aria-label="Отдалить">−</button>
-        <button id="dt-iso" type="button">Объём</button><button id="dt-top" type="button">Сверху</button><button id="dt-port" type="button">Весь порт</button>
-      </div>
-      <div class="dt3-scene-tools"><button id="dt-theme" type="button">Тёмная тема</button><button id="dt-motion" type="button">Пауза движения</button></div>
-      <div class="dt3-selected" aria-live="polite"><span>В фокусе</span><strong id="dt-focus-label">Батумский терминал</strong></div>
-      <div class="dt3-legend"><span><i style="--color:#29aae1"></i>Газ</span><span><i style="--color:#ffb228"></i>Дизтопливо</span><span><i style="--color:#55c98c"></i>Бензин</span><span><i style="--color:#a782ef"></i>Нефть</span></div>
-      <p class="dt3-help">Перетаскивание — вращение · колесо / два пальца — масштаб</p>
-      <span class="dt3-demo">Демо · геометрия и привязки условные</span>
-    </section>
-    <aside id="dt-drawer" class="dt3-drawer" aria-label="Карточка объекта">
-      <div class="dt3-drawer-head"><nav id="dt-breadcrumbs" aria-label="Путь к объекту"></nav><button id="dt-drawer-close" type="button" aria-label="Закрыть карточку и вернуться к зонам">×</button></div>
-      <div class="dt3-drawer-heading"><span id="dt-drawer-type">Терминал</span><h2 id="dt-drawer-title">Батумский терминал</h2></div>
-      <div id="dt-drawer-body"></div>
-    </aside>
-  </div>
-</section>
-</main>
-<script src="/assets/js/navigation.js"></script>
-<script src="/assets/js/ui.js"></script>
-<script src="/assets/js/data/assets.js"></script>
-<script src="/assets/js/shell.js?v=9101"></script>
-<script type="module" src="/assets/js/pages/dispatcher-3d.js?v=10001"></script>
-</body>
+<body><p>Открываем <a href="/digital-twin">цифровой двойник</a>…</p><script>location.replace('/digital-twin');</script></body>
 </html>
