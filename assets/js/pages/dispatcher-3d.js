@@ -40,27 +40,24 @@ function select(id,{focus=true,history=true}={}){
  scene?.select(id,focus);render();$('#dt-drawer').scrollTop=0;
  if(history){const url=new URL(location.href);if(id==='terminal')url.searchParams.delete('object');else url.searchParams.set('object',id);window.history.replaceState(null,'',url);}
 }
- document.querySelector('.dt3-workspace').addEventListener('click',e=>{const btn=e.target.closest('[data-node]');if(btn)select(btn.dataset.node);});
- $('#dt-search').addEventListener('input',render);
- $('#dt-risks').addEventListener('click',()=>{riskOnly=!riskOnly;$('#dt-risks').setAttribute('aria-pressed',String(riskOnly));render();});
- $('#dt-drawer-close').addEventListener('click',()=>select('terminal'));
- $('#dt-reset').addEventListener('click',()=>select('terminal'));
- $('#dt-plus').addEventListener('click',()=>scene.zoom(.8));$('#dt-minus').addEventListener('click',()=>scene.zoom(1.25));
- $('#dt-iso').addEventListener('click',()=>scene.view('iso'));$('#dt-top').addEventListener('click',()=>scene.view('top'));$('#dt-port').addEventListener('click',()=>scene.view('port'));
- $('#dt-theme').addEventListener('click',()=>{const light=scene.theme();$('.dt3-model').classList.toggle('dark',!light);$('#dt-theme').textContent=light?'Тёмная тема':'Светлая тема';});
- $('#dt-motion').textContent='Пауза движения';$('#dt-motion').addEventListener('click',()=>{$('#dt-motion').textContent=scene.pause()?'Пауза движения':'Продолжить движение';});
- $('#dt-drawer-body').addEventListener('input',e=>{if(e.target.id!=='dt-fill')return;const fill=Number(e.target.value);nodes.get(current).fill=fill;scene?.setFill(current,fill);$('#dt-fill-value').textContent=fill+'%';});
- document.addEventListener('keydown',e=>{if(e.key==='Escape'&&current!=='terminal')select(nodes.get(current).parent||'terminal');});
- const initial=new URL(location.href).searchParams.get('object')||new URL(location.href).searchParams.get('id')||'terminal';
- select(nodes.has(initial)?initial:'terminal',{history:false,focus:initial!=='terminal'});
-
- window.addEventListener('pagehide',e=>{if(!e.persisted)scene?.dispose();});
-
-// Navigation remains available when WebGL is unavailable; only the canvas controls are disabled.
+document.querySelector('.dt3-workspace').addEventListener('click',e=>{const btn=e.target.closest('[data-node]');if(btn)select(btn.dataset.node);});
+$('#dt-search').addEventListener('input',render);
+$('#dt-risks').addEventListener('click',()=>{riskOnly=!riskOnly;$('#dt-risks').setAttribute('aria-pressed',String(riskOnly));render();});
+$('#dt-drawer-close').addEventListener('click',()=>select('terminal'));
+$('#dt-reset').addEventListener('click',()=>select('terminal'));
+$('#dt-plus').addEventListener('click',()=>scene.zoom(.8));$('#dt-minus').addEventListener('click',()=>scene.zoom(1.25));
+$('#dt-iso').addEventListener('click',()=>scene.view('iso'));$('#dt-top').addEventListener('click',()=>scene.view('top'));$('#dt-port').addEventListener('click',()=>scene.view('port'));
+$('#dt-theme').addEventListener('click',()=>{const light=scene.theme();$('.dt3-model').classList.toggle('dark',!light);$('#dt-theme').textContent=light?'Тёмная тема':'Светлая тема';});
+$('#dt-motion').textContent='Пауза движения';$('#dt-motion').addEventListener('click',()=>{$('#dt-motion').textContent=scene.pause()?'Пауза движения':'Продолжить движение';});
+$('#dt-drawer-body').addEventListener('input',e=>{if(e.target.id!=='dt-fill')return;const fill=Number(e.target.value);nodes.get(current).fill=fill;scene?.setFill(current,fill);$('#dt-fill-value').textContent=fill+'%';});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&current!=='terminal')select(nodes.get(current).parent||'terminal');});
+const initial=new URL(location.href).searchParams.get('object')||new URL(location.href).searchParams.get('id')||'terminal';
+select(nodes.has(initial)?initial:'terminal',{history:false,focus:initial!=='terminal'});
+window.addEventListener('pagehide',e=>{if(!e.persisted)scene?.dispose();});
 const cameraButtons=[...document.querySelectorAll('.dt3-camera button,.dt3-scene-tools button')];
 cameraButtons.forEach(button=>button.disabled=true);
 try {
- const {createTerminalScene}=await import('/assets/3d/terminal-scene.js');
+ const {createTerminalScene}=await import('/assets/3d/terminal-scene-realistic.js?v=11001');
  scene=createTerminalScene(viewport,id=>select(id));
  scene.bind(nodes);scene.select(current,current!=='terminal');
  cameraButtons.forEach(button=>button.disabled=false);
