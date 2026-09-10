@@ -12,3 +12,7 @@ Three.js and OrbitControls are MIT licensed (see vendor/LICENSE). Vendor modules
 Entry: `/dispatcher`. Deep link example: `/dispatcher?object=pump101`.
 
 Validation: JavaScript syntax checks; 22 HTTP route/dependency smoke checks; hierarchy integrity, unique paths, 55 tank nodes, registry values and P-3 to pump/valve links checked. Browser verification is recorded in the delivery report.
+
+Run `node tests/dispatcher-3d.test.mjs` with Node 24+. This constructs the actual Three.js geometry using an injected non-GPU renderer and validates camera math, scene visibility, tank fill, raycasting a pump, navigation IDs and cleanup. It is not a pixel or GPU shader test.
+
+WebGL availability does not block the hierarchy or asset drawer. Only camera controls are disabled when a graphics context cannot be created.

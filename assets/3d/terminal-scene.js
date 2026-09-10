@@ -1,8 +1,9 @@
 import * as T from 'three';
 import {OrbitControls} from './vendor/OrbitControls.js';
-export function createTerminalScene(container, onSelect) {
+import {tankPixels} from './layout.js';
+export function createTerminalScene(container, onSelect, rendererFactory = () => new T.WebGLRenderer({antialias:true})) {
 const colors=['#29AAE1','#FFB228','#55C98C','#A782EF'],names=['Газ','Дизтопливо','Бензин','Нефть'];
-const renderer=new T.WebGLRenderer({antialias:true});
+const renderer=rendererFactory();
 renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.setSize(container.clientWidth,container.clientHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFShadowMap;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;container.append(renderer.domElement);
 const scene=new T.Scene();scene.background=new T.Color('#F8FAFB');scene.fog=new T.Fog('#F8FAFB',440,780);
 const camera=new T.PerspectiveCamera(38,container.clientWidth/container.clientHeight,.2,1200),home=new T.Vector3(12,248,305),openingTarget=new T.Vector3(-43,0,-65),openingCamera=openingTarget.clone().add(new T.Vector3(10,98,122));camera.position.copy(openingCamera);
@@ -86,17 +87,7 @@ function storage(x,z,r,h,cat,f){
  const t={id:tanks.length+1,group:g,r,h,cat,fill:f,shell,body,roof,rim};for(const o of [shell,body,roof,rim]){o.userData.tank=t;hits.push(o)}tanks.push(t);setFill(t,f);return t;
 }
 // Tank centers traced visually from the satellite reference. Sizes are approximate.
-const tankPixels=[[729,596,7],[743,599,7],[763,603,7],[779,617,5],[774,633,5],
-[860,647,7],[875,642,7],[889,637,7],[905,631,7],[869,659,7],[886,654,7],[903,649,7],[920,644,7],
-[894,688,9],[918,680,9],[940,672,9],
-[944,608,7],[960,603,7],[977,598,7],[994,591,7],[952,625,7],[970,620,7],[990,615,7],
-[944,575,9],[969,565,9],[993,555,9],[976,533,8],
-[1013,677,7],[1005,696,6],[1024,703,6],[1037,682,6],[1060,687,6],
-[1052,650,8],[1078,654,9],[1094,629,10],
-[1036,585,8],[1056,580,8],[1080,575,7],[1040,607,6],[1061,602,7],
-[1015,546,7],[1031,531,8],[1057,538,7],[1053,514,8],[1038,489,6],
-[1126,607,13],[1153,579,9],[1190,491,6],[1168,482,6],
-[691,182,8],[710,176,9],[731,166,9],[851,241,6],[866,247,6],[881,253,6]];
+
 const placements=tankPixels.map(([px,py,r],i)=>[...plan(px,py),r*.29,Math.max(2.2,r*.29*1.05),i%4,[.2,.65,0,.85,1,.4][i%6]]);
 placements.forEach(a=>storage(...a));
 for(const pts of [[[847,664],[925,637],[947,655]],[[938,630],[1014,602],[1026,558]],[[1010,714],[1071,721],[1102,671]],[[719,624],[792,643]]])strip(path(pts),.23,silver,.6);

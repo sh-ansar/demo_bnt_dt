@@ -1,9 +1,10 @@
 import {createHierarchy,ancestors,descendants} from '/assets/3d/hierarchy.js';
+import {tankDescriptors} from '/assets/3d/layout.js';
 const $=s=>document.querySelector(s), viewport=$('#dt-viewport');
 const labels={terminal:'Терминал',zone:'Зона',tank:'Резервуар',pump:'Насос',valve:'Клапан',sensor:'Датчик',motor:'Электродвигатель',coupling:'Муфта',cabinet:'Шкаф управления',equipment:'Оборудование'};
 const icons={zone:'ЗОНА',tank:'РВС',pump:'Н',valve:'К',sensor:'КИП',motor:'М',coupling:'МФ',cabinet:'ШУ',equipment:'ОБ'};
 const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let scene,nodes,current='terminal',riskOnly=false;
+let scene,nodes=createHierarchy(tankDescriptors,window.BNT_DATA.assets),current='terminal',riskOnly=false;
 function error(message){$('#dt-loading').hidden=true;$('#dt-scene-error').hidden=false;$('#dt-scene-error p').textContent=message;}
 viewport.addEventListener('scene-error',e=>error(e.detail));
 function zoneOf(id){return ancestors(nodes,id).find(n=>n.type==='zone');}
@@ -18,7 +19,7 @@ function render(){
  const zone=zoneOf(current);$('#dt-zone-buttons').innerHTML=[...nodes.values()].filter(n=>n.type==='zone').map(n=>`<button type="button" data-node="${n.id}" aria-pressed="${zone?.id===n.id}">${escape(n.name)}</button>`).join('');
  let html='';
  if(asset){html+=`<span class="dt3-status ${escape(asset.tone)}">${escape(asset.status)}</span><p class="dt3-note">${escape(asset.location)} · ${escape(asset.model)}<br>Показатели из демонстрационного реестра БНТ</p><div class="dt3-metrics">${metric('Загрузка',asset.load+'%')}${metric('Износ',asset.wear+'%')}${metric('Следующее ТО',asset.nextService)}${metric('Расходы на ремонт',asset.cost)}</div>`;}
- else if(node.type==='terminal'){html+='<p class="dt3-note">Выберите зону на модели или в списке. Затем откройте резервуар и связанное оборудование.</p><div class="dt3-metrics">'+metric('Зоны',6)+metric('Резервуары',scene.tanks.length)+'</div>';}
+ else if(node.type==='terminal'){html+='<p class="dt3-note">Выберите зону на модели или в списке. Затем откройте резервуар и связанное оборудование.</p><div class="dt3-metrics">'+metric('Зоны',6)+metric('Резервуары',tankDescriptors.length)+'</div>';}
  else if(node.type==='zone'){const all=descendants(nodes,node.id);html+=`<div class="dt3-metrics">${metric('Резервуары',all.filter(n=>n.type==='tank').length)}${metric('Объекты с риском',all.filter(isRisk).length)}</div><p class="dt3-note">Границы и размещение оборудования показаны условно. Выберите объект для детального просмотра.</p>`;}
  else if(node.type==='tank'){html+=`<span class="dt3-status">${escape(node.product)}</span><p class="dt3-note">Демонстрационный резервуар. Технические показатели не подключены к реестру.</p>`;}
  else html+=`<p class="dt3-note">${escape(node.note||'Демонстрационная компоновка. Паспорт и технические показатели не заведены.')}</p>`;
@@ -36,12 +37,9 @@ function render(){
 function select(id,{focus=true,history=true}={}){
  if(!nodes?.has(id))return;
  current=id;$('#dt-search').value='';riskOnly=false;$('#dt-risks').setAttribute('aria-pressed','false');
- scene.select(id,focus);render();$('#dt-drawer').scrollTop=0;
+ scene?.select(id,focus);render();$('#dt-drawer').scrollTop=0;
  if(history){const url=new URL(location.href);if(id==='terminal')url.searchParams.delete('object');else url.searchParams.set('object',id);window.history.replaceState(null,'',url);}
 }
-try{
- const {createTerminalScene}=await import('/assets/3d/terminal-scene.js');
- scene=createTerminalScene(viewport,id=>select(id));nodes=createHierarchy(scene.tanks,window.BNT_DATA.assets);scene.bind(nodes);
  document.querySelector('.dt3-workspace').addEventListener('click',e=>{const btn=e.target.closest('[data-node]');if(btn)select(btn.dataset.node);});
  $('#dt-search').addEventListener('input',render);
  $('#dt-risks').addEventListener('click',()=>{riskOnly=!riskOnly;$('#dt-risks').setAttribute('aria-pressed',String(riskOnly));render();});
@@ -50,11 +48,25 @@ try{
  $('#dt-plus').addEventListener('click',()=>scene.zoom(.8));$('#dt-minus').addEventListener('click',()=>scene.zoom(1.25));
  $('#dt-iso').addEventListener('click',()=>scene.view('iso'));$('#dt-top').addEventListener('click',()=>scene.view('top'));$('#dt-port').addEventListener('click',()=>scene.view('port'));
  $('#dt-theme').addEventListener('click',()=>{const light=scene.theme();$('.dt3-model').classList.toggle('dark',!light);$('#dt-theme').textContent=light?'Тёмная тема':'Светлая тема';});
- $('#dt-motion').textContent=scene.animating?'Пауза движения':'Продолжить движение';$('#dt-motion').addEventListener('click',()=>{$('#dt-motion').textContent=scene.pause()?'Пауза движения':'Продолжить движение';});
- $('#dt-drawer-body').addEventListener('input',e=>{if(e.target.id!=='dt-fill')return;const fill=Number(e.target.value);nodes.get(current).fill=fill;scene.setFill(current,fill);$('#dt-fill-value').textContent=fill+'%';});
+ $('#dt-motion').textContent='Пауза движения';$('#dt-motion').addEventListener('click',()=>{$('#dt-motion').textContent=scene.pause()?'Пауза движения':'Продолжить движение';});
+ $('#dt-drawer-body').addEventListener('input',e=>{if(e.target.id!=='dt-fill')return;const fill=Number(e.target.value);nodes.get(current).fill=fill;scene?.setFill(current,fill);$('#dt-fill-value').textContent=fill+'%';});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&current!=='terminal')select(nodes.get(current).parent||'terminal');});
  const initial=new URL(location.href).searchParams.get('object')||new URL(location.href).searchParams.get('id')||'terminal';
  select(nodes.has(initial)?initial:'terminal',{history:false,focus:initial!=='terminal'});
+
+ window.addEventListener('pagehide',e=>{if(!e.persisted)scene?.dispose();});
+
+// Navigation remains available when WebGL is unavailable; only the canvas controls are disabled.
+const cameraButtons=[...document.querySelectorAll('.dt3-camera button,.dt3-scene-tools button')];
+cameraButtons.forEach(button=>button.disabled=true);
+try {
+ const {createTerminalScene}=await import('/assets/3d/terminal-scene.js');
+ scene=createTerminalScene(viewport,id=>select(id));
+ scene.bind(nodes);scene.select(current,current!=='terminal');
+ cameraButtons.forEach(button=>button.disabled=false);
+ $('#dt-motion').textContent=scene.animating?'Пауза движения':'Продолжить движение';
  $('#dt-loading').hidden=true;
- window.addEventListener('pagehide',e=>{if(!e.persisted)scene.dispose();});
-}catch(e){console.error('BNT 3D initialization failed',e);error('Для 3D требуется браузер с WebGL и аппаратным ускорением. Проверьте подключение и повторите загрузку.');}
+} catch(e) {
+ console.error('BNT 3D initialization failed',e);
+ error('В этом браузере недоступно 3D. Включите аппаратное ускорение и обновите страницу. Зоны и карточки доступны справа.');
+}
