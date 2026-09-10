@@ -4,15 +4,15 @@
   "trailingSlash": false,
   "redirects": [
     {
-      "source": "/digital-twin",
-      "destination": "/dispatcher",
+      "source": "/dispatcher",
+      "destination": "/digital-twin",
       "permanent": true
     }
   ],
   "rewrites": [
     {
-      "source": "/dispatcher",
-      "destination": "/dispatcher.html"
+      "source": "/digital-twin",
+      "destination": "/digital-twin.html"
     },
     {
       "source": "/equipment",
