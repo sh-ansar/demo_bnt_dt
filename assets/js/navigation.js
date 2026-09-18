@@ -2,15 +2,15 @@ window.BNTNavigation = {
   groups: [
     {
       label: "Предприятие",
-      defaultPage: "overview",
-      defaultHref: "/",
+      defaultPage: "dispatcher",
+      defaultHref: "/digital-twin",
       items: [
         {
           id: "enterprise-home",
           label: "Главная",
           icon: "home",
           children: [
-            ["overview", "/", "Обзор", "dispatcher"],
+            ["dispatcher", "/digital-twin", "Цифровой двойник", "dispatcher"],
             ["operations", "/operations", "Операционная аналитика", "templates"],
             ["analytics", "/analytics", "Предиктивная аналитика", "analytics"]
           ]
@@ -57,6 +57,7 @@ window.BNTNavigation = {
   ],
   pages: {
     overview: ["Обзор", "Диспетчерский центр и текущее состояние терминала"],
+    dispatcher: ["Цифровой двойник", "Интерактивная 3D-модель терминала, зон, резервуаров и оборудования"],
     operations: ["Операционная аналитика", "Обзор операционной деятельности предприятия"],
     "operations-archive": ["Операционная аналитика_archiv", "Архивная версия операционной аналитики"],
     analytics: ["Предиктивная аналитика", "Риски простоев, сценарии, доступность и бюджет ТОиР"],

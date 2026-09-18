@@ -5,7 +5,7 @@ const path = require("path");
 const ROOT = path.resolve(__dirname);
 const PORT = Number(process.env.PORT || 8080);
 const ROUTES = {
-  "/":"index.html", "/dispatcher":"dispatcher.html", "/digital-twin":"dispatcher.html",
+  "/":"index.html", "/dispatcher":"dispatcher.html", "/digital-twin":"digital-twin.html",
   "/operations":"operations.html", "/operations_archiv":"operations_archiv.html",
   "/equipment":"equipment.html", "/equipment-detail":"equipment-detail.html", "/analytics":"analytics.html",
   "/toir":"toir.html", "/logistics":"logistics.html", "/procurement":"procurement.html",
@@ -42,4 +42,3 @@ const server=http.createServer((req,res)=>{
 });
 server.on("error",error=>{if(error.code==="EADDRINUSE"){console.error(`Port ${PORT} is already in use.`);process.exit(1);}throw error;});
 server.listen(PORT,"127.0.0.1",()=>{console.log(`BNT Enterprise: http://localhost:${PORT}/`);console.log(`Dispatcher:     http://localhost:${PORT}/dispatcher`);});
-

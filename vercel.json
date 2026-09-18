@@ -4,15 +4,20 @@
   "trailingSlash": false,
   "redirects": [
     {
-      "source": "/digital-twin",
-      "destination": "/dispatcher",
+      "source": "/",
+      "destination": "/digital-twin",
+      "permanent": false
+    },
+    {
+      "source": "/dispatcher",
+      "destination": "/digital-twin",
       "permanent": true
     }
   ],
   "rewrites": [
     {
-      "source": "/dispatcher",
-      "destination": "/dispatcher.html"
+      "source": "/digital-twin",
+      "destination": "/digital-twin.html"
     },
     {
       "source": "/operations",
