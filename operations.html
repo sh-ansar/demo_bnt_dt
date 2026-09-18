@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BNT — Операционная аналитика</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css?v=17">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css?v=10">
+  <link rel="stylesheet" href="/assets/css/pages/budget-payments.css?v=15">
+  <link rel="stylesheet" href="/assets/css/pages/operations.css?v=126">
+  <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9121">
+</head>
+<body data-page="operations">
+  <main id="page-content" class="page-content operations-page">
+    <section class="operations-kpis" aria-label="Ключевые операционные показатели">
+      <article class="analytics-kpi">
+        <div class="analytics-kpi__heading">
+          <span class="analytics-kpi__label typography-body-smallest">ТЕКУЩЕЕ ИСПОЛНЕНИЕ ПРИЕМА</span>
+          <a class="payment-summary-card__link" href="/transshipment" aria-label="Перейти к перевалке">
+            <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+          </a>
+        </div>
+        <div class="kpi-card__body">
+          <strong class="analytics-kpi__value typography-label-base">241 тыс. м³</strong>
+          <p class="analytics-kpi__context typography-body-smallest">Операционный контур</p>
+        </div>
+      </article>
+
+      <article class="payment-summary-card payment-summary-card--error">
+        <header class="payment-summary-card__heading">
+          <h2 class="payment-summary-card__title typography-body-smallest">ПОДАЧА ВАГОНОВ</h2>
+          <a class="payment-summary-card__link" href="/logistics" aria-label="Перейти к подаче вагонов">
+            <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+          </a>
+        </header>
+        <div class="payment-summary-card__content">
+          <div class="payment-progress-ring" role="img" aria-label="76 процентов">
+            <svg viewBox="0 0 48 48" aria-hidden="true">
+              <circle class="payment-progress-ring__track" cx="24" cy="24" r="20"></circle>
+              <circle class="payment-progress-ring__bar" cx="24" cy="24" r="20" pathLength="100" stroke-dasharray="76 100" transform="rotate(-90 24 24)"></circle>
+            </svg>
+            <strong class="payment-progress-ring__value typography-label-smallest">76%</strong>
+          </div>
+          <div class="payment-summary-card__copy">
+            <strong class="payment-summary-card__amount typography-label-base">48 вагонов</strong>
+            <span class="payment-summary-card__description typography-body-smallest">Подтверждено из 63 запланированных</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="analytics-kpi">
+        <div class="analytics-kpi__heading">
+          <span class="analytics-kpi__label typography-body-smallest">КРИТИЧЕСКИЙ ЗИП</span>
+          <a class="payment-summary-card__link" href="/procurement" aria-label="Перейти к критическому ЗИП">
+            <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+          </a>
+        </div>
+        <div class="kpi-card__body">
+          <strong class="analytics-kpi__value typography-label-base">3 позиции</strong>
+          <p class="analytics-kpi__context typography-body-smallest">Запас ниже страхового минимума</p>
+        </div>
+      </article>
+
+      <article class="payment-summary-card payment-summary-card--brand">
+        <header class="payment-summary-card__heading">
+          <h2 class="payment-summary-card__title typography-body-smallest">ИСПОЛНЕНИЕ ЕГПЗ</h2>
+          <a class="payment-summary-card__link" href="/budget-payments" aria-label="Перейти к исполнению ЕГПЗ">
+            <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+          </a>
+        </header>
+        <div class="payment-summary-card__content">
+          <div class="payment-progress-ring" role="img" aria-label="95 процентов">
+            <svg viewBox="0 0 48 48" aria-hidden="true">
+              <circle class="payment-progress-ring__track" cx="24" cy="24" r="20"></circle>
+              <circle class="payment-progress-ring__bar" cx="24" cy="24" r="20" pathLength="100" stroke-dasharray="95 100" transform="rotate(-90 24 24)"></circle>
+            </svg>
+            <strong class="payment-progress-ring__value typography-label-smallest">95%</strong>
+          </div>
+          <div class="payment-summary-card__copy">
+            <strong class="payment-summary-card__amount typography-label-base">607 145 000 KZT</strong>
+            <span class="payment-summary-card__description typography-body-smallest">Исполнено из 637 000 000 KZT</span>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="daily-summary" aria-label="Суточная сводка за 18 февраля 2025 года">
+      <div class="daily-summary-scroll">
+        <div class="daily-summary-viewport" data-flow-viewport>
+          <div class="daily-flow-board" data-flow-board>
+            <svg class="daily-connections" data-flow-svg aria-hidden="true">
+              <defs>
+                <marker id="daily-flow-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                  <path class="daily-connection-arrow" d="M1 1L7 4L1 7" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </marker>
+                <marker id="daily-pier-two-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                  <path class="daily-pier-two-arrow" d="M1 1L7 4L1 7" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </marker>
+                <marker id="daily-pier-three-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                  <path class="daily-pier-three-arrow" d="M1 1L7 4L1 7" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </marker>
+              </defs>
+              <path class="daily-connection-path" data-flow-path d="" stroke-dasharray="8 8" marker-start="url(#daily-flow-arrow)" marker-end="url(#daily-flow-arrow)"/>
+              <path class="daily-connection-path" data-pier-one-cold-path d="" stroke-dasharray="8 8" marker-end="url(#daily-flow-arrow)"/>
+              <path class="daily-connection-path" data-import-pier-one-path d="" stroke-dasharray="8 8" marker-start="url(#daily-flow-arrow)"/>
+              <path class="daily-connection-path" data-import-svm-branch d="" stroke-dasharray="8 8" marker-start="url(#daily-flow-arrow)" marker-end="url(#daily-flow-arrow)"/>
+              <path class="daily-pier-two-path" data-pier-two-path d="" stroke-dasharray="8 8" marker-start="url(#daily-pier-two-arrow)" marker-end="url(#daily-pier-two-arrow)"/>
+              <path class="daily-pier-three-path" data-pier-three-source-path d="" stroke-dasharray="8 8" marker-start="url(#daily-pier-three-arrow)"/>
+              <path class="daily-pier-three-path" data-pier-three-trunk d="" stroke-dasharray="8 8"/>
+              <path class="daily-pier-three-path" data-pier-three-branch="0" d="" stroke-dasharray="8 8" marker-end="url(#daily-pier-three-arrow)"/>
+              <path class="daily-pier-three-path" data-pier-three-branch="1" d="" stroke-dasharray="8 8" marker-end="url(#daily-pier-three-arrow)"/>
+              <path class="daily-pier-three-path" data-pier-three-branch="2" d="" stroke-dasharray="8 8" marker-end="url(#daily-pier-three-arrow)"/>
+            </svg>
+
+            <div class="daily-summary__overview" id="daily-summary-overview" data-summary-overview>
+              <aside class="daily-summary__side">
+                <div class="daily-summary__stamp">
+                  <img src="/assets/icons/daily-summary/ship.svg" alt="" width="54" height="42">
+                  <div>
+                    <span>Суточная сводка:</span>
+                    <strong>18.02.2025</strong>
+                  </div>
+                </div>
+
+                <section class="pier-panel pier-panel--vertical" aria-label="Причалы">
+                  <div class="pier-card pier-card--neutral" data-pier-svm-target><span>Причал</span><strong>СВМ</strong></div>
+                  <div class="pier-card pier-card--one" data-flow-target><span>Причал</span><strong>№1</strong></div>
+                  <div class="pier-card pier-card--two" data-pier-two-source><span>Причал</span><strong>№2</strong></div>
+                  <div class="pier-card pier-card--three" data-pier-three-source><span>Причал</span><strong>№3</strong></div>
+                </section>
+              </aside>
+
+              <div class="daily-summary__primary" data-summary-primary></div>
+              <div class="daily-summary__import" data-summary-import></div>
+            </div>
+
+            <div class="daily-summary__bottom-grid" id="daily-summary-bottom" data-summary-bottom></div>
+
+            <article class="flow-line-detail" data-flow-detail hidden>
+              <div class="flow-line-detail__header">
+                <h3>Ж/Д Эстакада №8</h3>
+                <div class="flow-line-detail__routes" data-flow-detail-routes hidden></div>
+              </div>
+              <div class="flow-line-detail__cards" data-flow-detail-cards></div>
+            </article>
+
+            <button class="flow-line-toggle" type="button" data-flow-toggle aria-expanded="false" aria-label="Показать данные Ж/Д эстакады №8">
+              <span class="flow-line-toggle__symbol" data-flow-toggle-symbol aria-hidden="true">
+                <svg class="flow-line-toggle__icon flow-line-toggle__icon--plus" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 5.8335V10.1668M10.1663 8.00016H5.83301M14.1663 8.00016C14.1663 11.4059 11.4054 14.1668 7.99967 14.1668C4.59392 14.1668 1.83301 11.4059 1.83301 8.00016C1.83301 4.59441 4.59392 1.8335 7.99967 1.8335C11.4054 1.8335 14.1663 4.59441 14.1663 8.00016Z" stroke="currentColor" stroke-width="1.2" stroke-miterlimit="10" stroke-linecap="round"/>
+                </svg>
+                <svg class="flow-line-toggle__icon flow-line-toggle__icon--close" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M10.1663 5.8335L5.83301 10.1668M5.83301 5.8335L10.1663 10.1668M14.1663 8.00016C14.1663 11.4059 11.4054 14.1668 7.99967 14.1668C4.59392 14.1668 1.83301 11.4059 1.83301 8.00016C1.83301 4.59441 4.59392 1.8335 7.99967 1.8335C11.4054 1.8335 14.1663 4.59441 14.1663 8.00016Z" stroke="currentColor" stroke-width="1.2" stroke-miterlimit="10" stroke-linecap="round"/>
+                </svg>
+              </span>
+            </button>
+          </div>
+
+        <div class="daily-summary-zoom" data-zoom-control role="group" aria-label="Масштаб схемы">
+          <button type="button" data-zoom-out aria-label="Уменьшить масштаб">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M4.375 10H15.625" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="daily-summary-zoom__range">
+            <span class="daily-summary-zoom__track" aria-hidden="true">
+              <span class="daily-summary-zoom__line"></span>
+            </span>
+            <input type="range" data-zoom-range min="50" max="150" step="5" value="100" aria-label="Масштаб схемы" aria-valuetext="100 процентов">
+          </div>
+          <button type="button" data-zoom-in aria-label="Увеличить масштаб">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M10 4.375V15.625M15.625 10H4.375" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <output class="daily-summary__zoom-value" data-zoom-value aria-live="polite">100%</output>
+        </div>
+
+        </div>
+
+        <button class="daily-summary-toggle is-expanded" type="button" data-summary-toggle aria-expanded="true" aria-controls="daily-summary-overview daily-summary-bottom" aria-label="Свернуть суточную сводку">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M16 16.2008L12 12.2008L8 16.2008M16 12.8008L12 8.80078L8 12.8008" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <section class="financial-overview" data-financial-overview aria-labelledby="financial-overview-title">
+      <header class="financial-overview__header">
+        <div class="financial-overview__heading">
+          <h2 id="financial-overview-title" class="typography-h5">Финансовые показатели</h2>
+          <span class="pill pill--default pill--round typography-body-smallest" data-financial-date-filter>
+            <span class="pill__title">На текущую дату</span>
+            <button type="button" data-financial-clear-date aria-label="Убрать фильтр «На текущую дату»">
+              <svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+            </button>
+          </span>
+        </div>
+
+        <div class="chart-actions">
+          <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-financial-export aria-label="Скачать финансовые показатели">
+            <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg>
+          </button>
+          <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-financial-filter>
+            <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg>
+            <span>Фильтр</span>
+            <span class="button-smallest-secondary-radius__counter" data-financial-filter-count>1</span>
+          </button>
+          <a class="section-expand-link button-smallest-secondary-radius typography-button-smallest" href="/reports" aria-label="К управленческой отчетности">
+            <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+            <span>К управленческой отчетности</span>
+          </a>
+        </div>
+      </header>
+
+      <div class="financial-kpis" aria-label="Ключевые финансовые показатели">
+        <article class="financial-kpi">
+          <div class="financial-kpi__heading"><span class="financial-kpi__title typography-body-smallest">Выручка</span><div class="financial-kpi__info-wrap"><button class="info-icon-button" type="button" data-financial-kpi-info aria-expanded="false" aria-controls="financial-kpi-info-revenue" aria-label="Информация о выручке"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg></button><div id="financial-kpi-info-revenue" class="origin-breakdown__info-popover financial-kpi__popover" role="dialog" aria-label="Информация о выручке" hidden><button class="origin-breakdown__info-close" type="button" data-financial-kpi-close aria-label="Закрыть информацию"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button><p class="typography-body-smallest">Факт 09.2025. Изменение рассчитано к факту 09.2024.</p></div></div></div>
+          <div class="kpi-card__body">
+            <strong class="financial-kpi__value typography-label-base">$ 1 180 000,00</strong>
+            <p class="financial-kpi__trend"><span class="financial-kpi__trend-metric typography-label-smallest is-positive" aria-label="Рост на 7,8 процента"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=2#TrendArrow"></use></svg>7,8%</span><span class="financial-kpi__trend-context typography-body-smallest">к факту 09.2024</span></p>
+          </div>
+        </article>
+        <article class="financial-kpi">
+          <div class="financial-kpi__heading"><span class="financial-kpi__title typography-body-smallest">Операционная прибыль</span><div class="financial-kpi__info-wrap"><button class="info-icon-button" type="button" data-financial-kpi-info aria-expanded="false" aria-controls="financial-kpi-info-operating" aria-label="Информация об операционной прибыли"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg></button><div id="financial-kpi-info-operating" class="origin-breakdown__info-popover financial-kpi__popover" role="dialog" aria-label="Информация об операционной прибыли" hidden><button class="origin-breakdown__info-close" type="button" data-financial-kpi-close aria-label="Закрыть информацию"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button><p class="typography-body-smallest">Факт 09.2025. Изменение рассчитано к факту 09.2024.</p></div></div></div>
+          <div class="kpi-card__body">
+            <strong class="financial-kpi__value typography-label-base">$ 142 000,00</strong>
+            <p class="financial-kpi__trend"><span class="financial-kpi__trend-metric typography-label-smallest is-positive" aria-label="Рост на 10,9 процента"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=2#TrendArrow"></use></svg>10,9%</span><span class="financial-kpi__trend-context typography-body-smallest">к факту 09.2024</span></p>
+          </div>
+        </article>
+        <article class="financial-kpi">
+          <div class="financial-kpi__heading"><span class="financial-kpi__title typography-body-smallest">Чистая прибыль</span><div class="financial-kpi__info-wrap"><button class="info-icon-button" type="button" data-financial-kpi-info aria-expanded="false" aria-controls="financial-kpi-info-net" aria-label="Информация о чистой прибыли"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg></button><div id="financial-kpi-info-net" class="origin-breakdown__info-popover financial-kpi__popover" role="dialog" aria-label="Информация о чистой прибыли" hidden><button class="origin-breakdown__info-close" type="button" data-financial-kpi-close aria-label="Закрыть информацию"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button><p class="typography-body-smallest">Факт 09.2025. Изменение рассчитано к факту 09.2024.</p></div></div></div>
+          <div class="kpi-card__body">
+            <strong class="financial-kpi__value typography-label-base">$ 86 000,00</strong>
+            <p class="financial-kpi__trend"><span class="financial-kpi__trend-metric typography-label-smallest is-positive" aria-label="Рост на 19,4 процента"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=2#TrendArrow"></use></svg>19,4%</span><span class="financial-kpi__trend-context typography-body-smallest">к факту 09.2024</span></p>
+          </div>
+        </article>
+        <article class="financial-kpi">
+          <div class="financial-kpi__heading"><span class="financial-kpi__title typography-body-smallest">EBITDA</span><div class="financial-kpi__info-wrap"><button class="info-icon-button" type="button" data-financial-kpi-info aria-expanded="false" aria-controls="financial-kpi-info-ebitda" aria-label="Информация об EBITDA"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg></button><div id="financial-kpi-info-ebitda" class="origin-breakdown__info-popover financial-kpi__popover" role="dialog" aria-label="Информация об EBITDA" hidden><button class="origin-breakdown__info-close" type="button" data-financial-kpi-close aria-label="Закрыть информацию"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button><p class="typography-body-smallest">Факт 09.2025. Изменение рассчитано к факту 09.2024.</p></div></div></div>
+          <div class="kpi-card__body">
+            <strong class="financial-kpi__value typography-label-base">$ 238 000,00</strong>
+            <p class="financial-kpi__trend"><span class="financial-kpi__trend-metric typography-label-smallest is-positive" aria-label="Рост на 16,7 процента"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=2#TrendArrow"></use></svg>16,7%</span><span class="financial-kpi__trend-context typography-body-smallest">к факту 09.2024</span></p>
+          </div>
+        </article>
+        <article class="financial-kpi">
+          <div class="financial-kpi__heading"><span class="financial-kpi__title typography-body-smallest">Рентабельность</span><div class="financial-kpi__info-wrap"><button class="info-icon-button" type="button" data-financial-kpi-info aria-expanded="false" aria-controls="financial-kpi-info-margin" aria-label="Информация о рентабельности"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg></button><div id="financial-kpi-info-margin" class="origin-breakdown__info-popover financial-kpi__popover" role="dialog" aria-label="Информация о рентабельности" hidden><button class="origin-breakdown__info-close" type="button" data-financial-kpi-close aria-label="Закрыть информацию"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button><p class="typography-body-smallest">Рентабельность — отношение чистой прибыли к выручке. Изменение рассчитано к рентабельности 09.2024.</p></div></div></div>
+          <div class="kpi-card__body">
+            <strong class="financial-kpi__value typography-label-base">7,3%</strong>
+            <p class="financial-kpi__trend"><span class="financial-kpi__trend-metric typography-label-smallest is-positive" aria-label="Рост на 10,8 процента"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=2#TrendArrow"></use></svg>10,8%</span><span class="financial-kpi__trend-context typography-body-smallest">к факту 09.2024</span></p>
+          </div>
+        </article>
+      </div>
+
+      <article class="financial-plan-fact" aria-labelledby="financial-plan-fact-title">
+        <header class="financial-plan-fact__header">
+          <div class="financial-plan-fact__heading">
+            <div class="financial-plan-fact__title-row">
+              <h3 id="financial-plan-fact-title" class="typography-caption-small">План vs Факт (Расход / Доход / Прибыль)</h3>
+              <button class="info-icon-button" type="button" data-financial-info aria-label="Информация о диаграмме">
+                <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <div class="chart-tabs" role="tablist" aria-label="Тип финансового показателя">
+          <button class="typography-label-small is-active" type="button" role="tab" aria-selected="true" data-financial-tab="income">Доходы, тыс. $</button>
+          <button class="typography-label-small" type="button" role="tab" aria-selected="false" data-financial-tab="expenses">Расходы, тыс. $</button>
+          <button class="typography-label-small" type="button" role="tab" aria-selected="false" data-financial-tab="profit">Прибыль, тыс. $</button>
+        </div>
+
+        <div class="financial-chart" role="tabpanel">
+          <div class="financial-chart__viewport chart-scrollbar">
+            <svg data-financial-chart viewBox="0 0 1440 372" role="img" aria-label="Столбчатая диаграмма плана и факта"></svg>
+          </div>
+          <div class="financial-chart__legend typography-body-smallest" aria-label="Легенда">
+            <span><i class="financial-chart__legend-dot financial-chart__legend-dot--primary"></i>Факт 09.2024</span>
+            <span><i class="financial-chart__legend-dot financial-chart__legend-dot--secondary"></i>План 09.2025</span>
+            <span><i class="financial-chart__legend-dot financial-chart__legend-dot--positive"></i>Факт 09.2025</span>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="cash-flow-section" data-cash-flow aria-labelledby="cash-flow-title">
+      <article class="chart-card chart-card--wide cash-flow-card">
+        <header class="chart-card__header">
+          <div class="chart-card__heading">
+            <div class="chart-card__title-row">
+              <h2 id="cash-flow-title" class="typography-h5">Cash Flow — Оплаты по месяцам (План vs Факт)</h2>
+              <div class="origin-title-info">
+                <button class="info-icon-button" type="button" data-cash-info aria-expanded="false" aria-controls="cash-flow-info" aria-label="Информация о диаграмме оплат"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg></button>
+                <div id="cash-flow-info" class="origin-breakdown__info-popover" data-cash-info-popover role="dialog" aria-label="Информация о диаграмме оплат" hidden>
+                  <button class="origin-breakdown__info-close" type="button" data-cash-info-close aria-label="Закрыть информацию"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button>
+                  <p class="typography-body-smallest">Положительная дельта: план выше факта; отрицательная: факт выше плана. Факт показан по август 2026 года. Недельная разбивка демонстрационная и сохраняет сумму месяца. Выберите месяц или прокрутите колесо над его столбцом.</p>
+                </div>
+              </div>
+            </div>
+            <div class="chart-card__filters">
+              <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title" data-cash-period-label>с 01.01 по 31.12.2026</span><button type="button" data-cash-reset aria-label="Сбросить выбранный месяц"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+            </div>
+          </div>
+          <div class="chart-actions">
+            <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-cash-export aria-label="Скачать данные оплат"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+            <div class="cash-flow__filter">
+              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-cash-filter aria-expanded="false" aria-controls="cash-flow-filter-panel"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">1</span></button>
+              <div id="cash-flow-filter-panel" class="cash-flow__filter-panel" data-cash-filter-panel role="dialog" aria-label="Фильтр по периоду" hidden>
+                <div class="cash-flow__filter-heading"><strong class="typography-label-small">Период</strong><button class="origin-breakdown__info-close" type="button" data-cash-filter-close aria-label="Закрыть фильтр"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></div>
+                <button class="cash-flow__filter-option typography-body-small" type="button" data-cash-period-option="year">Весь 2026 год</button>
+                <div class="cash-flow__filter-months" data-cash-month-options></div>
+              </div>
+            </div>
+            <a class="section-expand-link button-smallest-secondary-radius typography-button-smallest" href="/reports" aria-label="К управленческой отчетности">
+              <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+              <span>К управленческой отчетности</span>
+            </a>
+          </div>
+        </header>
+        <div class="chart-viewport cash-flow-chart__viewport chart-scrollbar" data-cash-chart-viewport>
+          <svg class="chart-bars cash-flow-chart" data-cash-chart viewBox="0 0 1440 420" role="img" aria-label="Оплаты по месяцам: план, факт и дельта за 2026 год"></svg>
+          <div class="chart-tooltip cash-flow-chart__tooltip typography-body-smallest" data-cash-tooltip role="tooltip" hidden>
+            <strong class="cash-flow-chart__tooltip-title typography-caption-small" data-cash-tooltip-title></strong>
+            <div><span>Период</span><strong data-cash-tooltip-period></strong></div>
+            <div><span>Значение</span><strong data-cash-tooltip-value></strong></div>
+          </div>
+        </div>
+        <div class="chart-legend typography-body-smallest cash-flow__legend" aria-label="Легенда оплат">
+          <span><i class="chart-legend__dot cash-flow__dot--plan" aria-hidden="true"></i>План, KZT</span>
+          <span><i class="chart-legend__dot cash-flow__dot--fact" aria-hidden="true"></i>Факт, KZT</span>
+          <span><i class="chart-legend__dot cash-flow__dot--negative" aria-hidden="true"></i>Отрицательная дельта, KZT</span>
+          <span><i class="chart-legend__dot cash-flow__dot--positive" aria-hidden="true"></i>Положительная дельта, KZT</span>
+        </div>
+      </article>
+    </section>
+
+    <section class="transshipment-analytics logistics-overview" data-logistics-overview aria-labelledby="logistics-overview-title">
+      <header class="transshipment-analytics__header">
+        <h2 id="logistics-overview-title" class="typography-h5">Логистика (Вагоны и ёмкости)</h2>
+        <a class="section-expand-link button-smallest-secondary-radius typography-button-smallest" href="/logistics" aria-label="К вагонам">
+          <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+          <span>К вагонам</span>
+        </a>
+      </header>
+
+      <div class="chart-grid--two-column logistics-overview__grid">
+        <article class="chart-card logistics-overview__card" data-logistics-overview-card="products" aria-labelledby="logistics-product-volume-title">
+          <header class="chart-card__header">
+            <div class="chart-card__heading">
+              <div class="chart-card__title-row">
+                <h3 id="logistics-product-volume-title" class="typography-caption-small">Входящий объём по продукту</h3>
+                <button class="info-icon-button" type="button" data-logistics-overview-info="products" aria-label="Информация о входящем объёме"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg></button>
+              </div>
+              <div class="chart-card__filters">
+                <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">7 дней</span><button type="button" aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+                <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">Ед. изм. м³</span><button type="button" aria-label="Убрать единицу измерения"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+              </div>
+            </div>
+            <div class="chart-actions">
+              <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-logistics-overview-export="products" aria-label="Скачать данные входящего объёма"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-logistics-overview-filter="products"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">2</span></button>
+            </div>
+          </header>
+          <div class="logistics-bar-list" data-logistics-product-volume aria-label="Входящий объём по продуктам"></div>
+          <div class="chart-legend logistics-overview__legend typography-body-smallest" aria-label="Легенда входящего объёма">
+            <span><i class="chart-legend__dot logistics-overview__legend-dot" aria-hidden="true"></i>Входящий объём, м³</span>
+          </div>
+        </article>
+
+        <article class="chart-card logistics-overview__card" data-logistics-overview-card="capacities" aria-labelledby="logistics-capacity-title">
+          <header class="chart-card__header">
+            <div class="chart-card__heading">
+              <div class="chart-card__title-row">
+                <h3 id="logistics-capacity-title" class="typography-caption-small">Свободная ёмкость резервуаров</h3>
+                <button class="info-icon-button" type="button" data-logistics-overview-info="capacities" aria-label="Информация о свободной ёмкости"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg></button>
+              </div>
+              <div class="chart-card__filters">
+                <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">На текущую дату</span><button type="button" aria-label="Убрать дату"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+                <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">Ед. изм. м³</span><button type="button" aria-label="Убрать единицу измерения"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+              </div>
+            </div>
+            <div class="chart-actions">
+              <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-logistics-overview-export="capacities" aria-label="Скачать данные свободной ёмкости"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-logistics-overview-filter="capacities"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">2</span></button>
+            </div>
+          </header>
+          <div class="logistics-bar-list" data-logistics-capacity aria-label="Свободная ёмкость резервуаров"></div>
+          <div class="chart-legend logistics-overview__legend typography-body-smallest" aria-label="Легенда свободной ёмкости">
+            <span><i class="chart-legend__dot logistics-overview__legend-dot" aria-hidden="true"></i>Свободная ёмкость, м³</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="transshipment-analytics" data-transshipment-analytics aria-labelledby="transshipment-title">
+      <header class="transshipment-analytics__header">
+        <h2 id="transshipment-title" class="typography-h5">Логистика (Перевалка)</h2>
+        <a class="section-expand-link button-smallest-secondary-radius typography-button-smallest" href="/data" aria-label="К Pelogas">
+          <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+          <span>К Pelogas</span>
+        </a>
+      </header>
+
+      <article class="chart-card chart-card--wide" aria-labelledby="transshipment-volume-title">
+        <header class="chart-card__header">
+          <div class="chart-card__heading">
+            <div class="chart-card__title-row">
+              <h3 id="transshipment-volume-title" class="typography-caption-small">Объем перевалки по периодам</h3>
+              <button class="info-icon-button" type="button" data-transshipment-info="volume" aria-label="Информация об объеме перевалки">
+                <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg>
+              </button>
+            </div>
+            <div class="chart-card__filters">
+              <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title" data-transshipment-period-label>с 01.01.2020 до 31.12.2025</span><button type="button" aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+              <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">Ед. изм. МТ</span><button type="button" aria-label="Убрать единицу измерения"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+            </div>
+          </div>
+          <div class="chart-actions">
+            <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-transshipment-export="volume" aria-label="Скачать данные об объеме перевалки"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-transshipment-filter="volume"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">2</span></button>
+          </div>
+        </header>
+        <div class="chart-tabs" role="tablist" aria-label="Операция перевалки">
+          <button class="typography-label-small is-active" type="button" role="tab" aria-selected="true" data-transshipment-tab="shipment">Отгрузка</button>
+          <button class="typography-label-small" type="button" role="tab" aria-selected="false" data-transshipment-tab="receipt">Приёмка</button>
+          <button class="typography-label-small" type="button" role="tab" aria-selected="false" data-transshipment-tab="storage">Хранение</button>
+        </div>
+        <div class="chart-viewport chart-scrollbar" data-transshipment-chart-viewport>
+          <svg class="chart-bars" data-transshipment-cylinder viewBox="0 0 1440 420" role="img" aria-label="Объем перевалки по периодам"></svg>
+          <div class="chart-tooltip typography-body-smallest" data-chart-tooltip role="tooltip" hidden>
+            <div><span>Период</span><strong data-tooltip-period></strong></div>
+            <div><span>Тип</span><strong data-tooltip-type></strong></div>
+            <div><span>Кол-во</span><strong data-tooltip-value></strong></div>
+          </div>
+        </div>
+        <div class="chart-legend typography-body-smallest" data-transshipment-cylinder-legend aria-label="Легенда диаграммы">
+          <span class="chart-legend__item" data-transshipment-series="0" role="button" tabindex="0"><i class="chart-legend__dot series-crude"></i>Crude Oil</span>
+          <span class="chart-legend__item" data-transshipment-series="2" role="button" tabindex="0"><i class="chart-legend__dot series-dark"></i>Dark</span>
+          <span class="chart-legend__item" data-transshipment-series="3" role="button" tabindex="0"><i class="chart-legend__dot series-gas"></i>Gas</span>
+          <span class="chart-legend__item" data-transshipment-series="1" role="button" tabindex="0"><i class="chart-legend__dot series-light"></i>Light</span>
+        </div>
+      </article>
+
+      <div class="chart-grid--two-column">
+        <article class="chart-card" aria-labelledby="transshipment-product-title">
+          <header class="chart-card__header">
+            <div class="chart-card__heading">
+              <div class="chart-card__title-row">
+                <h3 id="transshipment-product-title" class="typography-caption-small">Объем перевалки по периодам</h3>
+                <button class="info-icon-button" type="button" data-transshipment-info="products" aria-label="Информация о продуктах"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg></button>
+              </div>
+              <div class="chart-card__filters">
+                <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">с 01.09 по 30.09.2025</span><button type="button" aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+                <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">Ед. изм. МТ</span><button type="button" aria-label="Убрать единицу измерения"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+              </div>
+            </div>
+            <div class="chart-actions">
+              <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-transshipment-export="products" aria-label="Скачать данные по продуктам"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-transshipment-filter="products"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">2</span></button>
+            </div>
+          </header>
+          <div class="chart-tabs" role="tablist" aria-label="Операция по продуктам">
+            <button class="typography-label-small is-active" type="button" role="tab" aria-selected="true" data-product-tab="shipment">Отгрузка</button>
+            <button class="typography-label-small" type="button" role="tab" aria-selected="false" data-product-tab="receipt">Приёмка</button>
+            <button class="typography-label-small" type="button" role="tab" aria-selected="false" data-product-tab="storage">Хранение</button>
+          </div>
+          <div class="chart-donut__viewport"><svg class="chart-donut" data-transshipment-donut viewBox="0 0 640 390" role="img" aria-label="Распределение объема перевалки по нефтепродуктам"></svg></div>
+          <div class="chart-legend chart-legend--wrap typography-body-smallest" data-product-legend aria-label="Легенда нефтепродуктов"></div>
+        </article>
+
+        <article class="chart-card chart-card--origin" aria-labelledby="transshipment-origin-title">
+          <header class="chart-card__header">
+            <div class="chart-card__heading">
+              <div class="chart-card__title-row">
+                <h3 id="transshipment-origin-title" class="typography-caption-small">Происхождение нефтепродукта</h3>
+                <div class="origin-title-info">
+                  <button class="info-icon-button" type="button" data-transshipment-info="origin" aria-expanded="false" aria-controls="origin-title-info" aria-label="Информация о происхождении нефтепродукта"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg></button>
+                  <div id="origin-title-info" class="origin-breakdown__info-popover" data-origin-info-popover role="dialog" aria-label="Информация о диаграмме" hidden>
+                    <button class="origin-breakdown__info-close" type="button" data-origin-info-close aria-label="Закрыть информацию"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button>
+                    <p class="typography-body-smallest">«Все» показывает долю стран. «По типам», «По сортам» и «По кодам FPN» показывают состав внутри выбранной страны. Разбивка демонстрационная.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="chart-card__filters">
+                <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">за 2025 год</span><button type="button" aria-label="Убрать год"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+                <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">Ед. изм. МТ</span><button type="button" aria-label="Убрать единицу измерения"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+              </div>
+            </div>
+            <div class="chart-actions">
+              <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-transshipment-export="origin" aria-label="Скачать данные о происхождении"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-transshipment-filter="origin"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">2</span></button>
+            </div>
+          </header>
+          <div class="chart-tabs chart-tabs--four" role="tablist" aria-label="Группировка происхождения">
+            <button id="origin-tab-all" class="typography-label-small is-active" type="button" role="tab" aria-selected="true" aria-controls="origin-chart-panel" data-origin-tab="all">Все</button>
+            <button id="origin-tab-type" class="typography-label-small" type="button" role="tab" aria-selected="false" aria-controls="origin-chart-panel" tabindex="-1" data-origin-tab="type">По типам</button>
+            <button id="origin-tab-grade" class="typography-label-small" type="button" role="tab" aria-selected="false" aria-controls="origin-chart-panel" tabindex="-1" data-origin-tab="grade">По сортам</button>
+            <button id="origin-tab-fpn" class="typography-label-small" type="button" role="tab" aria-selected="false" aria-controls="origin-chart-panel" tabindex="-1" data-origin-tab="fpn">По кодам FPN</button>
+          </div>
+          <div id="origin-chart-panel" class="origin-chart-panel" role="tabpanel" aria-labelledby="origin-tab-all" data-origin-panel>
+            <div class="chart-donut__viewport" data-origin-pie-viewport><svg class="chart-donut" data-transshipment-pie viewBox="0 0 640 390" role="img" aria-label="Распределение нефтепродуктов по происхождению"></svg></div>
+            <div class="chart-legend chart-legend--wrap typography-body-smallest" data-origin-legend aria-label="Легенда происхождения"></div>
+            <div class="origin-breakdown" data-origin-breakdown hidden>
+              <div class="origin-breakdown__plot">
+                <div class="origin-breakdown__grid" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+                <div class="origin-breakdown__scale" aria-hidden="true"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
+                <div class="origin-breakdown__rows" data-origin-rows></div>
+              </div>
+              <div class="origin-breakdown__details" data-origin-details aria-live="polite"></div>
+              <div class="origin-breakdown__tooltip" data-origin-tooltip role="tooltip" hidden><strong data-origin-tooltip-title></strong><span data-origin-tooltip-value></span></div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="egpz-summary" data-egpz-summary aria-labelledby="egpz-summary-title">
+      <header class="egpz-summary__header">
+        <div class="egpz-summary__heading">
+          <h2 id="egpz-summary-title" class="typography-h5">Текущий ЕГПЗ</h2>
+          <span class="pill pill--default pill--round typography-body-smallest" data-egpz-date-filter>
+            <span class="pill__title">На текущую дату</span>
+            <button type="button" data-egpz-clear-date aria-label="Убрать фильтр «На текущую дату»">
+              <svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+            </button>
+          </span>
+        </div>
+        <div class="chart-actions">
+          <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-egpz-filter>
+            <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg>
+            <span>Фильтр</span>
+            <span class="button-smallest-secondary-radius__counter" data-egpz-filter-count>1</span>
+          </button>
+          <a class="section-expand-link button-smallest-secondary-radius typography-button-smallest" href="/procurement" aria-label="К Закупкам">
+            <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+            <span>К Закупкам</span>
+          </a>
+        </div>
+      </header>
+
+      <div class="egpz-summary__metrics" aria-label="Исполнение бюджета ЕГПЗ">
+        <article class="egpz-metric">
+          <div class="egpz-metric__label typography-body-smallest"><span>Бюджет (план)</span><strong class="typography-label-smallest">100%</strong></div>
+          <div class="egpz-metric__value typography-caption-base">637 000 000 KZT</div>
+        </article>
+        <article class="egpz-metric">
+          <div class="egpz-metric__label typography-body-smallest"><i class="egpz-dot egpz-dot--positive"></i><span>Израсходовано</span><strong class="typography-label-smallest">95,3%</strong></div>
+          <div class="egpz-metric__value typography-caption-base">607 145 000 KZT</div>
+        </article>
+        <article class="egpz-metric">
+          <div class="egpz-metric__label typography-body-smallest"><i class="egpz-dot egpz-dot--warning"></i><span>В резерве</span><strong class="typography-label-smallest">4,05%</strong></div>
+          <div class="egpz-metric__value typography-caption-base">25 800 000 KZT</div>
+        </article>
+        <article class="egpz-metric">
+          <div class="egpz-metric__label typography-body-smallest"><i class="egpz-dot egpz-dot--available"></i><span>Доступно</span><strong class="typography-label-smallest">0,64%</strong></div>
+          <div class="egpz-metric__value typography-caption-base">4 055 000 KZT</div>
+        </article>
+      </div>
+
+      <div class="egpz-progress" role="img" aria-label="Израсходовано 95,3 процента, в резерве 4,05 процента, доступно 0,64 процента">
+        <span class="egpz-progress__segment egpz-progress__segment--positive"></span>
+        <span class="egpz-progress__segment egpz-progress__segment--warning"></span>
+        <span class="egpz-progress__remainder"></span>
+      </div>
+      <p class="egpz-summary__deviation typography-body-smallest">
+        <strong class="typography-label-smallest"><svg width="12" height="12" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=2#TrendArrow"></use></svg>0,32%</strong>
+        <span>1 595 000 KZT — отклонение по прошедшим месяцам, основное — Энергетика и Механика</span>
+      </p>
+    </section>
+
+    <section class="cash-flow-section department-performance-section" data-department-performance aria-labelledby="department-performance-title">
+      <article class="chart-card chart-card--wide cash-flow-card department-performance-card">
+        <header class="chart-card__header">
+          <div class="chart-card__heading">
+            <div class="chart-card__title-row">
+              <h2 id="department-performance-title" class="typography-h5">KPI подразделений и их укомплектованность</h2>
+            </div>
+            <div class="chart-card__filters">
+              <span class="pill pill--default pill--round typography-body-smallest" data-department-period-pill>
+                <span class="pill__title" data-department-period-label>На текущую дату</span>
+                <button type="button" data-department-period-clear aria-label="Убрать период">
+                  <svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+                </button>
+              </span>
+            </div>
+          </div>
+          <div class="chart-actions">
+            <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-department-export aria-label="Скачать показатели подразделений">
+              <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg>
+            </button>
+            <div class="cash-flow__filter">
+              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-department-filter aria-expanded="false" aria-controls="department-performance-filter-panel">
+                <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg>
+                <span>Фильтр</span>
+                <span class="button-smallest-secondary-radius__counter" data-department-filter-count>1</span>
+              </button>
+              <div id="department-performance-filter-panel" class="cash-flow__filter-panel" data-department-filter-panel role="dialog" aria-label="Фильтр показателей подразделений" hidden>
+                <div class="cash-flow__filter-heading">
+                  <strong class="typography-label-small">Период</strong>
+                  <button class="origin-breakdown__info-close" type="button" data-department-filter-close aria-label="Закрыть фильтр"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button>
+                </div>
+                <button class="cash-flow__filter-option typography-body-small is-active" type="button" data-department-period="2025">2025 год</button>
+                <button class="cash-flow__filter-option typography-body-small" type="button" data-department-period="2024">2024 год</button>
+              </div>
+            </div>
+            <a class="section-expand-link button-smallest-secondary-radius typography-button-smallest" href="/hr" aria-label="К кадрам">
+              <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+              <span>К кадрам</span>
+            </a>
+          </div>
+        </header>
+
+        <div class="chart-viewport chart-scrollbar payment-deviation-chart__viewport">
+          <div class="payment-deviation-chart" role="img" aria-label="Укомплектованность и KPI подразделений в процентах">
+            <div class="payment-deviation-chart__axis" aria-hidden="true">
+              <span>80</span><span>82</span><span>84</span><span>86</span><span>88</span><span>90</span><span>92</span><span>94</span><span>96</span><span>98</span><span>100</span>
+            </div>
+            <div class="payment-deviation-chart__body">
+              <div class="payment-deviation-chart__grid" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              </div>
+              <div class="payment-deviation-chart__rows">
+                <div class="payment-deviation-chart__row" role="img" aria-label="Отдел безопасности: укомплектованность 96 процентов, KPI подразделения 98 процентов">
+                  <span class="payment-deviation-chart__label" title="Отдел безопасности">Отдел безопасности</span>
+                  <span class="payment-deviation-chart__tracks" aria-hidden="true">
+                    <span class="payment-deviation-chart__track" style="--payment-deviation-value:80%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--plan"></i></span>
+                    <span class="payment-deviation-chart__track" style="--payment-deviation-value:90%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--fact"></i></span>
+                  </span>
+                </div>
+                <div class="payment-deviation-chart__row" role="img" aria-label="Планово-экономический отдел: укомплектованность 94 процента, KPI подразделения 91 процент">
+                  <span class="payment-deviation-chart__label" title="Планово-экономический отдел">Планово-экономический отдел</span>
+                  <span class="payment-deviation-chart__tracks" aria-hidden="true">
+                    <span class="payment-deviation-chart__track" style="--payment-deviation-value:70%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--plan"></i></span>
+                    <span class="payment-deviation-chart__track" style="--payment-deviation-value:55%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--fact"></i></span>
+                  </span>
+                </div>
+                <div class="payment-deviation-chart__row" role="img" aria-label="Отдел коммерции и логистики: укомплектованность 92 процента, KPI подразделения 87 процентов">
+                  <span class="payment-deviation-chart__label" title="Отдел коммерции и логистики">Отдел коммерции и логистики</span>
+                  <span class="payment-deviation-chart__tracks" aria-hidden="true">
+                    <span class="payment-deviation-chart__track" style="--payment-deviation-value:60%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--plan"></i></span>
+                    <span class="payment-deviation-chart__track" style="--payment-deviation-value:35%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--fact"></i></span>
+                  </span>
+                </div>
+                <div class="payment-deviation-chart__row" role="img" aria-label="Административный отдел: укомплектованность 99 процентов, KPI подразделения 94 процента">
+                  <span class="payment-deviation-chart__label" title="Административный отдел">Административный отдел</span>
+                  <span class="payment-deviation-chart__tracks" aria-hidden="true">
+                    <span class="payment-deviation-chart__track" style="--payment-deviation-value:95%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--plan"></i></span>
+                    <span class="payment-deviation-chart__track" style="--payment-deviation-value:70%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--fact"></i></span>
+                  </span>
+                </div>
+                <div class="payment-deviation-chart__row" role="img" aria-label="Отдел качества и контроля нефтепродуктов: укомплектованность 99 процентов, KPI подразделения 97 процентов">
+                  <span class="payment-deviation-chart__label" title="Отдел качества и контроля нефтепродуктов">Отдел качества и контроля нефтепродуктов</span>
+                  <span class="payment-deviation-chart__tracks" aria-hidden="true">
+                    <span class="payment-deviation-chart__track" style="--payment-deviation-value:95%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--plan"></i></span>
+                    <span class="payment-deviation-chart__track" style="--payment-deviation-value:85%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--fact"></i></span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-legend typography-body-smallest" aria-label="Легенда показателей подразделений">
+          <span><i class="chart-legend__dot payment-deviation__dot--plan" aria-hidden="true"></i>Укомплектованность, %</span>
+          <span><i class="chart-legend__dot payment-deviation__dot--fact" aria-hidden="true"></i>KPI подразделений, %</span>
+        </div>
+      </article>
+    </section>
+
+  </main>
+  <script src="/assets/js/navigation.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/data/logistics.js"></script>
+  <script src="/assets/js/shell.js?v=9120"></script>
+  <script src="/assets/js/chart-donut.js?v=9"></script>
+  <script src="/assets/js/pages/operations.js?v=91"></script>
+</body>
+</html>

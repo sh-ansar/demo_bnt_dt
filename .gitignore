@@ -4,6 +4,7 @@
 .env.*.local
 config.local.json
 node_modules
+.node/
 *.log
 .DS_Store
 Thumbs.db

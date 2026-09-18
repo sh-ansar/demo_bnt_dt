@@ -3,191 +3,200 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>BNT Enterprise — Текущее исполнение</title>
+  <title>BNT — Обзор</title>
+
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/css/layout.css">
   <link rel="stylesheet" href="/assets/css/components.css">
-  <link rel="stylesheet" href="/assets/css/pages/enterprise.css">
-  <link rel="stylesheet" href="/assets/css/pages/overview-v86.css">
-  <link rel="stylesheet" href="/assets/css/pages/overview-v90.css?v=9001">
-<link rel="stylesheet" href="/assets/css/shell-v91.css?v=9101"></head>
+  <link rel="stylesheet" href="/assets/css/pages/dispatcher-v87.css">
+  <link rel="stylesheet" href="/assets/css/pages/dispatcher-v90.css?v=9001">
+<link rel="stylesheet" href="/assets/css/shell-v91.css?v=9121"></head>
 
-<body data-page="home">
-<main id="page-content" class="page-content overview-page">
+<body data-page="overview">
+<main id="page-content" class="page-content flush">
 
-<section class="ov-hero">
-  <div class="ov-copy">
-    <span class="ov-eye"><i></i>Текущее исполнение · 07 сентября 2026</span>
-    <h2>Текущее состояние терминала</h2>
-    <p>
-      Единая оперативная картина по оборудованию, загрузке, логистике,
-      ТОиР, критическому ЗИП и управленческой отчетности.
-    </p>
+<section class="dt-stage">
 
-    <div class="ov-actions">
-      <a class="btn btn-primary" href="/dispatcher">Диспетчерский центр</a>
-      <a class="btn btn-secondary" href="/analytics">Аналитика и сценарии</a>
+  <div id="dt-viewport" class="dt-viewport">
+    <div id="dt-artboard" class="dt-artboard">
+
+      <img
+        src="/assets/terminal-map-reference.jpg"
+        alt="Операционная схема терминала BNT"
+        draggable="false"
+      >
+
+      <svg
+        id="dt-overlay"
+        viewBox="0 0 100 56.25"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <g data-layer-group="zones">
+          <polygon class="dt-zone dt-zone-rail"
+            points="8,18 44,17 44.5,22 9,24" />
+          <polygon class="dt-zone dt-zone-blue"
+            points="4.5,30.5 24,30 25,43 5,44" />
+          <polygon class="dt-zone dt-zone-blue"
+            points="28,30.5 60,27 62,42.5 31,45" />
+          <polygon class="dt-zone dt-zone-green"
+            points="55,9 91,9 89,38 61,36" />
+          <polygon class="dt-zone dt-zone-purple"
+            points="30,40 53,37.5 54,52.5 30,52" />
+        </g>
+
+        <g data-layer-group="logistics" style="display:none">
+          <polyline
+            class="dt-route"
+            points="10,20 29,23 42,33 57,32 73,39 85,41"
+          />
+        </g>
+
+        <g data-layer-group="toir" style="display:none">
+          <circle class="dt-toir-ring" cx="59" cy="50" r="3.6"/>
+          <circle class="dt-toir-dot" cx="59" cy="50" r=".48"/>
+
+          <circle class="dt-toir-ring" cx="62" cy="30" r="3.7"/>
+          <circle class="dt-toir-dot" cx="62" cy="30" r=".48"/>
+
+          <circle class="dt-toir-ring" cx="56" cy="57" r="3.2"/>
+          <circle class="dt-toir-dot" cx="56" cy="57" r=".48"/>
+        </g>
+
+        <g data-layer-group="spares" style="display:none">
+          <polyline class="dt-spare-link" points="36,50 47,52 56,57"/>
+          <polyline class="dt-spare-link" points="36,50 49,51 59,50"/>
+          <circle class="dt-spare-node" cx="36" cy="50" r=".52"/>
+          <circle class="dt-spare-node" cx="56" cy="57" r=".52"/>
+          <circle class="dt-spare-node" cx="59" cy="50" r=".52"/>
+        </g>
+      </svg>
+
+      <div class="dt-zone-labels" data-layer-group="zones">
+        <div class="dt-zone-label rail">
+          <strong>Ж/д приемка</strong>
+          <small>48 / 63 вагона</small>
+        </div>
+
+        <div class="dt-zone-label west">
+          <strong>Западный парк</strong>
+          <small>прием и хранение</small>
+        </div>
+
+        <div class="dt-zone-label central">
+          <strong>Центральный парк</strong>
+          <small>основной резервуарный контур</small>
+        </div>
+
+        <div class="dt-zone-label east">
+          <strong>Восточный парк</strong>
+          <small>резерв и оперативная емкость</small>
+        </div>
+
+        <div class="dt-zone-label repair">
+          <strong>Ремонтная зона</strong>
+          <small>МТР и подготовка ТОиР</small>
+        </div>
+      </div>
+
+      <div id="dt-markers" class="dt-markers"></div>
     </div>
   </div>
 
-  <div class="ov-map">
-    <img src="/assets/terminal-map-reference.jpg" alt="Текущая схема терминала">
-    <div class="ov-stat">
+  <div class="dt-toolbar">
+    <label class="dt-search">
+      <span>⌕</span>
+      <input id="dt-search" placeholder="Н-101, К-24, R-16, склад...">
+    </label>
+
+    <button id="dt-reset" class="btn">Весь терминал</button>
+    <button id="dt-risks" class="btn btn-primary">Критические риски</button>
+
+    <span class="dt-mode">
+      <i></i>
+      Текущее исполнение
+    </span>
+  </div>
+
+  <aside class="dt-layers">
+    <div class="dt-layer-head">
+      <div>
+        <span>Цифровой двойник</span>
+        <strong>Слои терминала</strong>
+      </div>
+      <small id="dt-scale">100%</small>
+    </div>
+
+    <div id="dt-layer-buttons" class="dt-layer-buttons"></div>
+
+    <p>
+      Схема отображает текущее состояние объектов и
+      демонстрационные управленческие слои терминала.
+    </p>
+  </aside>
+
+  <div class="dt-zoom">
+    <button id="dt-plus" aria-label="Увеличить">+</button>
+    <button id="dt-minus" aria-label="Уменьшить">−</button>
+    <button id="dt-home" aria-label="Сбросить масштаб">⌂</button>
+  </div>
+
+  <section class="dt-kpis">
+    <article>
       <span>Текущая доступность</span>
       <strong>92%</strong>
       <small>+2,4 п.п. к базовой</small>
-    </div>
-  </div>
-</section>
+    </article>
 
-<section class="ov-strip">
-  <article>
-    <span>Текущее исполнение приема</span>
-    <strong>241 тыс. м³</strong>
-    <small>операционный контур</small>
-  </article>
+    <article>
+      <span>Объекты в зоне риска</span>
+      <strong class="red">7</strong>
+      <small>3 критических</small>
+    </article>
 
-  <article>
-    <span>Подача вагонов</span>
-    <strong>48 / 63</strong>
-    <small>76% подтверждено</small>
-  </article>
+    <article>
+      <span>Текущее исполнение приема</span>
+      <strong>241K</strong>
+      <small>м³ в расчетном контуре</small>
+    </article>
 
-  <article>
-    <span>Работы ТОиР</span>
-    <strong>12</strong>
-    <small>3 критических окна</small>
-  </article>
+    <article>
+      <span>Подача вагонов</span>
+      <strong>48 / 63</strong>
+      <small>76% подтверждено</small>
+    </article>
 
-  <article>
-    <span>Критический ЗИП</span>
-    <strong>3 позиции</strong>
-    <small>ниже страхового минимума</small>
-  </article>
+    <article>
+      <span>Исполнение бюджета ТОиР</span>
+      <strong>38%</strong>
+      <small>$241K планового бюджета</small>
+    </article>
+  </section>
 
-  <article>
-    <span>Исполнение бюджета ТОиР</span>
-    <strong>38%</strong>
-    <small>из $241K планового бюджета</small>
-  </article>
-</section>
-
-<div class="ov-head">
-  <div>
-    <span>Рабочие модули</span>
-    <h3>Операционное управление</h3>
+  <div class="dt-map-legend">
+    <span><i class="blue"></i>Резервуарные парки</span>
+    <span><i class="green"></i>Эксплуатация</span>
+    <span><i class="orange"></i>Ж/д и ТОиР</span>
+    <span><i class="purple"></i>Ремонт / ЗИП</span>
   </div>
 
-  <p>
-    Диспетчерский центр дает общую картину, остальные разделы
-    открываются как самостоятельные рабочие модули.
-  </p>
-</div>
-
-<section class="ov-modules">
-  <a class="ov-card primary" href="/dispatcher">
-    <div class="ov-icon">DT</div>
-    <span>Текущее исполнение</span>
-    <h3>Диспетчерский центр</h3>
-    <p>Зоны терминала, оборудование, риски, ТОиР, логистика и критический ЗИП.</p>
-    <b>Открыть →</b>
-  </a>
-
-  <a class="ov-card" href="/equipment">
-    <div class="ov-icon">EQ</div>
-    <span>148 активов</span>
-    <h3>Оборудование</h3>
-    <p>Паспорта, техническое состояние, связанные узлы и история ремонтов.</p>
-    <b>Реестр →</b>
-  </a>
-
-  <a class="ov-card" href="/analytics">
-    <div class="ov-icon">AI</div>
-    <span>Сценарный анализ</span>
-    <h3>Предиктивная аналитика</h3>
-    <p>Риск простоя, износ, бюджет, ремонтные решения и what-if сценарии.</p>
-    <b>Сценарии →</b>
-  </a>
-
-  <a class="ov-card" href="/toir">
-    <div class="ov-icon">MR</div>
-    <span>12 работ</span>
-    <h3>ТОиР</h3>
-    <p>Заявки, наряды, плановые работы, история и контроль качества ремонта.</p>
-    <b>План работ →</b>
-  </a>
-
-  <a class="ov-card" href="/logistics">
-    <div class="ov-icon">LG</div>
-    <span>48 / 63 вагона</span>
-    <h3>Логистика</h3>
-    <p>Подача вагонов, текущие объемы, загрузка и ограничения терминала.</p>
-    <b>Открыть →</b>
-  </a>
-
-  <a class="ov-card" href="/procurement">
-    <div class="ov-icon">SP</div>
-    <span>3 критические позиции</span>
-    <h3>Закупки и ЗИП</h3>
-    <p>Склад, дефицит, сроки поставки и влияние запчастей на ремонтные окна.</p>
-    <b>К действиям →</b>
-  </a>
-</section>
-
-<section class="ov-bottom">
-  <article>
-    <div class="ov-head compact">
+  <aside id="dt-drawer" class="dt-drawer" aria-hidden="true">
+    <div class="dt-drawer-head">
       <div>
-        <span>Текущие приоритеты</span>
-        <h3>Что требует внимания</h3>
+        <span id="dt-drawer-type">Объект</span>
+        <h2 id="dt-drawer-title">Объект</h2>
       </div>
+      <button id="dt-drawer-close" aria-label="Закрыть">×</button>
     </div>
+    <div id="dt-drawer-body" class="dt-drawer-body"></div>
+  </aside>
 
-    <div class="attention">
-      <a href="/equipment-detail?id=pump101">
-        <i class="high"></i>
-        <div>
-          <strong>Насос Н-101</strong>
-          <span>Риск отказа 82% · рост вибрации</span>
-        </div>
-        <em>Приоритет 1</em>
-      </a>
-
-      <a href="/procurement">
-        <i class="high"></i>
-        <div>
-          <strong>Критический ЗИП</strong>
-          <span>3 позиции ниже страхового минимума</span>
-        </div>
-        <em>Закупка</em>
-      </a>
-
-      <a href="/logistics">
-        <i class="medium"></i>
-        <div>
-          <strong>Ж/д приемка</strong>
-          <span>48 из 63 вагонов подтверждено</span>
-        </div>
-        <em>Контроль</em>
-      </a>
-    </div>
-  </article>
-
-  <article class="report-box">
-    <span>Report Studio v5</span>
-    <h3>Управленческая отчетность</h3>
-    <p>
-      Рабочие отчеты, шаблоны, конструктор, данные,
-      автоматические рассылки и синхронизация.
-    </p>
-    <a href="/reports">Открыть отчетность →</a>
-  </article>
 </section>
-
 </main>
 
 <script src="/assets/js/navigation.js"></script>
 <script src="/assets/js/ui.js"></script>
-<script src="/assets/js/shell.js?v=9101"></script>
+<script src="/assets/js/pages/dispatcher-v90.js?v=9001"></script>
+<script src="/assets/js/shell.js?v=9120"></script>
 </body>
 </html>

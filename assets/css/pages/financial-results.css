@@ -1,0 +1,21 @@
+#page-content.financial-results-page {
+  padding-top: 0 !important;
+}
+
+.financial-results-content {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  gap: var(--space-4);
+  color: var(--text-primary);
+  font-family: var(--font-family-primary);
+}
+
+.financial-results-content h3,
+.financial-results-content p {
+  margin: 0;
+}
+
+.financial-results-content button {
+  font-family: inherit;
+}

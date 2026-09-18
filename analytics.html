@@ -5,110 +5,154 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>BNT — Предиктивная аналитика</title>
 
-  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/tokens.css?v=17">
   <link rel="stylesheet" href="/assets/css/layout.css">
-  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/components.css?v=16">
   <link rel="stylesheet" href="/assets/css/pages/enterprise.css">
-  <link rel="stylesheet" href="/assets/css/pages/analytics-v88.css?v=88">
-  <link rel="stylesheet" href="/assets/css/pages/analytics-v91.css?v=9101">
+  <link rel="stylesheet" href="/assets/css/pages/analytics-v88.css?v=89">
+  <link rel="stylesheet" href="/assets/css/pages/analytics-v91.css?v=9143">
   
-<link rel="stylesheet" href="/assets/css/shell-v91.css?v=9101"></head>
+<link rel="stylesheet" href="/assets/css/shell-v91.css?v=9121"></head>
 
 <body data-page="analytics">
 <main id="page-content" class="page-content analytics-page">
 
   <div class="page-actions analytics-page-actions">
-    <div>
-      <span class="analytics-eyebrow">Управленческий контур</span>
-      <h2>Сценарное моделирование</h2>
-      <p>
-        Сравните влияние эксплуатационной нагрузки, обеспеченности ЗИП
-        и ремонтных решений на риск простоя, бюджет и доступность.
-      </p>
+    <div class="analytics-page-actions__heading">
+      <span class="analytics-eyebrow typography-label-smallest">Управленческий контур</span>
+      <div class="analytics-title-row">
+        <h2 class="typography-h4">Сценарное моделирование</h2>
+        <span class="analytics-title-info" data-analytics-info-root>
+          <button class="analytics-kpi__info analytics-title-info__button" type="button" data-analytics-info-trigger aria-expanded="false" aria-controls="analytics-title-popover" aria-label="Информация о сценарном моделировании">
+            <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg>
+          </button>
+          <span id="analytics-title-popover" class="analytics-title-popover" data-analytics-info-popover role="dialog" aria-label="О сценарном моделировании" hidden>
+            <button class="analytics-title-popover__close" type="button" data-analytics-info-close aria-label="Закрыть информацию">
+              <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+            </button>
+            <span class="analytics-title-popover__text typography-body-smallest">Сравните влияние эксплуатационной нагрузки, обеспеченности ЗИП и ремонтных решений на риск простоя, бюджет и доступность.</span>
+          </span>
+        </span>
+      </div>
     </div>
 
-    <button id="accept-scenario" class="btn btn-primary">
-      Принять сценарий
+    <button id="accept-scenario" class="analytics-primary-button typography-button-small" type="button">
+      <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=4#DoubleCheck"></use></svg>
+      <span>Принять сценарий</span>
     </button>
   </div>
 
   <div id="analytics-kpis" class="kpi-grid analytics-kpis"></div>
 
   <section class="analytics-layout">
-    <article class="card scenario-table-card">
-      <div class="card-head">
-        <div>
-          <h3>Сценарии и сравнение</h3>
-          <small>
-            Выберите сценарий для просмотра и измените интенсивность what-if.
-          </small>
+    <div class="analytics-layout__block">
+      <header class="analytics-block-heading">
+        <span class="typography-indicator-small">Сценарный анализ</span>
+        <div class="analytics-block-title-row">
+          <h2 id="scenario-table-title" class="typography-caption-small">Сценарии и сравнение</h2>
+          <span class="analytics-block-info" data-analytics-info-root>
+            <button class="analytics-kpi__info" type="button" data-analytics-info-trigger aria-expanded="false" aria-controls="scenario-table-info" aria-label="Информация о сценариях">
+              <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg>
+            </button>
+            <span id="scenario-table-info" class="analytics-title-popover" data-analytics-info-popover role="dialog" aria-label="О сценариях" hidden>
+              <button class="analytics-title-popover__close" type="button" data-analytics-info-close aria-label="Закрыть информацию">
+                <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+              </button>
+              <span class="analytics-title-popover__text typography-body-smallest">Выберите сценарий для просмотра и измените интенсивность what-if.</span>
+            </span>
+          </span>
         </div>
-      </div>
-
-      <div class="table-wrap">
-        <table class="data-table analytics-table">
-          <thead>
-            <tr>
-              <th>Сценарий</th>
-              <th>Риск</th>
-              <th>Бюджет</th>
-              <th>Доступность</th>
-              <th>Ремонты</th>
-              <th>Резерв</th>
-            </tr>
-          </thead>
-          <tbody id="scenario-rows"></tbody>
-        </table>
-      </div>
-    </article>
-
-    <aside class="card scenario-panel">
-      <div class="card-head">
-        <div>
-          <span class="panel-eyebrow">What-if</span>
-          <h3>Параметры сценария</h3>
+      </header>
+      <article class="data-block scenario-table-card" aria-labelledby="scenario-table-title">
+        <div class="table-wrap">
+          <table class="data-table analytics-table">
+            <thead>
+              <tr>
+                <th>Сценарий</th>
+                <th><span class="analytics-table__column-heading"><span>Риск</span><button class="analytics-table__sort" type="button" data-scenario-sort="risk" data-sort-label="Риск" aria-label="Сортировать риск от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
+                <th><span class="analytics-table__column-heading"><span>Бюджет</span><button class="analytics-table__sort" type="button" data-scenario-sort="budget" data-sort-label="Бюджет" aria-label="Сортировать бюджет от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
+                <th><span class="analytics-table__column-heading"><span>Доступность</span><button class="analytics-table__sort" type="button" data-scenario-sort="availability" data-sort-label="Доступность" aria-label="Сортировать доступность от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
+                <th><span class="analytics-table__column-heading"><span>Ремонты</span><button class="analytics-table__sort" type="button" data-scenario-sort="repairs" data-sort-label="Ремонты" aria-label="Сортировать ремонты от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
+                <th><span class="analytics-table__column-heading"><span>Резерв</span><button class="analytics-table__sort" type="button" data-scenario-sort="capacity" data-sort-label="Резерв" aria-label="Сортировать резерв от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
+              </tr>
+            </thead>
+            <tbody id="scenario-rows"></tbody>
+          </table>
         </div>
-      </div>
-      <div id="scenario-detail" class="card-body"></div>
-    </aside>
-  </section>
-
-  <section class="grid-3 analytics-bottom">
-    <article class="card">
-      <div class="card-head">
-        <h3>Рейтинг риска</h3>
-      </div>
-      <div id="risk-ranking" class="ranking"></div>
-    </article>
-
-    <article class="card">
-      <div class="card-head">
-        <h3>Прогноз ремонтных окон</h3>
-      </div>
-      <div id="repair-windows" class="timeline"></div>
-    </article>
-
-    <article class="card">
-      <div class="card-head">
-        <h3>Доступность и свободная емкость</h3>
-      </div>
-      <div id="capacity-forecast" class="card-body"></div>
-    </article>
-  </section>
-
-  <section class="analytics-evidence">
-    <div class="analytics-evidence-head">
-      <div>
-        <span>Фактическая база</span>
-        <h3>На чем строятся сценарии</h3>
-      </div>
-
-      <p>
-        Фактические показатели используются как исходные параметры,
-        а результат сценария является демонстрационной what-if оценкой
-        для сравнения управленческих решений.
-      </p>
+      </article>
     </div>
+
+    <div class="analytics-layout__block analytics-layout__block--side">
+      <header class="analytics-block-heading">
+        <span class="typography-indicator-small">What-if</span>
+        <h2 id="scenario-panel-title" class="typography-caption-small">Параметры сценария</h2>
+      </header>
+      <aside class="data-block scenario-panel" aria-labelledby="scenario-panel-title">
+        <div id="scenario-detail" class="card-body"></div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="analytics-bottom">
+    <div class="analytics-bottom__block">
+      <header class="analytics-block-heading">
+        <h2 id="risk-ranking-title" class="typography-caption-small">Рейтинг риска</h2>
+      </header>
+      <article class="data-block analytics-bottom__surface" aria-labelledby="risk-ranking-title">
+        <div id="risk-ranking" class="ranking"></div>
+      </article>
+    </div>
+
+    <div class="analytics-bottom__block">
+      <header class="analytics-block-heading">
+        <h2 id="repair-windows-title" class="typography-caption-small">Прогноз ремонтных окон</h2>
+      </header>
+      <article class="data-block analytics-bottom__surface" aria-labelledby="repair-windows-title">
+        <div id="repair-windows" class="timeline"></div>
+      </article>
+    </div>
+
+    <div class="analytics-bottom__block">
+      <header class="analytics-block-heading">
+        <div class="analytics-block-title-row">
+          <h2 id="capacity-forecast-title" class="typography-caption-small">Доступность и свободная ёмкость</h2>
+          <span class="analytics-block-info" data-analytics-info-root>
+            <button class="analytics-kpi__info" type="button" data-analytics-info-trigger aria-expanded="false" aria-controls="capacity-forecast-info" aria-label="Информация о прогнозе доступности">
+              <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg>
+            </button>
+            <span id="capacity-forecast-info" class="analytics-title-popover" data-analytics-info-popover role="dialog" aria-label="О прогнозе доступности" hidden>
+              <button class="analytics-title-popover__close" type="button" data-analytics-info-close aria-label="Закрыть информацию">
+                <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+              </button>
+              <span class="analytics-title-popover__text typography-body-smallest">Модель позволяет сравнивать влияние ремонтных решений, обеспеченности ЗИП и изменения эксплуатационной нагрузки.</span>
+            </span>
+          </span>
+        </div>
+      </header>
+      <article class="data-block analytics-bottom__surface" aria-labelledby="capacity-forecast-title">
+        <div id="capacity-forecast" class="analytics-capacity-chart"></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="analytics-evidence" aria-labelledby="analytics-evidence-title">
+    <header class="analytics-block-heading">
+      <span class="typography-label-smallest">ФАКТИЧЕСКАЯ БАЗА</span>
+      <div class="analytics-block-title-row">
+        <h2 id="analytics-evidence-title" class="typography-h4">На чем строятся сценарии</h2>
+        <span class="analytics-block-info" data-analytics-info-root>
+          <button class="analytics-kpi__info" type="button" data-analytics-info-trigger aria-expanded="false" aria-controls="analytics-evidence-info" aria-label="Информация о фактической базе">
+            <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg>
+          </button>
+          <span id="analytics-evidence-info" class="analytics-title-popover" data-analytics-info-popover role="dialog" aria-label="О фактической базе" hidden>
+            <button class="analytics-title-popover__close" type="button" data-analytics-info-close aria-label="Закрыть информацию">
+              <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+            </button>
+            <span class="analytics-title-popover__text typography-body-smallest">Фактические показатели используются как исходные параметры, а результат сценария является демонстрационной what-if оценкой для сравнения управленческих решений.</span>
+          </span>
+        </span>
+      </div>
+    </header>
 
     <div id="analytics-evidence" class="analytics-evidence-grid"></div>
   </section>
@@ -118,8 +162,8 @@
 <script src="/assets/js/navigation.js"></script>
 <script src="/assets/js/ui.js"></script>
 <script src="/assets/js/data/assets.js"></script>
-<script src="/assets/js/data/scenarios.js"></script>
-<script src="/assets/js/pages/analytics.js"></script>
-<script src="/assets/js/shell.js?v=9101"></script>
+<script src="/assets/js/data/scenarios.js?v=5"></script>
+<script src="/assets/js/pages/analytics.js?v=18"></script>
+<script src="/assets/js/shell.js?v=9120"></script>
 </body>
 </html>

@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BNT — Бюджет и платежи</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css?v=17">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css?v=10">
+  <link rel="stylesheet" href="/assets/css/pages/operations.css?v=126">
+  <link rel="stylesheet" href="/assets/css/pages/budget-payments.css?v=15">
+  <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9121">
+</head>
+<body data-page="budget-payments">
+  <main id="page-content" class="page-content budget-payments-page">
+    <section class="payment-summary" aria-label="Остаток по выплатам">
+      <div class="payment-summary__grid">
+        <article class="payment-summary-card payment-summary-card--error">
+          <header class="payment-summary-card__heading">
+            <h2 class="payment-summary-card__title typography-body-smallest">Без назначенной оплаты</h2>
+            <a class="payment-summary-card__link" href="/reports" aria-label="Открыть управленческую отчётность: без назначенной оплаты">
+              <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+            </a>
+          </header>
+          <div class="payment-summary-card__content">
+            <div class="payment-progress-ring" style="--payment-progress:38" role="img" aria-label="38 процентов">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <circle class="payment-progress-ring__track" cx="24" cy="24" r="20" pathLength="100"></circle>
+                <path class="payment-progress-ring__bar" d="M 24 4 A 20 20 0 0 1 37.6909 38.5794"></path>
+              </svg>
+              <strong class="payment-progress-ring__value typography-label-smallest">38%</strong>
+            </div>
+            <div class="payment-summary-card__copy table-header-content">
+              <strong class="payment-summary-card__amount typography-label-base">на 90&nbsp;000&nbsp;000&nbsp;KZT</strong>
+              <span class="payment-summary-card__description typography-body-smallest">обязательства в диапазоне 0–30 дней</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="payment-summary-card payment-summary-card--info">
+          <header class="payment-summary-card__heading">
+            <h2 class="payment-summary-card__title typography-body-smallest">Общее кол-во платежей</h2>
+            <a class="payment-summary-card__link" href="/reports" aria-label="Открыть управленческую отчётность: общее количество платежей">
+              <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+            </a>
+          </header>
+          <div class="payment-summary-card__content">
+            <div class="payment-progress-ring" style="--payment-progress:47" role="img" aria-label="47 процентов">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <circle class="payment-progress-ring__track" cx="24" cy="24" r="20" pathLength="100"></circle>
+                <path class="payment-progress-ring__bar" d="M 24 4 A 20 20 0 0 1 27.7476 43.6457"></path>
+              </svg>
+              <strong class="payment-progress-ring__value typography-label-smallest">47%</strong>
+            </div>
+            <div class="payment-summary-card__copy table-header-content">
+              <strong class="payment-summary-card__amount typography-label-base">570&nbsp;000&nbsp;000&nbsp;KZT</strong>
+              <span class="payment-summary-card__description typography-body-smallest">для 21 контрагента</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="payment-summary-card payment-summary-card--warning">
+          <header class="payment-summary-card__heading">
+            <h2 class="payment-summary-card__title typography-body-smallest">Остаток по выплатам</h2>
+            <a class="payment-summary-card__link" href="/reports" aria-label="Открыть управленческую отчётность: остаток по выплатам">
+              <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+            </a>
+          </header>
+          <div class="payment-summary-card__content">
+            <div class="payment-progress-ring" style="--payment-progress:44" role="img" aria-label="44 процента">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <circle class="payment-progress-ring__track" cx="24" cy="24" r="20" pathLength="100"></circle>
+                <path class="payment-progress-ring__bar" d="M 24 4 A 20 20 0 0 1 31.3625 42.5955"></path>
+              </svg>
+              <strong class="payment-progress-ring__value typography-label-smallest">44%</strong>
+            </div>
+            <div class="payment-summary-card__copy table-header-content">
+              <strong class="payment-summary-card__amount typography-label-base">250&nbsp;000&nbsp;000&nbsp;KZT</strong>
+              <span class="payment-summary-card__description typography-body-smallest">незакрытые обязательства</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="cash-flow-section" data-cash-flow aria-labelledby="cash-flow-title">
+      <article class="chart-card chart-card--wide cash-flow-card">
+        <header class="chart-card__header">
+          <div class="chart-card__heading">
+            <div class="chart-card__title-row">
+              <h3 id="cash-flow-title" class="typography-caption-small">Cash Flow — Оплаты по месяцам (План vs Факт)</h3>
+              <div class="origin-title-info">
+                <button class="info-icon-button" type="button" data-cash-info aria-expanded="false" aria-controls="cash-flow-info" aria-label="Информация о диаграмме оплат"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg></button>
+                <div id="cash-flow-info" class="origin-breakdown__info-popover" data-cash-info-popover role="dialog" aria-label="Информация о диаграмме оплат" hidden><button class="origin-breakdown__info-close" type="button" data-cash-info-close aria-label="Закрыть информацию"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button><p class="typography-body-smallest">Положительная дельта: план выше факта; отрицательная: факт выше плана. Факт показан по август 2026 года. Недельная разбивка демонстрационная и сохраняет сумму месяца. Выберите месяц или прокрутите колесо над его столбцом.</p></div>
+              </div>
+            </div>
+            <div class="chart-card__filters">
+              <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title" data-cash-period-label>с 01.01 по 31.12.2026</span><button type="button" data-cash-reset aria-label="Сбросить выбранный месяц"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+            </div>
+          </div>
+          <div class="chart-actions">
+            <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-cash-export aria-label="Скачать данные оплат"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+            <div class="cash-flow__filter">
+              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-cash-filter aria-expanded="false" aria-controls="cash-flow-filter-panel"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">1</span></button>
+              <div id="cash-flow-filter-panel" class="cash-flow__filter-panel" data-cash-filter-panel role="dialog" aria-label="Фильтр по периоду" hidden>
+                <div class="cash-flow__filter-heading"><strong class="typography-label-small">Период</strong><button class="origin-breakdown__info-close" type="button" data-cash-filter-close aria-label="Закрыть фильтр"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></div>
+                <button class="cash-flow__filter-option typography-body-small" type="button" data-cash-period-option="year">Весь 2026 год</button>
+                <div class="cash-flow__filter-months" data-cash-month-options></div>
+              </div>
+            </div>
+            <a class="section-expand-link button-smallest-secondary-radius typography-button-smallest" href="/reports" aria-label="К управленческой отчетности"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg><span>К управленческой отчетности</span></a>
+          </div>
+        </header>
+        <div class="chart-viewport cash-flow-chart__viewport chart-scrollbar" data-cash-chart-viewport>
+          <svg class="chart-bars cash-flow-chart" data-cash-chart viewBox="0 0 1440 420" role="img" aria-label="Оплаты по месяцам: план, факт и дельта за 2026 год"></svg>
+          <div class="chart-tooltip cash-flow-chart__tooltip typography-body-smallest" data-cash-tooltip role="tooltip" hidden><strong class="cash-flow-chart__tooltip-title typography-caption-small" data-cash-tooltip-title></strong><div><span>Период</span><strong data-cash-tooltip-period></strong></div><div><span>Значение</span><strong data-cash-tooltip-value></strong></div></div>
+        </div>
+        <div class="chart-legend typography-body-smallest cash-flow__legend" aria-label="Легенда оплат">
+          <span><i class="chart-legend__dot cash-flow__dot--plan" aria-hidden="true"></i>План, KZT</span>
+          <span><i class="chart-legend__dot cash-flow__dot--fact" aria-hidden="true"></i>Факт, KZT</span>
+          <span><i class="chart-legend__dot cash-flow__dot--negative" aria-hidden="true"></i>Отрицательная дельта, KZT</span>
+          <span><i class="chart-legend__dot cash-flow__dot--positive" aria-hidden="true"></i>Положительная дельта, KZT</span>
+        </div>
+      </article>
+    </section>
+
+    <section class="chart-section" data-payment-analytics aria-label="Исполнение платежей и бюджета">
+      <div class="chart-grid--two-column">
+        <article class="chart-card" data-payment-chart-card="statuses" aria-labelledby="payment-statuses-title">
+          <header class="chart-card__header">
+            <div class="chart-card__heading">
+              <div class="chart-card__title-row">
+                <h3 id="payment-statuses-title" class="typography-caption-small">Статусы исполнения</h3>
+              </div>
+              <div class="chart-card__filters">
+                <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">с 01.09 по 30.09.2025</span><button type="button" data-payment-filter-clear aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+              </div>
+            </div>
+            <div class="chart-actions">
+              <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-payment-export="statuses" aria-label="Скачать статусы исполнения"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-payment-filter="statuses"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">1</span></button>
+            </div>
+          </header>
+          <div class="chart-donut__viewport"><svg class="chart-donut" data-payment-donut="statuses" viewBox="0 0 640 390" role="img" aria-label="Статусы исполнения платежей"></svg></div>
+          <div class="chart-legend chart-legend--wrap typography-body-smallest" data-payment-legend="statuses" aria-label="Легенда статусов исполнения"></div>
+        </article>
+
+        <article class="chart-card" data-payment-chart-card="budget" aria-labelledby="payment-budget-title">
+          <header class="chart-card__header">
+            <div class="chart-card__heading">
+              <div class="chart-card__title-row">
+                <h3 id="payment-budget-title" class="typography-caption-small">Исполнение бюджета (обязательства)</h3>
+              </div>
+              <div class="chart-card__filters">
+                <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">с 01.01 по 30.09.2025</span><button type="button" data-payment-filter-clear aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+              </div>
+            </div>
+            <div class="chart-actions">
+              <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-payment-export="budget" aria-label="Скачать исполнение бюджета"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-payment-filter="budget"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">1</span></button>
+            </div>
+          </header>
+          <div class="chart-donut__viewport"><svg class="chart-donut" data-payment-donut="budget" viewBox="0 0 640 390" role="img" aria-label="Исполнение бюджета по обязательствам"></svg></div>
+          <div class="chart-legend chart-legend--wrap typography-body-smallest" data-payment-legend="budget" aria-label="Легенда исполнения бюджета"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="chart-section payment-deviation-section" data-payment-deviation aria-labelledby="payment-deviation-title">
+      <article class="chart-card chart-card--wide payment-deviation-card" data-payment-chart-card="deviation">
+        <header class="chart-card__header">
+          <div class="chart-card__heading">
+            <div class="chart-card__title-row">
+              <h3 id="payment-deviation-title" class="typography-caption-small">График отклонений (план vs факт)</h3>
+              <div class="origin-title-info" data-payment-deviation-info-wrap>
+                <button class="info-icon-button" type="button" data-payment-deviation-info aria-expanded="false" aria-controls="payment-deviation-info" aria-label="Информация о графике отклонений">
+                  <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg>
+                </button>
+                <div id="payment-deviation-info" class="origin-breakdown__info-popover" data-payment-deviation-info-popover role="dialog" aria-label="Информация о графике отклонений" hidden>
+                  <button class="origin-breakdown__info-close" type="button" data-payment-deviation-info-close aria-label="Закрыть информацию"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button>
+                  <p class="typography-body-smallest">Сравниваются плановые и фактические значения за выбранный период. Переключайте срез по подразделениям и категориям ТРУ. Значения указаны в KZT.</p>
+                </div>
+              </div>
+            </div>
+            <div class="chart-card__filters">
+              <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">с 01.09 по 30.09.2025</span><button type="button" data-payment-filter-clear aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+              <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">Актау</span><button type="button" data-payment-filter-clear aria-label="Убрать город"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+            </div>
+          </div>
+          <div class="chart-actions">
+            <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-payment-export="deviation" aria-label="Скачать график отклонений"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-payment-filter="deviation"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">2</span></button>
+          </div>
+        </header>
+
+        <div class="chart-tabs chart-tabs--two payment-deviation__tabs" role="tablist" aria-label="Группировка графика отклонений">
+          <button id="payment-deviation-departments-tab" class="typography-label-small is-active" type="button" role="tab" aria-selected="true" aria-controls="payment-deviation-panel" data-payment-deviation-tab="departments">по Подразделениям</button>
+          <button id="payment-deviation-categories-tab" class="typography-label-small" type="button" role="tab" aria-selected="false" aria-controls="payment-deviation-panel" tabindex="-1" data-payment-deviation-tab="categories">по Категориям ТРУ</button>
+        </div>
+
+        <div id="payment-deviation-panel" class="chart-viewport chart-scrollbar payment-deviation-chart__viewport" role="tabpanel" aria-labelledby="payment-deviation-departments-tab">
+          <div class="payment-deviation-chart" data-payment-deviation-chart role="img" aria-label="График отклонений плана и факта по подразделениям"></div>
+        </div>
+
+        <div class="chart-legend typography-body-smallest" aria-label="Легенда графика отклонений">
+          <span><i class="chart-legend__dot payment-deviation__dot--plan" aria-hidden="true"></i>План, KZT</span>
+          <span><i class="chart-legend__dot payment-deviation__dot--fact" aria-hidden="true"></i>Факт, KZT</span>
+        </div>
+      </article>
+    </section>
+
+    <section class="chart-section payment-risk-section" data-payment-risk-map aria-labelledby="payment-risk-title">
+      <article class="chart-card chart-card--wide payment-risk-map" data-payment-chart-card="risk-map">
+        <header class="chart-card__header">
+          <div class="chart-card__heading">
+            <div class="chart-card__title-row">
+              <h3 id="payment-risk-title" class="typography-caption-small">Карта рисков по оплатам и предстоящие платежи</h3>
+            </div>
+            <div class="chart-card__filters">
+              <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">Актау</span><button type="button" data-payment-filter-clear aria-label="Убрать город"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+              <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">Насосы, Кабель, +28</span><button type="button" data-payment-filter-clear aria-label="Убрать категории"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+            </div>
+          </div>
+          <div class="chart-actions">
+            <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-payment-export="risk-map" aria-label="Скачать карту рисков и предстоящие платежи"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-payment-filter="risk-map"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">2</span></button>
+          </div>
+        </header>
+
+        <div class="payment-risk-map__layout">
+          <div class="payment-risk-map__risk-column" data-payment-risk-column>
+            <div class="payment-risk-map__scroller chart-scrollbar" data-payment-risk-scroll tabindex="0" aria-label="Список рисков по оплатам">
+              <ol class="payment-risk-list">
+                <li class="payment-risk-item payment-risk-item--error">
+                  <span class="payment-risk-item__marker typography-indicator-small" aria-hidden="true">1</span>
+                  <div class="payment-risk-item__content table-cell-content">
+                    <div class="payment-risk-item__header table-header-content">
+                      <h4 class="payment-risk-item__title typography-label-smallest">Просрочка счетов</h4>
+                      <p class="payment-risk-item__description typography-body-smallest">У 5 платежей риск штрафов, приостановки поставок и ухудшения условий.</p>
+                      <p class="payment-risk-item__note typography-body-smallest">Срок оплаты истёк, требуется оперативное решение по каждому случаю.</p>
+                    </div>
+                    <a class="pill pill--default pill--round payment-risk-item__action typography-body-smallest" href="/financial-results"><span class="pill__title">Перейти к платежам</span><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg></a>
+                  </div>
+                </li>
+                <li class="payment-risk-item payment-risk-item--error">
+                  <span class="payment-risk-item__marker typography-indicator-small" aria-hidden="true">2</span>
+                  <div class="payment-risk-item__content table-cell-content">
+                    <div class="payment-risk-item__header table-header-content">
+                      <h4 class="payment-risk-item__title typography-label-smallest">Превышение бюджетов</h4>
+                      <p class="payment-risk-item__description typography-body-smallest">По 3 договорам необходимо перераспределение бюджета.</p>
+                      <p class="payment-risk-item__note typography-body-smallest">Фактические оплаты превысили утверждённые лимиты по договору.</p>
+                    </div>
+                    <a class="pill pill--default pill--round payment-risk-item__action typography-body-smallest" href="/projects"><span class="pill__title">Создать задачу</span><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg></a>
+                  </div>
+                </li>
+                <li class="payment-risk-item payment-risk-item--warning">
+                  <span class="payment-risk-item__marker typography-indicator-small" aria-hidden="true">3</span>
+                  <div class="payment-risk-item__content table-cell-content">
+                    <div class="payment-risk-item__header table-header-content">
+                      <h4 class="payment-risk-item__title typography-label-smallest">Частые доп. соглашения</h4>
+                      <p class="payment-risk-item__description typography-body-smallest">По 4 договорам оформлено более двух доп. соглашений за период.</p>
+                      <p class="payment-risk-item__note typography-body-smallest">Сигнал нестабильного планирования и возможного роста затрат.</p>
+                    </div>
+                    <a class="pill pill--default pill--round payment-risk-item__action typography-body-smallest" href="/contracts"><span class="pill__title">Перейти к договорам</span><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg></a>
+                  </div>
+                </li>
+                <li class="payment-risk-item payment-risk-item--info">
+                  <span class="payment-risk-item__marker typography-indicator-small" aria-hidden="true">4</span>
+                  <div class="payment-risk-item__content table-cell-content">
+                    <div class="payment-risk-item__header table-header-content">
+                      <h4 class="payment-risk-item__title typography-label-smallest">Нет подтверждающих документов</h4>
+                      <p class="payment-risk-item__description typography-body-smallest">По 7 платежам отсутствуют закрывающие документы.</p>
+                      <p class="payment-risk-item__note typography-body-smallest">Без документов платежи не попадут в подтверждённый факт периода.</p>
+                    </div>
+                    <a class="pill pill--default pill--round payment-risk-item__action typography-body-smallest" href="/reports"><span class="pill__title">Открыть отчёт</span><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg></a>
+                  </div>
+                </li>
+                <li class="payment-risk-item payment-risk-item--warning">
+                  <span class="payment-risk-item__marker typography-indicator-small" aria-hidden="true">5</span>
+                  <div class="payment-risk-item__content table-cell-content">
+                    <div class="payment-risk-item__header table-header-content">
+                      <h4 class="payment-risk-item__title typography-label-smallest">Риск кассового разрыва</h4>
+                      <p class="payment-risk-item__description typography-body-smallest">На горизонте 90 дней обязательства превышают текущий резерв.</p>
+                      <p class="payment-risk-item__note typography-body-smallest">Требуется уточнить очерёдность оплат и ожидаемые поступления.</p>
+                    </div>
+                    <a class="pill pill--default pill--round payment-risk-item__action typography-body-smallest" href="/financial-results"><span class="pill__title">Проверить план</span><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg></a>
+                  </div>
+                </li>
+              </ol>
+            </div>
+          </div>
+
+          <article class="chart-card payment-risk-map__chart-card" aria-labelledby="upcoming-payments-title">
+            <h4 id="upcoming-payments-title" class="payment-risk-map__chart-title typography-caption-small">Предстоящие платежи (обязательства) — 30 / 60 / 90 дней</h4>
+            <div class="chart-viewport payment-risk-chart__viewport">
+              <svg class="chart-bars payment-risk-chart" data-payment-risk-chart viewBox="0 0 720 360" role="img" aria-label="Предстоящие платежи: план и факт на 30, 60 и 90 дней"></svg>
+            </div>
+            <div class="chart-legend typography-body-smallest" aria-label="Легенда предстоящих платежей">
+              <span><i class="chart-legend__dot payment-risk-chart__dot--plan" aria-hidden="true"></i>План</span>
+              <span><i class="chart-legend__dot payment-risk-chart__dot--fact" aria-hidden="true"></i>Факт</span>
+            </div>
+          </article>
+        </div>
+      </article>
+    </section>
+  </main>
+  <script src="/assets/js/navigation.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/shell.js?v=9120"></script>
+  <script src="/assets/js/chart-donut.js?v=9"></script>
+  <script src="/assets/js/pages/operations.js?v=91"></script>
+  <script src="/assets/js/pages/budget-payments.js?v=6"></script>
+</body>
+</html>
