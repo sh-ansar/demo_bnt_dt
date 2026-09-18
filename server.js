@@ -6,7 +6,7 @@ const ROOT = path.resolve(__dirname);
 const PORT = Number(process.env.PORT || 8080);
 const ROUTES = {
   "/":"index.html", "/dispatcher":"dispatcher.html", "/digital-twin":"digital-twin.html",
-  "/operations":"operations.html", "/operations_archiv":"operations_archiv.html",
+  "/operations":"operations.html", "/operations-2":"operations_archiv.html", "/operations_archiv":"operations_archiv.html",
   "/equipment":"equipment.html", "/equipment-detail":"equipment-detail.html", "/analytics":"analytics.html",
   "/toir":"toir.html", "/logistics":"logistics.html", "/procurement":"procurement.html",
   "/financial-results":"financial-results.html", "/budget-payments":"budget-payments.html",
