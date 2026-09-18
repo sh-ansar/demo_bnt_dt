@@ -4,6 +4,11 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/",
+      "destination": "/digital-twin",
+      "permanent": false
+    },
+    {
       "source": "/dispatcher",
       "destination": "/digital-twin",
       "permanent": true
@@ -13,6 +18,14 @@
     {
       "source": "/digital-twin",
       "destination": "/digital-twin.html"
+    },
+    {
+      "source": "/operations",
+      "destination": "/operations.html"
+    },
+    {
+      "source": "/operations-2",
+      "destination": "/operations-2.html"
     },
     {
       "source": "/equipment",
@@ -37,6 +50,30 @@
     {
       "source": "/procurement",
       "destination": "/procurement.html"
+    },
+    {
+      "source": "/financial-results",
+      "destination": "/financial-results.html"
+    },
+    {
+      "source": "/budget-payments",
+      "destination": "/budget-payments.html"
+    },
+    {
+      "source": "/contracts",
+      "destination": "/contracts.html"
+    },
+    {
+      "source": "/transshipment",
+      "destination": "/transshipment.html"
+    },
+    {
+      "source": "/hr",
+      "destination": "/hr.html"
+    },
+    {
+      "source": "/projects",
+      "destination": "/projects.html"
     },
     {
       "source": "/reports",

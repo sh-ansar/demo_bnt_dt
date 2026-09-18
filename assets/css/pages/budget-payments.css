@@ -1,0 +1,421 @@
+.budget-payments-page {
+  max-width: none;
+}
+
+.budget-payments-page .cash-flow-card h3 {
+  margin: 0;
+}
+
+.payment-summary,
+.payment-summary__grid {
+  min-width: 0;
+}
+
+.payment-summary__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.payment-deviation-card h3 {
+  margin: 0;
+}
+
+.payment-deviation__tabs {
+  width: min(100%, 504px);
+  align-self: center;
+}
+
+.payment-deviation-chart__viewport {
+  min-width: 0;
+  padding-inline: var(--space-3);
+  box-sizing: border-box;
+}
+
+.payment-deviation-chart {
+  --payment-deviation-label-width: 240px;
+  --payment-deviation-chart-gap: var(--space-4);
+  width: 100%;
+  min-width: 920px;
+  display: grid;
+  align-content: start;
+  color: var(--text-primary);
+  font-family: var(--font-family-primary);
+}
+
+.payment-deviation-chart__axis {
+  min-width: 0;
+  height: var(--space-5);
+  margin-left: calc(var(--payment-deviation-label-width) + var(--payment-deviation-chart-gap));
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  color: var(--text-tertiary);
+  font-size: var(--typography-body-smallest-size);
+  line-height: var(--typography-body-smallest-line-height);
+  font-weight: var(--typography-body-smallest-weight);
+  letter-spacing: var(--typography-body-smallest-letter-spacing);
+  font-variant-numeric: lining-nums tabular-nums;
+  white-space: nowrap;
+}
+
+.payment-deviation-chart__body {
+  position: relative;
+  min-width: 0;
+}
+
+.payment-deviation-chart__grid {
+  position: absolute;
+  z-index: 0;
+  inset: 0 0 0 calc(var(--payment-deviation-label-width) + var(--payment-deviation-chart-gap));
+  display: grid;
+  grid-template-columns: repeat(var(--payment-deviation-divisions), minmax(0, 1fr));
+  border-top: 1px solid var(--design-elements-border-default);
+  pointer-events: none;
+}
+
+.payment-deviation-chart__grid span {
+  min-width: 0;
+  border-left: 1px solid var(--design-elements-border-default);
+}
+
+.payment-deviation-chart__grid span:first-child {
+  border-left: 1px solid var(--design-elements-icon-primary);
+}
+
+.payment-deviation-chart__grid span:last-child {
+  border-right: 1px solid var(--design-elements-border-default);
+}
+
+.payment-deviation-chart__rows {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  display: grid;
+}
+
+.payment-deviation-chart__row {
+  position: relative;
+  min-width: 0;
+  min-height: 54px;
+  display: grid;
+  grid-template-columns: minmax(0, var(--payment-deviation-label-width)) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--payment-deviation-chart-gap);
+}
+
+.payment-deviation-chart__row::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: calc(var(--payment-deviation-label-width) + var(--payment-deviation-chart-gap));
+  height: 1px;
+  background: var(--design-elements-border-default);
+  pointer-events: none;
+}
+
+.payment-deviation-chart__label {
+  min-width: 0;
+  max-height: calc(var(--typography-body-smallest-line-height) + var(--typography-body-smallest-line-height));
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: var(--typography-body-smallest-size);
+  line-height: var(--typography-body-smallest-line-height);
+  font-weight: var(--typography-body-smallest-weight);
+  letter-spacing: var(--typography-body-smallest-letter-spacing);
+  text-align: right;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.payment-deviation-chart__tracks {
+  min-width: 0;
+  display: grid;
+  gap: var(--space-1);
+}
+
+.payment-deviation-chart__track {
+  position: relative;
+  min-width: 0;
+  height: var(--space-3);
+}
+
+.payment-deviation-chart__bar {
+  width: var(--payment-deviation-value);
+  height: 100%;
+  display: block;
+  font-style: normal;
+}
+
+.payment-deviation-chart__bar--plan,
+.payment-deviation__dot--plan {
+  background: var(--chart-series-secondary);
+}
+
+.payment-deviation-chart__bar--fact,
+.payment-deviation__dot--fact {
+  background: var(--chart-series-primary);
+}
+
+.payment-deviation-chart__value {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--payment-deviation-value) + var(--space-2));
+  color: var(--text-tertiary);
+  font-size: var(--typography-label-smallest-size);
+  line-height: var(--typography-label-smallest-line-height);
+  font-weight: var(--typography-label-smallest-weight);
+  letter-spacing: var(--typography-label-smallest-letter-spacing);
+  font-variant-numeric: lining-nums tabular-nums;
+  white-space: nowrap;
+  transform: translateY(-50%);
+}
+
+.payment-risk-map h3,
+.payment-risk-map h4,
+.payment-risk-map p {
+  margin: 0;
+}
+
+.payment-risk-map__layout {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: var(--space-3);
+}
+
+.payment-risk-map__risk-column {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+}
+
+.payment-risk-map__risk-column::before,
+.payment-risk-map__risk-column::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  right: var(--space-2);
+  left: 0;
+  height: 5%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .16s ease;
+}
+
+.payment-risk-map__risk-column::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--background-surface-4), transparent);
+}
+
+.payment-risk-map__risk-column::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--background-surface-4), transparent);
+}
+
+.payment-risk-map__risk-column.has-fade-top::before,
+.payment-risk-map__risk-column.has-fade-bottom::after {
+  opacity: 1;
+}
+
+.payment-risk-map__scroller {
+  position: absolute;
+  inset: 0;
+  min-width: 0;
+  padding: 0 var(--space-2) var(--space-2) 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-padding-bottom: var(--space-2);
+  scrollbar-gutter: stable;
+}
+
+.payment-risk-map__scroller:focus-visible {
+  outline: 2px solid var(--background-brand-solid);
+  outline-offset: 2px;
+}
+
+.payment-risk-list {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3);
+  list-style: none;
+}
+
+.payment-risk-item {
+  --payment-risk-color: var(--system-elements-semantic-info-primary);
+  position: relative;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-2);
+}
+
+.payment-risk-item--error {
+  --payment-risk-color: var(--system-elements-semantic-error-primary);
+}
+
+.payment-risk-item--warning {
+  --payment-risk-color: var(--system-elements-semantic-warning-primary);
+}
+
+.payment-risk-item--info {
+  --payment-risk-color: var(--system-elements-semantic-info-primary);
+}
+
+.payment-risk-item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 21px;
+  bottom: calc(-1 * var(--space-3));
+  left: 9.5px;
+  border-left: 1px dashed var(--design-elements-border-default);
+  pointer-events: none;
+}
+
+.payment-risk-item__marker {
+  position: relative;
+  z-index: 1;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  border: 1px solid var(--payment-risk-color);
+  border-radius: 50%;
+  background: var(--background-surface-4);
+  color: var(--payment-risk-color);
+  font-size: var(--typography-indicator-small-size);
+  line-height: var(--typography-indicator-small-line-height);
+  font-weight: var(--typography-indicator-small-weight);
+  letter-spacing: var(--typography-indicator-small-letter-spacing);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.payment-risk-item__content {
+  min-width: 0;
+}
+
+.payment-risk-item__header {
+  min-width: 0;
+}
+
+.payment-risk-item__title {
+  color: var(--text-primary);
+  font-size: var(--typography-label-smallest-size);
+  line-height: var(--typography-label-smallest-line-height);
+  font-weight: var(--typography-label-smallest-weight);
+  letter-spacing: var(--typography-label-smallest-letter-spacing);
+}
+
+.payment-risk-item__description,
+.payment-risk-item__note {
+  font-size: var(--typography-body-smallest-size);
+  line-height: var(--typography-body-smallest-line-height);
+  font-weight: var(--typography-body-smallest-weight);
+  letter-spacing: var(--typography-body-smallest-letter-spacing);
+}
+
+.payment-risk-item__description {
+  color: var(--text-primary);
+}
+
+.payment-risk-item__note {
+  color: var(--text-tertiary);
+}
+
+.payment-risk-item__action {
+  color: var(--text-tertiary);
+  text-decoration: none;
+  font-size: var(--typography-body-smallest-size);
+  line-height: var(--typography-body-smallest-line-height);
+  font-weight: var(--typography-body-smallest-weight);
+  letter-spacing: var(--typography-body-smallest-letter-spacing);
+}
+
+.payment-risk-item__action svg {
+  width: 16px;
+  height: 16px;
+  margin-right: var(--space-1);
+  flex: none;
+  color: var(--design-elements-icon-primary);
+}
+
+.payment-risk-item__action:hover {
+  box-shadow: var(--shadow-primary);
+}
+
+.payment-risk-item__action:focus-visible {
+  outline: 2px solid var(--background-brand-solid);
+  outline-offset: 2px;
+}
+
+.payment-risk-map__chart-card {
+  min-height: 0;
+  box-shadow: none;
+}
+
+.payment-risk-map__chart-title {
+  color: var(--text-primary);
+}
+
+.payment-risk-chart__viewport {
+  min-height: 0;
+}
+
+.payment-risk-chart {
+  min-width: 560px;
+}
+
+.payment-risk-chart__bar--plan,
+.payment-risk-chart__dot--plan {
+  fill: var(--chart-series-secondary);
+  background: var(--chart-series-secondary);
+}
+
+.payment-risk-chart__bar--fact,
+.payment-risk-chart__dot--fact {
+  fill: var(--chart-series-primary);
+  background: var(--chart-series-primary);
+}
+
+.payment-risk-chart__value {
+  fill: var(--text-primary);
+  font-size: var(--typography-label-smallest-size);
+  line-height: var(--typography-label-smallest-line-height);
+  font-weight: var(--typography-label-smallest-weight);
+  letter-spacing: var(--typography-label-smallest-letter-spacing);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+@supports selector(::-webkit-scrollbar) {
+  .payment-risk-map__scroller::-webkit-scrollbar {
+    width: var(--space-2);
+    height: var(--space-2);
+  }
+}
+
+@media (max-width: 900px) {
+  .payment-summary__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .payment-risk-map__layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .payment-risk-map__risk-column {
+    min-height: 360px;
+  }
+}
