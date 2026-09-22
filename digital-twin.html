@@ -1,14 +1,14 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ru">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>BNT — Цифровой двойник</title>
+  <title>Batumi Oil Terminal — Цифровой двойник</title>
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/css/layout.css">
-  <link rel="stylesheet" href="/assets/css/components.css">
-  <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9121">
-  <link rel="stylesheet" href="/assets/css/pages/dispatcher-3d.css?v=10001">
+  <link rel="stylesheet" href="/assets/css/components.css?v=20">
+  <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9122">
+  <link rel="stylesheet" href="/assets/css/pages/dispatcher-3d.css?v=10033">
   <link rel="stylesheet" href="/assets/css/pages/digital-twin-realistic.css?v=11001">
   <script type="importmap">{"imports":{"three":"/assets/3d/vendor/three.module.js"}}</script>
 </head>
@@ -16,39 +16,221 @@
 <main id="page-content" class="page-content flush">
 <section class="dt3-workspace" aria-label="Цифровой двойник терминала">
   <div class="dt3-toolbar">
-    <div class="dt3-title"><span class="dt3-mark">3D</span><div><strong>Цифровой двойник</strong><small>Батумский нефтяной терминал · зоны · резервуары · оборудование</small></div></div>
-    <label class="dt3-search"><span>Поиск объекта</span><input id="dt-search" type="search" placeholder="Н-101, резервуар, клапан…" autocomplete="off"></label>
-    <button id="dt-risks" type="button" class="btn" aria-pressed="false">Объекты с риском</button>
-    <button id="dt-reset" type="button" class="btn">Весь терминал</button>
+    <div class="dt3-toolbar-group dt3-toolbar-group--left">
+      <form class="dt3-multisearch shell-search" role="search" aria-label="Поиск объектов терминала">
+        <div class="dt3-multisearch-field shell-search-field">
+          <span class="dt3-search-scope ui-dropdown">
+            <button id="dt-search-scope" class="dt3-search-scope-trigger ui-dropdown__trigger typography-caption-smallest" type="button" data-value="all" aria-haspopup="listbox" aria-expanded="false" aria-controls="dt-search-scope-list">
+              <span data-scope-label>Всё</span>
+              <span class="dt3-search-scope-chevron ui-dropdown__chevron nav-chevron" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M8 10L12 14L16 10" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </button>
+            <div id="dt-search-scope-list" class="dt3-search-scope-menu ui-dropdown__menu" role="listbox" aria-label="Тип объекта" hidden>
+              <button class="dt3-search-scope-option ui-dropdown__option typography-caption-smallest is-selected" type="button" role="option" aria-selected="true" data-value="all">Всё</button>
+              <button class="dt3-search-scope-option ui-dropdown__option typography-body-smallest" type="button" role="option" aria-selected="false" data-value="zone">Зоны</button>
+              <button class="dt3-search-scope-option ui-dropdown__option typography-body-smallest" type="button" role="option" aria-selected="false" data-value="tank">Резервуары</button>
+              <button class="dt3-search-scope-option ui-dropdown__option typography-body-smallest" type="button" role="option" aria-selected="false" data-value="equipment">Оборудование</button>
+            </div>
+          </span>
+          <input id="dt-search" class="typography-body-smallest" type="search" placeholder="Введите наименование" autocomplete="off" aria-label="Введите наименование">
+          <button class="dt3-search-submit shell-search-button" type="submit" aria-label="Найти объект">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M10.5 17C14.0899 17 17 14.0899 17 10.5C17 6.91015 14.0899 4 10.5 4C6.91015 4 4 6.91015 4 10.5C4 14.0899 6.91015 17 10.5 17Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M15.5 15.5L20 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="dt3-toolbar-group dt3-toolbar-group--center">
+      <div class="dt3-zoom ui-zoom" data-dt-zoom role="group" aria-label="Масштаб 3D-сцены">
+        <button id="dt-minus" class="ui-zoom__button" type="button" data-dt-zoom-out aria-label="Уменьшить масштаб">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M4.375 10H15.625" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div class="dt3-zoom__range ui-zoom__range">
+          <span class="dt3-zoom__track ui-zoom__track" aria-hidden="true">
+            <span class="dt3-zoom__line ui-zoom__line"></span>
+          </span>
+          <input id="dt-zoom-range" type="range" min="50" max="150" step="5" value="100" aria-label="Масштаб 3D-сцены" aria-valuetext="100 процентов">
+        </div>
+        <button id="dt-plus" class="ui-zoom__button" type="button" data-dt-zoom-in aria-label="Увеличить масштаб">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M10 4.375V15.625M15.625 10H4.375" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <output class="ui-zoom__value" id="dt-zoom-value" aria-live="polite">100%</output>
+      </div>
+    </div>
+    <div class="dt3-toolbar-group dt3-toolbar-group--right dt3-drawer-controls">
+      <span class="dt3-zone-dropdown ui-dropdown">
+        <button id="dt-reset" type="button" class="dt3-zone-dropdown__trigger ui-dropdown__trigger typography-caption-smallest" aria-haspopup="listbox" aria-expanded="false" aria-controls="dt-zone-select-list">
+          <span data-zone-select-label>Весь терминал</span>
+          <span class="dt3-zone-dropdown__chevron ui-dropdown__chevron nav-chevron" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M8 10L12 14L16 10" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </button>
+        <div id="dt-zone-select-list" class="dt3-zone-dropdown__menu ui-dropdown__menu" role="listbox" aria-label="Зона терминала" hidden></div>
+      </span>
+      <button id="dt-drawer-toggle" class="dt3-drawer-toggle button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest is-expanded" type="button" data-drawer-toggle aria-expanded="true" aria-controls="dt-drawer-content" aria-label="Свернуть панель">
+        <svg class="dt3-drawer-toggle__icon dt3-drawer-toggle__icon--close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <svg class="dt3-drawer-toggle__icon dt3-drawer-toggle__icon--open" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4.6501 12H4.6606M12.0001 12H12.0106M19.3501 12H19.3606M5.7001 12C5.7001 12.5799 5.23 13.05 4.6501 13.05C4.0702 13.05 3.6001 12.5799 3.6001 12C3.6001 11.4201 4.0702 10.95 4.6501 10.95C5.23 10.95 5.7001 11.4201 5.7001 12ZM13.0501 12C13.0501 12.5799 12.58 13.05 12.0001 13.05C11.4202 13.05 10.9501 12.5799 10.9501 12C10.9501 11.4201 11.4202 10.95 12.0001 10.95C12.58 10.95 13.0501 11.4201 13.0501 12ZM20.4001 12C20.4001 12.5799 19.93 13.05 19.3501 13.05C18.7702 13.05 18.3001 12.5799 18.3001 12C18.3001 11.4201 18.7702 10.95 19.3501 10.95C19.93 10.95 20.4001 11.4201 20.4001 12Z" stroke="#7199AC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
   </div>
   <div class="dt3-body">
     <section class="dt3-model" aria-label="Область 3D-модели">
       <nav id="dt-zone-buttons" class="dt3-zones" aria-label="Зоны терминала"></nav>
       <div id="dt-viewport" class="dt3-viewport"></div>
       <div id="dt-loading" class="dt3-loading" role="status"><span class="dt3-spinner"></span><strong>Подготовка цифрового двойника…</strong></div>
-      <div id="dt-scene-error" class="dt3-error" role="alert" hidden><strong>Не удалось открыть 3D</strong><p></p><button class="btn" type="button" onclick="location.reload()">Повторить</button></div>
-      <div class="dt3-camera" aria-label="Управление камерой">
-        <button id="dt-plus" type="button" aria-label="Приблизить">+</button><button id="dt-minus" type="button" aria-label="Отдалить">−</button>
-        <button id="dt-iso" type="button">Объём</button><button id="dt-top" type="button">Сверху</button><button id="dt-plan" type="button">План участка</button><button id="dt-port" type="button">Весь порт</button>
+      <div id="dt-scene-error" class="dt3-error" role="alert" hidden><strong>Не удалось открыть 3D</strong><p></p><button class="button-smallest-secondary-radius typography-button-smallest" type="button" onclick="location.reload()">Повторить</button></div>
+      <div class="dt3-control-panel">
+        <div class="dt3-control-panel__row dt3-control-panel__row--main">
+          <div class="dt3-focus-line live-line" data-focus-tone="mixed" aria-live="polite">
+            <span class="dt3-focus-line__status">
+              <i class="dt3-focus-line__dot live-dot" aria-hidden="true"></i>
+              <span class="dt3-focus-line__label typography-body-smallest">В фокусе</span>
+            </span>
+            <strong id="dt-focus-label" class="typography-label-smallest">Батумский нефтяной терминал</strong>
+          </div>
+          <div class="dt3-control-panel__actions">
+            <span class="dt3-view-select">
+              <button id="dt-view-trigger" class="dt3-view-trigger speed-dial-secondary__trigger button-smallest-secondary-radius" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="dt-view-menu" aria-label="Вид">
+                <span id="dt-view-icon" class="dt3-view-trigger__icon speed-dial-secondary__icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M17.5 14.0225V9.30027C17.5 8.43062 17.5 7.9958 17.2641 7.66844C17.0735 7.40399 16.7676 7.26344 16.2222 7.07422C16.1107 8.41272 15.6674 9.77965 14.9713 10.976C14.1607 12.369 12.957 13.6145 11.4142 14.2875C10.515 14.6798 9.48498 14.6798 8.58585 14.2875C7.04303 13.6145 5.83932 12.369 5.02874 10.976C4.50071 10.0686 4.11817 9.063 3.91551 8.04614C3.59673 7.99919 3.35208 8.02328 3.14097 8.14106C3.05674 8.18806 2.97823 8.24464 2.90701 8.30969C2.5 8.68143 2.5 9.37264 2.5 10.755V14.8631C2.5 15.7328 2.5 16.1676 2.73595 16.495C2.97189 16.8223 3.38441 16.9598 4.20943 17.2349L4.52907 17.3414C5.84322 17.7794 6.50029 17.9985 7.1724 17.9997C7.37483 18.0001 7.57702 17.9858 7.77736 17.9568C8.44253 17.8604 9.06742 17.548 10.3172 16.9231C11.2749 16.4442 11.7538 16.2048 12.2625 16.0937C12.441 16.0547 12.6219 16.0275 12.804 16.0123C13.3229 15.9689 13.8464 16.0561 14.8934 16.2306C15.9546 16.4075 16.4851 16.4959 16.8725 16.2734C17.004 16.1979 17.1207 16.099 17.2169 15.9817C17.5 15.6362 17.5 15.0983 17.5 14.0225Z" fill="currentColor"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M10 1.66797C7.23858 1.66797 5 3.79473 5 6.41822C5 9.02116 6.59583 12.0585 9.08567 13.1447C9.66609 13.3979 10.3339 13.3979 10.9143 13.1447C13.4042 12.0585 15 9.02116 15 6.41822C15 3.79473 12.7614 1.66797 10 1.66797ZM10 8.33464C10.9205 8.33464 11.6667 7.58844 11.6667 6.66797C11.6667 5.74749 10.9205 5.0013 10 5.0013C9.07953 5.0013 8.33333 5.74749 8.33333 6.66797C8.33333 7.58844 9.07953 8.33464 10 8.33464Z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span class="dt3-view-trigger__label speed-dial-secondary__label typography-indicator-small">Вид</span>
+              </button>
+              <div id="dt-view-menu" class="dt3-view-menu speed-dial-secondary__menu" role="listbox" aria-label="Вид 3D-сцены" hidden>
+                <button class="dt3-view-option typography-body-smallest" type="button" role="option" aria-selected="true" data-dt-view="iso">
+                  <span class="dt3-view-option__icon" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <path d="M17.5 14.0225V9.30027C17.5 8.43062 17.5 7.9958 17.2641 7.66844C17.0735 7.40399 16.7676 7.26344 16.2222 7.07422C16.1107 8.41272 15.6674 9.77965 14.9713 10.976C14.1607 12.369 12.957 13.6145 11.4142 14.2875C10.515 14.6798 9.48498 14.6798 8.58585 14.2875C7.04303 13.6145 5.83932 12.369 5.02874 10.976C4.50071 10.0686 4.11817 9.063 3.91551 8.04614C3.59673 7.99919 3.35208 8.02328 3.14097 8.14106C3.05674 8.18806 2.97823 8.24464 2.90701 8.30969C2.5 8.68143 2.5 9.37264 2.5 10.755V14.8631C2.5 15.7328 2.5 16.1676 2.73595 16.495C2.97189 16.8223 3.38441 16.9598 4.20943 17.2349L4.52907 17.3414C5.84322 17.7794 6.50029 17.9985 7.1724 17.9997C7.37483 18.0001 7.57702 17.9858 7.77736 17.9568C8.44253 17.8604 9.06742 17.548 10.3172 16.9231C11.2749 16.4442 11.7538 16.2048 12.2625 16.0937C12.441 16.0547 12.6219 16.0275 12.804 16.0123C13.3229 15.9689 13.8464 16.0561 14.8934 16.2306C15.9546 16.4075 16.4851 16.4959 16.8725 16.2734C17.004 16.1979 17.1207 16.099 17.2169 15.9817C17.5 15.6362 17.5 15.0983 17.5 14.0225Z" fill="currentColor"/>
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M10 1.66797C7.23858 1.66797 5 3.79473 5 6.41822C5 9.02116 6.59583 12.0585 9.08567 13.1447C9.66609 13.3979 10.3339 13.3979 10.9143 13.1447C13.4042 12.0585 15 9.02116 15 6.41822C15 3.79473 12.7614 1.66797 10 1.66797ZM10 8.33464C10.9205 8.33464 11.6667 7.58844 11.6667 6.66797C11.6667 5.74749 10.9205 5.0013 10 5.0013C9.07953 5.0013 8.33333 5.74749 8.33333 6.66797C8.33333 7.58844 9.07953 8.33464 10 8.33464Z" fill="currentColor"/>
+                    </svg>
+                  </span>
+                  <span class="dt3-view-option__text">Объём</span>
+                </button>
+                <button class="dt3-view-option typography-body-smallest" type="button" role="option" aria-selected="false" data-dt-view="top">
+                  <span class="dt3-view-option__icon" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M1.66669 10.0013C1.66669 10.3224 1.92699 10.5827 2.24808 10.5827H3.82536C4.10067 13.5437 6.45763 15.9007 9.41862 16.176V17.7532C9.41862 18.0743 9.67892 18.3346 10 18.3346C10.3211 18.3346 10.5814 18.0743 10.5814 17.7532V16.176C13.5424 15.9007 15.8994 13.5437 16.1747 10.5827H17.752C18.0731 10.5827 18.3334 10.3224 18.3334 10.0013C18.3334 9.68021 18.0731 9.41991 17.752 9.41991H16.1747C15.8994 6.45892 13.5424 4.10195 10.5814 3.82665V2.24936C10.5814 1.92827 10.3211 1.66797 10 1.66797C9.67892 1.66797 9.41862 1.92827 9.41862 2.24936V3.82665C6.45763 4.10195 4.10067 6.45891 3.82536 9.41991H2.24808C1.92699 9.41991 1.66669 9.68021 1.66669 10.0013ZM7.09304 10.0013C7.09304 8.39582 8.39454 7.09433 10 7.09433C11.6055 7.09433 12.907 8.39582 12.907 10.0013C12.907 11.6068 11.6055 12.9083 10 12.9083C8.39454 12.9083 7.09304 11.6068 7.09304 10.0013Z" fill="currentColor"/>
+                      <path d="M8.25583 10.0013C8.25583 9.03801 9.03673 8.25712 10 8.25712C10.9633 8.25712 11.7442 9.03801 11.7442 10.0013C11.7442 10.9646 10.9633 11.7455 10 11.7455C9.03673 11.7455 8.25583 10.9646 8.25583 10.0013Z" fill="currentColor"/>
+                    </svg>
+                  </span>
+                  <span class="dt3-view-option__text">Вид сверху</span>
+                </button>
+                <button class="dt3-view-option typography-body-smallest" type="button" role="option" aria-selected="false" data-dt-view="plan">
+                  <span class="dt3-view-option__icon" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <path d="M2.03024 4.28758C1.66669 4.70141 1.66669 5.41093 1.66669 6.82998V14.6577C1.66669 15.6627 1.66669 16.1652 1.92885 16.5435C2.19101 16.9218 2.64936 17.0807 3.56605 17.3985L4.64454 17.7724C5.22866 17.9749 5.67811 18.1307 6.05529 18.2311C6.30136 18.2965 6.5278 18.1034 6.5278 17.8488V5.22362C6.5278 5.01619 6.37472 4.84113 6.17366 4.79013C5.8493 4.70785 5.45941 4.57268 4.92503 4.38742C3.63066 3.93868 2.98347 3.71431 2.49103 3.94216C2.3162 4.02305 2.15932 4.14065 2.03024 4.28758Z" fill="currentColor"/>
+                      <path d="M10.517 2.89933L9.23703 3.78683C8.77397 4.1079 8.43462 4.3432 8.14481 4.51096C8.00748 4.59047 7.91669 4.73429 7.91669 4.89299V17.4321C7.91669 17.7409 8.23667 17.9337 8.49682 17.7673C8.77605 17.5887 9.09577 17.367 9.48303 17.0985L10.763 16.211C11.2261 15.8899 11.5654 15.6546 11.8552 15.4869C11.9926 15.4074 12.0834 15.2635 12.0834 15.1048V2.56573C12.0834 2.2569 11.7634 2.06409 11.5032 2.23051C11.224 2.40912 10.9043 2.63082 10.517 2.89933Z" fill="currentColor"/>
+                      <path d="M16.434 2.59931L15.3555 2.22542C14.7713 2.02289 14.322 1.8671 13.9447 1.76676C13.6987 1.70131 13.4722 1.89445 13.4722 2.14907V14.7742C13.4722 14.9816 13.6253 15.1567 13.8264 15.2077C14.1507 15.29 14.5407 15.4252 15.075 15.6104C16.3694 16.0591 17.0166 16.2835 17.509 16.0557C17.6838 15.9748 17.8407 15.8572 17.9698 15.7102C18.3334 15.2964 18.3334 14.5869 18.3334 13.1678V5.34011C18.3334 4.33512 18.3334 3.83263 18.0712 3.45432C17.809 3.07602 17.3507 2.91712 16.434 2.59931Z" fill="currentColor"/>
+                    </svg>
+                  </span>
+                  <span class="dt3-view-option__text">План участка</span>
+                </button>
+                <button class="dt3-view-option typography-body-smallest" type="button" role="option" aria-selected="false" data-dt-view="port">
+                  <span class="dt3-view-option__icon" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <path d="M18.2409 5.97768C18.3334 7.02893 18.3334 8.33934 18.3334 10.0013C18.3334 13.446 18.3334 15.3804 17.5105 16.6274L12.5509 11.6678L18.2409 5.97768Z" fill="currentColor"/>
+                      <path d="M16.6267 17.5114L11.6671 12.5517L5.97641 18.2422C7.02766 18.3346 8.33806 18.3346 10 18.3346C13.4453 18.3346 15.3798 18.3346 16.6267 17.5114Z" fill="currentColor"/>
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M10 1.66797C13.9284 1.66797 15.8926 1.66797 17.113 2.88836C17.5329 3.30825 17.8083 3.81619 17.9889 4.46189L4.4606 17.9902C3.81491 17.8096 3.30697 17.5341 2.88708 17.1142C1.66669 15.8939 1.66669 13.9297 1.66669 10.0013C1.66669 6.07293 1.66669 4.10875 2.88708 2.88836C4.10746 1.66797 6.07165 1.66797 10 1.66797ZM4.58335 7.29907C4.58335 8.78646 5.51425 10.5221 6.96666 11.1428C7.30524 11.2875 7.6948 11.2875 8.03338 11.1428C9.48579 10.5221 10.4167 8.78646 10.4167 7.29907C10.4167 5.79993 9.11085 4.58464 7.50002 4.58464C5.88919 4.58464 4.58335 5.79993 4.58335 7.29907Z" fill="currentColor"/>
+                      <path d="M8.75002 7.5013C8.75002 8.19166 8.19038 8.7513 7.50002 8.7513C6.80966 8.7513 6.25002 8.19166 6.25002 7.5013C6.25002 6.81095 6.80966 6.2513 7.50002 6.2513C8.19038 6.2513 8.75002 6.81095 8.75002 7.5013Z" fill="currentColor"/>
+                    </svg>
+                  </span>
+                  <span class="dt3-view-option__text">Весь порт</span>
+                </button>
+              </div>
+            </span>
+            <button id="dt-motion" class="dt3-motion-button button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" aria-label="Пауза движения" title="Пауза движения">
+              <span class="dt3-motion-button__icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M7.20001 19H10V5L7.20001 5V19ZM14 5V19H16.8V5H14Z" fill="currentColor"/>
+                </svg>
+              </span>
+            </button>
+          </div>
+        </div>
+        <div class="dt3-control-panel__row dt3-legend-row">
+          <div class="dt3-legend-heading">
+            <span class="typography-body-smallest">Легенда</span>
+            <button id="dt-legend-toggle" class="dt3-legend-toggle analytics-kpi__info" type="button" aria-expanded="false" aria-controls="dt-legend" aria-label="Показать легенду">
+              <span class="dt3-legend-toggle__icon dt3-legend-toggle__icon--open" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M16 16.2008L12 12.2008L8 16.2008M16 12.8008L12 8.80078L8 12.8008" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="dt3-legend-toggle__icon dt3-legend-toggle__icon--close" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <circle cx="10" cy="10" r="7.25" stroke="currentColor" stroke-width="1.5"/>
+                  <path d="M7.75 7.75L12.25 12.25M12.25 7.75L7.75 12.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </span>
+            </button>
+          </div>
+          <div id="dt-legend" class="dt3-legend" hidden><span><i style="--color:var(--system-elements-semantic-info-primary)"></i>Газ</span><span><i style="--color:var(--system-elements-semantic-warning-primary)"></i>Дизтопливо</span><span><i style="--color:var(--system-elements-semantic-positive-primary)"></i>Бензин</span><span><i style="--color:var(--system-elements-semantic-purple-primary)"></i>Нефть</span></div>
+        </div>
       </div>
-      <div class="dt3-scene-tools"><button id="dt-theme" type="button">Тёмная тема</button><button id="dt-motion" type="button">Пауза движения</button></div>
-      <div class="dt3-selected" aria-live="polite"><span>В фокусе</span><strong id="dt-focus-label">Батумский терминал</strong></div>
-      <div class="dt3-legend"><span><i style="--color:#29aae1"></i>Газ</span><span><i style="--color:#ffb228"></i>Дизтопливо</span><span><i style="--color:#55c98c"></i>Бензин</span><span><i style="--color:#a782ef"></i>Нефть</span></div>
-      <p class="dt3-help">Перетаскивание — вращение · колесо / два пальца — масштаб</p>
-      <span class="dt3-demo">Демо · геометрия и привязки условные</span>
     </section>
     <aside id="dt-drawer" class="dt3-drawer" aria-label="Карточка объекта">
-      <div class="dt3-drawer-head"><nav id="dt-breadcrumbs" aria-label="Путь к объекту"></nav><button id="dt-drawer-close" type="button" aria-label="Закрыть карточку и вернуться к зонам">×</button></div>
-      <div class="dt3-drawer-heading"><span id="dt-drawer-type">Терминал</span><h2 id="dt-drawer-title">Батумский терминал</h2></div>
-      <div id="dt-drawer-body"></div>
+      <div id="dt-drawer-content" class="dt3-drawer-content">
+        <div class="dt3-drawer-head"><nav id="dt-breadcrumbs" class="shell-breadcrumbs typography-body-smallest" aria-label="Путь к объекту"></nav></div>
+        <div class="dt3-drawer-risk">
+          <button id="dt-risks" type="button" class="dt3-risk-toggle typography-label-smallest" aria-pressed="false">
+            <span class="dt3-risk-toggle__track" aria-hidden="true">
+              <span class="dt3-risk-toggle__knob"></span>
+            </span>
+            <span class="dt3-risk-toggle__label">Объекты с риском</span>
+          </button>
+        </div>
+        <div class="dt3-drawer-heading analytics-block-heading">
+          <div class="dt3-drawer-heading__text">
+            <span id="dt-drawer-type" class="typography-indicator-small">Терминал</span>
+            <div class="analytics-block-title-row">
+              <h2 id="dt-drawer-title" class="typography-caption-small">Батумский нефтяной терминал</h2>
+              <span class="dt3-title-info analytics-title-info" data-analytics-info-root>
+                <button class="analytics-kpi__info" type="button" data-analytics-info-trigger aria-expanded="false" aria-controls="dt-drawer-info-popover" aria-label="Информация об объекте">
+                  <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg>
+                </button>
+                <span id="dt-drawer-info-popover" class="analytics-title-popover" data-analytics-info-popover role="dialog" aria-label="Описание объекта" hidden>
+                  <button class="analytics-title-popover__close" type="button" data-analytics-info-close aria-label="Закрыть описание объекта">
+                    <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+                  </button>
+                  <span id="dt-drawer-info-text" class="analytics-title-popover__text typography-body-smallest">Выберите зону терминала на модели или из выпадающего списка. Откройте резервуар и связанное с ним оборудование для просмотра подробной информации.</span>
+                </span>
+              </span>
+            </div>
+          </div>
+          <div id="dt-drawer-menu" class="dt3-drawer-menu"></div>
+        </div>
+        <div id="dt-drawer-summary" class="dt3-drawer-summary"></div>
+        <div class="dt3-drawer-list-group">
+          <div id="dt-drawer-section-title" class="dt3-section-title"></div>
+          <div id="dt-drawer-body"></div>
+        </div>
+      </div>
     </aside>
   </div>
 </section>
 </main>
 <script src="/assets/js/navigation.js?v=12001"></script>
-<script src="/assets/js/ui.js"></script>
+<script src="/assets/js/ui.js?v=3"></script>
 <script src="/assets/js/data/assets.js"></script>
 <script src="/assets/js/shell.js?v=9120"></script>
-<script type="module" src="/assets/js/pages/dispatcher-3d.js?v=11001"></script>
+<script type="module" src="/assets/js/pages/dispatcher-3d.js?v=11012"></script>
 </body>
 </html>
