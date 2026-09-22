@@ -12,7 +12,7 @@ const zoneSelectButton=$('#dt-reset'),zoneSelectMenu=$('#dt-zone-select-list'),z
 const workspace=$('.dt3-workspace'),drawerToggle=$('#dt-drawer-toggle');
 const drawerBody=$('#dt-drawer-body'),drawerListGroup=$('.dt3-drawer-list-group'),drawerMenu=$('#dt-drawer-menu');
 const zoomControl=$('[data-dt-zoom]'),zoomRange=$('#dt-zoom-range'),zoomValue=$('#dt-zoom-value');
-const focusLine=$('.dt3-focus-line'),viewSelect=$('.dt3-view-select'),viewTrigger=$('#dt-view-trigger'),viewMenu=$('#dt-view-menu'),viewIcon=$('#dt-view-icon'),viewOptions=[...document.querySelectorAll('[data-dt-view]')];
+const focusLine=$('.dt3-focus-line'),viewSelect=$('.dt3-view-select'),viewTrigger=$('#dt-view-trigger'),viewMenu=$('#dt-view-menu'),viewOptions=[...document.querySelectorAll('[data-dt-view]')];
 const legendToggle=$('#dt-legend-toggle'),legendPanel=$('#dt-legend'),motionButton=$('#dt-motion'),motionLabel=$('#dt-motion-label');
 let zoomPercent=100;
 function getScope(){return scopeButton?.dataset.value||'all';}
@@ -29,7 +29,7 @@ function error(message){$('#dt-loading').hidden=true;$('#dt-scene-error').hidden
 function updateDrawerScrollFades(){if(!drawerBody||!drawerListGroup)return;const maxScroll=Math.max(0,drawerBody.scrollHeight-drawerBody.clientHeight);drawerListGroup.classList.toggle('has-fade-top',drawerBody.scrollTop>1);drawerListGroup.classList.toggle('has-fade-bottom',maxScroll-drawerBody.scrollTop>1);}
 function closeViewSelect(){viewTrigger?.setAttribute('aria-expanded','false');viewSelect?.classList.remove('is-open');if(viewMenu)viewMenu.hidden=true;}
 function openViewSelect(){viewTrigger?.setAttribute('aria-expanded','true');viewSelect?.classList.add('is-open');if(viewMenu)viewMenu.hidden=false;}
-function setView(value,{apply=true}={}){const selected=viewOptions.find(option=>option.dataset.dtView===value)||viewOptions[0];if(!selected)return;if(viewIcon)viewIcon.innerHTML=selected.querySelector('.dt3-view-option__icon')?.innerHTML||'';viewOptions.forEach(option=>{const active=option===selected;option.classList.toggle('is-selected',active);option.classList.toggle('typography-caption-smallest',active);option.classList.toggle('typography-body-smallest',!active);option.setAttribute('aria-selected',String(active));});if(apply)scene?.view(selected.dataset.dtView);}
+function setView(value,{apply=true}={}){const selected=viewOptions.find(option=>option.dataset.dtView===value)||viewOptions[0];if(!selected)return;viewOptions.forEach(option=>{option.setAttribute('aria-selected',String(option===selected));});if(apply)scene?.view(selected.dataset.dtView);}
 function setLegendOpen(open){if(!legendToggle||!legendPanel)return;legendPanel.hidden=!open;legendToggle.classList.toggle('is-open',open);legendToggle.setAttribute('aria-expanded',String(open));legendToggle.setAttribute('aria-label',open?'Скрыть легенду':'Показать легенду');}
 function setMotionLabel(animating){const text=animating?'Пауза движения':'Продолжить движение';if(motionLabel)motionLabel.textContent=text;motionButton?.setAttribute('aria-label',text);motionButton?.setAttribute('title',text);}
 viewport.addEventListener('scene-error',e=>error(e.detail));

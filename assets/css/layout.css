@@ -13,7 +13,7 @@
 .nav-link.active .nav-icon { background: rgba(255,255,255,.16); }
 .sidebar-foot { margin-top: auto; padding: 12px 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: 9px; }
 .live-line { display: flex; align-items: center; gap: 7px; }
-.live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 4px rgba(22,167,108,.11); }
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--system-elements-semantic-positive-primary); box-shadow: 0 0 0 4px var(--system-elements-semantic-positive-secondary-fade); }
 .app-main { min-width: 0; }
 .app-topbar { position: sticky; top: 0; z-index: 30; min-height: var(--topbar); display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 10px 22px; background: rgba(255,255,255,.96); border-bottom: 1px solid var(--line); backdrop-filter: blur(12px); }
 .page-heading { min-width: 0; }

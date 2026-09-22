@@ -506,8 +506,8 @@ body > .app-shell > .app-sidebar {
   height: clamp(8px, .555556vw, 10.666667px) !important;
   min-width: clamp(8px, .555556vw, 10.666667px) !important;
   border-radius: 50% !important;
-  background: var(--system-elements-semantic-success-primary) !important;
-  box-shadow: 0 0 0 4px var(--system-elements-semantic-success-modifier-light) !important;
+  background: var(--system-elements-semantic-positive-primary) !important;
+  box-shadow: 0 0 0 4px var(--system-elements-semantic-positive-secondary-fade) !important;
 }
 
 body > .app-shell > .app-main {
