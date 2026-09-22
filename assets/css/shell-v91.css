@@ -207,6 +207,40 @@ body > .app-shell > .app-sidebar {
   overflow-y: auto !important;
   overflow-x: hidden !important;
   scrollbar-width: thin;
+  scrollbar-color: var(--icons-default) var(--progress-bar-track);
+}
+
+@supports selector(::-webkit-scrollbar) {
+  body > .app-shell > .app-sidebar,
+  .app-sidebar .app-nav {
+    scrollbar-color: auto;
+    scrollbar-width: auto;
+  }
+
+  body > .app-shell > .app-sidebar::-webkit-scrollbar,
+  .app-sidebar .app-nav::-webkit-scrollbar {
+    width: var(--progress-bar-track-scroll-size);
+    height: var(--progress-bar-track-scroll-size);
+  }
+
+  body > .app-shell > .app-sidebar::-webkit-scrollbar-track,
+  .app-sidebar .app-nav::-webkit-scrollbar-track {
+    border-radius: 999px;
+    background: var(--progress-bar-track);
+  }
+
+  body > .app-shell > .app-sidebar::-webkit-scrollbar-thumb,
+  .app-sidebar .app-nav::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--icons-default);
+  }
+
+  body > .app-shell > .app-sidebar::-webkit-scrollbar-button,
+  .app-sidebar .app-nav::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+  }
 }
 
 .app-sidebar .nav-link {
@@ -688,6 +722,10 @@ body > .app-shell > .app-main {
 .app-topbar .shell-search input::placeholder {
   color: var(--text-tertiary) !important;
   opacity: 1 !important;
+}
+
+.app-topbar .shell-search input:focus::placeholder {
+  color: transparent !important;
 }
 
 .app-topbar .shell-search-button {

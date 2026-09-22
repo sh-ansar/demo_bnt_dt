@@ -4,7 +4,7 @@
 .brand-mark { width: 39px; height: 39px; display: grid; place-items: center; border-radius: 12px; color: #fff; font-size: 13px; font-weight: 850; letter-spacing: .03em; background: linear-gradient(145deg, #11a1ef, #0872d1); box-shadow: 0 7px 17px rgba(11, 130, 233, .22); }
 .brand-copy strong { display: block; font-size: 20px; line-height: 22px; }
 .brand-copy span { display: block; color: var(--muted); font-size: 9px; margin-top: 2px; }
-.app-nav { padding: 10px 9px; overflow: auto; scrollbar-width: thin; }
+.app-nav { padding: 10px 9px; overflow: auto; scrollbar-width: thin; scrollbar-color: var(--icons-default) var(--progress-bar-track); }
 .nav-label { padding: 14px 9px 6px; color: #9aafc1; text-transform: uppercase; letter-spacing: .09em; font-size: 9px; font-weight: 800; }
 .nav-link { display: flex; align-items: center; gap: 10px; min-height: 40px; margin: 2px 0; padding: 9px 10px; border-radius: 9px; text-decoration: none; color: #4a6884; font-size: 11px; font-weight: 700; transition: .15s ease; }
 .nav-link:hover { color: var(--blue); background: #edf6fd; }

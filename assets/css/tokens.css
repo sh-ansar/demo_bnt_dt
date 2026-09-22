@@ -62,7 +62,10 @@
   --background-primary: #e8eff2;
   --background-primary-fade: #e5f6ff;
   --background-secondary: #f8fafb;
+  --background-tertiary: #c9dee833;
+  --background-accent-soft: rgba(35, 142, 195, .04);
   --background-quarternary: rgba(255, 255, 255, .8);
+  --background-senary: rgba(255, 255, 255, .8);
   --system-elements-static-primary: #fefefe;
   --text-secondary: #051c27;
   --bg: var(--background-primary);
@@ -77,9 +80,12 @@
   --design-elements-border-primary: var(--design-elements-border-default);
   --design-elements-border-secondary: rgba(68, 112, 134, .24);
   --design-elements-border-strong: var(--design-elements-border-secondary);
+  --design-elements-illustration-primary: #ffffff;
   --design-elements-icon-primary: #7199ac;
   --design-elements-icon-secondary: #c9dee8;
+  --design-elements-icon-tertiary: #e6eff4;
   --design-elements-icon-tertiary-neutral: #e6eff4;
+  --design-elements-icon-quarternary: #d7eaf3;
   --interaction-bg-hover-modifier-light: rgba(35, 142, 195, .06);
   --interaction-hover-modifier-light: var(--interaction-bg-hover-modifier-light);
   --interaction-bg-active-modifier-light: var(--surface-blue);
@@ -121,10 +127,11 @@
   --shadow-progress-bar-fade: inset 0 1px 2px 0 var(--blue-980-5, rgba(8, 31, 43, .05));
   --progress-bar-track: var(--design-elements-border-default, rgba(68, 112, 134, .08));
   --progress-bar-line: var(--system-elements-semantic-info-primary);
-  --progress-bar-thumb-background: var(--background-page);
+  --progress-bar-thumb-background: var(--design-elements-illustration-primary);
   --progress-bar-thumb-border: var(--design-elements-border-default);
   --progress-bar-thumb-shadow: var(--shadow-primary);
-  --progress-bar-track-size: 4px;
+  --progress-bar-track-size: 2px;
+  --progress-bar-track-scroll-size: 4px;
   --progress-bar-thumb-size: 16px;
   /* Charts keep the light-theme palette in every theme at 70% opacity. */
   --chart-series-primary: rgb(6 151 224 / 70%);
@@ -185,7 +192,10 @@
   --background-primary: #081f2b;
   --background-primary-fade: #023c5a;
   --background-secondary: #092634;
+  --background-tertiary: rgb(10 31 41 / 40%);
+  --background-accent-soft: rgba(147, 206, 236, .08);
   --background-quarternary: rgba(112, 184, 219, .05);
+  --background-senary: rgb(10 31 41 / 40%);
   --system-elements-static-primary: #fefefe;
   --text-secondary: #ffffff;
   --bg: var(--background-primary);
@@ -200,9 +210,12 @@
   --design-elements-border-primary: var(--design-elements-border-default);
   --design-elements-border-secondary: rgba(141, 192, 216, .2);
   --design-elements-border-strong: var(--design-elements-border-secondary);
+  --design-elements-illustration-primary: #7199ac;
   --design-elements-icon-primary: #7199ac;
   --design-elements-icon-secondary: #0f4057;
-  --design-elements-icon-tertiary-neutral: #2e556b;
+  --design-elements-icon-tertiary: #2e556b;
+  --design-elements-icon-tertiary-neutral: #e6eff4;
+  --design-elements-icon-quarternary: #023c5a;
   --system-elements-semantic-info-primary: #0697e0;
   --system-elements-semantic-success-primary: #17cf3f;
   --system-elements-semantic-success-modifier-light: #e2f1e7;
