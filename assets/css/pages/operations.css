@@ -21,7 +21,7 @@
   min-width: 0;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-3);
+  gap: var(--ui-zoom-gap);
   margin: 0 0 var(--space-5);
 }
 
@@ -795,23 +795,24 @@
 
 .daily-summary-zoom {
   --zoom-progress: 50%;
+  --ui-zoom-button-size: 36px;
   position: absolute;
   z-index: 7;
   top: var(--space-3);
   left: 50%;
   width: min(360px, calc(100% - var(--space-6)));
-  height: var(--space-6);
+  height: var(--ui-zoom-button-size);
   display: grid;
-  grid-template-columns: var(--space-6) minmax(0, 1fr) var(--space-6);
-  gap: var(--space-3);
+  grid-template-columns: var(--ui-zoom-button-size) minmax(0, 1fr) var(--ui-zoom-button-size);
+  gap: var(--ui-zoom-gap);
   align-items: center;
   transform: translateX(-50%);
   transition: opacity .18s ease, visibility .18s ease;
 }
 
 .daily-summary-zoom button {
-  width: var(--space-6);
-  height: var(--space-6);
+  width: var(--ui-zoom-button-size);
+  height: var(--ui-zoom-button-size);
   display: grid;
   place-items: center;
   padding: 0;
@@ -852,7 +853,7 @@
 .daily-summary-zoom__range {
   position: relative;
   width: 100%;
-  height: var(--space-6);
+  height: var(--ui-zoom-button-size);
 }
 
 .daily-summary-zoom__track {

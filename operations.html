@@ -6,10 +6,10 @@
   <title>BNT — Операционная аналитика</title>
   <link rel="stylesheet" href="/assets/css/tokens.css?v=17">
   <link rel="stylesheet" href="/assets/css/layout.css">
-  <link rel="stylesheet" href="/assets/css/components.css?v=10">
+  <link rel="stylesheet" href="/assets/css/components.css?v=11">
   <link rel="stylesheet" href="/assets/css/pages/budget-payments.css?v=15">
-  <link rel="stylesheet" href="/assets/css/pages/operations.css?v=126">
-  <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9121">
+  <link rel="stylesheet" href="/assets/css/pages/operations.css?v=127">
+  <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9122">
 </head>
 <body data-page="operations">
   <main id="page-content" class="page-content operations-page">
@@ -157,24 +157,24 @@
             </button>
           </div>
 
-        <div class="daily-summary-zoom" data-zoom-control role="group" aria-label="Масштаб схемы">
-          <button type="button" data-zoom-out aria-label="Уменьшить масштаб">
+        <div class="daily-summary-zoom ui-zoom" data-zoom-control role="group" aria-label="Масштаб схемы">
+          <button class="ui-zoom__button" type="button" data-zoom-out aria-label="Уменьшить масштаб">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
               <path d="M4.375 10H15.625" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"/>
             </svg>
           </button>
-          <div class="daily-summary-zoom__range">
-            <span class="daily-summary-zoom__track" aria-hidden="true">
-              <span class="daily-summary-zoom__line"></span>
+          <div class="daily-summary-zoom__range ui-zoom__range">
+            <span class="daily-summary-zoom__track ui-zoom__track" aria-hidden="true">
+              <span class="daily-summary-zoom__line ui-zoom__line"></span>
             </span>
             <input type="range" data-zoom-range min="50" max="150" step="5" value="100" aria-label="Масштаб схемы" aria-valuetext="100 процентов">
           </div>
-          <button type="button" data-zoom-in aria-label="Увеличить масштаб">
+          <button class="ui-zoom__button" type="button" data-zoom-in aria-label="Увеличить масштаб">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
               <path d="M10 4.375V15.625M15.625 10H4.375" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"/>
             </svg>
           </button>
-          <output class="daily-summary__zoom-value" data-zoom-value aria-live="polite">100%</output>
+          <output class="daily-summary__zoom-value ui-zoom__value" data-zoom-value aria-live="polite">100%</output>
         </div>
 
         </div>
