@@ -5634,6 +5634,10 @@ textarea.form-input__control--text {
   align-content: start;
 }
 
+.logistics-bar-grid {
+  border-top: 1px solid var(--design-elements-border-default);
+}
+
 .payment-deviation-chart__viewport {
   min-width: 0;
   padding-inline: var(--space-3);

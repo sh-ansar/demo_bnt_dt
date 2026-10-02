@@ -296,6 +296,17 @@ assert.equal(modal.hidden, true);
 assert.equal(financialTrigger.attributes['aria-expanded'], 'false');
 assert.equal(financialTrigger.focused, true);
 
+for (const heading of ['Входящий объём по продукту', 'Свободная ёмкость резервуаров', 'Текущий ЕГПЗ']) {
+  const trigger = openFilter(undefined, heading);
+  assert.equal(filterTitle.textContent, `Фильтр: ${heading}`);
+  assert.equal(modal.hidden, false);
+  assert.ok(!drawer.classList.values.has('dt3-drawer_static-date'));
+  filterDocument.events.keydown({ key: 'Escape', preventDefault() {} });
+  assert.equal(modal.hidden, true);
+  assert.equal(trigger.attributes['aria-expanded'], 'false');
+  assert.equal(trigger.focused, true);
+}
+
 const operationsHtml = await readFile(new URL('../operations.html', import.meta.url), 'utf8');
 const financialHeader = operationsHtml.match(/<header class="financial-overview__header">([\s\S]*?)<\/header>/)[1];
 assert.match(financialHeader, /data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"/);

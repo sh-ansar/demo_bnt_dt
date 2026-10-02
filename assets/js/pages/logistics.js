@@ -304,9 +304,6 @@
       const opening = Boolean(popover?.hidden);
       closePopovers();
       if (popover) {
-        const counter = popoverRoot.querySelector('.button-smallest-secondary-radius__counter');
-        const summary = popover.querySelector('[data-logistics-filter-summary]');
-        if (counter && summary) summary.textContent = `Выбрано параметров: ${counter.textContent}`;
         popover.hidden = !opening;
         popoverTrigger.setAttribute('aria-expanded', String(opening));
       }
@@ -339,12 +336,9 @@
       return;
     }
 
-    const chipClose = event.target.closest('.pill button');
+    const chipClose = event.target.closest('[data-logistics-overview-card] .filter-summary__count-chevron');
     if (chipClose) {
-      const card = chipClose.closest('[data-logistics-overview-card]');
       chipClose.closest('.pill')?.remove();
-      const counter = card?.querySelector('.button-smallest-secondary-radius__counter');
-      if (counter) counter.textContent = String(Math.max(0, Number(counter.textContent) - 1));
       return;
     }
 

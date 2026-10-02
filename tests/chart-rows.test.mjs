@@ -39,6 +39,33 @@ for (const file of ['../assets/js/pages/procurement.js', '../assets/js/pages/ana
   assert.doesNotMatch(source, /class="[^"]*chart__(?:rows|body)"\s+style="[^"]*height:/, `${file} has no inline chart height`);
 }
 const components = await readFile(new URL('../assets/css/components.css', import.meta.url), 'utf8');
+assert.match(components, /\.logistics-bar-grid\s*\{[^}]*border-top: 1px solid var\(--design-elements-border-default\);/);
+for (const file of ['operations.html', 'logistics.html']) {
+  const html = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
+  const cards = [...html.matchAll(/<article[^>]*data-logistics-overview-card="([^"]+)"[^>]*>([\s\S]*?)<\/article>/g)];
+  assert.equal(cards.length, 2, `${file} retains both logistics charts`);
+  for (const [, key, card] of cards) {
+    assert.match(card, /data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"/);
+    assert.doesNotMatch(card, /__counter|pill--round|logistics-filter-popover|data-logistics-overview-filter/);
+    assert.equal((card.match(/filter-summary__count_static pill pill--default pill--radius/g) || []).length, 2);
+    assert.equal((card.match(/<button class="filter-summary__count-chevron"/g) || []).length, 2);
+    assert.match(card, key === 'products' ? /7 дней/ : /На текущую дату/);
+    assert.match(card, /Ед\. изм\. м³/);
+    assert.match(card, /data-logistics-overview-export=/);
+  }
+  assert.match(html, /src="\/assets\/js\/chart-filter\.js\?v=\d+"/);
+}
+for (const file of ['pages/operations.js', 'pages/logistics.js']) {
+  const js = await readFile(new URL(`../assets/js/${file}`, import.meta.url), 'utf8');
+  assert.doesNotMatch(js, /data-logistics-overview-filter|data-logistics-filter-summary/);
+  assert.match(js, /closest\('\[data-logistics-overview-card\] \.filter-summary__count-chevron'\)/);
+}
+const operationsHtml = await readFile(new URL('../operations.html', import.meta.url), 'utf8');
+const egpzHeader = operationsHtml.match(/<header class="egpz-summary__header">([\s\S]*?)<\/header>/)[1];
+assert.match(egpzHeader, /data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"/);
+assert.match(egpzHeader, /filter-summary__count_static pill pill--default pill--radius/);
+assert.match(egpzHeader, /class="filter-summary__count-chevron"[^>]*data-egpz-clear-date/);
+assert.doesNotMatch(egpzHeader, /__counter|pill--round|data-egpz-filter/);
 for (const selector of ['.chart-bars [tabindex]', '.chart-donut [tabindex]', '.financial-chart__viewport svg [tabindex]']) {
   const rules = allRules.filter(rule => rule.file === '../assets/css/components.css'
     && rule.selector.split(',').some(item => item.trim() === selector));

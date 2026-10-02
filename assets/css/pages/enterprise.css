@@ -146,7 +146,6 @@ body[data-page="toir"] .toir-kpi-grid {
   border-bottom: 7px solid var(--background-nonoverlay-2);
   border-left: 7px solid transparent;
 }
-.logistics-filter-popover p { margin: 0; }
 .procurement-page {
   max-width: none;
 }

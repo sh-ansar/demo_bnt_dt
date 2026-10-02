@@ -1649,13 +1649,8 @@
   const egpz = document.querySelector('[data-egpz-summary]');
   if (!egpz) return;
 
-  egpz.querySelector('[data-egpz-filter]')?.addEventListener('click', function () {
-    window.BNTUI?.toast('Текущий ЕГПЗ', 'Активен 1 параметр: «На текущую дату»');
-  });
   egpz.querySelector('[data-egpz-clear-date]')?.addEventListener('click', function (event) {
     event.currentTarget.closest('.pill')?.remove();
-    const counter = egpz.querySelector('[data-egpz-filter-count]');
-    if (counter) counter.textContent = '0';
   });
 }());
 
@@ -1692,12 +1687,6 @@
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
-  }
-
-  function toast(title, message) {
-    if (window.BNTUI && typeof window.BNTUI.toast === 'function') {
-      window.BNTUI.toast(title, message);
-    }
   }
 
   function renderRows(selector, config) {
@@ -1763,12 +1752,9 @@
   }
 
   root.addEventListener('click', function (event) {
-    const chipClose = event.target.closest('.pill button');
+    const chipClose = event.target.closest('[data-logistics-overview-card] .filter-summary__count-chevron');
     if (chipClose) {
-      const card = chipClose.closest('[data-logistics-overview-card]');
       chipClose.closest('.pill')?.remove();
-      const counter = card?.querySelector('.button-smallest-secondary-radius__counter');
-      if (counter) counter.textContent = String(Math.max(0, Number(counter.textContent) - 1));
       return;
     }
 
@@ -1781,13 +1767,6 @@
           message: config.description
         });
       }
-      return;
-    }
-
-    const filter = event.target.closest('[data-logistics-overview-filter]');
-    if (filter) {
-      const count = filter.querySelector('.button-smallest-secondary-radius__counter')?.textContent || '0';
-      toast('Фильтр', `Выбрано параметров: ${count}`);
       return;
     }
 
