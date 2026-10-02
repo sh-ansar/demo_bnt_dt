@@ -7011,6 +7011,7 @@ textarea.form-input__control--text {
 }
 
 .chart-bars--stacked {
+  --chart-bars-bar-size: var(--space-3);
   min-width: var(--chart-bars-min-width);
   height: var(--chart-bars-height, 420px);
   flex: none;
@@ -7036,6 +7037,10 @@ textarea.form-input__control--text {
   stroke: var(--design-elements-icon-primary);
   stroke-width: 1;
   vector-effect: non-scaling-stroke;
+}
+
+.chart-bars--stacked .chart-bars__axis-line {
+  stroke-width: 2;
 }
 
 .chart-bars__tick,
@@ -7272,7 +7277,7 @@ svg [class*="series-"],
 :is(.chart-viewport, .chart-donut__viewport, .financial-chart__viewport),
 :is(.chart-viewport, .chart-donut__viewport, .financial-chart__viewport) svg :is(rect, path, line, circle, ellipse, polygon, polyline),
 :is(.chart-viewport, .chart-donut__viewport, .financial-chart__viewport) :is([class*="series-"], [class*="__bar"], [class*="__segment"]):has(svg) {
-  background: none;
+  background: transparent;
 }
 
 @media (prefers-reduced-motion: reduce) {

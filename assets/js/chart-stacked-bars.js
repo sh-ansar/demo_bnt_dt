@@ -82,6 +82,10 @@
       const margin = { top: axisTop ? 44 : 16, right: 18, bottom: axisTop ? 16 : 44, left: horizontal ? 64 : 76 };
       const plotWidth = width - margin.left - margin.right;
       const plotHeight = height - margin.top - margin.bottom;
+      const horizontalBarSize = horizontal
+        ? parseFloat(window.getComputedStyle(chart).getPropertyValue('--chart-bars-bar-size'))
+        : 0;
+      const tickOffset = horizontal ? parseFloat(window.getComputedStyle(chart).getPropertyValue('--space-2')) : 0;
       const bottom = height - margin.bottom;
       const largest = Math.max(...visibleRows.map(row => row.values.reduce((sum, value) => sum + value, 0)));
       const max = Math.max(options.axisMax, largest);
@@ -94,16 +98,15 @@
         const x = margin.left + plotWidth * value / max;
         const y = bottom - plotHeight * value / max;
         const label = escape(options.formatTick ? options.formatTick(value) : numberFormat.format(value));
-        const tickAnchor = value === max ? 'end' : 'middle';
         svg.push(horizontal
-          ? `<line class="chart-bars__vertical-line" x1="${x}" y1="${margin.top}" x2="${x}" y2="${bottom}"/><text class="chart-bars__tick" x="${x}" y="${axisTop ? margin.top - 16 : bottom + 26}" text-anchor="${tickAnchor}">${label}</text>`
+          ? `<line class="chart-bars__vertical-line" x1="${x}" y1="${margin.top}" x2="${x}" y2="${bottom}"/><text class="chart-bars__tick" x="${x - tickOffset}" y="${axisTop ? margin.top - 16 : bottom + 26}" text-anchor="end" data-tick-value="${value}">${label}</text>`
           : `<line class="chart-bars__grid-line" x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}"/><text class="chart-bars__tick" x="${margin.left - 10}" y="${y + 5}" text-anchor="end">${label}</text>`);
       }
       let offset = 0;
       visibleRows.forEach((row, rowIndex) => {
         const slot = (horizontal ? plotHeight : plotWidth) / visibleRows.length;
         const center = (horizontal ? margin.top : margin.left) + offset + slot / 2;
-        const thickness = Math.min(horizontal ? 44 : 92, slot * .58);
+        const thickness = horizontal ? Math.min(horizontalBarSize, slot) : Math.min(92, slot * .58);
         let stack = 0;
         order.forEach(seriesIndex => {
           const value = row.values[seriesIndex];
@@ -122,7 +125,10 @@
         offset += slot;
       });
       const axisY = axisTop ? margin.top : bottom;
-      svg.push(`<line class="chart-bars__axis-line" x1="${margin.left}" y1="${axisY}" x2="${width - margin.right}" y2="${axisY}"/>`);
+      svg.push(`<line class="${horizontal ? 'chart-bars__grid-line' : 'chart-bars__axis-line'}" x1="${margin.left}" y1="${axisY}" x2="${width - margin.right}" y2="${axisY}"/>`);
+      if (horizontal) {
+        svg.push(`<line class="chart-bars__axis-line" x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${bottom}"/>`);
+      }
       chart.setAttribute('viewBox', `0 0 ${width} ${height}`);
       chart.setAttribute('aria-label', `${title}: ${tabs.find(tab => tab.key === activeTab).label}`);
       chart.innerHTML = svg.join('');

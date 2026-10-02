@@ -1,16 +1,16 @@
 (function initTransshipmentPage() {
-  const host = document.querySelector('body[data-page="transshipment"] > main.page-content');
+  const host = document.querySelector('#page-content[data-transshipment-analytics]');
   if (!host) return;
   const charts = window.BNTCharts;
   const palette = ['series-crude', 'series-dark', 'series-gas', 'series-light', 'series-negative', 'series-purple'];
   const clients = ['AzTransRail', 'Maddox', 'Metropol', 'OGMA', 'PT-DeltaTrans', 'Остальные компании'];
   // The references provide proportions, not exact source values.
   const clientData = [
-    { label: '2020', values: [95000, 150000, 18000, 160000, 160000, 402000] },
-    { label: '2021', values: [470000, 0, 0, 105000, 235000, 450000] },
-    { label: '2022', values: [215000, 285000, 25000, 335000, 500000, 430000] },
-    { label: '2023', values: [175000, 395000, 14000, 290000, 325000, 401000] },
-    { label: '2024', values: [18000, 690000, 0, 160000, 145000, 492000] }
+    { label: '2022', values: [95000, 150000, 18000, 160000, 160000, 402000] },
+    { label: '2023', values: [470000, 0, 0, 105000, 235000, 450000] },
+    { label: '2024', values: [215000, 285000, 25000, 335000, 500000, 430000] },
+    { label: '2025', values: [175000, 395000, 14000, 290000, 325000, 401000] },
+    { label: '2026', values: [18000, 690000, 0, 160000, 145000, 492000] }
   ];
   let randomSeed = 202024;
   function random() {
@@ -27,7 +27,7 @@
   }
   charts.mountStackedBars({
     host, id: 'transshipment-clients', title: 'Данные по клиентам', position: 'afterbegin', orientation: 'horizontal',
-    periodLabel: 'с 01.01.2020 до 31.12.2024', axisMax: 1837500, tickStep: 175000,
+    periodLabel: 'с 01.01.2022 до 31.12.2026', axisMax: 1837500, tickStep: 200000,
     series: clients.map((label, index) => ({ label, className: palette[index] })),
     tabs: [{ key: 'all', label: 'Все' }, { key: 'receipt', label: 'Приём' }, { key: 'storage', label: 'Хранение' }, { key: 'shipment', label: 'Отгрузка' }],
     datasets: { all: clientData, receipt: demoDataset(clientData), storage: demoDataset(clientData), shipment: demoDataset(clientData) }
@@ -49,7 +49,7 @@
     .map((label, index) => ({ label, className: palette[index] }));
   charts.mountStackedBars({
     host, id: 'transshipment-countries', title: 'Данные по странам получателям за период с 2020 по 2024', orientation: 'horizontal', axisPosition: 'top', categoryLabel: 'Страна',
-    periodLabel: 'с 01.01.2020 до 31.12.2024', axisMax: 1830000, tickStep: 305000,
+    periodLabel: 'с 01.01.2020 до 31.12.2024', axisMax: 1830000, tickStep: 200000,
     formatTick: value => value ? `${new Intl.NumberFormat('ru-RU').format(value / 1000)}K` : '0',
     series: [
       { label: 'Crude Oil', className: 'series-crude' }, { label: 'Dark', className: 'series-dark' },

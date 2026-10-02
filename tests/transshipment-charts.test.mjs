@@ -55,13 +55,21 @@ const host = {
 };
 let exportedBlob;
 const document = {
-  querySelector() { return host; },
+  // shell.js moves page-content into app-shell > app-main before page scripts run.
+  querySelector(selector) {
+    return selector === '#page-content[data-transshipment-analytics]' ? host : null;
+  },
   createElement() { return { click() {} }; }
 };
 const context = vm.createContext({
   document, Blob, Intl,
   URL: { createObjectURL(blob) { exportedBlob = blob; return 'blob:test'; }, revokeObjectURL() {} },
-  window: { setTimeout() {} }
+  window: {
+    setTimeout() {},
+    getComputedStyle() {
+      return { getPropertyValue(name) { return ({ '--chart-bars-bar-size': '12px', '--space-2': '8px' })[name] || ''; } };
+    }
+  }
 });
 const engine = await readFile(new URL('../assets/js/chart-stacked-bars.js', import.meta.url), 'utf8');
 const page = await readFile(new URL('../assets/js/pages/transshipment.js', import.meta.url), 'utf8');
@@ -81,6 +89,10 @@ const countries = cards.get('transshipment-countries');
 const clientController = controllers.get('transshipment-clients').controller;
 const countryController = controllers.get('transshipment-countries').controller;
 assert.equal(clientController.getView().length, 5);
+assert.deepEqual(Array.from(clientController.getView(), row => row.label), ['2022', '2023', '2024', '2025', '2026']);
+assert.equal(controllers.get('transshipment-clients').options.periodLabel, 'с 01.01.2022 до 31.12.2026');
+assert.equal(controllers.get('transshipment-clients').options.tickStep, 200000);
+assert.equal(controllers.get('transshipment-countries').options.tickStep, 200000);
 assert.equal(countryController.getView().length, 24);
 assert.equal(controllers.get('transshipment-clients').options.series.length, 6);
 assert.equal(controllers.get('transshipment-clients').options.series.at(-1).label, 'Остальные компании');
@@ -94,6 +106,17 @@ assert.match(countries.chart.innerHTML, /class="chart-bars__tick"[^>]*y="28"/);
 function assertGeometry(chart) {
   const [, , width, height] = chart.attributes.viewBox.split(' ').map(Number);
   const rects = [...chart.innerHTML.matchAll(/<rect[^>]+>/g)];
+  const axes = [...chart.innerHTML.matchAll(/<line class="chart-bars__axis-line" x1="([^"]+)" y1="([^"]+)" x2="([^"]+)" y2="([^"]+)"/g)];
+  assert.equal(axes.length, 1);
+  assert.equal(axes[0][1], '64');
+  assert.equal(axes[0][3], '64');
+  assert.ok(Number(axes[0][4]) > Number(axes[0][2]));
+  const ticks = [...chart.innerHTML.matchAll(/<text class="chart-bars__tick" x="([^"]+)"[^>]*text-anchor="end" data-tick-value="(\d+)"/g)];
+  assert.ok(ticks.length > 0);
+  assert.equal(Number(ticks[0][1]), 56);
+  for (let index = 1; index < ticks.length; index += 1) {
+    assert.equal(Number(ticks[index][2]) - Number(ticks[index - 1][2]), 200000);
+  }
   assert.ok(rects.length > 0);
   for (const [rect] of rects) {
     const attributes = Object.fromEntries([...rect.matchAll(/([\w-]+)="([^"]*)"/g)].map(match => [match[1], match[2]]));
@@ -102,6 +125,7 @@ function assertGeometry(chart) {
     assert.ok([x, y, w, h].every(Number.isFinite));
     assert.ok(x >= 0 && y >= 0 && w > 0 && h > 0);
     assert.ok(x + w <= width + .001 && y + h <= height + .001);
+    assert.equal(h, 12);
     assert.ok(!('style' in attributes));
     assert.ok(attributes.class.includes('series-'));
   }
@@ -193,6 +217,8 @@ openFilter('static-date');
 assert.ok(drawer.classList.values.has('dt3-drawer_static-date'));
 
 const css = await readFile(new URL('../assets/css/components.css', import.meta.url), 'utf8');
+assert.match(css, /\.chart-bars--stacked\s*\{\s*--chart-bars-bar-size: var\(--space-3\);/);
+assert.match(css, /\.chart-bars--stacked \.chart-bars__axis-line\s*\{\s*stroke-width: 2;/);
 assert.match(css, /\.dt3-drawer_static-date \[data-chart-departments-filter\]\s*\{\s*display: none;/);
 assert.doesNotMatch(css, /chart-viewport--horizontal/);
 assert.doesNotMatch(engine, /chart-viewport--horizontal/);
@@ -200,7 +226,7 @@ assert.match(css, /--quality-detail-drawer-card-max-height: 420px;/);
 assert.match(css, /:is\(\.chart-viewport, \.chart-donut__viewport, \.financial-chart__viewport\),/);
 assert.match(css, /\[class\*="__bar"\]/);
 assert.match(css, /svg \[class\*="series-"\]/);
-assert.match(css, /:has\(svg\)\s*\{\s*background: none;/);
+assert.match(css, /:has\(svg\)\s*\{\s*background: transparent;/);
 const shared = await readFile(new URL('../assets/js/transshipment-analytics.js', import.meta.url), 'utf8');
 assert.equal((shared.match(/data-chart-filter-variant="static-date"/g) || []).length, 3);
 console.log('Transshipment charts: data, tabs, geometry, scroll, tooltips, CSV, drawer variants and shared styles passed.');
