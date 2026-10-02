@@ -5,7 +5,7 @@
   display: grid;
   grid-auto-rows: max-content;
   align-content: start;
-  gap: var(--space-4);
+  gap: var(--space-5);
   color: var(--text-primary);
   font-family: var(--font-family-primary);
 }

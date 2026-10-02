@@ -105,6 +105,7 @@ const operationsJs = await readFile(new URL('../assets/js/pages/operations.js', 
 assert.doesNotMatch(resultsHtml + resultsCss, /financial-results-content/);
 assert.match(resultsHtml, /<main id="page-content"[^>]*data-financial-overview[^>]*>\s*<div class="financial-kpis"/);
 assert.match(resultsCss, /#page-content\.financial-results-page\s*\{[^}]*grid-auto-rows: max-content;[^}]*align-content: start;/);
+assert.match(resultsCss, /#page-content\.financial-results-page\s*\{[^}]*gap: var\(--space-5\);/);
 const resultsFilter = resultsHtml.match(/<button[^>]*data-chart-filter[^>]*>[\s\S]*?<\/button>/)[0];
 assert.match(resultsFilter, /aria-expanded="false" aria-controls="chart-filter-modal"/);
 assert.doesNotMatch(resultsFilter, /__counter/);
