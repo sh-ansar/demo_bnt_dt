@@ -80,43 +80,6 @@
 }
 
 
-.scenario-row {
-
-    cursor: pointer;
-}
-
-
-.scenario-row:hover td {
-
-    background:
-        #f5faff;
-}
-
-
-.scenario-row.active td {
-
-    background:
-        #edf7fe;
-
-    border-color:
-        #cce6f7;
-}
-
-
-.scenario-row td:first-child {
-
-    border-left:
-        3px solid transparent;
-}
-
-
-.scenario-row.active td:first-child {
-
-    border-left-color:
-        var(--blue);
-}
-
-
 .scenario-source {
 
     display: inline-flex;

@@ -679,7 +679,7 @@ body > .app-shell > .app-main {
   gap: clamp(8px, .555556vw, 10.666667px) !important;
   padding: 0 clamp(12px, .833333vw, 16px) !important;
   border: 1px solid var(--design-elements-border-default) !important;
-  border-radius: clamp(8px, .555556vw, 10.666667px) !important;
+  border-radius: var(--space-2) !important;
   background: var(--background-page) !important;
   box-shadow: var(--shadow-raised) !important;
   backdrop-filter: var(--backdrop-blur-raised) !important;
@@ -1012,7 +1012,6 @@ body[data-theme="dark"] .app-topbar .shell-search input {
 body[data-theme="dark"] .card,
 body[data-theme="dark"] .btn:not(.btn-primary),
 body[data-theme="dark"] .icon-btn,
-body[data-theme="dark"] .tab,
 body[data-theme="dark"] .field input,
 body[data-theme="dark"] .field select,
 body[data-theme="dark"] .field textarea,

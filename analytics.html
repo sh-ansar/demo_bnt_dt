@@ -5,26 +5,392 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>BNT — Предиктивная аналитика</title>
 
-  <link rel="stylesheet" href="/assets/css/tokens.css?v=17">
+  <link rel="stylesheet" href="/assets/css/tokens.css?v=19">
   <link rel="stylesheet" href="/assets/css/layout.css">
-  <link rel="stylesheet" href="/assets/css/components.css?v=16">
-  <link rel="stylesheet" href="/assets/css/pages/enterprise.css">
-  <link rel="stylesheet" href="/assets/css/pages/analytics-v88.css?v=89">
-  <link rel="stylesheet" href="/assets/css/pages/analytics-v91.css?v=9143">
+  <link rel="stylesheet" href="/assets/css/components.css?v=177">
+  <link rel="stylesheet" href="/assets/css/pages/enterprise.css?v=22">
+  <link rel="stylesheet" href="/assets/css/pages/budget-payments.css?v=16">
+  <link rel="stylesheet" href="/assets/css/pages/analytics-v88.css?v=90">
+  <link rel="stylesheet" href="/assets/css/pages/analytics-v91.css?v=9160">
   
-<link rel="stylesheet" href="/assets/css/shell-v91.css?v=9122"></head>
+<link rel="stylesheet" href="/assets/css/shell-v91.css?v=9128"></head>
 
 <body data-page="analytics">
 <main id="page-content" class="page-content analytics-page">
 
+  <div class="financial-kpis analytics-forecast-kpis" aria-label="Прогнозные показатели">
+    <article class="financial-kpi">
+      <div class="financial-kpi__heading">
+        <span class="financial-kpi__title typography-body-smallest">Чистая прибыль (90&nbsp;дней)</span>
+        <div class="financial-kpi__info-wrap" data-analytics-info-root>
+          <button class="sign_BTN_smallest info-icon-button" type="button" data-analytics-info-trigger aria-expanded="false" aria-controls="forecast-net-profit-info" aria-label="Информация о чистой прибыли">
+            <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
+          </button>
+          <span id="forecast-net-profit-info" class="analytics-title-popover analytics-forecast-kpi__popover" data-analytics-info-popover role="dialog" aria-label="Информация о чистой прибыли" hidden>
+            <button class="analytics-title-popover__close" type="button" data-analytics-info-close aria-label="Закрыть информацию">
+              <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+            </button>
+            <span class="analytics-title-popover__text typography-body-smallest">Прогноз чистой прибыли по операционному плану на ближайшие 90&nbsp;дней.</span>
+          </span>
+        </div>
+      </div>
+      <div class="kpi-card__body">
+        <strong class="financial-kpi__value typography-label-base">272 000 USD</strong>
+        <p class="financial-kpi__trend"><span class="financial-kpi__trend-metric typography-label-smallest is-positive" aria-label="На 4,6 процента выше плана"><svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=2#TrendArrow"></use></svg>4,6%</span><span class="financial-kpi__trend-context typography-body-smallest">выше плана</span></p>
+      </div>
+    </article>
+
+    <article class="financial-kpi">
+      <div class="financial-kpi__heading">
+        <span class="financial-kpi__title typography-body-smallest">Риск кассового разрыва (30&nbsp;дней)</span>
+        <div class="financial-kpi__info-wrap" data-analytics-info-root>
+          <button class="sign_BTN_smallest info-icon-button" type="button" data-analytics-info-trigger aria-expanded="false" aria-controls="forecast-cash-gap-info" aria-label="Информация о риске кассового разрыва">
+            <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
+          </button>
+          <span id="forecast-cash-gap-info" class="analytics-title-popover analytics-forecast-kpi__popover" data-analytics-info-popover role="dialog" aria-label="Информация о риске кассового разрыва" hidden>
+            <button class="analytics-title-popover__close" type="button" data-analytics-info-close aria-label="Закрыть информацию">
+              <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+            </button>
+            <span class="analytics-title-popover__text typography-body-smallest">Мин. прогнозный остаток денежных средств в горизонте 30&nbsp;дней.</span>
+          </span>
+        </div>
+      </div>
+      <div class="kpi-card__body">
+        <strong class="financial-kpi__value typography-label-base">1 350 000 USD</strong>
+        <p class="financial-kpi__trend-context typography-body-smallest">Мин. прогнозный остаток</p>
+      </div>
+    </article>
+
+    <article class="financial-kpi">
+      <div class="financial-kpi__heading">
+        <span class="financial-kpi__title typography-body-smallest">Перевалка (30&nbsp;дней)</span>
+        <div class="financial-kpi__info-wrap" data-analytics-info-root>
+          <button class="sign_BTN_smallest info-icon-button" type="button" data-analytics-info-trigger aria-expanded="false" aria-controls="forecast-transshipment-info" aria-label="Информация о перевалке">
+            <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
+          </button>
+          <span id="forecast-transshipment-info" class="analytics-title-popover analytics-forecast-kpi__popover" data-analytics-info-popover role="dialog" aria-label="Информация о перевалке" hidden>
+            <button class="analytics-title-popover__close" type="button" data-analytics-info-close aria-label="Закрыть информацию">
+              <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+            </button>
+            <span class="analytics-title-popover__text typography-body-smallest">Прогнозный объём перевалки на ближайшие 30&nbsp;дней относительно плана.</span>
+          </span>
+        </div>
+      </div>
+      <div class="kpi-card__body">
+        <strong class="financial-kpi__value typography-label-base">1 420 000 МТ</strong>
+        <p class="financial-kpi__trend"><span class="financial-kpi__trend-context typography-body-smallest">На</span><span class="financial-kpi__trend-metric typography-label-smallest is-positive">4,4%</span><span class="financial-kpi__trend-context typography-body-smallest">выше плана</span></p>
+      </div>
+    </article>
+
+    <article class="financial-kpi">
+      <div class="financial-kpi__heading">
+        <span class="financial-kpi__title typography-body-smallest">Важные отказы (30&nbsp;дней)</span>
+        <div class="financial-kpi__info-wrap">
+          <a class="sign_BTN_smallest info-icon-button" href="/digital-twin" aria-label="Открыть объекты высокого риска">
+            <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+          </a>
+        </div>
+      </div>
+      <div class="kpi-card__body">
+        <strong class="financial-kpi__value typography-label-base"><span class="analytics-forecast-kpi__value-accent is-negative">2 объекта</span></strong>
+        <p class="financial-kpi__trend-context typography-body-smallest">в зоне высокого риска</p>
+      </div>
+    </article>
+
+    <article class="financial-kpi">
+      <div class="financial-kpi__heading">
+        <span class="financial-kpi__title typography-body-smallest">Дефицит важных ресурсов (30&nbsp;дней)</span>
+        <div class="financial-kpi__info-wrap" data-analytics-info-root>
+          <button class="sign_BTN_smallest info-icon-button" type="button" data-analytics-info-trigger aria-expanded="false" aria-controls="forecast-resource-deficit-info" aria-label="Информация о дефиците важных ресурсов">
+            <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
+          </button>
+          <span id="forecast-resource-deficit-info" class="analytics-title-popover analytics-forecast-kpi__popover" data-analytics-info-popover role="dialog" aria-label="Информация о дефиците важных ресурсов" hidden>
+            <button class="analytics-title-popover__close" type="button" data-analytics-info-close aria-label="Закрыть информацию">
+              <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+            </button>
+            <span class="analytics-title-popover__text typography-body-smallest">Позиции с высоким влиянием на вероятность простоя и доступность терминала.</span>
+          </span>
+        </div>
+      </div>
+      <div class="kpi-card__body">
+        <strong class="financial-kpi__value typography-label-base">4 позиции</strong>
+        <p class="financial-kpi__trend"><span class="financial-kpi__trend-metric typography-label-smallest is-warning">42%</span><span class="financial-kpi__trend-context typography-body-smallest">- Вероятность простоя</span></p>
+      </div>
+    </article>
+  </div>
+
+  <div class="analytics-control-summary" aria-labelledby="financial-results-forecast-title">
+    <div class="page-actions analytics-page-actions">
+      <div class="analytics-page-actions__heading">
+        <span class="analytics-eyebrow typography-label-smallest">Прогноз</span>
+        <div class="analytics-title-row">
+          <h2 id="financial-results-forecast-title" class="typography-h4">Финансовые результаты</h2>
+        </div>
+      </div>
+
+      <a class="section-expand-link button-smallest-secondary-radius typography-button-smallest" href="/reports" aria-label="К управленческой отчётности">
+        <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+        <span>К управленческой отчётности</span>
+      </a>
+    </div>
+
+    <div class="financial-kpis analytics-financial-kpis" aria-label="Прогноз финансовых результатов">
+      <article class="financial-kpi">
+        <div class="financial-kpi__heading">
+          <span class="financial-kpi__title typography-body-smallest">Выручка (90&nbsp;дней)</span>
+          <div class="financial-kpi__info-wrap" data-analytics-info-root>
+            <button class="sign_BTN_smallest info-icon-button" type="button" data-analytics-info-trigger aria-expanded="false" aria-controls="financial-revenue-info" aria-label="Информация о выручке">
+              <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
+            </button>
+            <span id="financial-revenue-info" class="analytics-title-popover analytics-forecast-kpi__popover" data-analytics-info-popover role="dialog" aria-label="Информация о выручке" hidden>
+              <button class="analytics-title-popover__close" type="button" data-analytics-info-close aria-label="Закрыть информацию">
+                <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+              </button>
+              <span class="analytics-title-popover__text typography-body-smallest">Прогноз выручки по операционному плану на ближайшие 90&nbsp;дней.</span>
+            </span>
+          </div>
+        </div>
+        <div class="kpi-card__body">
+          <strong class="financial-kpi__value typography-label-base">3 650 000 USD</strong>
+          <p class="financial-kpi__trend"><span class="financial-kpi__trend-metric typography-label-smallest is-positive" aria-label="На 2,8 процента к плану"><svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=2#TrendArrow"></use></svg>2,8%</span><span class="financial-kpi__trend-context typography-body-smallest">к плану</span></p>
+        </div>
+      </article>
+
+      <article class="financial-kpi">
+        <div class="financial-kpi__heading">
+          <span class="financial-kpi__title typography-body-smallest">EBITDA (90&nbsp;дней)</span>
+          <div class="financial-kpi__info-wrap" data-analytics-info-root>
+            <button class="sign_BTN_smallest info-icon-button" type="button" data-analytics-info-trigger aria-expanded="false" aria-controls="financial-ebitda-info" aria-label="Информация об EBITDA">
+              <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
+            </button>
+            <span id="financial-ebitda-info" class="analytics-title-popover analytics-forecast-kpi__popover" data-analytics-info-popover role="dialog" aria-label="Информация об EBITDA" hidden>
+              <button class="analytics-title-popover__close" type="button" data-analytics-info-close aria-label="Закрыть информацию">
+                <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+              </button>
+              <span class="analytics-title-popover__text typography-body-smallest">Прогноз EBITDA по финансовой модели на ближайшие 90&nbsp;дней.</span>
+            </span>
+          </div>
+        </div>
+        <div class="kpi-card__body">
+          <strong class="financial-kpi__value typography-label-base">735 000 USD</strong>
+          <p class="financial-kpi__trend"><span class="financial-kpi__trend-metric typography-label-smallest is-positive" aria-label="На 3,5 процента к плану"><svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=2#TrendArrow"></use></svg>3,5%</span><span class="financial-kpi__trend-context typography-body-smallest">к плану</span></p>
+        </div>
+      </article>
+
+      <article class="financial-kpi">
+        <div class="financial-kpi__heading">
+          <span class="financial-kpi__title typography-body-smallest">Чистая прибыль (90&nbsp;дней)</span>
+          <div class="financial-kpi__info-wrap" data-analytics-info-root>
+            <button class="sign_BTN_smallest info-icon-button" type="button" data-analytics-info-trigger aria-expanded="false" aria-controls="financial-net-profit-info" aria-label="Информация о чистой прибыли">
+              <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
+            </button>
+            <span id="financial-net-profit-info" class="analytics-title-popover analytics-forecast-kpi__popover" data-analytics-info-popover role="dialog" aria-label="Информация о чистой прибыли" hidden>
+              <button class="analytics-title-popover__close" type="button" data-analytics-info-close aria-label="Закрыть информацию">
+                <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+              </button>
+              <span class="analytics-title-popover__text typography-body-smallest">Прогноз чистой прибыли по операционному плану на ближайшие 90&nbsp;дней.</span>
+            </span>
+          </div>
+        </div>
+        <div class="kpi-card__body">
+          <strong class="financial-kpi__value typography-label-base">272 000 USD</strong>
+          <p class="financial-kpi__trend"><span class="financial-kpi__trend-metric typography-label-smallest is-positive" aria-label="На 4,6 процента к плану"><svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=2#TrendArrow"></use></svg>4,6%</span><span class="financial-kpi__trend-context typography-body-smallest">к плану</span></p>
+        </div>
+      </article>
+
+      <article class="financial-kpi">
+        <div class="financial-kpi__heading">
+          <span class="financial-kpi__title typography-body-smallest">Мин. денежный остаток (90&nbsp;дней)</span>
+          <div class="financial-kpi__info-wrap" data-analytics-info-root>
+            <button class="sign_BTN_smallest info-icon-button" type="button" data-analytics-info-trigger aria-expanded="false" aria-controls="financial-cash-balance-info" aria-label="Информация о минимальном денежном остатке">
+              <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
+            </button>
+            <span id="financial-cash-balance-info" class="analytics-title-popover analytics-forecast-kpi__popover" data-analytics-info-popover role="dialog" aria-label="Информация о минимальном денежном остатке" hidden>
+              <button class="analytics-title-popover__close" type="button" data-analytics-info-close aria-label="Закрыть информацию">
+                <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+              </button>
+              <span class="analytics-title-popover__text typography-body-smallest">Минимальный прогнозный остаток денежных средств на горизонте 90&nbsp;дней.</span>
+            </span>
+          </div>
+        </div>
+        <div class="kpi-card__body">
+          <strong class="financial-kpi__value typography-label-base">1 350 000 USD</strong>
+          <p class="financial-kpi__trend-context typography-body-smallest">без разрыва</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="chart-grid--two-column analytics-financial-charts">
+      <article class="chart-card" aria-labelledby="analytics-income-expense-title">
+        <header class="chart-card__header">
+          <div class="chart-card__heading">
+            <div class="chart-card__title-row">
+              <h3 id="analytics-income-expense-title" class="typography-caption-small">Доходы и расходы (план и прогноз)</h3>
+            </div>
+          </div>
+          <div class="chart-actions">
+            <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-analytics-line-export="incomeExpense" aria-label="Скачать данные доходов и расходов"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-analytics-line-filter="incomeExpense"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+          </div>
+        </header>
+        <div class="financial-chart__viewport financial-chart__viewport--line chart-scrollbar">
+          <svg class="financial-chart__line-chart" data-analytics-line-chart="incomeExpense" viewBox="0 0 640 320" role="img" aria-label="Доходы и расходы по месяцам"></svg>
+        </div>
+        <div class="financial-chart__legend typography-body-smallest" data-analytics-line-legend="incomeExpense" aria-label="Легенда доходов и расходов"></div>
+      </article>
+
+      <article class="chart-card" aria-labelledby="analytics-cash-flow-title">
+        <header class="chart-card__header">
+          <div class="chart-card__heading">
+            <div class="chart-card__title-row">
+              <h3 id="analytics-cash-flow-title" class="typography-caption-small">Денежный поток — поступления, платежи и остаток</h3>
+            </div>
+          </div>
+          <div class="chart-actions">
+            <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-analytics-line-export="cashFlow" aria-label="Скачать данные денежного потока"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-analytics-line-filter="cashFlow"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+          </div>
+        </header>
+        <div class="financial-chart__viewport financial-chart__viewport--line chart-scrollbar">
+          <svg class="financial-chart__line-chart" data-analytics-line-chart="cashFlow" viewBox="0 0 640 320" role="img" aria-label="Денежный поток по недельным периодам"></svg>
+        </div>
+        <div class="financial-chart__legend typography-body-smallest" data-analytics-line-legend="cashFlow" aria-label="Легенда денежного потока"></div>
+      </article>
+    </div>
+
+  </div>
+
+  <div class="analytics-control-summary" aria-labelledby="logistics-transshipment-title">
+    <div class="page-actions analytics-page-actions">
+      <div class="analytics-page-actions__heading">
+        <span class="analytics-eyebrow typography-label-smallest">Логистика</span>
+        <div class="analytics-title-row">
+          <h2 id="logistics-transshipment-title" class="typography-h4">Перевалка</h2>
+        </div>
+      </div>
+
+      <a class="section-expand-link button-smallest-secondary-radius typography-button-smallest" href="/data" aria-label="К Pelogas">
+        <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+        <span>К Pelogas</span>
+      </a>
+    </div>
+
+    <div class="financial-kpis analytics-financial-kpis" aria-label="Прогноз перевалки и загрузки мощностей">
+      <article class="payment-summary-card payment-summary-card--info">
+        <header class="payment-summary-card__heading">
+          <h3 class="payment-summary-card__title typography-body-smallest">Перевалка (30&nbsp;дней)</h3>
+          <a class="payment-summary-card__link" href="/data" aria-label="Открыть данные Pelogas по перевалке">
+            <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+          </a>
+        </header>
+        <div class="payment-summary-card__copy table-header-content">
+          <strong class="payment-summary-card__amount typography-label-base">1420000 МТ</strong>
+          <p class="financial-kpi__trend"><span class="financial-kpi__trend-metric typography-label-smallest is-positive" aria-label="4,4 процента прогноз роста к плану"><svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=2#TrendArrow"></use></svg>4,4%</span><span class="financial-kpi__trend-context typography-body-smallest">прогноз роста к плану</span></p>
+        </div>
+      </article>
+
+      <article class="payment-summary-card payment-summary-card--error">
+        <header class="payment-summary-card__heading">
+          <h3 class="payment-summary-card__title typography-body-smallest">Пиковая загрузка</h3>
+          <a class="payment-summary-card__link" href="/data" aria-label="Открыть данные Pelogas по пиковой загрузке">
+            <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+          </a>
+        </header>
+        <div class="payment-summary-card__content">
+          <div class="payment-progress-ring" style="--payment-progress:96" role="img" aria-label="96 процентов">
+            <svg viewBox="0 0 48 48" aria-hidden="true">
+              <circle class="payment-progress-ring__track" cx="24" cy="24" r="20" pathLength="100"></circle>
+              <path class="payment-progress-ring__bar" d="M 24 4 A 20 20 0 1 1 19.0258 4.6289"></path>
+            </svg>
+            <strong class="payment-progress-ring__value typography-label-smallest">96%</strong>
+          </div>
+          <div class="payment-summary-card__copy table-header-content">
+            <strong class="payment-summary-card__amount typography-label-base">18 сентября</strong>
+            <span class="payment-summary-card__description typography-body-smallest">Загрузка инфраструктуры</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="payment-summary-card payment-summary-card--error">
+        <header class="payment-summary-card__heading">
+          <h3 class="payment-summary-card__title typography-body-smallest">Свободная мощность в пике</h3>
+          <a class="payment-summary-card__link" href="/data" aria-label="Открыть данные Pelogas по свободной мощности">
+            <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+          </a>
+        </header>
+        <div class="payment-summary-card__copy table-header-content">
+          <strong class="payment-summary-card__amount analytics-kpi__value typography-label-base is-negative">4%</strong>
+          <span class="payment-summary-card__description typography-body-smallest">низкий резерв</span>
+        </div>
+      </article>
+
+      <article class="payment-summary-card payment-summary-card--warning">
+        <header class="payment-summary-card__heading">
+          <h3 class="payment-summary-card__title typography-body-smallest">Прогноз задержек</h3>
+          <a class="payment-summary-card__link" href="/data" aria-label="Открыть данные Pelogas по задержкам">
+            <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+          </a>
+        </header>
+        <div class="payment-summary-card__copy table-header-content">
+          <strong class="payment-summary-card__amount analytics-kpi__value typography-label-base is-warning">3 операции</strong>
+          <span class="payment-summary-card__description typography-body-smallest">Внимание · 3 окна</span>
+        </div>
+      </article>
+    </div>
+
+    <div class="chart-grid--two-column analytics-financial-charts">
+      <article class="chart-card" aria-labelledby="analytics-transshipment-load-title">
+        <header class="chart-card__header">
+          <div class="chart-card__heading">
+            <div class="chart-card__title-row">
+              <h3 id="analytics-transshipment-load-title" class="typography-caption-small">Прогноз загрузки ключевых узлов линий</h3>
+            </div>
+          </div>
+          <div class="chart-actions">
+            <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-analytics-line-export="transshipmentLoad" aria-label="Скачать данные загрузки ключевых узлов линий"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-analytics-line-filter="transshipmentLoad"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+          </div>
+        </header>
+        <div class="chart-viewport payment-deviation-chart__viewport" style="height:320px;overflow:hidden">
+          <div class="payment-deviation-chart" style="--payment-deviation-label-width:120px;min-width:0" data-analytics-transshipment-load-chart role="img" aria-label="Прогноз загрузки ключевых узлов линий"></div>
+        </div>
+        <div class="financial-chart__legend typography-body-smallest" aria-label="Легенда загрузки узлов">
+          <span><i class="chart-legend__dot payment-deviation__dot--plan" aria-hidden="true"></i>Текущая загрузка</span>
+          <span><i class="chart-legend__dot series-light" aria-hidden="true"></i>Прогноз пика</span>
+          <span><i class="chart-legend__dot series-gas" aria-hidden="true"></i>Порог</span>
+        </div>
+      </article>
+
+      <article class="chart-card" aria-labelledby="analytics-transshipment-capacity-title">
+        <header class="chart-card__header">
+          <div class="chart-card__heading">
+            <div class="chart-card__title-row">
+              <h3 id="analytics-transshipment-capacity-title" class="typography-caption-small">Перевалка — план / прогноз / доступная мощность</h3>
+            </div>
+          </div>
+          <div class="chart-actions">
+            <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-analytics-line-export="transshipmentCapacity" aria-label="Скачать данные перевалки и доступной мощности"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-analytics-line-filter="transshipmentCapacity"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+          </div>
+        </header>
+        <div class="financial-chart__viewport financial-chart__viewport--line chart-scrollbar">
+          <svg class="financial-chart__line-chart" data-analytics-line-chart="transshipmentCapacity" viewBox="0 0 640 320" role="img" aria-label="План, прогноз перевалки и доступная мощность по месяцам"></svg>
+        </div>
+        <div class="financial-chart__legend typography-body-smallest" data-analytics-line-legend="transshipmentCapacity" aria-label="Легенда перевалки и доступной мощности"></div>
+      </article>
+    </div>
+  </div>
+
+  <section class="analytics-workspace" aria-label="Управленческий контур">
+  <div class="analytics-control-summary">
   <div class="page-actions analytics-page-actions">
     <div class="analytics-page-actions__heading">
       <span class="analytics-eyebrow typography-label-smallest">Управленческий контур</span>
       <div class="analytics-title-row">
         <h2 class="typography-h4">Сценарное моделирование</h2>
         <span class="analytics-title-info" data-analytics-info-root>
-          <button class="analytics-kpi__info analytics-title-info__button" type="button" data-analytics-info-trigger aria-expanded="false" aria-controls="analytics-title-popover" aria-label="Информация о сценарном моделировании">
-            <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg>
+          <button class="sign_BTN_small analytics-kpi__info analytics-title-info__button" type="button" data-analytics-info-trigger aria-expanded="false" aria-controls="analytics-title-popover" aria-label="Информация о сценарном моделировании">
+            <svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
           </button>
           <span id="analytics-title-popover" class="analytics-title-popover" data-analytics-info-popover role="dialog" aria-label="О сценарном моделировании" hidden>
             <button class="analytics-title-popover__close" type="button" data-analytics-info-close aria-label="Закрыть информацию">
@@ -43,6 +409,7 @@
   </div>
 
   <div id="analytics-kpis" class="kpi-grid analytics-kpis"></div>
+  </div>
 
   <section class="analytics-layout">
     <div class="analytics-layout__block">
@@ -52,7 +419,7 @@
           <h2 id="scenario-table-title" class="typography-caption-small">Сценарии и сравнение</h2>
           <span class="analytics-block-info" data-analytics-info-root>
             <button class="analytics-kpi__info" type="button" data-analytics-info-trigger aria-expanded="false" aria-controls="scenario-table-info" aria-label="Информация о сценариях">
-              <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg>
+              <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
             </button>
             <span id="scenario-table-info" class="analytics-title-popover" data-analytics-info-popover role="dialog" aria-label="О сценариях" hidden>
               <button class="analytics-title-popover__close" type="button" data-analytics-info-close aria-label="Закрыть информацию">
@@ -63,17 +430,17 @@
           </span>
         </div>
       </header>
-      <article class="data-block scenario-table-card" aria-labelledby="scenario-table-title">
+      <article class="data-block table-block scenario-table-card" aria-labelledby="scenario-table-title">
         <div class="table-wrap">
-          <table class="data-table analytics-table">
+          <table class="data-table" data-table-selectable data-scenario-table>
             <thead>
               <tr>
                 <th>Сценарий</th>
-                <th><span class="analytics-table__column-heading"><span>Риск</span><button class="analytics-table__sort" type="button" data-scenario-sort="risk" data-sort-label="Риск" aria-label="Сортировать риск от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
-                <th><span class="analytics-table__column-heading"><span>Бюджет</span><button class="analytics-table__sort" type="button" data-scenario-sort="budget" data-sort-label="Бюджет" aria-label="Сортировать бюджет от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
-                <th><span class="analytics-table__column-heading"><span>Доступность</span><button class="analytics-table__sort" type="button" data-scenario-sort="availability" data-sort-label="Доступность" aria-label="Сортировать доступность от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
-                <th><span class="analytics-table__column-heading"><span>Ремонты</span><button class="analytics-table__sort" type="button" data-scenario-sort="repairs" data-sort-label="Ремонты" aria-label="Сортировать ремонты от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
-                <th><span class="analytics-table__column-heading"><span>Резерв</span><button class="analytics-table__sort" type="button" data-scenario-sort="capacity" data-sort-label="Резерв" aria-label="Сортировать резерв от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
+                <th class="data-table__head-cell--percent"><span class="data-table__column-heading"><span>Риск</span><button class="data-table__sort" type="button" data-scenario-sort="risk" data-sort-label="Риск" aria-label="Сортировать риск от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
+                <th class="data-table__head-cell--numeric"><span class="data-table__column-heading"><span>Бюджет</span><button class="data-table__sort" type="button" data-scenario-sort="budget" data-sort-label="Бюджет" aria-label="Сортировать бюджет от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
+                <th class="data-table__head-cell--percent"><span class="data-table__column-heading"><span>Доступность</span><button class="data-table__sort" type="button" data-scenario-sort="availability" data-sort-label="Доступность" aria-label="Сортировать доступность от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
+                <th class="data-table__head-cell--numeric"><span class="data-table__column-heading"><span>Ремонты</span><button class="data-table__sort" type="button" data-scenario-sort="repairs" data-sort-label="Ремонты" aria-label="Сортировать ремонты от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
+                <th class="data-table__head-cell--percent"><span class="data-table__column-heading"><span>Резерв</span><button class="data-table__sort" type="button" data-scenario-sort="capacity" data-sort-label="Резерв" aria-label="Сортировать резерв от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
               </tr>
             </thead>
             <tbody id="scenario-rows"></tbody>
@@ -118,7 +485,7 @@
           <h2 id="capacity-forecast-title" class="typography-caption-small">Доступность и свободная ёмкость</h2>
           <span class="analytics-block-info" data-analytics-info-root>
             <button class="analytics-kpi__info" type="button" data-analytics-info-trigger aria-expanded="false" aria-controls="capacity-forecast-info" aria-label="Информация о прогнозе доступности">
-              <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg>
+              <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
             </button>
             <span id="capacity-forecast-info" class="analytics-title-popover" data-analytics-info-popover role="dialog" aria-label="О прогнозе доступности" hidden>
               <button class="analytics-title-popover__close" type="button" data-analytics-info-close aria-label="Закрыть информацию">
@@ -137,12 +504,12 @@
 
   <section class="analytics-evidence" aria-labelledby="analytics-evidence-title">
     <header class="analytics-block-heading">
-      <span class="typography-label-smallest">ФАКТИЧЕСКАЯ БАЗА</span>
+      <span class="typography-label-smallest">На чем строятся сценарии</span>
       <div class="analytics-block-title-row">
-        <h2 id="analytics-evidence-title" class="typography-h4">На чем строятся сценарии</h2>
+        <h2 id="analytics-evidence-title" class="typography-h4">Ресурсная устойчивость</h2>
         <span class="analytics-block-info" data-analytics-info-root>
           <button class="analytics-kpi__info" type="button" data-analytics-info-trigger aria-expanded="false" aria-controls="analytics-evidence-info" aria-label="Информация о фактической базе">
-            <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg>
+            <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
           </button>
           <span id="analytics-evidence-info" class="analytics-title-popover" data-analytics-info-popover role="dialog" aria-label="О фактической базе" hidden>
             <button class="analytics-title-popover__close" type="button" data-analytics-info-close aria-label="Закрыть информацию">
@@ -153,17 +520,60 @@
         </span>
       </div>
     </header>
+    <div class="financial-kpis analytics-financial-kpis" style="grid-template-columns:repeat(6,minmax(0,1fr))" data-analytics-resource-cards aria-label="Показатели ресурсной устойчивости"></div>
+    <div class="chart-grid--two-column analytics-financial-charts">
+      <article class="chart-card" aria-labelledby="analytics-resource-risk-title">
+        <header class="chart-card__header">
+          <div class="chart-card__heading">
+            <div class="chart-card__title-row">
+              <h3 id="analytics-resource-risk-title" class="typography-caption-small">Доля контуров в общем риске</h3>
+            </div>
+          </div>
+          <div class="chart-actions">
+            <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-analytics-line-export="resourceRisk" aria-label="Скачать данные долей ресурсного риска"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-analytics-line-filter="resourceRisk"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+          </div>
+        </header>
+        <div class="chart-viewport payment-deviation-chart__viewport" style="height:348px;overflow:hidden">
+          <div class="payment-deviation-chart" style="--payment-deviation-label-width:120px;min-width:0" data-analytics-resource-risk-chart role="img" aria-label="Доля контуров в общем риске"></div>
+        </div>
+        <div class="financial-chart__legend typography-body-smallest" aria-label="Легенда долей ресурсного риска">
+          <span><i class="chart-legend__dot series-light" aria-hidden="true"></i>Доля риска</span>
+        </div>
+      </article>
 
-    <div id="analytics-evidence" class="analytics-evidence-grid"></div>
+      <article class="chart-card" aria-labelledby="analytics-resource-deficit-title">
+        <header class="chart-card__header">
+          <div class="chart-card__heading">
+            <div class="chart-card__title-row">
+              <h3 id="analytics-resource-deficit-title" class="typography-caption-small">Дефицит ресурсов — горизонт 30 / 60 / 90 дней</h3>
+            </div>
+          </div>
+          <div class="chart-actions">
+            <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-analytics-line-export="resourceDeficit" aria-label="Скачать данные дефицита ресурсов"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-analytics-line-filter="resourceDeficit"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+          </div>
+        </header>
+        <div class="chart-viewport payment-deviation-chart__viewport" style="height:348px;overflow:hidden">
+          <div class="payment-deviation-chart" style="--payment-deviation-label-width:120px;min-width:0" data-analytics-resource-deficit-chart role="img" aria-label="Дефицит ресурсов по горизонту 30, 60 и 90 дней"></div>
+        </div>
+        <div class="financial-chart__legend typography-body-smallest" aria-label="Легенда дефицита ресурсов">
+          <span><i class="chart-legend__dot payment-deviation__dot--fact" aria-hidden="true"></i>30 дней</span>
+          <span><i class="chart-legend__dot payment-deviation__dot--plan" aria-hidden="true"></i>60 дней</span>
+          <span><i class="chart-legend__dot series-light" aria-hidden="true"></i>90 дней</span>
+        </div>
+      </article>
+    </div>
+  </section>
   </section>
 
 </main>
 
 <script src="/assets/js/navigation.js"></script>
-<script src="/assets/js/ui.js"></script>
+<script src="/assets/js/ui.js?v=14"></script>
 <script src="/assets/js/data/assets.js"></script>
-<script src="/assets/js/data/scenarios.js?v=5"></script>
-<script src="/assets/js/pages/analytics.js?v=18"></script>
-<script src="/assets/js/shell.js?v=9120"></script>
+<script src="/assets/js/data/scenarios.js?v=6"></script>
+<script src="/assets/js/pages/analytics.js?v=32"></script>
+<script src="/assets/js/shell.js?v=9121"></script>
 </body>
 </html>

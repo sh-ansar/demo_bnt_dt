@@ -68,9 +68,9 @@
   function points(path) { return path.map(p => { const q=project(p); return `${q.left},${q.top}`; }).join(" "); }
   function buildFallback() {
     const root = byId("fallback-overlays");
-    const zones = data.zones.map(zone => `<polygon data-fallback-layer="zones" points="${points(zone.path)}" fill="${zone.color}" fill-opacity=".08" stroke="${zone.color}" stroke-width=".18"/>`).join("");
-    const pipes = data.pipelines.map(pipe => `<polyline data-fallback-layer="pipelines" points="${points(pipe.path)}" fill="none" stroke="${pipe.color}" stroke-width=".28"/>`).join("");
-    const logistics = `<polyline data-fallback-layer="logistics" points="${points(data.logistics.path)}" fill="none" stroke="#16a76c" stroke-width=".32" stroke-dasharray=".7 .45"/>`;
+    const zones = data.zones.map(zone => `<polygon data-fallback-layer="zones" points="${points(zone.path)}" fill="${zone.color}" fill-opacity=".08" stroke="${zone.color}" stroke-width=".18" vector-effect="non-scaling-stroke"/>`).join("");
+    const pipes = data.pipelines.map(pipe => `<polyline data-fallback-layer="pipelines" points="${points(pipe.path)}" fill="none" stroke="${pipe.color}" stroke-width=".28" vector-effect="non-scaling-stroke"/>`).join("");
+    const logistics = `<polyline data-fallback-layer="logistics" points="${points(data.logistics.path)}" fill="none" stroke="#16a76c" stroke-width=".32" stroke-dasharray=".7 .45" vector-effect="non-scaling-stroke"/>`;
     const tankNodes = data.tanks.map(tank => {const p=project(tank.position);return `<button data-fallback-layer="tanks" data-min-zoom="${tank.major?18:19}" class="fallback-tank ${tank.critical?"risk":""}" style="left:${p.left}%;top:${p.top}%" data-tank="${tank.id}" title="${tank.id}"></button>`;}).join("");
     const equipment = data.equipment.map(item => {const p=project(item.position);return `<button data-fallback-layer="equipment" data-min-zoom="${item.major?17:19}" class="fallback-marker ${item.tone}" style="left:${p.left}%;top:${p.top}%" data-object="${item.id}"><b>${item.code}</b><span>${item.name}</span></button>`;}).join("");
     const risks = data.equipment.filter(item => item.risk>=40).map(item => {const p=project(item.position);return `<i data-fallback-layer="risks" data-min-zoom="${item.major?17:19}" class="fallback-risk" style="left:${p.left}%;top:${p.top}%"></i>`;}).join("");

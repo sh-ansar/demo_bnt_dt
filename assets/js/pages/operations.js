@@ -97,7 +97,7 @@
   function metricCard(card) {
     const count = Math.min(3, card.products.length);
     const toneClass = card.tone ? ` metric-card--${card.tone}` : '';
-    const directionIcon = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 12.8335V3.16683M6 5.16683L8 3.16683L10 5.16683" stroke="currentColor" stroke-width="1.2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const directionIcon = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 12.8335V3.16683M6 5.16683L8 3.16683L10 5.16683" stroke="currentColor" stroke-width="1.2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>';
     const direction = card.tone === 'incoming'
       ? `<span class="metric-direction metric-direction--incoming" aria-hidden="true">${directionIcon}</span>`
       : card.tone === 'outgoing'
@@ -328,7 +328,7 @@
 
   function detailDirection(card) {
     const count = Math.min(3, card.products.length);
-    const directionIcon = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 12.8335V3.16683M6 5.16683L8 3.16683L10 5.16683" stroke="currentColor" stroke-width="1.2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const directionIcon = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 12.8335V3.16683M6 5.16683L8 3.16683L10 5.16683" stroke="currentColor" stroke-width="1.2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>';
     const toneClass = card.tone ? ` flow-line-detail__direction--${card.tone}` : '';
     const metrics = card.products.map(function (product, index) {
       return `<div class="flow-line-detail__metric">
@@ -1652,7 +1652,7 @@
 
   const cylinderChart = root.querySelector('[data-transshipment-cylinder]');
   const cylinderViewport = root.querySelector('[data-transshipment-chart-viewport]');
-  const cylinderTooltip = root.querySelector('[data-transshipment-chart-tooltip]');
+  const cylinderTooltip = root.querySelector('[data-transshipment-chart-tooltip], [data-chart-tooltip]');
   const cylinderLegend = root.querySelector('[data-transshipment-cylinder-legend]');
   const donutChart = root.querySelector('[data-transshipment-donut]');
   const pieChart = root.querySelector('[data-transshipment-pie]');
@@ -2032,8 +2032,11 @@
 
   function showCylinderTooltip(segment, clientX, clientY) {
     if (!cylinderTooltip || !segment) return;
+    const title = cylinderTooltip.querySelector('[data-tooltip-title]');
+    const type = cylinderTooltip.querySelector('[data-tooltip-type]');
+    if (title) title.textContent = segment.dataset.seriesLabel;
     cylinderTooltip.querySelector('[data-tooltip-period]').textContent = segment.dataset.period;
-    cylinderTooltip.querySelector('[data-tooltip-type]').textContent = segment.dataset.seriesLabel;
+    if (type) type.textContent = segment.dataset.seriesLabel;
     cylinderTooltip.querySelector('[data-tooltip-value]').textContent = numberFormat.format(Number(segment.dataset.value));
     cylinderTooltip.hidden = false;
     positionCylinderTooltip(clientX, clientY);
@@ -2380,7 +2383,12 @@
     const info = event.target.closest('[data-transshipment-info]');
     if (info) {
       if (info.dataset.transshipmentInfo === 'origin') return;
-      toast('Данные диаграммы', 'Значения рассчитаны для выбранного периода и единицы измерения');
+      if (window.BNTUI?.showInfoPopover) {
+        window.BNTUI.showInfoPopover(info, {
+          title: 'Данные диаграммы',
+          message: 'Значения рассчитаны для выбранного периода и единицы измерения'
+        });
+      }
       return;
     }
     const exportButton = event.target.closest('[data-transshipment-export]');
@@ -2601,7 +2609,12 @@
     const info = event.target.closest('[data-logistics-overview-info]');
     if (info) {
       const config = configs[info.dataset.logisticsOverviewInfo];
-      if (config) toast(config.title, config.description);
+      if (config && window.BNTUI?.showInfoPopover) {
+        window.BNTUI.showInfoPopover(info, {
+          title: config.title,
+          message: config.description
+        });
+      }
       return;
     }
 
@@ -3044,7 +3057,8 @@
         const x = groupStart + seriesIndex * (barWidth + barGap);
         const y = plotBottom - barHeight;
         const seriesItem = series[seriesIndex];
-        svg.push(`<rect class="financial-chart__bar financial-chart__bar--${seriesItem.className}" x="${x}" y="${y}" width="${barWidth}" height="${barHeight}"><title>${escapeXml(`${category.label}: ${seriesItem.label} — ${formatNumber.format(value)}`)}</title></rect>`);
+        const accessibleLabel = escapeXml(`${category.label}: ${seriesItem.label} — ${formatNumber.format(value)}`);
+        svg.push(`<rect class="financial-chart__bar financial-chart__bar--${seriesItem.className}" x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" role="img" aria-label="${accessibleLabel}"></rect>`);
         svg.push(`<text class="financial-chart__value" x="${x + barWidth / 2}" y="${Math.max(margin.top + 12, y - 8)}" text-anchor="middle">${escapeXml(formatNumber.format(value))}</text>`);
       });
 
@@ -3132,8 +3146,13 @@
     });
   });
 
-  root.querySelector('[data-financial-info]')?.addEventListener('click', function () {
-    toast('План vs Факт', 'Сравнение значений за выбранный период по трём срезам');
+  root.querySelector('[data-financial-info]')?.addEventListener('click', function (event) {
+    if (window.BNTUI?.showInfoPopover) {
+      window.BNTUI.showInfoPopover(event.currentTarget, {
+        title: 'План vs Факт',
+        message: 'Сравнение значений за выбранный период по трём срезам'
+      });
+    }
   });
 
   root.querySelector('[data-financial-export]')?.addEventListener('click', function () {

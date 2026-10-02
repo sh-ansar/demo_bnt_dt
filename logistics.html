@@ -6,10 +6,10 @@
   <title>BNT — Вагоны</title>
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/css/layout.css">
-  <link rel="stylesheet" href="/assets/css/components.css?v=15">
-  <link rel="stylesheet" href="/assets/css/pages/enterprise.css?v=9">
-  <link rel="stylesheet" href="/assets/css/pages/operations.css?v=126">
-  <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9122">
+  <link rel="stylesheet" href="/assets/css/components.css?v=177">
+  <link rel="stylesheet" href="/assets/css/pages/enterprise.css?v=22">
+  <link rel="stylesheet" href="/assets/css/pages/operations.css?v=132">
+  <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9128">
 </head>
 <body data-page="logistics">
   <main id="page-content" class="page-content logistics-page">
@@ -33,18 +33,18 @@
           <span class="typography-indicator-small">7 дней</span>
           <h2 id="wagon-plan-title" class="typography-caption-small">Подача вагонов</h2>
         </header>
-        <article class="data-block logistics-plan-surface" aria-labelledby="wagon-plan-title">
+        <article class="table-block logistics-plan-surface" aria-labelledby="wagon-plan-title">
           <div class="table-wrap">
           <table class="data-table analytics-table">
             <thead>
               <tr>
                 <th aria-sort="none"><span class="analytics-table__column-heading"><span>Дата</span><button class="analytics-table__sort" type="button" data-logistics-sort="date" data-sort-label="дату" aria-label="Сортировать дату от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
                 <th aria-sort="none"><span class="analytics-table__column-heading"><span>Продукт</span><button class="analytics-table__sort" type="button" data-logistics-sort="product" data-sort-label="продукт" aria-label="Сортировать продукт от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
-                <th aria-sort="none"><span class="analytics-table__column-heading"><span>Вагоны</span><button class="analytics-table__sort" type="button" data-logistics-sort="wagons" data-sort-label="количество вагонов" aria-label="Сортировать количество вагонов от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
-                <th aria-sort="none"><span class="analytics-table__column-heading"><span>Объём</span><button class="analytics-table__sort" type="button" data-logistics-sort="volume" data-sort-label="объём" aria-label="Сортировать объём от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
+                <th class="analytics-table__head-cell--numeric" aria-sort="none"><span class="analytics-table__column-heading"><span>Вагоны</span><button class="analytics-table__sort" type="button" data-logistics-sort="wagons" data-sort-label="количество вагонов" aria-label="Сортировать количество вагонов от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
+                <th class="analytics-table__head-cell--numeric" aria-sort="none"><span class="analytics-table__column-heading"><span>Объём</span><button class="analytics-table__sort" type="button" data-logistics-sort="volume" data-sort-label="объём" aria-label="Сортировать объём от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
                 <th>Статус</th>
                 <th aria-sort="none"><span class="analytics-table__column-heading"><span>Секция</span><button class="analytics-table__sort" type="button" data-logistics-sort="section" data-sort-label="секцию" aria-label="Сортировать секцию от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
-                <th aria-sort="none"><span class="analytics-table__column-heading"><span>Очередь</span><button class="analytics-table__sort" type="button" data-logistics-sort="queue" data-sort-label="очередь" aria-label="Сортировать очередь от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
+                <th class="analytics-table__head-cell--numeric" aria-sort="none"><span class="analytics-table__column-heading"><span>Очередь</span><button class="analytics-table__sort" type="button" data-logistics-sort="queue" data-sort-label="очередь" aria-label="Сортировать очередь от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
               </tr>
             </thead>
             <tbody id="wagon-plan"></tbody>
@@ -79,7 +79,7 @@
             <div class="chart-card__title-row">
               <h3 id="logistics-product-volume-title" class="typography-caption-small">Входящий объём по продукту</h3>
               <div class="origin-title-info" data-logistics-popover-root>
-                <button class="info-icon-button" type="button" data-logistics-popover-trigger aria-expanded="false" aria-controls="logistics-products-info" aria-label="Информация о входящем объёме"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg></button>
+                <button class="sign_BTN_smallest info-icon-button" type="button" data-logistics-popover-trigger aria-expanded="false" aria-controls="logistics-products-info" aria-label="Информация о входящем объёме"><svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg></button>
                 <div id="logistics-products-info" class="origin-breakdown__info-popover" data-logistics-popover role="dialog" aria-label="О входящем объёме" hidden>
                   <button class="origin-breakdown__info-close" type="button" data-logistics-popover-close aria-label="Закрыть информацию"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button>
                   <p class="typography-body-smallest">Суммарный входящий объём по недельному плану подачи вагонов.</p>
@@ -114,7 +114,7 @@
             <div class="chart-card__title-row">
               <h3 id="logistics-capacity-title" class="typography-caption-small">Свободная ёмкость резервуаров</h3>
               <div class="origin-title-info" data-logistics-popover-root>
-                <button class="info-icon-button" type="button" data-logistics-popover-trigger aria-expanded="false" aria-controls="logistics-capacities-info" aria-label="Информация о свободной ёмкости"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg></button>
+                <button class="sign_BTN_smallest info-icon-button" type="button" data-logistics-popover-trigger aria-expanded="false" aria-controls="logistics-capacities-info" aria-label="Информация о свободной ёмкости"><svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg></button>
                 <div id="logistics-capacities-info" class="origin-breakdown__info-popover" data-logistics-popover role="dialog" aria-label="О свободной ёмкости" hidden>
                   <button class="origin-breakdown__info-close" type="button" data-logistics-popover-close aria-label="Закрыть информацию"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button>
                   <p class="typography-body-smallest">Доступная ёмкость по секциям и резервуарному парку на текущую дату.</p>
@@ -147,9 +147,9 @@
   </main>
 
   <script src="/assets/js/navigation.js"></script>
-  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/ui.js?v=14"></script>
   <script src="/assets/js/data/logistics.js"></script>
-  <script src="/assets/js/pages/logistics.js?v=8"></script>
-  <script src="/assets/js/shell.js?v=9120"></script>
+  <script src="/assets/js/pages/logistics.js?v=3"></script>
+  <script src="/assets/js/shell.js?v=9121"></script>
 </body>
 </html>

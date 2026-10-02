@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>BNT — Бюджет и платежи</title>
-  <link rel="stylesheet" href="/assets/css/tokens.css?v=17">
+  <link rel="stylesheet" href="/assets/css/tokens.css?v=19">
   <link rel="stylesheet" href="/assets/css/layout.css">
-  <link rel="stylesheet" href="/assets/css/components.css?v=10">
-  <link rel="stylesheet" href="/assets/css/pages/operations.css?v=126">
-  <link rel="stylesheet" href="/assets/css/pages/budget-payments.css?v=15">
-  <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9122">
+  <link rel="stylesheet" href="/assets/css/components.css?v=185">
+  <link rel="stylesheet" href="/assets/css/pages/operations.css?v=132">
+  <link rel="stylesheet" href="/assets/css/pages/budget-payments.css?v=18">
+  <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9128">
 </head>
 <body data-page="budget-payments">
   <main id="page-content" class="page-content budget-payments-page">
@@ -90,7 +90,7 @@
             <div class="chart-card__title-row">
               <h3 id="cash-flow-title" class="typography-caption-small">Cash Flow — Оплаты по месяцам (План vs Факт)</h3>
               <div class="origin-title-info">
-                <button class="info-icon-button" type="button" data-cash-info aria-expanded="false" aria-controls="cash-flow-info" aria-label="Информация о диаграмме оплат"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg></button>
+                <button class="sign_BTN_smallest info-icon-button" type="button" data-cash-info aria-expanded="false" aria-controls="cash-flow-info" aria-label="Информация о диаграмме оплат"><svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg></button>
                 <div id="cash-flow-info" class="origin-breakdown__info-popover" data-cash-info-popover role="dialog" aria-label="Информация о диаграмме оплат" hidden><button class="origin-breakdown__info-close" type="button" data-cash-info-close aria-label="Закрыть информацию"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button><p class="typography-body-smallest">Положительная дельта: план выше факта; отрицательная: факт выше плана. Факт показан по август 2026 года. Недельная разбивка демонстрационная и сохраняет сумму месяца. Выберите месяц или прокрутите колесо над его столбцом.</p></div>
               </div>
             </div>
@@ -173,8 +173,8 @@
             <div class="chart-card__title-row">
               <h3 id="payment-deviation-title" class="typography-caption-small">График отклонений (план vs факт)</h3>
               <div class="origin-title-info" data-payment-deviation-info-wrap>
-                <button class="info-icon-button" type="button" data-payment-deviation-info aria-expanded="false" aria-controls="payment-deviation-info" aria-label="Информация о графике отклонений">
-                  <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg>
+                <button class="sign_BTN_smallest info-icon-button" type="button" data-payment-deviation-info aria-expanded="false" aria-controls="payment-deviation-info" aria-label="Информация о графике отклонений">
+                  <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
                 </button>
                 <div id="payment-deviation-info" class="origin-breakdown__info-popover" data-payment-deviation-info-popover role="dialog" aria-label="Информация о графике отклонений" hidden>
                   <button class="origin-breakdown__info-close" type="button" data-payment-deviation-info-close aria-label="Закрыть информацию"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button>
@@ -233,7 +233,7 @@
               <ol class="payment-risk-list">
                 <li class="payment-risk-item payment-risk-item--error">
                   <span class="payment-risk-item__marker typography-indicator-small" aria-hidden="true">1</span>
-                  <div class="payment-risk-item__content table-cell-content">
+                  <div class="payment-risk-item__content table-cell-content table-cell-content--with-pill">
                     <div class="payment-risk-item__header table-header-content">
                       <h4 class="payment-risk-item__title typography-label-smallest">Просрочка счетов</h4>
                       <p class="payment-risk-item__description typography-body-smallest">У 5 платежей риск штрафов, приостановки поставок и ухудшения условий.</p>
@@ -244,7 +244,7 @@
                 </li>
                 <li class="payment-risk-item payment-risk-item--error">
                   <span class="payment-risk-item__marker typography-indicator-small" aria-hidden="true">2</span>
-                  <div class="payment-risk-item__content table-cell-content">
+                  <div class="payment-risk-item__content table-cell-content table-cell-content--with-pill">
                     <div class="payment-risk-item__header table-header-content">
                       <h4 class="payment-risk-item__title typography-label-smallest">Превышение бюджетов</h4>
                       <p class="payment-risk-item__description typography-body-smallest">По 3 договорам необходимо перераспределение бюджета.</p>
@@ -255,7 +255,7 @@
                 </li>
                 <li class="payment-risk-item payment-risk-item--warning">
                   <span class="payment-risk-item__marker typography-indicator-small" aria-hidden="true">3</span>
-                  <div class="payment-risk-item__content table-cell-content">
+                  <div class="payment-risk-item__content table-cell-content table-cell-content--with-pill">
                     <div class="payment-risk-item__header table-header-content">
                       <h4 class="payment-risk-item__title typography-label-smallest">Частые доп. соглашения</h4>
                       <p class="payment-risk-item__description typography-body-smallest">По 4 договорам оформлено более двух доп. соглашений за период.</p>
@@ -266,7 +266,7 @@
                 </li>
                 <li class="payment-risk-item payment-risk-item--info">
                   <span class="payment-risk-item__marker typography-indicator-small" aria-hidden="true">4</span>
-                  <div class="payment-risk-item__content table-cell-content">
+                  <div class="payment-risk-item__content table-cell-content table-cell-content--with-pill">
                     <div class="payment-risk-item__header table-header-content">
                       <h4 class="payment-risk-item__title typography-label-smallest">Нет подтверждающих документов</h4>
                       <p class="payment-risk-item__description typography-body-smallest">По 7 платежам отсутствуют закрывающие документы.</p>
@@ -277,7 +277,7 @@
                 </li>
                 <li class="payment-risk-item payment-risk-item--warning">
                   <span class="payment-risk-item__marker typography-indicator-small" aria-hidden="true">5</span>
-                  <div class="payment-risk-item__content table-cell-content">
+                  <div class="payment-risk-item__content table-cell-content table-cell-content--with-pill">
                     <div class="payment-risk-item__header table-header-content">
                       <h4 class="payment-risk-item__title typography-label-smallest">Риск кассового разрыва</h4>
                       <p class="payment-risk-item__description typography-body-smallest">На горизонте 90 дней обязательства превышают текущий резерв.</p>
@@ -305,10 +305,10 @@
     </section>
   </main>
   <script src="/assets/js/navigation.js"></script>
-  <script src="/assets/js/ui.js"></script>
-  <script src="/assets/js/shell.js?v=9120"></script>
-  <script src="/assets/js/chart-donut.js?v=9"></script>
-  <script src="/assets/js/pages/operations.js?v=91"></script>
-  <script src="/assets/js/pages/budget-payments.js?v=6"></script>
+  <script src="/assets/js/ui.js?v=12"></script>
+  <script src="/assets/js/shell.js?v=9121"></script>
+  <script src="/assets/js/chart-donut.js?v=12"></script>
+  <script src="/assets/js/pages/operations.js?v=93"></script>
+  <script src="/assets/js/pages/budget-payments.js?v=7"></script>
 </body>
 </html>

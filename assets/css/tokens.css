@@ -39,8 +39,8 @@
   --typography-button-smallest-line-height: var(--typography-label-smallest-line-height);
   --typography-button-smallest-weight: 600;
   --typography-button-smallest-letter-spacing: 0;
-  --typography-indicator-small-size: 10px;
-  --typography-indicator-small-line-height: 16px;
+  --typography-indicator-small-size: clamp(10px, .666667vw, 12.8px);
+  --typography-indicator-small-line-height: clamp(16px, 1.145833vw, 22px);
   --typography-indicator-small-weight: 500;
   --typography-indicator-small-letter-spacing: 0;
   --typography-caption-smallest-size: var(--typography-label-smallest-size);
@@ -67,6 +67,7 @@
   --background-quarternary: rgba(255, 255, 255, .8);
   --background-senary: rgba(255, 255, 255, .8);
   --system-elements-static-primary: #fefefe;
+  --system-elements-overlay-primary: rgb(5 28 39 / 18%);
   --text-secondary: #051c27;
   --bg: var(--background-primary);
   --surface: #ffffff;
@@ -78,6 +79,8 @@
   --background-brand-solid: #0697e0;
   --design-elements-border-default: rgba(68, 112, 134, .08);
   --design-elements-border-primary: var(--design-elements-border-default);
+  --system-elements-semantic-highlight-stroke-solid: rgba(68, 112, 134, .32);
+  --system-elements-semantic-highlight-fill: rgba(43, 184, 255, .24);
   --design-elements-border-secondary: rgba(68, 112, 134, .24);
   --design-elements-border-strong: var(--design-elements-border-secondary);
   --design-elements-illustration-primary: #ffffff;
@@ -103,6 +106,10 @@
   --system-elements-semantic-error-secondary-fade: #fde8e8;
   --system-elements-semantic-purple-primary: #5f67be;
   --system-elements-semantic-purple-secondary-fade: rgb(173 202 255 / 20%);
+  --system-elements-semantic-turquoise-primary: #0d7c73;
+  --system-elements-semantic-turquoise-secondary-fade: rgb(85 227 203 / 20%);
+  --system-elements-semantic-mustard-primary: #827009;
+  --system-elements-semantic-mustard-secondary-fade: rgb(236 225 85 / 20%);
   --pier-card-one-fill: #ddf3ee;
   --pier-card-two-fill: #dae7fd;
   --pier-card-three-fill: #dceef2;
@@ -197,6 +204,7 @@
   --background-quarternary: rgba(112, 184, 219, .05);
   --background-senary: rgb(10 31 41 / 40%);
   --system-elements-static-primary: #fefefe;
+  --system-elements-overlay-primary: rgb(5 28 39 / 18%);
   --text-secondary: #ffffff;
   --bg: var(--background-primary);
   --surface: #032130;
@@ -208,6 +216,8 @@
   --background-brand-solid: #0697e0;
   --design-elements-border-default: rgba(141, 192, 216, .1);
   --design-elements-border-primary: var(--design-elements-border-default);
+  --system-elements-semantic-highlight-stroke-solid: rgba(141, 192, 216, .28);
+  --system-elements-semantic-highlight-fill: rgba(43, 184, 255, .24);
   --design-elements-border-secondary: rgba(141, 192, 216, .2);
   --design-elements-border-strong: var(--design-elements-border-secondary);
   --design-elements-illustration-primary: #7199ac;
@@ -228,6 +238,10 @@
   --system-elements-semantic-error-secondary-fade: rgba(244, 37, 37, .2);
   --system-elements-semantic-purple-primary: #7d85dc;
   --system-elements-semantic-purple-secondary-fade: rgb(173 202 255 / 20%);
+  --system-elements-semantic-turquoise-primary: #4bd9ac;
+  --system-elements-semantic-turquoise-secondary-fade: rgb(93 227 205 / 20%);
+  --system-elements-semantic-mustard-primary: #d1c53a;
+  --system-elements-semantic-mustard-secondary-fade: rgb(221 210 70 / 20%);
   --pier-card-one-fill: #173c37;
   --pier-card-two-fill: #223754;
   --pier-card-three-fill: #1b3840;

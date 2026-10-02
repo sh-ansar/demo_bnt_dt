@@ -375,7 +375,21 @@ Desktop = Mobile.
 | fade | `blue/200` | `#E5F6FF` |
 | secondary fade | `blue/200` | `#E5F6FF` |
 
-### 8.12. System elements
+### 8.12. Semantic / turquoise
+
+| Token | Alias | Value |
+|---|---|---|
+| primary | `turquoise/400` | `#0D7C73` |
+| secondary fade | `turquoise/200-20` | `#55E3CB` @ `20%` |
+
+### 8.13. Semantic / mustard
+
+| Token | Alias | Value |
+|---|---|---|
+| primary | `mustard/400` | `#827009` |
+| secondary fade | `mustard/200-20` | `#ECE155` @ `20%` |
+
+### 8.14. System elements
 
 | Group | Token | Alias | Value |
 |---|---|---|---|
@@ -497,7 +511,21 @@ Desktop = Mobile.
 | fade | `#E5F6FF` @ `80%` |
 | secondary fade | `#0088CC` @ `20%` |
 
-### 9.12. System elements
+### 9.12. Semantic / turquoise
+
+| Token | Value |
+|---|---|
+| primary | `#4BD9AC` |
+| secondary fade | `#5DE3CD` @ `20%` |
+
+### 9.13. Semantic / mustard
+
+| Token | Value |
+|---|---|
+| primary | `#D1C53A` |
+| secondary fade | `#DDD246` @ `20%` |
+
+### 9.14. System elements
 
 | Group | Token | Value |
 |---|---|---|
@@ -627,8 +655,14 @@ Border-эффекты фиксированные и не масштабирую�
 
 - `ui-dropdown` и `ui-zoom` считаются общими контролами; локальные страницы могут задавать размеры через CSS-переменные, но не должны менять базовую механику и токены без отдельного согласования.
 - `speed-dial-secondary` используется только для вторичных контекстных действий; primary actions должны оставаться видимыми кнопками/ссылками, а trigger обязан поддерживать `aria-haspopup="menu"` и `aria-expanded`.
+- `speed-dial-secondary__label` использует `margin-top: 0`; вертикальный ритм trigger задается самим мастер-компонентом, без локальных отрицательных отступов.
+- `sign_BTN_smallest` — круглая action/info-кнопка `20px` с SVG `14px`; `sign_BTN_small` — круглая action/info-кнопка `24px` с SVG `16px`. `sign_BTN`, `analytics-kpi__info`, `info-icon-button`, `payment-summary-card__link` остаются совместимыми алиасами. Размер SVG задаётся самим `<svg width height>`, без глобального CSS-переопределения. Расстояние от текста/заголовка до служебной кнопки — `var(--space-1)` (`4px`).
+- `CircleCross` и `Expand_2` — библиотечные 16px-символы в `assets/icons/financial-interface.svg`; при использовании через `<use>` сохранять размер конкретного места (`14`, `16`, `20` или `24`), меняя только символ.
+- Подтвержденные общие компоненты нельзя клонировать похожей разметкой или локальными CSS-копиями. Для вариантов использовать тот же мастер-компонент с параметрами, атрибутами или согласованным модификатором; новый компонент создавать только для нового паттерна.
 - Для всех обычных progress/range/zoom-треков толщина линии — `--progress-bar-track-size: 2px`; заполненная линия/bar использует ту же толщину.
 - Scrollbar — исключение из правила `2px`: для WebKit-scrollbar использовать `--progress-bar-track-scroll-size: 4px`, для Firefox допустим `scrollbar-width: thin`.
+- Эталон scrollbar — левая навигация сайдбара (`.app-sidebar .app-nav`). Для любых обычных прокручиваемых областей использовать общий класс `.ui-scrollbar` или уже подключенный общий scrollbar-селектор из `components.css`. Не добавлять локальные `scrollbar-width`, `scrollbar-color` и `::-webkit-scrollbar*` рядом с новым компонентом, если не создается отдельный согласованный scrollbar-паттерн.
+- В фильтрах и dropdown-меню служебная часть (`control`, divider, search) не должна прокручиваться вместе со списком. Скролл живет на options-слое (`form-input__options` / общий options-контейнер) и наследует общий scrollbar-паттерн из `components.css`.
 - Thumb/range-бегунок использует fill `design-elements / illustration / primary` (`--design-elements-illustration-primary`) и border `--progress-bar-thumb-border`.
 - В `.field` и поисковых полях placeholder скрывается в focus-состоянии, если назначение поля уже понятно из контекста.
 

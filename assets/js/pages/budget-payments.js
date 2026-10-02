@@ -9,19 +9,6 @@
 
   const numberFormatter = new Intl.NumberFormat('ru-RU');
   const datasets = {
-    statuses: {
-      accessibleLabel: 'Статусы исполнения платежей за сентябрь 2025 года',
-      centerValue: '77',
-      startAngle: -16.36,
-      data: [
-        { label: 'Просрочено (не закрыты, срок истёк)', value: 7, percent: '9,09%', className: 'series-negative' },
-        { label: 'Выполнено вовремя', value: 38, percent: '49,35%', className: 'series-gas' },
-        { label: 'Выполнено с просрочкой', value: 7, percent: '9,09%', className: 'series-orange' },
-        { label: 'В работе', value: 19, percent: '24,68%', className: 'series-crude' },
-        { label: 'На контроле (<7 дней до срока)', value: 6, percent: '7,79%', className: 'series-dark' }
-      ],
-      legendOrder: ['В работе', 'Выполнено вовремя', 'Выполнено с просрочкой', 'На контроле (<7 дней до срока)', 'Просрочено (не закрыты, срок истёк)']
-    },
     budget: {
       accessibleLabel: 'Исполнение бюджета по обязательствам за январь — сентябрь 2025 года',
       centerValue: '1 000M',
@@ -109,6 +96,7 @@
   }
 
   function renderAll() {
+    window.BNTCharts?.renderPaymentStatuses?.(root);
     Object.keys(datasets).forEach(renderCard);
   }
 
@@ -214,7 +202,7 @@
   }
 
   function downloadCsv(key) {
-    const config = datasets[key];
+    const config = key === 'statuses' ? window.BNTCharts.paymentStatusDataset : datasets[key];
     const rows = [['Показатель', 'Значение', 'Доля']].concat(config.data.map(function (item) {
       return [item.label, item.value, item.percent];
     }));

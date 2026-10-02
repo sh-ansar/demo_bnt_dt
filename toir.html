@@ -1,2 +1,449 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BNT — ТОиР</title><link rel="stylesheet" href="/assets/css/tokens.css"><link rel="stylesheet" href="/assets/css/layout.css"><link rel="stylesheet" href="/assets/css/components.css"><link rel="stylesheet" href="/assets/css/pages/enterprise.css"><link rel="stylesheet" href="/assets/css/shell-v91.css?v=9122"></head><body data-page="toir"><main id="page-content" class="page-content"><div class="page-actions"><div><h2>Работы и формы ТОиР</h2><p>Единый рабочий контур заявок, нарядов, ЗИП и качества ремонта</p></div><button class="btn btn-primary" data-form="work-order">+ Наряд-заказ</button></div><div class="toir-actions" id="toir-actions"></div><section class="kpi-grid"><article class="card kpi"><span class="label">Открытые наряды</span><strong id="open-orders">8</strong><small>3 с высоким приоритетом</small></article><article class="card kpi"><span class="label">В работе</span><strong>5</strong><small>2 бригады на площадке</small></article><article class="card kpi"><span class="label">Плановая дисциплина</span><strong>94%</strong><small class="delta-up">+3 п.п.</small></article><article class="card kpi"><span class="label">Средняя оценка</span><strong>4,7</strong><small>по 28 закрытым работам</small></article></section><section class="card"><div class="card-head"><div><h3>Наряд-заказы</h3><small>Ближайшие работы и ответственные</small></div><button id="filter-history" class="btn">Фильтр истории</button></div><div class="table-wrap"><table class="data-table"><thead><tr><th>Наряд</th><th>Актив</th><th>Работа</th><th>Дата</th><th>Статус</th><th>Исполнитель</th><th>ЗИП</th></tr></thead><tbody id="work-order-rows"></tbody></table></div></section></main><script src="/assets/js/navigation.js"></script><script src="/assets/js/ui.js"></script><script src="/assets/js/data/assets.js"></script><script src="/assets/js/pages/toir.js"></script><script src="/assets/js/shell.js?v=9120"></script></body></html>
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BNT — ТОиР</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css?v=222">
+  <link rel="stylesheet" href="/assets/css/pages/enterprise.css?v=39">
+  <link rel="stylesheet" href="/assets/css/pages/analytics-v91.css?v=9160">
+  <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9128">
+</head>
+<body data-page="toir">
+<main id="page-content" class="page-content analytics-page">
+  <section class="analytics-evidence" aria-label="Показатели фактической базы">
+    <div id="analytics-evidence" class="analytics-evidence-grid"></div>
+  </section>
 
+  <section class="repair-quality-report" data-toir-quality-report aria-labelledby="toir-quality-report-title">
+    <header class="chart-card__header">
+      <div class="title-table-legend__heading">
+        <div class="chart-card__title-row">
+          <h4 id="toir-quality-report-title" class="title-table-legend typography-h4">Отчет по качеству ремонта</h4>
+        </div>
+        <div class="chart-card__filters">
+          <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest">
+            <span class="filter-summary__count-title">с 01.01 по 31.05.2026</span>
+            <button class="filter-summary__count-chevron" type="button" data-toir-quality-period-clear aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button>
+          </span>
+        </div>
+      </div>
+      <div class="chart-actions">
+        <button class="button-small button-small--secondary typography-button-small" type="button" data-toir-quality-filter-toggle aria-expanded="false" aria-controls="toir-quality-filter-modal">
+          <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg>
+          <span>Фильтр</span>
+        </button>
+      </div>
+    </header>
+    <div class="chart-legend chart-legend--wrap typography-body-smallest repair-quality-report__legend" data-toir-quality-legend aria-label="Легенда отчета по качеству ремонта"></div>
+    <section class="card table-block repair-quality-report__table-block">
+      <div class="table-wrap" data-toir-quality-grid></div>
+    </section>
+  </section>
+
+  <section class="content-block" aria-label="ТОиР">
+    <div class="div-block" aria-labelledby="toir-forms-title">
+      <header class="page-title-actions equipment-page-actions">
+        <div class="page-title-actions__heading">
+          <div class="page-title-actions__title-row">
+            <h2 id="toir-forms-title" class="typography-h4">Работы и формы ТОиР</h2>
+            <button class="sign_BTN_smallest info-icon-button" type="button" data-toir-info aria-expanded="false" aria-label="Информация о работах и формах ТОиР">
+              <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
+            </button>
+          </div>
+        </div>
+        <div class="page-title-actions__buttons">
+          <button class="button-small button-small--primary typography-button-small" type="button" data-form="work-order">
+            <svg width="24" height="24" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 4.375V15.625M15.625 10H4.375" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
+            <span>Наряд-заказ</span>
+          </button>
+          <span class="dt3-search-scope ui-dropdown toir-form-menu" data-toir-form-menu>
+            <button class="dt3-search-scope-trigger ui-dropdown__trigger button-small button-small--secondary typography-button-small" type="button" data-toir-form-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-controls="toir-form-menu">
+              <span>Действия</span>
+              <span class="dt3-search-scope-chevron ui-dropdown__chevron nav-chevron" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M8 10L12 14L16 10" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>
+              </span>
+            </button>
+            <div id="toir-form-menu" class="dt3-search-scope-menu ui-dropdown__menu" role="menu" aria-label="Действия ТОиР" hidden></div>
+          </span>
+        </div>
+      </header>
+      <section id="toir-kpis" class="kpi-grid toir-kpi-grid" aria-label="Показатели ТОиР"></section>
+    </div>
+
+    <section id="toir-orders" class="div-block" aria-label="Работы и ответственность">
+      <header class="page-title-actions">
+        <div class="page-title-actions__heading analytics-block-heading">
+          <span class="typography-indicator-small">РАБОТЫ И ОТВЕТСТВЕННОСТЬ</span>
+          <div class="analytics-block-title-row">
+            <h3 class="typography-caption-small">Наряд-заказы</h3>
+          </div>
+        </div>
+        <div class="page-title-actions__buttons">
+          <button id="toir-filter-toggle" class="button-small button-small--secondary typography-button-small" type="button" data-toir-filter-toggle aria-expanded="false" aria-controls="toir-filter-modal">
+            <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg>
+            <span>Фильтр</span>
+          </button>
+        </div>
+      </header>
+      <section class="card table-block">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Наряд</th>
+                <th>Актив</th>
+                <th>Работа</th>
+                <th>Дата</th>
+                <th>Статус</th>
+                <th>Исполнитель</th>
+                <th>ЗИП</th>
+              </tr>
+            </thead>
+            <tbody id="work-order-rows"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  </section>
+</main>
+
+<div id="toir-quality-filter-modal" class="filter-modal" role="dialog" aria-modal="true" aria-labelledby="toir-quality-filter-title" hidden>
+  <div class="filter-modal__overlay" data-toir-quality-filter-close></div>
+  <section class="filter-modal__drawer dt3-drawer_static" aria-label="Фильтр: Отчет по качеству ремонта">
+    <header class="filter-modal__head">
+      <h2 id="toir-quality-filter-title" class="filter-modal__title typography-caption-small">Фильтр: Отчет по качеству ремонта</h2>
+      <button class="dt3-drawer-toggle button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest is-expanded" type="button" data-toir-quality-filter-close aria-label="Закрыть фильтр">
+        <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+      </button>
+    </header>
+    <span class="ui-divider brand-divider" aria-hidden="true"></span>
+    <div class="filter-modal__body">
+      <form class="filter-modal__search dt3-multisearch shell-search" role="search" aria-label="Поиск по фильтру отчета по качеству ремонта" data-toir-quality-static-search-form>
+        <div class="dt3-multisearch-field dt3-multisearch-field--icon shell-search-field">
+          <span class="dt3-multisearch-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20"><use href="/assets/icons/bnt-sprite.svg?v=3#search"></use></svg>
+          </span>
+          <input class="typography-body-smallest" type="search" placeholder="Поиск" data-toir-quality-static-search autocomplete="off">
+          <button class="dt3-search-submit" type="submit" aria-label="Найти">
+            <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><use href="/assets/icons/bnt-sprite.svg?v=3#search"></use></svg>
+          </button>
+        </div>
+      </form>
+      <div class="filter-modal__fields ui-scrollbar">
+        <div class="form-input" data-form-input="egpzDepartments" data-toir-quality-departments-filter>
+          <span class="form-input__label typography-label-smallest">Подразделения</span>
+          <div class="form-input__field">
+            <div class="form-input__control" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false" aria-label="Подразделения: Все">
+              <span class="form-input__value form-input__tags" data-form-input-value><span class="form-input__all typography-body-smallest">Все</span></span>
+              <span class="form-input__chevron nav-chevron" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 10L12 14L16 10" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>
+              </span>
+            </div>
+            <div class="form-input__menu" role="listbox" aria-label="Подразделения" aria-multiselectable="true" hidden>
+              <span class="form-input__divider" aria-hidden="true"></span>
+              <label class="form-input__search"><span aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><use href="/assets/icons/bnt-sprite.svg?v=3#search"></use></svg></span><input class="typography-body-smallest" type="search" placeholder="Поиск" data-form-input-search autocomplete="off"><button class="form-input__search-clear" type="button" data-form-input-search-clear aria-label="Очистить поиск" hidden><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></label>
+              <div class="form-input__options ui-scrollbar" data-form-input-options>
+                <button class="form-input__option typography-body-smallest is-selected" type="button" role="option" aria-selected="true" data-form-input-option="Все">
+                  <span class="form-input__checkbox" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.2L9.2 16.4L19 6.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></span>
+                  <span class="form-input__option-label">Все</span>
+                </button>
+                <button class="form-input__option typography-body-smallest" type="button" role="option" aria-selected="false" data-form-input-option="Отдел безопасности">
+                  <span class="form-input__checkbox" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.2L9.2 16.4L19 6.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></span>
+                  <span class="form-input__option-label">Отдел безопасности</span>
+                </button>
+                <button class="form-input__option typography-body-smallest" type="button" role="option" aria-selected="false" data-form-input-option="Планово-экономический отдел">
+                  <span class="form-input__checkbox" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.2L9.2 16.4L19 6.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></span>
+                  <span class="form-input__option-label">Планово-экономический отдел</span>
+                </button>
+                <button class="form-input__option typography-body-smallest" type="button" role="option" aria-selected="false" data-form-input-option="Отдел коммерции и логистики">
+                  <span class="form-input__checkbox" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.2L9.2 16.4L19 6.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></span>
+                  <span class="form-input__option-label">Отдел коммерции и логистики</span>
+                </button>
+                <button class="form-input__option typography-body-smallest" type="button" role="option" aria-selected="false" data-form-input-option="Административный отдел">
+                  <span class="form-input__checkbox" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.2L9.2 16.4L19 6.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></span>
+                  <span class="form-input__option-label">Административный отдел</span>
+                </button>
+                <button class="form-input__option typography-body-smallest" type="button" role="option" aria-selected="false" data-form-input-option="Отдел качества и контроля нефтепродуктов">
+                  <span class="form-input__checkbox" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.2L9.2 16.4L19 6.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></span>
+                  <span class="form-input__option-label">Отдел качества и контроля нефтепродуктов</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="equipment-date-grid">
+          <div class="equipment-date-field" data-toir-quality-date-root="from" data-toir-quality-date-default="2026-01-01">
+            <span class="typography-label-smallest">Дата от</span>
+            <span class="equipment-date-input">
+              <button class="equipment-date-display typography-body-smallest" type="button" data-toir-quality-date-toggle aria-haspopup="dialog" aria-expanded="false">
+                <span data-toir-quality-date-text>01.01.2026</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17.75 19.5H6.25V21H17.75V19.5ZM6.25 19.5C5.28371 19.5 4.5 18.7163 4.5 17.75H3C3 19.5447 4.45529 21 6.25 21V19.5ZM4.5 17.75V6.25H3V17.75H4.5ZM4.5 6.25C4.5 5.28371 5.28371 4.5 6.25 4.5V3C4.45529 3 3 4.45529 3 6.25H4.5ZM6.25 4.5H17.75V3H6.25V4.5ZM17.75 4.5C18.7163 4.5 19.5 5.28371 19.5 6.25H21C21 4.45529 19.5447 3 17.75 3V4.5ZM19.5 6.25V17.75H21V6.25H19.5ZM19.5 17.75C19.5 18.7163 18.7163 19.5 17.75 19.5V21C19.5447 21 21 19.5447 21 17.75H19.5ZM3.75 8.5H20.25V7H3.75V8.5ZM13.75 13.5H15.75V12H13.75V13.5ZM15.75 13.5C15.8883 13.5 16 13.6117 16 13.75H17.5C17.5 12.7833 16.7167 12 15.75 12V13.5ZM16 13.75V15.75H17.5V13.75H16ZM16 15.75C16 15.8883 15.8883 16 15.75 16V17.5C16.7167 17.5 17.5 16.7167 17.5 15.75H16ZM15.75 16H13.75V17.5H15.75V16ZM13.75 16C13.6117 16 13.5 15.8883 13.5 15.75H12C12 16.7167 12.7833 17.5 13.75 17.5V16ZM13.5 15.75V13.75H12V15.75H13.5ZM13.5 13.75C13.5 13.6117 13.6117 13.5 13.75 13.5V12C12.7833 12 12 12.7833 12 13.75H13.5Z" fill="currentColor"/></svg>
+              </button>
+              <input type="hidden" data-toir-quality-date="from">
+              <span class="equipment-date-popover" data-toir-quality-date-popover hidden></span>
+            </span>
+          </div>
+          <div class="equipment-date-field" data-toir-quality-date-root="to" data-toir-quality-date-default="2026-09-29">
+            <span class="typography-label-smallest">Дата до</span>
+            <span class="equipment-date-input">
+              <button class="equipment-date-display typography-body-smallest" type="button" data-toir-quality-date-toggle aria-haspopup="dialog" aria-expanded="false">
+                <span data-toir-quality-date-text>29.09.2026</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17.75 19.5H6.25V21H17.75V19.5ZM6.25 19.5C5.28371 19.5 4.5 18.7163 4.5 17.75H3C3 19.5447 4.45529 21 6.25 21V19.5ZM4.5 17.75V6.25H3V17.75H4.5ZM4.5 6.25C4.5 5.28371 5.28371 4.5 6.25 4.5V3C4.45529 3 3 4.45529 3 6.25H4.5ZM6.25 4.5H17.75V3H6.25V4.5ZM17.75 4.5C18.7163 4.5 19.5 5.28371 19.5 6.25H21C21 4.45529 19.5447 3 17.75 3V4.5ZM19.5 6.25V17.75H21V6.25H19.5ZM19.5 17.75C19.5 18.7163 18.7163 19.5 17.75 19.5V21C19.5447 21 21 19.5447 21 17.75H19.5ZM3.75 8.5H20.25V7H3.75V8.5ZM13.75 13.5H15.75V12H13.75V13.5ZM15.75 13.5C15.8883 13.5 16 13.6117 16 13.75H17.5C17.5 12.7833 16.7167 12 15.75 12V13.5ZM16 13.75V15.75H17.5V13.75H16ZM16 15.75C16 15.8883 15.8883 16 15.75 16V17.5C16.7167 17.5 17.5 16.7167 17.5 15.75H16ZM15.75 16H13.75V17.5H15.75V16ZM13.75 16C13.6117 16 13.5 15.8883 13.5 15.75H12C12 16.7167 12.7833 17.5 13.75 17.5V16ZM13.5 15.75V13.75H12V15.75H13.5ZM13.5 13.75C13.5 13.6117 13.6117 13.5 13.75 13.5V12C12.7833 12 12 12.7833 12 13.75H13.5Z" fill="currentColor"/></svg>
+              </button>
+              <input type="hidden" data-toir-quality-date="to">
+              <span class="equipment-date-popover" data-toir-quality-date-popover hidden></span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <span class="ui-divider brand-divider" aria-hidden="true"></span>
+    <footer class="filter-modal__footer">
+      <button class="button-smallest-primary-radius typography-button-smallest" type="button" data-toir-quality-filter-apply>
+        <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><use href="/assets/icons/bnt-sprite.svg?v=3#search"></use></svg>
+        <span>Поиск</span>
+      </button>
+      <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-toir-quality-filter-reset>
+        <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+        <span>Сбросить всё</span>
+      </button>
+    </footer>
+  </section>
+</div>
+
+<div id="quality-detail-drawer" class="filter-modal quality-detail-drawer" role="dialog" aria-modal="true" aria-labelledby="quality-detail-title" hidden>
+  <div class="filter-modal__overlay" data-quality-detail-close></div>
+  <section class="filter-modal__drawer dt3-drawer" aria-label="Детали отчета по качеству ремонта">
+    <header class="filter-modal__head">
+      <h2 id="quality-detail-title" class="filter-modal__title typography-caption-small" data-quality-detail-title>Детали ремонта</h2>
+      <button class="dt3-drawer-toggle button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest is-expanded" type="button" data-quality-detail-close aria-label="Закрыть детали ремонта">
+        <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+      </button>
+    </header>
+    <span class="ui-divider brand-divider" aria-hidden="true"></span>
+    <div class="filter-modal__body filter-modal__body--form">
+      <div class="quality-detail-drawer__fields ui-scrollbar">
+          <article class="quality-detail-drawer-card quality-detail-drawer-card--hover-light">
+            <header class="quality-detail-drawer-card__heading">
+              <div class="profile profile-drawer">
+                <span class="avatar" aria-hidden="true"><img src="/assets/avatar-meskhi-levan.png" alt=""></span>
+                <div class="profile-drawer__content">
+                  <span class="profile-drawer__role typography-body-smallest">Ответственный</span>
+                  <strong class="profile-drawer__name typography-label-smallest">Месхи Леван</strong>
+                </div>
+              </div>
+              <div class="quality-detail-drawer-card__actions" aria-label="Действия по ответственному">
+                <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" aria-label="Написать ответственному">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M7.75 10.25H16.25M7.75 13.75H14.25M12 2.75C6.8915 2.75 2.75 6.8915 2.75 12C2.75 13.633 3.177 15.165 3.92 16.497L2.7695 20.616C2.6645 20.991 3.01 21.337 3.3855 21.232L7.5065 20.082C8.8375 20.8235 10.3685 21.25 12 21.25C17.1085 21.25 21.25 17.1085 21.25 12C21.25 6.8915 17.1085 2.75 12 2.75Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" aria-label="Ещё действия">
+                  <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=11#More"></use></svg>
+                </button>
+              </div>
+            </header>
+          </article>
+          <details class="quality-detail-drawer-card quality-detail-drawer-card--accordion quality-detail-drawer-card--hover-light" open>
+            <summary class="quality-detail-drawer-card__summary">
+              <span class="badge red drawer">+5%</span>
+              <span class="quality-detail-drawer-card__summary-copy">
+                <span class="quality-detail-drawer-card__title typography-body-smallest">Всего затрат</span>
+                <strong class="quality-detail-drawer-card__value typography-label-smallest">$ 9 750</strong>
+              </span>
+              <span class="quality-detail-drawer-card__chevron nav-chevron" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 10L12 14L16 10" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>
+              </span>
+            </summary>
+            <div class="quality-detail-drawer-card__body">
+              <table class="quality-detail-drawer-card__table">
+                <tbody>
+                  <tr>
+                    <td class="typography-body-smallest">Персонал</td>
+                    <td class="data-table__numeric-cell typography-label-smallest">$3 200</td>
+                  </tr>
+                  <tr>
+                    <td class="typography-body-smallest">Активы</td>
+                    <td class="data-table__numeric-cell typography-label-smallest">$4 100</td>
+                  </tr>
+                  <tr>
+                    <td class="typography-body-smallest">Прочие расходы</td>
+                    <td class="data-table__numeric-cell typography-label-smallest">$2 450</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+          <details class="quality-detail-drawer-card quality-detail-drawer-card--accordion quality-detail-drawer-card--hover-light">
+            <summary class="quality-detail-drawer-card__summary">
+              <span class="badge green drawer">+7%</span>
+              <span class="quality-detail-drawer-card__summary-copy">
+                <span class="quality-detail-drawer-card__title typography-body-smallest">Ср. время до ремонта</span>
+                <strong class="quality-detail-drawer-card__value typography-label-smallest">160 часов</strong>
+              </span>
+              <span class="quality-detail-drawer-card__chevron nav-chevron" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 10L12 14L16 10" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>
+              </span>
+            </summary>
+            <div class="quality-detail-drawer-card__body">
+              <div class="payment-deviation-chart quality-detail-drawer-card__chart">
+                <div class="chart-legend chart-legend--wrap typography-body-smallest repair-quality-report__legend quality-detail-drawer-card__chart-legend" aria-label="Легенда графика"><span><i class="chart-legend__dot payment-deviation__dot--fact" aria-hidden="true"></i>часы</span></div>
+                <div class="payment-deviation-chart__axis" aria-hidden="true"><span>0</span><span>50</span><span>100</span><span>150</span><span>200</span><span>250</span></div>
+                <div class="payment-deviation-chart__body">
+                  <div class="payment-deviation-chart__grid" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+                  <div class="payment-deviation-chart__rows">
+                    <div class="payment-deviation-chart__row" role="img" aria-label="1 цикл: 150 часов">
+                      <span class="payment-deviation-chart__label" title="1 цикл">1 цикл</span>
+                      <span class="payment-deviation-chart__tracks" aria-hidden="true">
+                        <span class="payment-deviation-chart__track" style="--payment-deviation-value:60%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--fact"></i><strong class="payment-deviation-chart__value">150</strong></span>
+                      </span>
+                    </div>
+                    <div class="payment-deviation-chart__row" role="img" aria-label="2 цикл: 175 часов">
+                      <span class="payment-deviation-chart__label" title="2 цикл">2 цикл</span>
+                      <span class="payment-deviation-chart__tracks" aria-hidden="true">
+                        <span class="payment-deviation-chart__track" style="--payment-deviation-value:70%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--fact"></i><strong class="payment-deviation-chart__value">175</strong></span>
+                      </span>
+                    </div>
+                    <div class="payment-deviation-chart__row" role="img" aria-label="3 цикл: 140 часов">
+                      <span class="payment-deviation-chart__label" title="3 цикл">3 цикл</span>
+                      <span class="payment-deviation-chart__tracks" aria-hidden="true">
+                        <span class="payment-deviation-chart__track" style="--payment-deviation-value:56%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--fact"></i><strong class="payment-deviation-chart__value">140</strong></span>
+                      </span>
+                    </div>
+                    <div class="payment-deviation-chart__row" role="img" aria-label="4 цикл: 190 часов">
+                      <span class="payment-deviation-chart__label" title="4 цикл">4 цикл</span>
+                      <span class="payment-deviation-chart__tracks" aria-hidden="true">
+                        <span class="payment-deviation-chart__track" style="--payment-deviation-value:76%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--fact"></i><strong class="payment-deviation-chart__value">190</strong></span>
+                      </span>
+                    </div>
+                    <div class="payment-deviation-chart__row" role="img" aria-label="5 цикл: 165 часов">
+                      <span class="payment-deviation-chart__label" title="5 цикл">5 цикл</span>
+                      <span class="payment-deviation-chart__tracks" aria-hidden="true">
+                        <span class="payment-deviation-chart__track" style="--payment-deviation-value:66%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--fact"></i><strong class="payment-deviation-chart__value">165</strong></span>
+                      </span>
+                    </div>
+                    <div class="payment-deviation-chart__row" role="img" aria-label="6 цикл: 135 часов">
+                      <span class="payment-deviation-chart__label" title="6 цикл">6 цикл</span>
+                      <span class="payment-deviation-chart__tracks" aria-hidden="true">
+                        <span class="payment-deviation-chart__track" style="--payment-deviation-value:54%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--fact"></i><strong class="payment-deviation-chart__value">135</strong></span>
+                      </span>
+                    </div>
+                    <div class="payment-deviation-chart__row" role="img" aria-label="7 цикл: 165 часов">
+                      <span class="payment-deviation-chart__label" title="7 цикл">7 цикл</span>
+                      <span class="payment-deviation-chart__tracks" aria-hidden="true">
+                        <span class="payment-deviation-chart__track" style="--payment-deviation-value:66%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--fact"></i><strong class="payment-deviation-chart__value">165</strong></span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </details>
+          <article class="quality-detail-drawer-card quality-detail-drawer-card--accordion quality-detail-drawer-card--hover-light">
+            <header class="quality-detail-drawer-card__summary-copy">
+              <strong class="quality-detail-drawer-card__value typography-label-smallest">Дата и продолжительность активностей (ч)</strong>
+              <span class="quality-detail-drawer-card__title typography-body-smallest" data-quality-detail-activity-equipment>Оборудование</span>
+            </header>
+            <div class="quality-detail-drawer-card__body">
+              <div class="payment-deviation-chart quality-detail-drawer-card__chart quality-detail-drawer-card__chart--activities">
+                <div class="payment-deviation-chart__axis" aria-hidden="true"><span>0</span><span>2</span><span>4</span><span>6</span><span>8</span></div>
+                <div class="payment-deviation-chart__body">
+                  <div class="payment-deviation-chart__grid" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+                  <div class="payment-deviation-chart__rows" data-quality-detail-activity-rows></div>
+                </div>
+              </div>
+            </div>
+          </article>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="toir-filter-modal" class="filter-modal" role="dialog" aria-modal="true" aria-labelledby="toir-filter-title" hidden>
+  <div class="filter-modal__overlay" data-toir-filter-close></div>
+  <section class="filter-modal__drawer dt3-drawer" aria-label="Фильтр по работам ТОиР">
+    <header class="filter-modal__head">
+      <h2 id="toir-filter-title" class="filter-modal__title typography-caption-small">Фильтр</h2>
+      <button class="dt3-drawer-toggle button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest is-expanded" type="button" data-toir-filter-close aria-label="Закрыть фильтр">
+        <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+      </button>
+    </header>
+    <span class="ui-divider brand-divider" aria-hidden="true"></span>
+    <div class="filter-modal__body">
+      <form class="filter-modal__search dt3-multisearch shell-search" role="search" data-toir-filter-search-form>
+        <div class="dt3-multisearch-field shell-search-field">
+          <span class="dt3-search-scope ui-dropdown" data-toir-search-scope>
+            <button class="dt3-search-scope-trigger ui-dropdown__trigger typography-caption-smallest" type="button" data-toir-search-scope-trigger data-value="all" aria-haspopup="listbox" aria-expanded="false" aria-controls="toir-search-scope-list">
+              <span data-toir-search-scope-label>Всё</span>
+              <span class="dt3-search-scope-chevron ui-dropdown__chevron nav-chevron" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 10L12 14L16 10" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>
+              </span>
+            </button>
+            <div id="toir-search-scope-list" class="dt3-search-scope-menu ui-dropdown__menu" role="listbox" aria-label="Область поиска" hidden>
+              <button class="dt3-search-scope-option ui-dropdown__option is-selected typography-caption-smallest" type="button" role="option" aria-selected="true" data-toir-search-scope-option="all">Всё</button>
+              <button class="dt3-search-scope-option ui-dropdown__option typography-body-smallest" type="button" role="option" aria-selected="false" data-toir-search-scope-option="order">Наряд</button>
+              <button class="dt3-search-scope-option ui-dropdown__option typography-body-smallest" type="button" role="option" aria-selected="false" data-toir-search-scope-option="asset">Актив</button>
+              <button class="dt3-search-scope-option ui-dropdown__option typography-body-smallest" type="button" role="option" aria-selected="false" data-toir-search-scope-option="work">Работа</button>
+              <button class="dt3-search-scope-option ui-dropdown__option typography-body-smallest" type="button" role="option" aria-selected="false" data-toir-search-scope-option="owner">Исполнитель</button>
+              <button class="dt3-search-scope-option ui-dropdown__option typography-body-smallest" type="button" role="option" aria-selected="false" data-toir-search-scope-option="spares">ЗИП</button>
+            </div>
+          </span>
+          <input class="typography-body-smallest" type="search" placeholder="Поиск" data-toir-filter-search autocomplete="off">
+          <button class="dt3-search-submit" type="submit" aria-label="Найти">
+            <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><use href="/assets/icons/bnt-sprite.svg?v=3#search"></use></svg>
+          </button>
+        </div>
+      </form>
+      <div class="filter-modal__fields ui-scrollbar" data-toir-filter-fields></div>
+    </div>
+    <span class="ui-divider brand-divider" aria-hidden="true"></span>
+    <footer class="filter-modal__footer">
+      <button class="button-smallest-primary-radius typography-button-smallest" type="button" data-toir-filter-apply>
+        <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><use href="/assets/icons/bnt-sprite.svg?v=3#search"></use></svg>
+        <span>Поиск</span>
+      </button>
+      <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-toir-filter-reset>
+        <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+        <span>Сбросить всё</span>
+      </button>
+    </footer>
+  </section>
+</div>
+
+<div id="toir-form-drawer" class="filter-modal" role="dialog" aria-modal="true" aria-labelledby="toir-form-drawer-title" hidden>
+  <div class="filter-modal__overlay" data-toir-form-close></div>
+  <form class="filter-modal__drawer dt3-drawer" aria-label="Форма ТОиР" data-toir-form-drawer-form>
+    <header class="filter-modal__head">
+      <h2 id="toir-form-drawer-title" class="filter-modal__title typography-caption-small" data-toir-form-title>Форма ТОиР</h2>
+      <button class="dt3-drawer-toggle button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest is-expanded" type="button" data-toir-form-close aria-label="Закрыть форму">
+        <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+      </button>
+    </header>
+    <span class="ui-divider brand-divider" aria-hidden="true"></span>
+    <div class="filter-modal__body filter-modal__body--form">
+      <div class="filter-modal__fields ui-scrollbar" data-toir-form-fields></div>
+    </div>
+    <span class="ui-divider brand-divider" aria-hidden="true"></span>
+    <footer class="filter-modal__footer">
+      <button class="button-smallest-primary-radius typography-button-smallest" type="submit" data-toir-form-submit>
+        <span>Сохранить</span>
+      </button>
+      <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-toir-form-close>
+        <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+        <span>Отмена</span>
+      </button>
+    </footer>
+  </form>
+</div>
+
+<script src="/assets/js/navigation.js"></script>
+<script src="/assets/js/ui.js?v=14"></script>
+<script src="/assets/js/data/assets.js"></script>
+<script src="/assets/js/data/scenarios.js?v=6"></script>
+<script src="/assets/js/pages/toir.js?v=33"></script>
+<script src="/assets/js/shell.js?v=9121"></script>
+</body>
+</html>

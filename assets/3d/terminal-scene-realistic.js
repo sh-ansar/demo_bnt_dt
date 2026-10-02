@@ -127,8 +127,15 @@ fixed.updateMatrixWorld(true);const batches=new Map(),remove=[];fixed.traverse(o
 const records=new Map(), pickables=[],zoneMeshes=[],equipmentRoot=new T.Group();scene.add(equipmentRoot);
 let catalog, currentId='terminal', selectionBox=null,down=null,animating=!matchMedia('(prefers-reduced-motion: reduce)').matches,isLight=true,clock=0,last=0,cameraGoal=null,frameId;
 const ray=new T.Raycaster(),pointer=new T.Vector2();
-const highlightMaterial=new T.MeshBasicMaterial({color:'#13bfd9',transparent:true,opacity:.13,depthWrite:false});
+const highlightMaterial=new T.MeshBasicMaterial({color:'#2bb8ff',transparent:true,opacity:.24,depthWrite:false});
 const selectionGroup=new T.Group();scene.add(selectionGroup);
+const selectionStrokeToken='--system-elements-semantic-highlight-stroke-solid';
+const selectionFillToken='--system-elements-semantic-highlight-fill';
+function cssToken(name,fallback){if(typeof getComputedStyle!=='function')return fallback;const root=document?.documentElement||document?.body||container;return getComputedStyle(root).getPropertyValue(name).trim()||fallback;}
+function parseCssColor(value,fallback='rgba(68, 112, 134, .08)'){const source=(value||fallback).trim(),rgb=/^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)(?:\s*,\s*([\d.]+))?\s*\)$/i.exec(source);if(rgb)return {color:`rgb(${rgb[1]}, ${rgb[2]}, ${rgb[3]})`,opacity:rgb[4]===undefined?1:Number(rgb[4])};return {color:source,opacity:1};}
+function applySelectionFillMaterial(material){const fill=parseCssColor(cssToken(selectionFillToken,'rgba(43, 184, 255, .24)'));material.color.setStyle(fill.color);material.opacity=Number.isFinite(fill.opacity)?fill.opacity:1;material.transparent=material.opacity<1;material.needsUpdate=true;}
+function applySelectionStrokeMaterial(material){const stroke=parseCssColor(cssToken(selectionStrokeToken));material.color.setStyle(stroke.color);material.opacity=Number.isFinite(stroke.opacity)?stroke.opacity:1;material.transparent=material.opacity<1;material.needsUpdate=true;}
+function applySelectionTheme(){selectionGroup.traverse(o=>{if(o.userData.selectionStroke&&o.material)applySelectionStrokeMaterial(o.material);if(o.userData.selectionFill&&o.material)applySelectionFillMaterial(o.material);});}
 function go(pos,target){cameraGoal={pos:pos.clone(),target:target.clone()};}
 controls.addEventListener('start',()=>cameraGoal=null);
 function tagged(group,id){group.traverse(o=>{if(o.isMesh){o.userData.entityId=id;pickables.push(o);}});}
@@ -193,9 +200,9 @@ function selectEntity(id,focus=true){
  const record=records.get(id);
  if(record){
   const bounds=record.bounds?.clone()||new T.Box3().setFromObject(record.group);bounds.expandByScalar(.45);
-  const helper=new T.Box3Helper(bounds,new T.Color('#008fca'));helper.material.depthTest=false;helper.material.transparent=true;helper.material.opacity=.9;helper.renderOrder=10;selectionGroup.add(helper);
+  const helper=new T.Box3Helper(bounds,new T.Color('#008fca'));helper.userData.selectionStroke=true;helper.material.depthTest=false;applySelectionStrokeMaterial(helper.material);helper.renderOrder=10;selectionGroup.add(helper);
   const size=bounds.getSize(new T.Vector3()),center=bounds.getCenter(new T.Vector3());
-  const fill=new T.Mesh(new T.BoxGeometry(size.x,size.y,size.z),highlightMaterial.clone());fill.position.copy(center);selectionGroup.add(fill);
+  const fillMaterial=highlightMaterial.clone();applySelectionFillMaterial(fillMaterial);const fill=new T.Mesh(new T.BoxGeometry(size.x,size.y,size.z),fillMaterial);fill.userData.selectionFill=true;fill.position.copy(center);selectionGroup.add(fill);
   if(focus){const span=Math.max(size.x,size.z,1.5),distance=Math.max(4.5,span*(node.type==='zone'?1.25:1.7));go(center.clone().add(new T.Vector3(distance*.25,distance,distance*1.2)),center);}
  }else if(focus)go(openingCamera,openingTarget);
  container.dataset.selectedId=id;
@@ -207,7 +214,7 @@ renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();c
 function resize(){const w=container.clientWidth,h=container.clientHeight;if(!w||!h)return;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h);}
 const observer=new ResizeObserver(resize);observer.observe(container);
 function zoom(f){const p=camera.position.clone().sub(controls.target);p.setLength(T.MathUtils.clamp(p.length()*f,controls.minDistance,controls.maxDistance));go(p.add(controls.target),controls.target);}
-function setTheme(mode){isLight=mode!=='dark';const key=isLight?'light':'dark';scene.background.set(terminalSceneTheme.sky[key]);scene.fog.color.set(terminalSceneTheme.fog[key]);ground.color.set(terminalSceneTheme.ground[key]);asphalt.color.set(terminalSceneTheme.asphalt[key]);water.color.set(terminalSceneTheme.water[key]);return isLight;}
+function setTheme(mode){isLight=mode!=='dark';const key=isLight?'light':'dark';scene.background.set(terminalSceneTheme.sky[key]);scene.fog.color.set(terminalSceneTheme.fog[key]);ground.color.set(terminalSceneTheme.ground[key]);asphalt.color.set(terminalSceneTheme.asphalt[key]);water.color.set(terminalSceneTheme.water[key]);applySelectionTheme();return isLight;}
 function theme(){return setTheme(isLight?'dark':'light');}
 function frame(now){frameId=requestAnimationFrame(frame);if(document.hidden){last=now;return;}const dt=Math.min((now-last)/1000,.05);last=now;if(animating)clock+=dt;if(cameraGoal){const a=1-Math.exp(-dt*5);camera.position.lerp(cameraGoal.pos,a);controls.target.lerp(cameraGoal.target,a);if(camera.position.distanceTo(cameraGoal.pos)<.05)cameraGoal=null;}if(water.userData.shader)water.userData.shader.uniforms.waveTime.value=clock;if(animating){trainU+=trainDirection*dt*1.2*U/tracks[12].getLength();const lower=movingWagons.at(-1).offset+.03;if(trainU>.97){trainU=.97;trainDirection=-1;}if(trainU<lower){trainU=lower;trainDirection=1;}}for(const w of movingWagons)onCurve(w.g,tracks[12],(trainU-w.offset+1)%1);for(const v of vehicles){if(animating)v.u=(v.u+dt*2.8*U/v.curve.getLength())%1;onCurve(v.g,v.curve,v.u);}controls.update();renderer.render(scene,camera);}
 frameId=requestAnimationFrame(frame);
