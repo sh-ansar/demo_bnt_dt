@@ -114,9 +114,23 @@ function assertGeometry(chart) {
   const ticks = [...chart.innerHTML.matchAll(/<text class="chart-bars__tick" x="([^"]+)"[^>]*text-anchor="end" data-tick-value="(\d+)"/g)];
   assert.ok(ticks.length > 0);
   assert.equal(Number(ticks[0][1]), 56);
+  assert.equal(Number(ticks.at(-1)[2]), 2000000);
   for (let index = 1; index < ticks.length; index += 1) {
     assert.equal(Number(ticks[index][2]) - Number(ticks[index - 1][2]), 200000);
   }
+  const rows = new Set([...chart.innerHTML.matchAll(/data-row-index="(\d+)"/g)].map(match => match[1]));
+  const horizontalLines = [...chart.innerHTML.matchAll(/<line class="chart-bars__grid-line" x1="([^"]+)" y1="([^"]+)" x2="([^"]+)" y2="([^"]+)"/g)];
+  assert.equal(horizontalLines.length, rows.size + 1);
+  const rowStep = (Number(horizontalLines.at(-1)[2]) - Number(horizontalLines[0][2])) / rows.size;
+  horizontalLines.forEach((line, index) => {
+    assert.equal(line[1], '64');
+    assert.equal(Number(line[3]), width - 18);
+    assert.equal(line[2], line[4]);
+    assert.ok(Math.abs(Number(line[2]) - Number(horizontalLines[0][2]) - rowStep * index) < .001);
+  });
+  const verticalLines = [...chart.innerHTML.matchAll(/<line class="chart-bars__vertical-line" x1="([^"]+)"[^>]*x2="([^"]+)"/g)];
+  assert.equal(verticalLines.length, ticks.length);
+  assert.equal(Number(verticalLines.at(-1)[1]), width - 18);
   assert.ok(rects.length > 0);
   for (const [rect] of rects) {
     const attributes = Object.fromEntries([...rect.matchAll(/([\w-]+)="([^"]*)"/g)].map(match => [match[1], match[2]]));

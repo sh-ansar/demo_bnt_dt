@@ -88,8 +88,9 @@
       const tickOffset = horizontal ? parseFloat(window.getComputedStyle(chart).getPropertyValue('--space-2')) : 0;
       const bottom = height - margin.bottom;
       const largest = Math.max(...visibleRows.map(row => row.values.reduce((sum, value) => sum + value, 0)));
-      const max = Math.max(options.axisMax, largest);
-      const step = options.tickStep || max / 6;
+      const rawMax = Math.max(options.axisMax, largest);
+      const step = options.tickStep || rawMax / 6;
+      const max = options.tickStep ? Math.ceil(rawMax / step) * step : rawMax;
       const order = series.map((_, index) => index);
       if (selectedSeries !== null) order.unshift(...order.splice(order.indexOf(selectedSeries), 1));
       const svg = [];
@@ -101,6 +102,12 @@
         svg.push(horizontal
           ? `<line class="chart-bars__vertical-line" x1="${x}" y1="${margin.top}" x2="${x}" y2="${bottom}"/><text class="chart-bars__tick" x="${x - tickOffset}" y="${axisTop ? margin.top - 16 : bottom + 26}" text-anchor="end" data-tick-value="${value}">${label}</text>`
           : `<line class="chart-bars__grid-line" x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}"/><text class="chart-bars__tick" x="${margin.left - 10}" y="${y + 5}" text-anchor="end">${label}</text>`);
+      }
+      if (horizontal) {
+        for (let boundary = 0; boundary <= visibleRows.length; boundary += 1) {
+          const y = margin.top + plotHeight * boundary / visibleRows.length;
+          svg.push(`<line class="chart-bars__grid-line" x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}"/>`);
+        }
       }
       let offset = 0;
       visibleRows.forEach((row, rowIndex) => {
@@ -124,10 +131,11 @@
           : `<line class="chart-bars__vertical-line" x1="${margin.left + offset}" y1="${margin.top}" x2="${margin.left + offset}" y2="${bottom}"/><text class="chart-bars__category" x="${center}" y="${bottom + 26}" text-anchor="middle">${escape(row.label)}</text>`);
         offset += slot;
       });
-      const axisY = axisTop ? margin.top : bottom;
-      svg.push(`<line class="${horizontal ? 'chart-bars__grid-line' : 'chart-bars__axis-line'}" x1="${margin.left}" y1="${axisY}" x2="${width - margin.right}" y2="${axisY}"/>`);
       if (horizontal) {
         svg.push(`<line class="chart-bars__axis-line" x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${bottom}"/>`);
+      } else {
+        const axisY = axisTop ? margin.top : bottom;
+        svg.push(`<line class="chart-bars__axis-line" x1="${margin.left}" y1="${axisY}" x2="${width - margin.right}" y2="${axisY}"/>`);
       }
       chart.setAttribute('viewBox', `0 0 ${width} ${height}`);
       chart.setAttribute('aria-label', `${title}: ${tabs.find(tab => tab.key === activeTab).label}`);
