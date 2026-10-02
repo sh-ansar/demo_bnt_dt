@@ -7136,6 +7136,12 @@ textarea.form-input__control--text {
   flex: none;
 }
 
+.chart-bars [tabindex],
+.chart-donut [tabindex],
+.financial-chart__viewport svg [tabindex] {
+  outline: 0;
+}
+
 .chart-donut__label,
 .chart-donut__value,
 .chart-donut__text,

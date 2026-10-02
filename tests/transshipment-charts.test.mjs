@@ -76,7 +76,7 @@ const context = vm.createContext({
     getComputedStyle() {
       return {
         lineHeight: `${labelLineHeight}px`,
-        getPropertyValue(name) { return ({ '--chart-bars-bar-size': '16px', '--space-2': '8px', '--space-3': '12px' })[name] || ''; }
+        getPropertyValue(name) { return ({ '--chart-bars-bar-size': '16px', '--space-2': '8px', '--space-3': '12px', '--space-4': '16px' })[name] || ''; }
       };
     }
   }
@@ -104,6 +104,11 @@ assert.equal(controllers.get('transshipment-clients').options.periodLabel, 'с 0
 assert.equal(controllers.get('transshipment-clients').options.tickStep, 200000);
 assert.equal(controllers.get('transshipment-countries').options.tickStep, 200000);
 assert.equal(countryController.getView().length, 24);
+const countryLabels = ['Остальные страны', 'Албания', 'Армения', 'Азербайджан', 'Бельгия', 'Болгария',
+  'Хорватия', 'Грузия', 'Гибралтар', 'Греция', 'Израиль', 'Италия', 'Ливан', 'Мальта', 'Молдова',
+  'Нидерланды', 'Нигерия', 'Румыния', 'Россия', 'Сингапур', 'Турция', 'Великобритания', 'Великобритания и Гибралтар', 'Украина'];
+assert.deepEqual(Array.from(countryController.getView(), row => row.label), countryLabels);
+assert.deepEqual(Array.from(controllers.get('transshipment-countries').options.tabs, tab => tab.label), ['Все', 'По типам', 'По сортам', 'По кодам FPN']);
 assert.equal(controllers.get('transshipment-clients').options.series.length, 6);
 assert.equal(controllers.get('transshipment-clients').options.series.at(-1).label, 'Остальные компании');
 assert.equal(controllers.get('transshipment-countries').options.axisPosition, 'top');
@@ -123,14 +128,20 @@ function assertGeometry({ chart, axis, viewport }) {
   assert.equal(axisDimensions[3], labelLineHeight + 8);
   assert.doesNotMatch(chart.innerHTML, /chart-bars__tick/);
   const rects = [...chart.innerHTML.matchAll(/<rect[^>]+>/g)];
+  const categoryLabels = [...chart.innerHTML.matchAll(/<text class="chart-bars__category" x="([^"]+)"[^>]*>([^<]+)<\/text>/g)];
+  const left = Math.max(64, ...categoryLabels.map(label => label[2].length * 8 + 24));
+  for (const label of categoryLabels) {
+    assert.equal(Number(label[1]), left - 16);
+    assert.ok(Number(label[1]) - label[2].length * 8 >= 0, 'Full category names fit within the SVG');
+  }
   const axes = [...chart.innerHTML.matchAll(/<line class="chart-bars__axis-line" x1="([^"]+)" y1="([^"]+)" x2="([^"]+)" y2="([^"]+)"/g)];
   assert.equal(axes.length, 1);
-  assert.equal(axes[0][1], '64');
-  assert.equal(axes[0][3], '64');
+  assert.equal(Number(axes[0][1]), left);
+  assert.equal(Number(axes[0][3]), left);
   assert.ok(Number(axes[0][4]) > Number(axes[0][2]));
   const ticks = [...axis.innerHTML.matchAll(/<text class="chart-bars__tick" x="([^"]+)"[^>]*text-anchor="(?:start|end)" data-tick-value="(\d+)"/g)];
   assert.ok(ticks.length > 0);
-  assert.equal(Number(ticks[0][1]), 64);
+  assert.equal(Number(ticks[0][1]), left);
   assert.match(ticks[0][0], /text-anchor="start"/);
   assert.match(ticks[1][0], /text-anchor="end"/);
   assert.equal(Number(ticks.at(-1)[2]), 2000000);
@@ -150,7 +161,7 @@ function assertGeometry({ chart, axis, viewport }) {
   const rowStep = (Number(horizontalLines.at(-1)[2]) - Number(horizontalLines[0][2])) / rows.size;
   assert.equal(rowStep, labelLineHeight + 24);
   horizontalLines.forEach((line, index) => {
-    assert.equal(line[1], '64');
+    assert.equal(Number(line[1]), left);
     assert.equal(Number(line[3]), width - 18);
     assert.equal(line[2], line[4]);
     assert.ok(Math.abs(Number(line[2]) - Number(horizontalLines[0][2]) - rowStep * index) < .001);
@@ -180,6 +191,7 @@ for (const key of ['all', 'receipt', 'storage', 'shipment']) {
 for (const [key, count] of [['all', 4], ['type', 4], ['grade', 6], ['fpn', 5]]) {
   countryController.setTab(key);
   assert.equal(countryController.getView().length, 24);
+  assert.deepEqual(Array.from(countryController.getView(), row => row.label), countryLabels);
   assert.ok(countryController.getView().every(row => row.values.length === count));
   assertGeometry(countries);
   assert.equal(countries.legend.querySelectorAll().length, count);
@@ -198,21 +210,23 @@ countries.tabs[0].events.keydown({ key: 'ArrowRight', preventDefault() {} });
 assert.equal(countries.tabs[1].focused, true);
 
 const segment = {
-  dataset: { seriesIndex: '0', rowId: '0', seriesLabel: 'Crude Oil', period: 'A.O.', value: '550000' },
+  dataset: { seriesIndex: '0', rowId: '0', seriesLabel: 'Crude Oil', period: 'Остальные страны', value: '550000' },
   getBoundingClientRect() { return { left: 64, top: 100, width: 100, height: 28 }; }
 };
 const target = { closest(selector) { return selector === '[data-chart-segment]' ? segment : null; } };
 countries.viewport.scrollTop = 480;
 countries.chart.events.pointerover({ target, clientX: 100, clientY: 100 });
 assert.equal(countries.tooltip.hidden, false);
-assert.equal(countries.fields.get('[data-tooltip-period]').textContent, 'A.O.');
+assert.equal(countries.fields.get('[data-tooltip-period]').textContent, 'Остальные страны');
 assert.equal(countries.tooltip.style.top, '592px');
 countries.viewport.events.scroll();
 assert.equal(countries.tooltip.hidden, true);
 countries.card.events.click({ target: { closest(selector) { return selector === '[data-stacked-export]' ? {} : null; } } });
 assert.match(await exportedBlob.text(), /Crude Oil, МТ/);
 assert.match(await exportedBlob.text(), /"Страна"/);
-assert.match(await exportedBlob.text(), /A.O./);
+assert.match(await exportedBlob.text(), /Остальные страны/);
+assert.match(await exportedBlob.text(), /Великобритания и Гибралтар/);
+assert.doesNotMatch(await exportedBlob.text(), /"A\.O\."|"GB GI"/);
 for (const width of [375, 768, 1440, 1920]) {
   countries.viewport.clientWidth = width;
   countryController.setTab('all');

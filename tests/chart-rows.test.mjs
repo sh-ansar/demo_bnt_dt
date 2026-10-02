@@ -39,6 +39,11 @@ for (const file of ['../assets/js/pages/procurement.js', '../assets/js/pages/ana
   assert.doesNotMatch(source, /class="[^"]*chart__(?:rows|body)"\s+style="[^"]*height:/, `${file} has no inline chart height`);
 }
 const components = await readFile(new URL('../assets/css/components.css', import.meta.url), 'utf8');
+for (const selector of ['.chart-bars [tabindex]', '.chart-donut [tabindex]', '.financial-chart__viewport svg [tabindex]']) {
+  const rules = allRules.filter(rule => rule.file === '../assets/css/components.css'
+    && rule.selector.split(',').some(item => item.trim() === selector));
+  assert.ok(rules.some(rule => /outline:\s*0;/.test(rule.body)), `${selector} suppresses native focus outlines even after pointer leave`);
+}
 assert.match(components, /--quality-detail-drawer-card-max-height: 420px;/);
 assert.match(components, /\.chart-card\s*\{[^}]*--chart-card-max-height: \d+px;[^}]*box-sizing: border-box;[^}]*max-height: var\(--chart-card-max-height\);/);
 assert.match(components, /\.chart-viewport__plot\s*\{[^}]*min-height: 0;[^}]*overflow: auto;/);

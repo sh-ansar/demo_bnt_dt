@@ -82,23 +82,30 @@
       const width = horizontal
         ? Math.round(viewport.clientWidth || 1440)
         : Math.max(960, visibleRows.length * 56 + 94, Math.round(viewport.clientWidth || 1440));
-      const margin = { top: horizontal ? 0 : axisTop ? 44 : 16, right: 18, bottom: horizontal ? 0 : axisTop ? 16 : 44, left: horizontal ? 64 : 76 };
+      const margin = { top: horizontal ? 0 : axisTop ? 44 : 16, right: 4, bottom: horizontal ? 0 : axisTop ? 16 : 44, left: horizontal ? 64 : 76 };
       let horizontalBarSize = 0;
       let rowHeight = 0;
       let tickOffset = 0;
       let axisHeight = 0;
       let labelHeight = 0;
       let tickWidth = 0;
+      let categoryGap = 0;
       if (horizontal) {
         const styles = window.getComputedStyle(chart);
         horizontalBarSize = parseFloat(styles.getPropertyValue('--chart-bars-bar-size'));
         const rowPadding = parseFloat(styles.getPropertyValue('--space-3'));
         tickOffset = parseFloat(styles.getPropertyValue('--space-2'));
+        categoryGap = parseFloat(styles.getPropertyValue('--space-4'));
         const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         label.setAttribute('class', 'chart-bars__category');
         label.textContent = visibleRows[0]?.label || '0';
         chart.appendChild(label);
         labelHeight = parseFloat(window.getComputedStyle(label).lineHeight) || label.getBBox().height;
+        const categoryWidth = Math.max(...visibleRows.map(row => {
+          label.textContent = row.label;
+          return label.getComputedTextLength();
+        }));
+        margin.left = Math.max(margin.left, Math.ceil(categoryWidth) + categoryGap + tickOffset);
         label.textContent = numberFormat.format(options.axisMax);
         tickWidth = label.getComputedTextLength();
         label.remove();
@@ -158,7 +165,7 @@
           stack += length;
         });
         svg.push(horizontal
-          ? `<text class="chart-bars__category" x="${margin.left - 16}" y="${center}" dominant-baseline="middle" text-anchor="end">${escape(row.label)}</text>`
+          ? `<text class="chart-bars__category" x="${margin.left - categoryGap}" y="${center}" dominant-baseline="middle" text-anchor="end">${escape(row.label)}</text>`
           : `<line class="chart-bars__vertical-line" x1="${margin.left + offset}" y1="${margin.top}" x2="${margin.left + offset}" y2="${bottom}"/><text class="chart-bars__category" x="${center}" y="${bottom + 26}" text-anchor="middle">${escape(row.label)}</text>`);
         offset += slot;
       });

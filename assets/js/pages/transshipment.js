@@ -34,6 +34,13 @@
   });
 
   const countryCodes = ['A.O.', 'AL', 'AM', 'AZ', 'BE', 'BG', 'HR', 'GE', 'GI', 'GR', 'IL', 'IT', 'LB', 'MT', 'MD', 'NL', 'NG', 'RO', 'RU', 'SG', 'TR', 'GB', 'GB GI', 'UA'];
+  const countryNames = {
+    'A.O.': 'Остальные страны', AL: 'Албания', AM: 'Армения', AZ: 'Азербайджан',
+    BE: 'Бельгия', BG: 'Болгария', HR: 'Хорватия', GE: 'Грузия', GI: 'Гибралтар',
+    GR: 'Греция', IL: 'Израиль', IT: 'Италия', LB: 'Ливан', MT: 'Мальта', MD: 'Молдова',
+    NL: 'Нидерланды', NG: 'Нигерия', RO: 'Румыния', RU: 'Россия', SG: 'Сингапур',
+    TR: 'Турция', GB: 'Великобритания', 'GB GI': 'Великобритания и Гибралтар', UA: 'Украина'
+  };
   const countryValues = [
     [550000, 0, 0, 0], [0, 15000, 0, 0], [475000, 0, 0, 0], [30000, 0, 0, 0],
     [45000, 0, 0, 0], [40000, 0, 0, 0], [0, 0, 0, 100000], [790000, 0, 0, 0],
@@ -42,7 +49,7 @@
     [0, 20000, 0, 0], [55000, 55000, 35000, 15000], [0, 0, 95000, 0], [0, 0, 65000, 0],
     [0, 650000, 350000, 0], [110000, 0, 65000, 0], [50000, 0, 0, 0], [135000, 35000, 20000, 0]
   ];
-  const countryData = countryCodes.map((label, index) => ({ label, values: countryValues[index] }));
+  const countryData = countryCodes.map((code, index) => ({ label: countryNames[code], values: countryValues[index] }));
   const gradeSeries = ['Нефть Light', 'Нефть Medium', 'Бензин АИ-95', 'ДТ Евро-5', 'Мазут М-100', 'СУГ']
     .map((label, index) => ({ label, className: palette[index] }));
   const fpnSeries = ['FPN-101', 'FPN-201', 'FPN-203', 'FPN-301', 'FPN-401']
@@ -55,7 +62,7 @@
       { label: 'Crude Oil', className: 'series-crude' }, { label: 'Dark', className: 'series-dark' },
       { label: 'Gas', className: 'series-gas' }, { label: 'Light', className: 'series-light' }
     ],
-    tabs: [{ key: 'all', label: 'Все' }, { key: 'type', label: 'Type' }, { key: 'grade', label: 'Grade', series: gradeSeries }, { key: 'fpn', label: 'FPN', series: fpnSeries }],
+    tabs: [{ key: 'all', label: 'Все' }, { key: 'type', label: 'По типам' }, { key: 'grade', label: 'По сортам', series: gradeSeries }, { key: 'fpn', label: 'По кодам FPN', series: fpnSeries }],
     datasets: { all: countryData, type: demoDataset(countryData), grade: demoDataset(countryData, gradeSeries.length), fpn: demoDataset(countryData, fpnSeries.length) }
   });
 }());
