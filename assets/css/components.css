@@ -4417,7 +4417,8 @@ textarea.form-input__control--text {
   gap: var(--space-2);
 }
 
-.repair-quality-report {
+.repair-quality-report,
+.quality-detail-drawer {
   --repair-quality-asset-width: 260px;
   --repair-quality-month-width: 72px;
   --repair-quality-planned-missed: var(--system-elements-semantic-error-primary);
@@ -4425,6 +4426,9 @@ textarea.form-input__control--text {
   --repair-quality-planned-complete: var(--system-elements-semantic-positive-primary);
   --repair-quality-emergency-forecast: var(--system-elements-semantic-warning-primary);
   --repair-quality-planned: var(--design-elements-border-strong);
+}
+
+.repair-quality-report {
   min-width: 0;
   display: grid;
   gap: var(--space-3);
@@ -4433,6 +4437,11 @@ textarea.form-input__control--text {
 .repair-quality-report > .repair-quality-report__legend.chart-legend {
   justify-content: flex-start;
   margin-top: 0;
+}
+
+.repair-quality-report__table-block > .table-wrap {
+  max-width: 100%;
+  overflow: auto;
 }
 
 .repair-quality-report__legend-dot--planned-missed { background: var(--repair-quality-planned-missed); }

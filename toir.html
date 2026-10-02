@@ -6,16 +6,15 @@
   <title>BNT — ТОиР</title>
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/css/layout.css">
-  <link rel="stylesheet" href="/assets/css/components.css?v=222">
-  <link rel="stylesheet" href="/assets/css/pages/enterprise.css?v=39">
+  <link rel="stylesheet" href="/assets/css/components.css?v=224">
+  <link rel="stylesheet" href="/assets/css/pages/enterprise.css?v=40">
   <link rel="stylesheet" href="/assets/css/pages/analytics-v91.css?v=9160">
   <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9128">
 </head>
 <body data-page="toir">
 <main id="page-content" class="page-content analytics-page">
-  <section class="analytics-evidence" aria-label="Показатели фактической базы">
-    <div id="analytics-evidence" class="analytics-evidence-grid"></div>
-  </section>
+  <section id="toir-evidence-primary" class="kpi-grid toir-kpi-grid" aria-label="Ключевые показатели фактической базы"></section>
+  <section id="toir-evidence-secondary" class="kpi-grid toir-kpi-grid" aria-label="Дополнительные показатели фактической базы"></section>
 
   <section class="repair-quality-report" data-toir-quality-report aria-labelledby="toir-quality-report-title">
     <header class="chart-card__header">
@@ -344,8 +343,8 @@
           </details>
           <article class="quality-detail-drawer-card quality-detail-drawer-card--accordion quality-detail-drawer-card--hover-light">
             <header class="quality-detail-drawer-card__summary-copy">
-              <strong class="quality-detail-drawer-card__value typography-label-smallest">Дата и продолжительность активностей (ч)</strong>
-              <span class="quality-detail-drawer-card__title typography-body-smallest" data-quality-detail-activity-equipment>Оборудование</span>
+              <span class="quality-detail-drawer-card__title typography-body-smallest">Дата и продолжительность активностей (ч)</span>
+              <strong class="quality-detail-drawer-card__value typography-label-smallest" data-quality-detail-activity-equipment>Оборудование</strong>
             </header>
             <div class="quality-detail-drawer-card__body">
               <div class="payment-deviation-chart quality-detail-drawer-card__chart quality-detail-drawer-card__chart--activities">
@@ -443,7 +442,7 @@
 <script src="/assets/js/ui.js?v=14"></script>
 <script src="/assets/js/data/assets.js"></script>
 <script src="/assets/js/data/scenarios.js?v=6"></script>
-<script src="/assets/js/pages/toir.js?v=33"></script>
+<script src="/assets/js/pages/toir.js?v=35"></script>
 <script src="/assets/js/shell.js?v=9121"></script>
 </body>
 </html>
