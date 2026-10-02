@@ -3294,6 +3294,8 @@ textarea.form-input__control--text {
 }
 
 .quality-detail-drawer-card__body:has(.quality-detail-drawer-card__chart) {
+  height: calc(var(--quality-detail-drawer-card-max-height) - var(--space-3) - var(--space-3) - var(--space-5) - var(--space-2));
+  max-height: none;
   margin-top: var(--space-2);
 }
 
