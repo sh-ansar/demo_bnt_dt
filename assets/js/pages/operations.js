@@ -1882,7 +1882,23 @@
   function render() {
     const data = chartView();
     const height = 420;
-    const margin = { top: 16, right: 18, bottom: 44, left: 58 };
+    const margin = { top: 16, right: 18, bottom: 44, left: 0 };
+    const max = axisMax(data);
+    const tickLabels = Array.from({ length: 6 }, function (_, tick) {
+      const value = max * tick / 5;
+      return value ? `${formatNumber.format(value / 1000000)} млн` : '0';
+    });
+    const tickGap = parseFloat(window.getComputedStyle(chart).getPropertyValue('--space-3'));
+    const tickProbe = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    tickProbe.setAttribute('class', 'chart-bars__tick');
+    tickProbe.setAttribute('visibility', 'hidden');
+    chart.appendChild(tickProbe);
+    const tickWidth = Math.max.apply(null, tickLabels.map(function (label) {
+      tickProbe.textContent = label;
+      return tickProbe.getComputedTextLength();
+    }));
+    tickProbe.remove();
+    margin.left = Math.ceil(tickWidth) + tickGap * 2;
     const monthBarWidth = 48;
     const weekBarWidth = 24;
     const barGap = 8;
@@ -1904,14 +1920,12 @@
       groupStart += groupWidth;
       return group;
     });
-    const max = axisMax(data);
     const svg = [];
 
     for (let tick = 0; tick <= 5; tick += 1) {
-      const value = max * tick / 5;
       const y = bottom - plotHeight * tick / 5;
       svg.push(`<line class="chart-bars__grid-line" x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}"/>`);
-      svg.push(`<text class="chart-bars__tick" x="${margin.left - 10}" y="${y + 5}" text-anchor="end">${value ? escapeXml(`${formatNumber.format(value / 1000000)} млн`) : '0'}</text>`);
+      svg.push(`<text class="chart-bars__tick" x="${margin.left - tickGap}" y="${y + 5}" text-anchor="end">${escapeXml(tickLabels[tick])}</text>`);
     }
     for (let boundary = 0; boundary <= data.length; boundary += 1) {
       const x = boundary === data.length ? width - margin.right : groups[boundary].start;
