@@ -3184,7 +3184,6 @@ textarea.form-input__control--text {
   min-width: 0;
   width: 100%;
   height: fit-content;
-  max-height: 420px;
   padding: var(--space-3);
   display: grid;
   align-content: start;
