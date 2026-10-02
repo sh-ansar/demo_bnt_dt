@@ -1681,7 +1681,7 @@
 .logistics-bar-row__label {
   min-width: 0;
   overflow: hidden;
-  padding: var(--space-1) 0;
+  padding: 0;
   border-radius: var(--space-1);
   color: var(--text-primary);
   font-size: var(--typography-body-smallest-size);
