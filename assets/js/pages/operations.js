@@ -1724,8 +1724,10 @@
       </div>`;
     }).join('');
     host.innerHTML = `<div class="logistics-bar-scale" aria-hidden="true">${ticks.map(function (tick) { return `<span>${tick}</span>`; }).join('')}</div>
-      <div class="logistics-bar-grid" aria-hidden="true">${ticks.map(function () { return '<span></span>'; }).join('')}</div>
-      <div class="logistics-bar-rows">${rows}</div>`;
+      <div class="chart-viewport__plot chart-scrollbar"><div class="logistics-bar-body">
+        <div class="logistics-bar-grid" aria-hidden="true">${ticks.map(function () { return '<span></span>'; }).join('')}</div>
+        <div class="logistics-bar-rows">${rows}</div>
+      </div></div>`;
 
     function syncLabelWidth() {
       const labels = Array.from(host.querySelectorAll('.logistics-bar-row__label'));

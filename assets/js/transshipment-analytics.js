@@ -106,9 +106,13 @@
             <div class="chart-legend chart-legend--wrap typography-body-smallest" data-origin-legend aria-label="Легенда происхождения"></div>
             <div class="origin-breakdown" data-origin-breakdown hidden>
               <div class="origin-breakdown__plot">
-                <div class="origin-breakdown__grid" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
                 <div class="origin-breakdown__scale" aria-hidden="true"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
-                <div class="origin-breakdown__rows" data-origin-rows></div>
+                <div class="chart-viewport__plot chart-scrollbar">
+                  <div class="origin-breakdown__body">
+                    <div class="origin-breakdown__grid" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="origin-breakdown__rows" data-origin-rows></div>
+                  </div>
+                </div>
               </div>
               <div class="origin-breakdown__details" data-origin-details aria-live="polite"></div>
               <div class="origin-breakdown__tooltip" data-origin-tooltip role="tooltip" hidden><strong data-origin-tooltip-title></strong><span data-origin-tooltip-value></span></div>
@@ -761,6 +765,9 @@
     showOriginTooltip(segment, bounds.left + bounds.width / 2, bounds.top + bounds.height / 2);
   });
   originBreakdown.addEventListener('focusout', function () {
+    originTooltip.hidden = true;
+  });
+  originPlot.querySelector('.chart-viewport__plot').addEventListener('scroll', function () {
     originTooltip.hidden = true;
   });
   originBreakdown.addEventListener('click', function (event) {

@@ -129,7 +129,7 @@
         if (horizontal) {
           svg.push(`<line class="chart-bars__vertical-line" x1="${x}" y1="${margin.top}" x2="${x}" y2="${bottom}"/>`);
           const visible = tick === 0 || tick === tickCount || (tick % labelStride === 0 && (tickCount - tick) * tickSpacing >= tickWidth + tickOffset);
-          axisLabels.push(`<text class="chart-bars__tick" x="${x - tickOffset}" y="${labelHeight}" text-anchor="end" data-tick-value="${value}"${visible ? '' : ' visibility="hidden"'}>${label}</text>`);
+          axisLabels.push(`<text class="chart-bars__tick" x="${tick === 0 ? x : x - tickOffset}" y="${labelHeight}" text-anchor="${tick === 0 ? 'start' : 'end'}" data-tick-value="${value}"${visible ? '' : ' visibility="hidden"'}>${label}</text>`);
         } else {
           svg.push(`<line class="chart-bars__grid-line" x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}"/><text class="chart-bars__tick" x="${margin.left - 10}" y="${y + 5}" text-anchor="end">${label}</text>`);
         }

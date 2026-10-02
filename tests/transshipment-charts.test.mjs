@@ -11,6 +11,7 @@ function element(dataset = {}) {
     classList: { values: new Set(), toggle(key, active) { active ? this.values.add(key) : this.values.delete(key); } },
     setAttribute(key, value) { this.attributes[key] = value; },
     appendChild(child) { this.lastChild = child; },
+    getComputedTextLength() { return this.textContent.length * 8; },
     remove() {},
     addEventListener(key, callback) { this.events[key] = callback; },
     getBoundingClientRect() { return { left: 0, top: 0, width: this.clientWidth, height: this.clientHeight }; },
@@ -26,6 +27,8 @@ const host = {
   insertAdjacentHTML(position, markup) {
     const id = markup.match(/data-stacked-card="([^"]+)"/)[1];
     const chart = element();
+    const axis = element();
+    const panel = element();
     const viewport = element();
     const tooltip = element();
     const fields = new Map(['title', 'period', 'value'].map(name => [`[data-tooltip-${name}]`, element()]));
@@ -47,10 +50,10 @@ const host = {
       return tab;
     });
     const card = element();
-    const nodes = new Map([['.chart-bars', chart], ['.chart-viewport', viewport], ['.chart-tooltip', tooltip], ['.chart-legend', legend]]);
+    const nodes = new Map([['.chart-bars', chart], ['[data-stacked-axis]', axis], ['.chart-viewport', panel], ['.chart-viewport__plot', viewport], ['.chart-tooltip', tooltip], ['.chart-legend', legend]]);
     card.querySelector = selector => nodes.get(selector);
     card.querySelectorAll = () => tabs;
-    cards.set(id, { card, chart, viewport, tooltip, fields, legend, tabs, markup });
+    cards.set(id, { card, chart, axis, panel, viewport, tooltip, fields, legend, tabs, markup });
     if (position === 'afterbegin') mounted.unshift(id); else mounted.push(id);
   },
   querySelector(selector) { return cards.get(selector.match(/"([^"]+)"/)[1]).card; }
@@ -73,7 +76,7 @@ const context = vm.createContext({
     getComputedStyle() {
       return {
         lineHeight: `${labelLineHeight}px`,
-        getPropertyValue(name) { return ({ '--chart-bars-bar-size': '12px', '--space-2': '8px', '--space-3': '12px' })[name] || ''; }
+        getPropertyValue(name) { return ({ '--chart-bars-bar-size': '16px', '--space-2': '8px', '--space-3': '12px' })[name] || ''; }
       };
     }
   }
@@ -106,24 +109,40 @@ assert.equal(controllers.get('transshipment-clients').options.series.at(-1).labe
 assert.equal(controllers.get('transshipment-countries').options.axisPosition, 'top');
 assert.equal(controllers.get('transshipment-countries').options.orientation, 'horizontal');
 assert.equal(countries.chart.events.wheel, undefined);
-assert.equal(countries.chart.style.values['--chart-bars-height'], '1020px');
-assert.equal(clients.chart.style.values['--chart-bars-height'], '260px');
-assert.match(countries.chart.innerHTML, /class="chart-bars__tick"[^>]*y="28"/);
+assert.equal(countries.chart.style.values['--chart-bars-height'], '960px');
+assert.equal(clients.chart.style.values['--chart-bars-height'], '200px');
+assert.match(countries.axis.innerHTML, /class="chart-bars__tick"[^>]*y="16"/);
+assert.match(clients.markup, /data-stacked-axis[^>]*><\/svg>\s*<div class="chart-viewport__plot chart-scrollbar"/);
+assert.doesNotMatch(engine, /chart-bars-min-width|1120/);
 
-function assertGeometry(chart) {
+function assertGeometry({ chart, axis, viewport }) {
   const [, , width, height] = chart.attributes.viewBox.split(' ').map(Number);
+  assert.equal(width, viewport.clientWidth);
+  const axisDimensions = axis.attributes.viewBox.split(' ').map(Number);
+  assert.equal(axisDimensions[2], width);
+  assert.equal(axisDimensions[3], labelLineHeight + 8);
+  assert.doesNotMatch(chart.innerHTML, /chart-bars__tick/);
   const rects = [...chart.innerHTML.matchAll(/<rect[^>]+>/g)];
   const axes = [...chart.innerHTML.matchAll(/<line class="chart-bars__axis-line" x1="([^"]+)" y1="([^"]+)" x2="([^"]+)" y2="([^"]+)"/g)];
   assert.equal(axes.length, 1);
   assert.equal(axes[0][1], '64');
   assert.equal(axes[0][3], '64');
   assert.ok(Number(axes[0][4]) > Number(axes[0][2]));
-  const ticks = [...chart.innerHTML.matchAll(/<text class="chart-bars__tick" x="([^"]+)"[^>]*text-anchor="end" data-tick-value="(\d+)"/g)];
+  const ticks = [...axis.innerHTML.matchAll(/<text class="chart-bars__tick" x="([^"]+)"[^>]*text-anchor="(?:start|end)" data-tick-value="(\d+)"/g)];
   assert.ok(ticks.length > 0);
-  assert.equal(Number(ticks[0][1]), 56);
+  assert.equal(Number(ticks[0][1]), 64);
+  assert.match(ticks[0][0], /text-anchor="start"/);
+  assert.match(ticks[1][0], /text-anchor="end"/);
   assert.equal(Number(ticks.at(-1)[2]), 2000000);
   for (let index = 1; index < ticks.length; index += 1) {
     assert.equal(Number(ticks[index][2]) - Number(ticks[index - 1][2]), 200000);
+  }
+  const visibleTicks = [...axis.innerHTML.matchAll(/<text[^>]+>([^<]+)<\/text>/g)].filter(([text]) => !text.includes('visibility="hidden"'));
+  for (let index = 1; index < visibleTicks.length; index += 1) {
+    const previousX = Number(visibleTicks[index - 1][0].match(/x="([^"]+)"/)[1]);
+    const nextX = Number(visibleTicks[index][0].match(/x="([^"]+)"/)[1]);
+    const previousRight = previousX + (visibleTicks[index - 1][0].includes('text-anchor="start"') ? visibleTicks[index - 1][1].length * 8 : 0);
+    assert.ok(nextX - visibleTicks[index][1].length * 8 >= previousRight + 8);
   }
   const rows = new Set([...chart.innerHTML.matchAll(/data-row-index="(\d+)"/g)].map(match => match[1]));
   const horizontalLines = [...chart.innerHTML.matchAll(/<line class="chart-bars__grid-line" x1="([^"]+)" y1="([^"]+)" x2="([^"]+)" y2="([^"]+)"/g)];
@@ -147,7 +166,7 @@ function assertGeometry(chart) {
     assert.ok([x, y, w, h].every(Number.isFinite));
     assert.ok(x >= 0 && y >= 0 && w > 0 && h > 0);
     assert.ok(x + w <= width + .001 && y + h <= height + .001);
-    assert.equal(h, 12);
+    assert.equal(h, 16);
     assert.ok(!('style' in attributes));
     assert.ok(attributes.class.includes('series-'));
   }
@@ -156,18 +175,18 @@ function assertGeometry(chart) {
 for (const key of ['all', 'receipt', 'storage', 'shipment']) {
   clientController.setTab(key);
   assert.equal(clientController.getView().length, 5);
-  assertGeometry(clients.chart);
+  assertGeometry(clients);
 }
 for (const [key, count] of [['all', 4], ['type', 4], ['grade', 6], ['fpn', 5]]) {
   countryController.setTab(key);
   assert.equal(countryController.getView().length, 24);
   assert.ok(countryController.getView().every(row => row.values.length === count));
-  assertGeometry(countries.chart);
+  assertGeometry(countries);
   assert.equal(countries.legend.querySelectorAll().length, count);
   const active = countries.tabs.filter(tab => tab.attributes['aria-selected'] === 'true');
   assert.equal(active.length, 1);
   assert.equal(active[0].dataset.stackedTab, key);
-  assert.equal(countries.viewport.attributes['aria-labelledby'], active[0].id);
+  assert.equal(countries.panel.attributes['aria-labelledby'], active[0].id);
 }
 countryController.setTab('all');
 countryController.selectSeries(2);
@@ -197,16 +216,16 @@ assert.match(await exportedBlob.text(), /A.O./);
 for (const width of [375, 768, 1440, 1920]) {
   countries.viewport.clientWidth = width;
   countryController.setTab('all');
-  assertGeometry(countries.chart);
-  assert.equal(countries.chart.style.values['--chart-bars-height'], '1020px');
+  assertGeometry(countries);
+  assert.equal(countries.chart.style.values['--chart-bars-height'], '960px');
 }
 labelLineHeight = 24;
 countryController.setTab('all');
-assert.equal(countries.chart.style.values['--chart-bars-height'], '1212px');
-assertGeometry(countries.chart);
+assert.equal(countries.chart.style.values['--chart-bars-height'], '1152px');
+assertGeometry(countries);
 clientController.setTab('all');
-assert.equal(clients.chart.style.values['--chart-bars-height'], '300px');
-assertGeometry(clients.chart);
+assert.equal(clients.chart.style.values['--chart-bars-height'], '240px');
+assertGeometry(clients);
 labelLineHeight = 16;
 
 const modal = element();
@@ -249,7 +268,7 @@ assert.ok(drawer.classList.values.has('dt3-drawer_static-date'));
 const css = await readFile(new URL('../assets/css/components.css', import.meta.url), 'utf8');
 assert.match(css, /\.chart-bars,\s*\.chart-donut\s*\{[^}]*outline: 0;/);
 assert.match(css, /\.chart-bars__segment:focus-visible\s*\{[^}]*stroke: var\(--design-elements-border-strong\);/);
-assert.match(css, /\.chart-bars--stacked\s*\{\s*--chart-bars-bar-size: var\(--space-3\);/);
+assert.match(css, /\.chart-bars--stacked\s*\{\s*--chart-bars-bar-size: var\(--space-4\);/);
 assert.match(css, /\.chart-bars__axis-line\s*\{\s*stroke: var\(--design-elements-icon-primary\);\s*stroke-width: 1;/);
 assert.doesNotMatch(css, /\.chart-bars--stacked \.chart-bars__axis-line/);
 assert.match(css, /\.chart-bars__grid-line,\s*\.chart-bars__vertical-line\s*\{\s*stroke: var\(--design-elements-border-default\);\s*stroke-width: 1;/);

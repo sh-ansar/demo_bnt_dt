@@ -5167,15 +5167,14 @@ textarea.form-input__control--text {
 }
 
 .chart-card--origin.is-origin-breakdown-active {
-  display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr);
-  align-content: stretch;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-5);
 }
 
 .chart-card--origin.is-origin-breakdown-active .origin-chart-panel {
   min-height: 0;
-  display: grid;
+  display: flex;
 }
 
 .origin-chart-panel {
@@ -5201,9 +5200,10 @@ textarea.form-input__control--text {
 .origin-breakdown {
   position: relative;
   min-width: 0;
-  min-height: 100%;
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: 0;
+  flex: 0 1 auto;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-5);
   color: var(--text-primary);
 }
@@ -5213,13 +5213,21 @@ textarea.form-input__control--text {
   --origin-label-gap: var(--space-2);
   position: relative;
   min-width: 0;
-  align-self: center;
+  min-height: 0;
+  flex: 0 1 auto;
+  display: flex;
+  flex-direction: column;
   margin-inline: var(--space-3);
+}
+
+.origin-breakdown__body {
+  position: relative;
+  min-width: 0;
 }
 
 .origin-breakdown__grid {
   position: absolute;
-  top: var(--space-5);
+  top: 0;
   right: 0;
   bottom: 0;
   left: calc(var(--origin-label-width) + var(--origin-label-gap));
@@ -5309,6 +5317,7 @@ textarea.form-input__control--text {
   display: flex;
   justify-content: space-between;
   height: var(--space-5);
+  flex: none;
   margin-left: calc(var(--origin-label-width) + var(--origin-label-gap));
   color: var(--text-tertiary);
   font-size: var(--typography-body-smallest-size);
@@ -5437,6 +5446,7 @@ textarea.form-input__control--text {
 .origin-breakdown__swatch--5 { background: var(--origin-shade-6); }
 
 .origin-breakdown__details {
+  flex: none;
   display: grid;
   gap: var(--space-4);
   align-self: end;
@@ -6814,6 +6824,10 @@ textarea.form-input__control--text {
   overflow: auto;
 }
 
+.chart-card > .origin-chart-panel {
+  overflow: hidden;
+}
+
 .chart-card .chart-viewport:has(.chart-viewport__plot),
 .chart-card :is(.payment-deviation-chart, .procurement-plan-fact-chart, .procurement-budget-deviation-chart, .procurement-stock-chart, .procurement-turnover-bar-chart, .analytics-capacity-chart__plot, .logistics-bar-list) {
   display: flex;
@@ -6823,7 +6837,7 @@ textarea.form-input__control--text {
   overflow: hidden;
 }
 
-.chart-card :is(.payment-deviation-chart__axis, .procurement-plan-fact-chart__axis, .procurement-budget-deviation-chart__axis, .procurement-stock-chart__axis, .procurement-turnover-bar-chart__axis, .analytics-capacity-chart__axis, .logistics-bar-scale) {
+.chart-card :is(.payment-deviation-chart__axis, .procurement-plan-fact-chart__axis, .procurement-budget-deviation-chart__axis, .procurement-stock-chart__axis, .procurement-turnover-bar-chart__axis, .analytics-capacity-chart__axis, .logistics-bar-scale, .origin-breakdown__scale) {
   flex: none;
   margin-right: var(--progress-bar-track-scroll-size);
 }
@@ -6844,6 +6858,7 @@ textarea.form-input__control--text {
   height: var(--chart-axis-height, var(--space-5));
   display: block;
   overflow: hidden;
+  font-family: var(--font-family-primary);
 }
 
 .table-wrap,

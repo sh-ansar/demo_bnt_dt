@@ -1621,13 +1621,18 @@
   white-space: nowrap;
 }
 
+.logistics-bar-body {
+  position: relative;
+  min-width: 0;
+}
+
 .logistics-bar-grid {
   position: absolute;
   z-index: 0;
-  top: calc(var(--space-3) + var(--space-5));
-  right: var(--space-3);
-  bottom: var(--space-3);
-  left: calc(var(--space-3) + var(--logistics-label-width) + var(--logistics-chart-gap));
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: calc(var(--logistics-label-width) + var(--logistics-chart-gap));
   display: flex;
   justify-content: space-between;
   pointer-events: none;
@@ -1651,13 +1656,13 @@
 .logistics-bar-row {
   position: relative;
   min-width: 0;
-  height: 52px;
-  min-height: 52px;
+  height: auto;
+  min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, var(--logistics-label-width)) minmax(0, 1fr);
   align-items: center;
   gap: var(--logistics-chart-gap);
-  padding: 0;
+  padding-block: var(--space-3);
   color: var(--text-primary);
 }
 
