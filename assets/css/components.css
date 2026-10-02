@@ -3179,11 +3179,13 @@ textarea.form-input__control--text {
 }
 
 .quality-detail-drawer-card {
+  --quality-detail-drawer-card-max-height: 420px;
   position: relative;
   box-sizing: border-box;
   min-width: 0;
   width: 100%;
   height: fit-content;
+  max-height: var(--quality-detail-drawer-card-max-height);
   padding: var(--space-3);
   display: grid;
   align-content: start;
@@ -3212,6 +3214,7 @@ textarea.form-input__control--text {
 
 .quality-detail-drawer-card--accordion {
   padding: var(--space-3);
+  grid-template-rows: auto minmax(0, 1fr);
 }
 
 .quality-detail-drawer-card__heading {
@@ -3283,7 +3286,11 @@ textarea.form-input__control--text {
 
 .quality-detail-drawer-card__body {
   min-width: 0;
+  min-height: 0;
+  max-height: calc(var(--quality-detail-drawer-card-max-height) - var(--space-3) - var(--space-3) - var(--space-5) - var(--space-2));
   margin-top: var(--space-3);
+  overflow: auto;
+  scrollbar-gutter: stable;
 }
 
 .quality-detail-drawer-card__body:has(.quality-detail-drawer-card__chart) {
@@ -6320,6 +6327,7 @@ textarea.form-input__control--text {
 .form-input__menu,
 .form-input__options,
 .app-nav,
+.quality-detail-drawer-card__body,
 .ui-scrollbar,
 .chart-scrollbar {
   scrollbar-width: thin;
@@ -6334,6 +6342,7 @@ textarea.form-input__control--text {
   .form-input__menu,
   .form-input__options,
   .app-nav,
+  .quality-detail-drawer-card__body,
   .ui-scrollbar,
   .chart-scrollbar {
     scrollbar-color: auto;
@@ -6347,6 +6356,7 @@ textarea.form-input__control--text {
   .form-input__menu::-webkit-scrollbar,
   .form-input__options::-webkit-scrollbar,
   .app-nav::-webkit-scrollbar,
+  .quality-detail-drawer-card__body::-webkit-scrollbar,
   .ui-scrollbar::-webkit-scrollbar,
   .chart-scrollbar::-webkit-scrollbar {
     width: var(--progress-bar-track-scroll-size);
@@ -6360,6 +6370,7 @@ textarea.form-input__control--text {
   .form-input__menu::-webkit-scrollbar-track,
   .form-input__options::-webkit-scrollbar-track,
   .app-nav::-webkit-scrollbar-track,
+  .quality-detail-drawer-card__body::-webkit-scrollbar-track,
   .ui-scrollbar::-webkit-scrollbar-track,
   .chart-scrollbar::-webkit-scrollbar-track {
     border-radius: 999px;
@@ -6373,6 +6384,7 @@ textarea.form-input__control--text {
   .form-input__menu::-webkit-scrollbar-thumb,
   .form-input__options::-webkit-scrollbar-thumb,
   .app-nav::-webkit-scrollbar-thumb,
+  .quality-detail-drawer-card__body::-webkit-scrollbar-thumb,
   .ui-scrollbar::-webkit-scrollbar-thumb,
   .chart-scrollbar::-webkit-scrollbar-thumb {
     border-radius: 999px;
@@ -6396,6 +6408,7 @@ textarea.form-input__control--text {
   .form-input__menu::-webkit-scrollbar-button,
   .form-input__options::-webkit-scrollbar-button,
   .app-nav::-webkit-scrollbar-button,
+  .quality-detail-drawer-card__body::-webkit-scrollbar-button,
   .ui-scrollbar::-webkit-scrollbar-button,
   .chart-scrollbar::-webkit-scrollbar-button {
     display: none;
