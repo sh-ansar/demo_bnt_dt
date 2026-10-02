@@ -5,11 +5,11 @@ const rowClasses = [
   'origin-breakdown__row', 'payment-deviation-chart__row',
   'procurement-plan-fact-chart__row', 'procurement-budget-deviation-chart__row',
   'procurement-stock-chart__row', 'procurement-turnover-bar-chart__row',
-  'analytics-capacity-chart__row'
+  'analytics-capacity-chart__row', 'logistics-bar-row'
 ];
 const cssFiles = [
   '../assets/css/components.css', '../assets/css/pages/budget-payments.css',
-  '../assets/css/pages/analytics-v91.css'
+  '../assets/css/pages/analytics-v91.css', '../assets/css/pages/operations.css'
 ];
 const allRules = [];
 for (const file of cssFiles) {
@@ -29,7 +29,7 @@ for (const className of rowClasses) {
     if (height !== undefined) assert.equal(height, 'auto', `${className} has no fixed height in ${rule.file}`);
     if (minHeight !== undefined) assert.equal(minHeight, '0', `${className} has no minimum height in ${rule.file}`);
   }
-  const rowsClass = className.replace(/__row$/, '__rows');
+  const rowsClass = className === 'logistics-bar-row' ? 'logistics-bar-rows' : className.replace(/__row$/, '__rows');
   const rowsSelector = new RegExp(`\\.${rowsClass}(?=\\s*(?:,|$))`);
   const rowsRules = allRules.filter(rule => rowsSelector.test(rule.selector));
   assert.ok(rowsRules.some(rule => /grid-auto-rows:\s*max-content;/.test(rule.body)), `${rowsClass} does not stretch rows`);
@@ -40,4 +40,26 @@ for (const file of ['../assets/js/pages/procurement.js', '../assets/js/pages/ana
 }
 const components = await readFile(new URL('../assets/css/components.css', import.meta.url), 'utf8');
 assert.match(components, /--quality-detail-drawer-card-max-height: 420px;/);
-console.log('Chart rows: shared padding, intrinsic height, content-sized grid tracks and drawer limits passed.');
+assert.match(components, /\.chart-card\s*\{[^}]*--chart-card-max-height: \d+px;[^}]*box-sizing: border-box;[^}]*max-height: var\(--chart-card-max-height\);/);
+assert.match(components, /\.chart-viewport__plot\s*\{[^}]*min-height: 0;[^}]*overflow: auto;/);
+const tracks = ['payment-deviation-chart__track', 'procurement-plan-fact-chart__track',
+  'procurement-budget-deviation-chart__range', 'procurement-stock-chart__track',
+  'procurement-turnover-bar-chart__track', 'origin-breakdown__bar',
+  'analytics-capacity-chart__track', 'logistics-bar-row__track'];
+for (const className of tracks) {
+  const selector = new RegExp(`\\.${className}(?=\\s*(?:,|$))`);
+  const heights = allRules.filter(rule => selector.test(rule.selector))
+    .map(rule => rule.body.match(/(?:^|;)\s*height:\s*([^;]+);/)?.[1].trim()).filter(Boolean);
+  assert.ok(heights.length, `${className} has a track height`);
+  assert.ok(heights.every(height => height === 'var(--space-4)'), `${className} uses space-4 everywhere`);
+}
+for (const file of ['department-performance.js', 'pages/budget-payments.js', 'pages/contracts.js', 'pages/procurement.js', 'pages/analytics.js']) {
+  const source = await readFile(new URL(`../assets/js/${file}`, import.meta.url), 'utf8');
+  assert.doesNotMatch(source, /class="chart-scrollbar" style="max-height:/, `${file} has no local scroll limit`);
+  const bodies = [...source.matchAll(/<div class="([\w-]+-chart)__body">/g)];
+  for (const body of bodies) {
+    const prefix = source.slice(0, body.index);
+    assert.match(prefix, /<div class="chart-viewport__plot chart-scrollbar">\s*$/, `${file}: ${body[1]} keeps the axis outside the plot scroller`);
+  }
+}
+console.log('Chart rows: space-4 tracks, shared padding, intrinsic height, fixed axes, card and drawer limits passed.');

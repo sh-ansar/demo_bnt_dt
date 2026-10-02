@@ -5628,7 +5628,8 @@ textarea.form-input__control--text {
 .procurement-budget-deviation-chart__rows,
 .procurement-stock-chart__rows,
 .procurement-turnover-bar-chart__rows,
-.analytics-capacity-chart__rows {
+.analytics-capacity-chart__rows,
+.logistics-bar-rows {
   grid-auto-rows: max-content;
   align-content: start;
 }
@@ -6818,7 +6819,7 @@ textarea.form-input__control--text {
   flex-shrink: 0;
 }
 
-.chart-card > :is(.chart-viewport, .chart-donut__viewport, .financial-chart__viewport, .origin-chart-panel, .logistics-bar-list, .payment-risk-map__content) {
+.chart-card > :is(.chart-viewport, .chart-donut__viewport, .financial-chart__viewport, .origin-chart-panel, .logistics-bar-list, .payment-risk-map__layout, .payment-risk-map__insights) {
   flex: 0 1 auto;
   min-height: 0;
   overflow: auto;
@@ -6828,6 +6829,15 @@ textarea.form-input__control--text {
   overflow: hidden;
 }
 
+.chart-card .origin-chart-panel > .chart-donut__viewport {
+  min-height: 0;
+  overflow: auto;
+}
+
+.chart-card .origin-chart-panel > .chart-legend {
+  flex-shrink: 0;
+}
+
 .chart-card .chart-viewport:has(.chart-viewport__plot),
 .chart-card :is(.payment-deviation-chart, .procurement-plan-fact-chart, .procurement-budget-deviation-chart, .procurement-stock-chart, .procurement-turnover-bar-chart, .analytics-capacity-chart__plot, .logistics-bar-list) {
   display: flex;
@@ -6835,6 +6845,10 @@ textarea.form-input__control--text {
   flex: 0 1 auto;
   min-height: 0;
   overflow: hidden;
+}
+
+.chart-card .chart-viewport:has(.chart-viewport__plot) {
+  overflow-x: auto;
 }
 
 .chart-card :is(.payment-deviation-chart__axis, .procurement-plan-fact-chart__axis, .procurement-budget-deviation-chart__axis, .procurement-stock-chart__axis, .procurement-turnover-bar-chart__axis, .analytics-capacity-chart__axis, .logistics-bar-scale, .origin-breakdown__scale) {
@@ -6870,6 +6884,11 @@ textarea.form-input__control--text {
 .app-nav,
 .quality-detail-drawer-card__body,
 .ui-scrollbar,
+.chart-viewport,
+.chart-donut__viewport,
+.financial-chart__viewport,
+.payment-risk-map__layout,
+.payment-risk-map__insights,
 .chart-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: var(--icons-default) var(--progress-bar-track);
@@ -6885,6 +6904,11 @@ textarea.form-input__control--text {
   .app-nav,
   .quality-detail-drawer-card__body,
   .ui-scrollbar,
+  .chart-viewport,
+  .chart-donut__viewport,
+  .financial-chart__viewport,
+  .payment-risk-map__layout,
+  .payment-risk-map__insights,
   .chart-scrollbar {
     scrollbar-color: auto;
     scrollbar-width: auto;
@@ -6899,6 +6923,11 @@ textarea.form-input__control--text {
   .app-nav::-webkit-scrollbar,
   .quality-detail-drawer-card__body::-webkit-scrollbar,
   .ui-scrollbar::-webkit-scrollbar,
+  .chart-viewport::-webkit-scrollbar,
+  .chart-donut__viewport::-webkit-scrollbar,
+  .financial-chart__viewport::-webkit-scrollbar,
+  .payment-risk-map__layout::-webkit-scrollbar,
+  .payment-risk-map__insights::-webkit-scrollbar,
   .chart-scrollbar::-webkit-scrollbar {
     width: var(--progress-bar-track-scroll-size);
     height: var(--progress-bar-track-scroll-size);
@@ -6913,6 +6942,11 @@ textarea.form-input__control--text {
   .app-nav::-webkit-scrollbar-track,
   .quality-detail-drawer-card__body::-webkit-scrollbar-track,
   .ui-scrollbar::-webkit-scrollbar-track,
+  .chart-viewport::-webkit-scrollbar-track,
+  .chart-donut__viewport::-webkit-scrollbar-track,
+  .financial-chart__viewport::-webkit-scrollbar-track,
+  .payment-risk-map__layout::-webkit-scrollbar-track,
+  .payment-risk-map__insights::-webkit-scrollbar-track,
   .chart-scrollbar::-webkit-scrollbar-track {
     border-radius: 999px;
     background: var(--progress-bar-track);
@@ -6927,6 +6961,11 @@ textarea.form-input__control--text {
   .app-nav::-webkit-scrollbar-thumb,
   .quality-detail-drawer-card__body::-webkit-scrollbar-thumb,
   .ui-scrollbar::-webkit-scrollbar-thumb,
+  .chart-viewport::-webkit-scrollbar-thumb,
+  .chart-donut__viewport::-webkit-scrollbar-thumb,
+  .financial-chart__viewport::-webkit-scrollbar-thumb,
+  .payment-risk-map__layout::-webkit-scrollbar-thumb,
+  .payment-risk-map__insights::-webkit-scrollbar-thumb,
   .chart-scrollbar::-webkit-scrollbar-thumb {
     border-radius: 999px;
     background: var(--icons-default);
@@ -6951,6 +6990,11 @@ textarea.form-input__control--text {
   .app-nav::-webkit-scrollbar-button,
   .quality-detail-drawer-card__body::-webkit-scrollbar-button,
   .ui-scrollbar::-webkit-scrollbar-button,
+  .chart-viewport::-webkit-scrollbar-button,
+  .chart-donut__viewport::-webkit-scrollbar-button,
+  .financial-chart__viewport::-webkit-scrollbar-button,
+  .payment-risk-map__layout::-webkit-scrollbar-button,
+  .payment-risk-map__insights::-webkit-scrollbar-button,
   .chart-scrollbar::-webkit-scrollbar-button {
     display: none;
     width: 0;
