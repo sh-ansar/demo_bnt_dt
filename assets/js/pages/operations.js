@@ -2294,12 +2294,6 @@
     if (event.key === 'Escape') closeKpiInfo();
   });
 
-  root.querySelectorAll('[data-financial-chart-filter]').forEach(function (button) {
-    button.addEventListener('click', function () {
-      toast('Фильтр', 'Активен 1 параметр: «На текущую дату»');
-    });
-  });
-
   root.querySelector('[data-financial-info]')?.addEventListener('click', function (event) {
     if (window.BNTUI?.showInfoPopover) {
       window.BNTUI.showInfoPopover(event.currentTarget, {

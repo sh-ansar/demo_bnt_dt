@@ -366,6 +366,11 @@
   min-width: 0;
 }
 
+/* The risk chart sets the paired cards' height; the deficit plot can scroll. */
+.analytics-page .analytics-evidence .analytics-financial-charts > .chart-card:last-child {
+  contain: size;
+}
+
 .analytics-page .analytics-layout {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--space-3);
@@ -875,8 +880,6 @@
   z-index: 2;
   min-width: 0;
   height: var(--space-5);
-  display: flex;
-  justify-content: space-between;
   margin-left: calc(var(--capacity-label-width) + var(--capacity-chart-gap));
   margin-right: var(--capacity-value-space);
   color: var(--text-tertiary);
@@ -938,20 +941,6 @@
   height: 1px;
   background: var(--design-elements-border-default);
   pointer-events: none;
-}
-
-.analytics-page .analytics-capacity-chart__label {
-  min-width: 0;
-  display: block;
-  padding: var(--space-1) 0;
-  border-radius: var(--space-1);
-  color: var(--text-primary);
-  font-size: var(--typography-body-smallest-size);
-  line-height: var(--typography-body-smallest-line-height);
-  font-weight: var(--typography-body-smallest-weight);
-  letter-spacing: var(--typography-body-smallest-letter-spacing);
-  text-align: right;
-  white-space: nowrap;
 }
 
 .analytics-page .analytics-capacity-chart__track {
@@ -1154,6 +1143,10 @@
 
   .analytics-page .analytics-financial-charts {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .analytics-page .analytics-evidence .analytics-financial-charts > .chart-card:last-child {
+    contain: none;
   }
 
   .analytics-page .analytics-layout {

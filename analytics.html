@@ -230,7 +230,7 @@
           </div>
           <div class="chart-actions">
             <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-analytics-line-export="incomeExpense" aria-label="Скачать данные доходов и расходов"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
-            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-analytics-line-filter="incomeExpense"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
           </div>
         </header>
         <div class="financial-chart__viewport financial-chart__viewport--line chart-scrollbar">
@@ -248,7 +248,7 @@
           </div>
           <div class="chart-actions">
             <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-analytics-line-export="cashFlow" aria-label="Скачать данные денежного потока"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
-            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-analytics-line-filter="cashFlow"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
           </div>
         </header>
         <div class="financial-chart__viewport financial-chart__viewport--line chart-scrollbar">
@@ -348,7 +348,7 @@
           </div>
           <div class="chart-actions">
             <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-analytics-line-export="transshipmentLoad" aria-label="Скачать данные загрузки ключевых узлов линий"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
-            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-analytics-line-filter="transshipmentLoad"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
           </div>
         </header>
         <div class="chart-viewport payment-deviation-chart__viewport" style="height:320px;overflow:hidden">
@@ -370,7 +370,7 @@
           </div>
           <div class="chart-actions">
             <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-analytics-line-export="transshipmentCapacity" aria-label="Скачать данные перевалки и доступной мощности"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
-            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-analytics-line-filter="transshipmentCapacity"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
           </div>
         </header>
         <div class="financial-chart__viewport financial-chart__viewport--line chart-scrollbar">
@@ -531,10 +531,10 @@
           </div>
           <div class="chart-actions">
             <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-analytics-line-export="resourceRisk" aria-label="Скачать данные долей ресурсного риска"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
-            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-analytics-line-filter="resourceRisk"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
           </div>
         </header>
-        <div class="chart-viewport payment-deviation-chart__viewport" style="height:348px;overflow:hidden">
+        <div class="chart-viewport payment-deviation-chart__viewport">
           <div class="payment-deviation-chart" style="--payment-deviation-label-width:120px;min-width:0" data-analytics-resource-risk-chart role="img" aria-label="Доля контуров в общем риске"></div>
         </div>
         <div class="financial-chart__legend typography-body-smallest" aria-label="Легенда долей ресурсного риска">
@@ -551,10 +551,10 @@
           </div>
           <div class="chart-actions">
             <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-analytics-line-export="resourceDeficit" aria-label="Скачать данные дефицита ресурсов"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
-            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-analytics-line-filter="resourceDeficit"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
           </div>
         </header>
-        <div class="chart-viewport payment-deviation-chart__viewport" style="height:348px;overflow:hidden">
+        <div class="chart-viewport payment-deviation-chart__viewport">
           <div class="payment-deviation-chart" style="--payment-deviation-label-width:120px;min-width:0" data-analytics-resource-deficit-chart role="img" aria-label="Дефицит ресурсов по горизонту 30, 60 и 90 дней"></div>
         </div>
         <div class="financial-chart__legend typography-body-smallest" aria-label="Легенда дефицита ресурсов">
@@ -573,6 +573,7 @@
 <script src="/assets/js/ui.js?v=14"></script>
 <script src="/assets/js/data/assets.js"></script>
 <script src="/assets/js/data/scenarios.js?v=6"></script>
+<script src="/assets/js/chart-filter.js?v=3"></script>
 <script src="/assets/js/pages/analytics.js?v=34"></script>
 <script src="/assets/js/shell.js?v=9121"></script>
 </body>

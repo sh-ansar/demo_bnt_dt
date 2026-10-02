@@ -82,7 +82,7 @@
       const width = horizontal
         ? Math.round(viewport.clientWidth || 1440)
         : Math.max(960, visibleRows.length * 56 + 94, Math.round(viewport.clientWidth || 1440));
-      const margin = { top: horizontal ? 0 : axisTop ? 44 : 16, right: 4, bottom: horizontal ? 0 : axisTop ? 16 : 44, left: horizontal ? 64 : 76 };
+      const margin = { top: horizontal ? 0 : axisTop ? 44 : 16, right: 2, bottom: horizontal ? 0 : axisTop ? 16 : 44, left: horizontal ? 64 : 76 };
       let horizontalBarSize = 0;
       let rowHeight = 0;
       let tickOffset = 0;

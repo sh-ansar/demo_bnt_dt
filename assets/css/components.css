@@ -5634,8 +5634,35 @@ textarea.form-input__control--text {
   align-content: start;
 }
 
-.logistics-bar-grid {
+.logistics-bar-grid,
+.analytics-capacity-chart__grid {
   border-top: 1px solid var(--design-elements-border-default);
+}
+
+.analytics-capacity-chart__axis span {
+  position: absolute;
+  top: 0;
+  left: var(--capacity-tick-position);
+  transform: translateX(-100%);
+}
+
+.analytics-capacity-chart__axis span:first-child {
+  transform: none;
+}
+
+.analytics-capacity-chart__label {
+  min-width: 0;
+  display: block;
+  padding: var(--space-1) 0;
+  border-radius: var(--space-1);
+  color: var(--text-primary);
+  font-size: var(--typography-body-smallest-size);
+  line-height: var(--typography-body-smallest-line-height);
+  font-weight: var(--typography-body-smallest-weight);
+  letter-spacing: var(--typography-body-smallest-letter-spacing);
+  text-align: right;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .payment-deviation-chart__viewport {

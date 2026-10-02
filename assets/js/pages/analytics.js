@@ -1071,17 +1071,15 @@
 
 
   const capacityForecast = document.getElementById("capacity-forecast");
+  const capacityAxisMax = 125;
+  const capacityTicks = Array.from({ length: 6 }, (_, index) => index * 25);
 
   capacityForecast.innerHTML = `
 
       <div class="analytics-capacity-chart__plot">
 
         <div class="analytics-capacity-chart__axis" aria-hidden="true">
-          <span>0%</span>
-          <span>25%</span>
-          <span>50%</span>
-          <span>75%</span>
-          <span>100%</span>
+          ${capacityTicks.map(value => `<span style="--capacity-tick-position:${value / capacityAxisMax * 100}%">${value}%</span>`).join("")}
         </div>
 
 
@@ -1089,11 +1087,7 @@
         <div class="analytics-capacity-chart__body">
 
           <div class="analytics-capacity-chart__grid" aria-hidden="true">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
+            ${capacityTicks.map(() => "<span></span>").join("")}
           </div>
 
 
@@ -1134,7 +1128,7 @@
                       ${row[0]}
                     </span>
 
-                    <span class="analytics-capacity-chart__track" style="--capacity-value:${row[1]}%" aria-hidden="true">
+                    <span class="analytics-capacity-chart__track" style="--capacity-value:${row[1] / capacityAxisMax * 100}%" aria-hidden="true">
                       <i class="analytics-capacity-chart__bar analytics-capacity-chart__bar--${row[2]}"></i>
                       <span class="analytics-capacity-chart__value">${row[1]}%</span>
                     </span>
@@ -1661,21 +1655,6 @@
         );
       });
 
-    document
-      .querySelectorAll(
-        "[data-analytics-line-filter]"
-      )
-      .forEach(button => {
-        button.addEventListener(
-          "click",
-          () => {
-            ui.toast(
-              "Фильтр",
-              "Фильтры не применены"
-            );
-          }
-        );
-      });
   }
 
 
@@ -1684,15 +1663,38 @@
       capacityForecast.querySelectorAll(".analytics-capacity-chart__label")
     );
 
-    const labelWidth = labels.reduce(
-      (maxWidth, label) => Math.max(maxWidth, label.scrollWidth),
-      0
-    );
+    const labelWidth = labels.reduce((maxWidth, label) => {
+      label.style.whiteSpace = "nowrap";
+      const range = document.createRange();
+      range.selectNodeContents(label);
+      const textWidth = range.getBoundingClientRect().width;
+      label.style.removeProperty("white-space");
+      return Math.max(maxWidth, textWidth);
+    }, 0);
+    const plot = capacityForecast.querySelector(".analytics-capacity-chart__plot");
+    const axis = capacityForecast.querySelector(".analytics-capacity-chart__axis");
+    const ticks = Array.from(axis.querySelectorAll("span"));
+    const styles = window.getComputedStyle(capacityForecast);
+    const gap = parseFloat(styles.getPropertyValue("--space-2"));
+    const labelLimit = plot.clientWidth
+      - parseFloat(styles.getPropertyValue("--capacity-chart-gap"))
+      - parseFloat(styles.getPropertyValue("--capacity-value-space"))
+      - ticks[0].scrollWidth - ticks[ticks.length - 1].scrollWidth - gap;
 
     capacityForecast.style.setProperty(
       "--capacity-label-width",
-      `${Math.ceil(labelWidth)}px`
+      `${Math.max(0, Math.min(Math.ceil(labelWidth), plot.clientWidth / 2, labelLimit))}px`
     );
+
+    const lastLabelLeft = axis.clientWidth - ticks[ticks.length - 1].scrollWidth;
+    let previousRight = ticks[0].scrollWidth;
+    ticks.forEach((tick, index) => {
+      const position = axis.clientWidth * index / (ticks.length - 1);
+      const visible = index === 0 || index === ticks.length - 1
+        || (position - tick.scrollWidth >= previousRight + gap && position <= lastLabelLeft - gap);
+      tick.style.visibility = visible ? "visible" : "hidden";
+      if (visible && index > 0) previousRight = position;
+    });
   }
 
 
