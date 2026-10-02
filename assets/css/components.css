@@ -7012,7 +7012,7 @@ textarea.form-input__control--text {
 
 .chart-bars--stacked {
   min-width: var(--chart-bars-min-width);
-  height: 420px;
+  height: var(--chart-bars-height, 420px);
   flex: none;
 }
 
@@ -7266,7 +7266,12 @@ path.chart-donut__connector.series-negative {
 
 .chart-donut .chart-donut__slice,
 .chart-donut .chart-donut__connector,
-.chart-bars .chart-bars__segment {
+.chart-bars .chart-bars__segment,
+svg[class*="series-"],
+svg [class*="series-"],
+:is(.chart-viewport, .chart-donut__viewport, .financial-chart__viewport),
+:is(.chart-viewport, .chart-donut__viewport, .financial-chart__viewport) svg :is(rect, path, line, circle, ellipse, polygon, polyline),
+:is(.chart-viewport, .chart-donut__viewport, .financial-chart__viewport) :is([class*="series-"], [class*="__bar"], [class*="__segment"]):has(svg) {
   background: none;
 }
 
