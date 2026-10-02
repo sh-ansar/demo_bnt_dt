@@ -39,7 +39,7 @@ for (const file of ['../assets/js/pages/procurement.js', '../assets/js/pages/ana
   assert.doesNotMatch(source, /class="[^"]*chart__(?:rows|body)"\s+style="[^"]*height:/, `${file} has no inline chart height`);
 }
 const components = await readFile(new URL('../assets/css/components.css', import.meta.url), 'utf8');
-assert.match(components, /\.logistics-bar-grid\s*\{[^}]*border-top: 1px solid var\(--design-elements-border-default\);/);
+assert.match(components, /\.logistics-bar-grid,\s*\.analytics-capacity-chart__grid\s*\{[^}]*border-top: 1px solid var\(--design-elements-border-default\);/);
 for (const file of ['operations.html', 'logistics.html']) {
   const html = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
   const cards = [...html.matchAll(/<article[^>]*data-logistics-overview-card="([^"]+)"[^>]*>([\s\S]*?)<\/article>/g)];

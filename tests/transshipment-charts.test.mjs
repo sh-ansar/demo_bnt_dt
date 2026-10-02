@@ -162,13 +162,13 @@ function assertGeometry({ chart, axis, viewport }) {
   assert.equal(rowStep, labelLineHeight + 24);
   horizontalLines.forEach((line, index) => {
     assert.equal(Number(line[1]), left);
-    assert.equal(Number(line[3]), width - 4);
+    assert.equal(Number(line[3]), width - 2);
     assert.equal(line[2], line[4]);
     assert.ok(Math.abs(Number(line[2]) - Number(horizontalLines[0][2]) - rowStep * index) < .001);
   });
   const verticalLines = [...chart.innerHTML.matchAll(/<line class="chart-bars__vertical-line" x1="([^"]+)"[^>]*x2="([^"]+)"/g)];
   assert.equal(verticalLines.length, ticks.length);
-  assert.equal(Number(verticalLines.at(-1)[1]), width - 4);
+  assert.equal(Number(verticalLines.at(-1)[1]), width - 2);
   assert.ok(rects.length > 0);
   for (const [rect] of rects) {
     const attributes = Object.fromEntries([...rect.matchAll(/([\w-]+)="([^"]*)"/g)].map(match => [match[1], match[2]]));
@@ -296,7 +296,8 @@ assert.equal(modal.hidden, true);
 assert.equal(financialTrigger.attributes['aria-expanded'], 'false');
 assert.equal(financialTrigger.focused, true);
 
-for (const heading of ['Входящий объём по продукту', 'Свободная ёмкость резервуаров', 'Текущий ЕГПЗ']) {
+for (const heading of ['Входящий объём по продукту', 'Свободная ёмкость резервуаров', 'Текущий ЕГПЗ',
+  'Доля контуров в общем риске', 'План vs Факт (Расход / Доход / Прибыль)']) {
   const trigger = openFilter(undefined, heading);
   assert.equal(filterTitle.textContent, `Фильтр: ${heading}`);
   assert.equal(modal.hidden, false);
