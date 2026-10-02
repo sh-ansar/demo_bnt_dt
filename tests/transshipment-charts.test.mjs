@@ -308,6 +308,32 @@ for (const heading of ['Входящий объём по продукту', 'С�
   assert.equal(trigger.focused, true);
 }
 
+for (const [file, filterCount, pillCount] of [['budget-payments.html', 5, 7], ['contracts.html', 4, 5]]) {
+  const html = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
+  const headers = [...html.matchAll(/<header class="chart-card__header">([\s\S]*?)<\/header>/g)]
+    .map(match => match[1]).filter(header => header.includes('data-chart-filter'));
+  assert.equal(headers.length, filterCount, `${file}: all filters use the common drawer`);
+  assert.doesNotMatch(html, /data-(?:cash-filter|payment-filter=|contract-filter=)|__counter|cash-flow-filter-panel/);
+  assert.match(html, /src="\/assets\/js\/chart-filter\.js\?v=\d+"/);
+  assert.equal((html.match(/filter-summary__count_static pill pill--default pill--radius/g) || []).length, pillCount);
+  for (const header of headers) {
+    assert.match(header, /data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"/);
+    const pills = header.match(/<div class="chart-card__filters">([\s\S]*?)<\/div>/)[1];
+    assert.doesNotMatch(pills, /pill--round|pill__title/);
+    assert.equal((pills.match(/filter-summary__count-title/g) || []).length,
+      (pills.match(/class="filter-summary__count-chevron"/g) || []).length);
+    const heading = header.match(/<h[23][^>]*>([^<]+)<\/h[23]>/)[1];
+    const trigger = openFilter(undefined, heading);
+    assert.equal(filterTitle.textContent, `Фильтр: ${heading}`);
+    assert.equal(modal.hidden, false);
+    assert.ok(!drawer.classList.values.has('dt3-drawer_static-date'));
+    modal.events.click({ target: { closest(selector) { return selector.includes('[data-chart-filter-apply]') ? {} : null; } } });
+    assert.equal(modal.hidden, true);
+    assert.equal(trigger.attributes['aria-expanded'], 'false');
+    assert.equal(trigger.focused, true);
+  }
+}
+
 const operationsHtml = await readFile(new URL('../operations.html', import.meta.url), 'utf8');
 const financialHeader = operationsHtml.match(/<header class="financial-overview__header">([\s\S]*?)<\/header>/)[1];
 assert.match(financialHeader, /data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"/);

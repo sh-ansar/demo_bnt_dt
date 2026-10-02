@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/assets/css/tokens.css?v=19">
   <link rel="stylesheet" href="/assets/css/layout.css">
   <link rel="stylesheet" href="/assets/css/components.css?v=245">
-  <link rel="stylesheet" href="/assets/css/pages/operations.css?v=137">
+  <link rel="stylesheet" href="/assets/css/pages/operations.css?v=138">
   <link rel="stylesheet" href="/assets/css/pages/budget-payments.css?v=20">
   <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9128">
 </head>
@@ -114,12 +114,12 @@
                 <h3 id="contract-execution-title" class="typography-caption-small">Исполнение договоров</h3>
               </div>
               <div class="chart-card__filters">
-                <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">с 01.01 по 30.09.2025</span><button type="button" data-contract-filter-clear aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+                <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest"><span class="filter-summary__count-title">с 01.01 по 30.09.2025</span><button class="filter-summary__count-chevron" type="button" data-contract-filter-clear aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
               </div>
             </div>
             <div class="chart-actions">
               <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-contract-export="execution" aria-label="Скачать исполнение договоров"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
-              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-contract-filter="execution"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">1</span></button>
+              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
             </div>
           </header>
           <div class="chart-donut__viewport"><svg class="chart-donut" data-contract-donut="execution" viewBox="0 0 640 390" role="img" aria-label="Исполнение договоров"></svg></div>
@@ -133,12 +133,12 @@
                 <h3 id="contract-issues-title" class="typography-caption-small">Отклонения / проблемные зоны</h3>
               </div>
               <div class="chart-card__filters">
-                <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">с 01.09 по 30.09.2025</span><button type="button" data-contract-filter-clear aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+                <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest"><span class="filter-summary__count-title">с 01.09 по 30.09.2025</span><button class="filter-summary__count-chevron" type="button" data-contract-filter-clear aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
               </div>
             </div>
             <div class="chart-actions">
               <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-contract-export="issues" aria-label="Скачать проблемные зоны"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
-              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-contract-filter="issues"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">1</span></button>
+              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
             </div>
           </header>
           <div class="chart-donut__viewport"><svg class="chart-donut" data-contract-donut="issues" viewBox="0 0 640 390" role="img" aria-label="Отклонения и проблемные зоны"></svg></div>
@@ -163,12 +163,12 @@
               </div>
             </div>
             <div class="chart-card__filters">
-              <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">с 01.09 по 30.09.2025</span><button type="button" data-contract-filter-clear aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+              <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest"><span class="filter-summary__count-title">с 01.09 по 30.09.2025</span><button class="filter-summary__count-chevron" type="button" data-contract-filter-clear aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
             </div>
           </div>
           <div class="chart-actions">
             <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-contract-export="suppliers" aria-label="Скачать данные поставщиков"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
-            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-contract-filter="suppliers"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">1</span></button>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
           </div>
         </header>
 
@@ -190,13 +190,13 @@
             <h2 id="contract-types-title" class="typography-caption-small">Распределение договоров по типам</h2>
           </div>
           <div class="chart-card__filters">
-            <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">с 01.01 по 30.12.2025</span><button type="button" data-contract-filter-clear aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
-            <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">Актау</span><button type="button" data-contract-filter-clear aria-label="Убрать город"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+            <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest"><span class="filter-summary__count-title">с 01.01 по 30.12.2025</span><button class="filter-summary__count-chevron" type="button" data-contract-filter-clear aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+            <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest"><span class="filter-summary__count-title">Актау</span><button class="filter-summary__count-chevron" type="button" data-contract-filter-clear aria-label="Убрать город"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
           </div>
         </div>
         <div class="chart-actions">
           <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-contract-export="types" aria-label="Скачать распределение договоров по типам"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
-          <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-contract-filter="types"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">2</span></button>
+          <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
         </div>
       </header>
 
@@ -244,6 +244,7 @@
   <script src="/assets/js/ui.js?v=12"></script>
   <script src="/assets/js/shell.js?v=9121"></script>
   <script src="/assets/js/chart-donut.js?v=9"></script>
-  <script src="/assets/js/pages/contracts.js?v=6"></script>
+  <script src="/assets/js/chart-filter.js?v=3"></script>
+  <script src="/assets/js/pages/contracts.js?v=7"></script>
 </body>
 </html>

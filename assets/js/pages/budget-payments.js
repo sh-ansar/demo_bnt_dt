@@ -251,10 +251,7 @@
   page.addEventListener('click', function (event) {
     const clearButton = event.target.closest('[data-payment-filter-clear]');
     if (clearButton) {
-      const card = clearButton.closest('[data-payment-chart-card]');
-      clearButton.closest('.pill')?.remove();
-      const counter = card?.querySelector('.button-smallest-secondary-radius__counter');
-      if (counter) counter.textContent = String(card.querySelectorAll('.chart-card__filters .pill').length);
+      clearButton.closest('.filter-summary__count')?.remove();
       return;
     }
 
@@ -282,13 +279,6 @@
       closeDeviationInfo();
       if (popover) popover.hidden = !opening;
       infoButton.setAttribute('aria-expanded', String(opening));
-      return;
-    }
-
-    const filterButton = event.target.closest('[data-payment-filter]');
-    if (filterButton) {
-      const count = filterButton.querySelector('.button-smallest-secondary-radius__counter')?.textContent || '0';
-      toast('Фильтр', `Выбрано параметров: ${count}`);
       return;
     }
 

@@ -136,8 +136,7 @@
   page.addEventListener('click', function (event) {
     const clearButton = event.target.closest('[data-contract-filter-clear]');
     if (clearButton) {
-      clearButton.closest('.pill')?.remove();
-      toast('Фильтр', 'Период удалён');
+      clearButton.closest('.filter-summary__count')?.remove();
       return;
     }
 
@@ -152,13 +151,6 @@
 
     if (event.target.closest('[data-contract-info-close]')) {
       closeInfo();
-      return;
-    }
-
-    const filterButton = event.target.closest('[data-contract-filter]');
-    if (filterButton) {
-      const count = filterButton.querySelector('.button-smallest-secondary-radius__counter')?.textContent || '0';
-      toast('Фильтр', `Выбрано параметров: ${count}`);
       return;
     }
 

@@ -1790,9 +1790,6 @@
   const tooltip = root.querySelector('[data-cash-tooltip]');
   const periodLabel = root.querySelector('[data-cash-period-label]');
   const resetButton = root.querySelector('[data-cash-reset]');
-  const filterButton = root.querySelector('[data-cash-filter]');
-  const filterPanel = root.querySelector('[data-cash-filter-panel]');
-  const monthOptions = root.querySelector('[data-cash-month-options]');
   const infoButton = root.querySelector('[data-cash-info]');
   const infoPopover = root.querySelector('[data-cash-info-popover]');
   const formatNumber = new Intl.NumberFormat('ru-RU');
@@ -1950,9 +1947,6 @@
     chart.innerHTML = svg.join('');
     chart.setAttribute('aria-label', selectedMonth === null ? 'Оплаты по месяцам: план, факт и дельта за 2026 год' : `Оплаты по неделям: ${months[selectedMonth]} 2026 года`);
     periodLabel.textContent = selectedMonth === null ? 'с 01.01 по 31.12.2026' : monthRange(selectedMonth);
-    root.querySelectorAll('[data-cash-period-option]').forEach(function (option) {
-      option.classList.toggle('is-active', option.dataset.cashPeriodOption === (selectedMonth === null ? 'year' : String(selectedMonth)));
-    });
     tooltip.hidden = true;
     if (selectedMonth !== null) {
       const weekCount = currentView().length;
@@ -1988,12 +1982,7 @@
   }
 
   function closeFilter() {
-    if (filterPanel) {
-      filterPanel.hidden = true;
-      filterButton.setAttribute('aria-expanded', 'false');
-    } else {
-      window.BNTChartFilter?.close();
-    }
+    window.BNTChartFilter?.close();
   }
 
   function closeInfo() {
@@ -2007,12 +1996,6 @@
     closeFilter();
     const focusCenter = render();
     viewport.scrollLeft = Math.max(0, focusCenter - viewport.clientWidth / 2);
-  }
-
-  if (monthOptions) {
-    monthOptions.innerHTML = months.map(function (month, index) {
-      return `<button class="cash-flow__filter-option typography-body-small" type="button" data-cash-period-option="${index}">${escapeXml(month)}</button>`;
-    }).join('');
   }
 
   chart.addEventListener('pointerover', function (event) {
@@ -2057,21 +2040,6 @@
   }, { passive: false });
 
   resetButton.addEventListener('click', function () { selectedMonth = null; render(); viewport.scrollLeft = 0; });
-  if (filterButton && filterPanel) {
-    filterButton.addEventListener('click', function () {
-      const opening = filterPanel.hidden;
-      closeInfo();
-      filterPanel.hidden = !opening;
-      filterButton.setAttribute('aria-expanded', String(opening));
-    });
-    root.querySelector('[data-cash-filter-close]').addEventListener('click', closeFilter);
-    filterPanel.addEventListener('click', function (event) {
-      const option = event.target.closest('[data-cash-period-option]');
-      if (!option) return;
-      if (option.dataset.cashPeriodOption === 'year') { selectedMonth = null; closeFilter(); render(); viewport.scrollLeft = 0; }
-      else drill(Number(option.dataset.cashPeriodOption));
-    });
-  }
 
   infoButton.addEventListener('click', function () {
     const opening = infoPopover.hidden;
@@ -2081,7 +2049,6 @@
   });
   root.querySelector('[data-cash-info-close]').addEventListener('click', closeInfo);
   document.addEventListener('click', function (event) {
-    if (filterPanel && !event.target.closest('.cash-flow__filter')) closeFilter();
     if (!event.target.closest('.origin-title-info') || !root.contains(event.target)) closeInfo();
   });
   document.addEventListener('keydown', function (event) {

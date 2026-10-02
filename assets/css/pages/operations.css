@@ -1512,57 +1512,6 @@
   text-align: left;
 }
 
-.cash-flow__filter {
-  position: relative;
-}
-
-.cash-flow__filter-panel {
-  position: absolute;
-  z-index: 30;
-  top: calc(100% + var(--space-2));
-  right: 0;
-  width: min(220px, calc(100vw - 48px));
-  padding: var(--space-3);
-  display: grid;
-  gap: var(--space-2);
-  border: 1px solid var(--design-elements-border-default);
-  border-radius: var(--space-2);
-  background: var(--background-surface-4);
-  box-shadow: var(--shadow-raised);
-}
-
-.cash-flow__filter-panel[hidden] {
-  display: none;
-}
-
-.cash-flow__filter-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.cash-flow__filter-option {
-  min-width: 0;
-  padding: var(--space-2);
-  border: 0;
-  border-radius: var(--space-1);
-  background: transparent;
-  color: var(--text-primary);
-  text-align: left;
-  cursor: pointer;
-}
-
-.cash-flow__filter-option:hover,
-.cash-flow__filter-option.is-active {
-  background: var(--interaction-bg-hover-modifier-light);
-}
-
-.cash-flow__filter-months {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-1);
-}
-
 .transshipment-analytics__bottom-grid {
   min-width: 0;
   display: grid;
