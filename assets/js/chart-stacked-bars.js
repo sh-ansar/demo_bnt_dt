@@ -24,7 +24,7 @@
     const { host, id, title, tabs, datasets } = options;
     let series = options.series;
     const horizontal = options.orientation === 'horizontal';
-    const axisTop = options.axisPosition === 'top';
+    const axisTop = horizontal || options.axisPosition === 'top';
     const unit = options.unit || 'МТ';
     const categoryLabel = options.categoryLabel || 'Период';
     host.insertAdjacentHTML(options.position || 'beforeend', `
@@ -44,12 +44,15 @@
         <div class="chart-tabs chart-tabs--four" role="tablist" aria-label="${escape(title)}">
           ${tabs.map((tab, index) => `<button id="${escape(id)}-tab-${index}" class="typography-label-small${index === 0 ? ' is-active' : ''}" type="button" role="tab" aria-selected="${index === 0}" tabindex="${index === 0 ? 0 : -1}" aria-controls="${escape(id)}-panel" data-stacked-tab="${escape(tab.key)}">${escape(tab.label)}</button>`).join('')}
         </div>
-        <div id="${escape(id)}-panel" class="chart-viewport chart-scrollbar" role="tabpanel" aria-labelledby="${escape(id)}-tab-0" tabindex="0">
+        <div id="${escape(id)}-panel" class="chart-viewport" role="tabpanel" aria-labelledby="${escape(id)}-tab-0">
+          ${horizontal ? '<svg class="chart-viewport__axis" data-stacked-axis aria-hidden="true"></svg>' : ''}
+          <div class="chart-viewport__plot chart-scrollbar" tabindex="0" role="region" aria-label="${escape(title)}">
           <svg class="chart-bars chart-bars--stacked" role="group" aria-label="${escape(title)}"></svg>
           <div class="chart-tooltip typography-body-smallest" role="tooltip" hidden>
             <strong class="chart-tooltip__title typography-caption-small" data-tooltip-title></strong>
             <div><span>${escape(categoryLabel)}</span><strong data-tooltip-period></strong></div>
             <div><span>Кол-во, ${escape(unit)}</span><strong data-tooltip-value></strong></div>
+          </div>
           </div>
         </div>
         <div class="chart-legend chart-legend--wrap typography-body-smallest" aria-label="Легенда диаграммы">
@@ -59,7 +62,9 @@
     `);
     const card = host.querySelector(`[data-stacked-card="${id}"]`);
     const chart = card.querySelector('.chart-bars');
-    const viewport = card.querySelector('.chart-viewport');
+    const panel = card.querySelector('.chart-viewport');
+    const viewport = card.querySelector('.chart-viewport__plot');
+    const axis = card.querySelector('[data-stacked-axis]');
     const tooltip = card.querySelector('.chart-tooltip');
     const legend = card.querySelector('.chart-legend');
     const tabButtons = Array.from(card.querySelectorAll('[data-stacked-tab]'));
@@ -74,13 +79,16 @@
 
     function render(focusKey) {
       visibleRows = getView();
-      const minWidth = horizontal ? 1120 : Math.max(960, visibleRows.length * 56 + 94);
-      chart.style.setProperty('--chart-bars-min-width', `${minWidth}px`);
-      const width = Math.max(minWidth, Math.round(viewport.clientWidth || minWidth));
-      const margin = { top: axisTop ? 44 : 16, right: 18, bottom: axisTop ? 16 : 44, left: horizontal ? 64 : 76 };
+      const width = horizontal
+        ? Math.round(viewport.clientWidth || 1440)
+        : Math.max(960, visibleRows.length * 56 + 94, Math.round(viewport.clientWidth || 1440));
+      const margin = { top: horizontal ? 0 : axisTop ? 44 : 16, right: 18, bottom: horizontal ? 0 : axisTop ? 16 : 44, left: horizontal ? 64 : 76 };
       let horizontalBarSize = 0;
       let rowHeight = 0;
       let tickOffset = 0;
+      let axisHeight = 0;
+      let labelHeight = 0;
+      let tickWidth = 0;
       if (horizontal) {
         const styles = window.getComputedStyle(chart);
         horizontalBarSize = parseFloat(styles.getPropertyValue('--chart-bars-bar-size'));
@@ -90,9 +98,12 @@
         label.setAttribute('class', 'chart-bars__category');
         label.textContent = visibleRows[0]?.label || '0';
         chart.appendChild(label);
-        const labelHeight = parseFloat(window.getComputedStyle(label).lineHeight) || label.getBBox().height;
+        labelHeight = parseFloat(window.getComputedStyle(label).lineHeight) || label.getBBox().height;
+        label.textContent = numberFormat.format(options.axisMax);
+        tickWidth = label.getComputedTextLength();
         label.remove();
         rowHeight = Math.max(horizontalBarSize, labelHeight) + rowPadding * 2;
+        axisHeight = labelHeight + tickOffset;
       }
       const height = horizontal ? visibleRows.length * rowHeight + margin.top + margin.bottom : 420;
       chart.style.setProperty('--chart-bars-height', `${height}px`);
@@ -103,17 +114,25 @@
       const rawMax = Math.max(options.axisMax, largest);
       const step = options.tickStep || rawMax / 6;
       const max = options.tickStep ? Math.ceil(rawMax / step) * step : rawMax;
+      const tickCount = Math.round(max / step);
+      const tickSpacing = plotWidth / tickCount;
+      const labelStride = Math.max(1, Math.ceil((tickWidth + tickOffset) / tickSpacing));
       const order = series.map((_, index) => index);
       if (selectedSeries !== null) order.unshift(...order.splice(order.indexOf(selectedSeries), 1));
       const svg = [];
+      const axisLabels = [];
       for (let tick = 0; tick * step <= max; tick += 1) {
         const value = tick * step;
         const x = margin.left + plotWidth * value / max;
         const y = bottom - plotHeight * value / max;
         const label = escape(options.formatTick ? options.formatTick(value) : numberFormat.format(value));
-        svg.push(horizontal
-          ? `<line class="chart-bars__vertical-line" x1="${x}" y1="${margin.top}" x2="${x}" y2="${bottom}"/><text class="chart-bars__tick" x="${x - tickOffset}" y="${axisTop ? margin.top - 16 : bottom + 26}" text-anchor="end" data-tick-value="${value}">${label}</text>`
-          : `<line class="chart-bars__grid-line" x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}"/><text class="chart-bars__tick" x="${margin.left - 10}" y="${y + 5}" text-anchor="end">${label}</text>`);
+        if (horizontal) {
+          svg.push(`<line class="chart-bars__vertical-line" x1="${x}" y1="${margin.top}" x2="${x}" y2="${bottom}"/>`);
+          const visible = tick === 0 || tick === tickCount || (tick % labelStride === 0 && (tickCount - tick) * tickSpacing >= tickWidth + tickOffset);
+          axisLabels.push(`<text class="chart-bars__tick" x="${x - tickOffset}" y="${labelHeight}" text-anchor="end" data-tick-value="${value}"${visible ? '' : ' visibility="hidden"'}>${label}</text>`);
+        } else {
+          svg.push(`<line class="chart-bars__grid-line" x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}"/><text class="chart-bars__tick" x="${margin.left - 10}" y="${y + 5}" text-anchor="end">${label}</text>`);
+        }
       }
       if (horizontal) {
         for (let boundary = 0; boundary <= visibleRows.length; boundary += 1) {
@@ -150,6 +169,12 @@
         svg.push(`<line class="chart-bars__axis-line" x1="${margin.left}" y1="${axisY}" x2="${width - margin.right}" y2="${axisY}"/>`);
       }
       chart.setAttribute('viewBox', `0 0 ${width} ${height}`);
+      if (axis) {
+        axis.setAttribute('viewBox', `0 0 ${width} ${axisHeight}`);
+        axis.style.width = `${width}px`;
+        axis.style.setProperty('--chart-axis-height', `${axisHeight}px`);
+        axis.innerHTML = axisLabels.join('');
+      }
       chart.setAttribute('aria-label', `${title}: ${tabs.find(tab => tab.key === activeTab).label}`);
       chart.innerHTML = svg.join('');
       legend.querySelectorAll('[data-stacked-series]').forEach(item => {
@@ -195,7 +220,7 @@
         button.classList.toggle('is-active', active);
         button.setAttribute('aria-selected', String(active));
         button.tabIndex = active ? 0 : -1;
-        if (active) viewport.setAttribute('aria-labelledby', button.id);
+        if (active) panel.setAttribute('aria-labelledby', button.id);
       });
       render();
     }

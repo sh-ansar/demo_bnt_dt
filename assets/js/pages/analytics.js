@@ -1085,6 +1085,7 @@
         </div>
 
 
+        <div class="chart-viewport__plot chart-scrollbar">
         <div class="analytics-capacity-chart__body">
 
           <div class="analytics-capacity-chart__grid" aria-hidden="true">
@@ -1151,6 +1152,7 @@
       </div>
 
 
+      </div>
       <div class="analytics-capacity-chart__legend" aria-label="Легенда графика">
         <span><i class="analytics-capacity-chart__legend-dot analytics-capacity-chart__legend-dot--primary"></i>Базовый</span>
         <span><i class="analytics-capacity-chart__legend-dot analytics-capacity-chart__legend-dot--positive"></i>Улучшение</span>
@@ -1293,7 +1295,7 @@
       String(tickCount - 1)
     );
     chart.innerHTML =
-      `<div class="payment-deviation-chart__axis" aria-hidden="true">${ticks}</div><div class="chart-scrollbar" style="max-height:calc(320px - var(--space-5));overflow:auto;scrollbar-gutter:stable"><div class="payment-deviation-chart__body"><div class="payment-deviation-chart__grid" aria-hidden="true">${grid}</div><div class="payment-deviation-chart__rows">${rows}</div></div></div>`;
+      `<div class="payment-deviation-chart__axis" aria-hidden="true">${ticks}</div><div class="chart-viewport__plot chart-scrollbar"><div class="payment-deviation-chart__body"><div class="payment-deviation-chart__grid" aria-hidden="true">${grid}</div><div class="payment-deviation-chart__rows">${rows}</div></div></div>`;
   }
 
 
@@ -1420,7 +1422,7 @@
       String(tickCount - 1)
     );
     chart.innerHTML =
-      `<div class="payment-deviation-chart__axis" aria-hidden="true">${ticks}</div><div class="payment-deviation-chart__body"><div class="payment-deviation-chart__grid" aria-hidden="true">${grid}</div><div class="payment-deviation-chart__rows">${rows}</div></div>`;
+      `<div class="payment-deviation-chart__axis" aria-hidden="true">${ticks}</div><div class="chart-viewport__plot chart-scrollbar"><div class="payment-deviation-chart__body"><div class="payment-deviation-chart__grid" aria-hidden="true">${grid}</div><div class="payment-deviation-chart__rows">${rows}</div></div></div>`;
   }
 
 
@@ -1483,7 +1485,7 @@
       String(tickCount - 1)
     );
     chart.innerHTML =
-      `<div class="payment-deviation-chart__axis" aria-hidden="true">${ticks}</div><div class="payment-deviation-chart__body"><div class="payment-deviation-chart__grid" aria-hidden="true">${grid}</div><div class="payment-deviation-chart__rows">${rows}</div></div>`;
+      `<div class="payment-deviation-chart__axis" aria-hidden="true">${ticks}</div><div class="chart-viewport__plot chart-scrollbar"><div class="payment-deviation-chart__body"><div class="payment-deviation-chart__grid" aria-hidden="true">${grid}</div><div class="payment-deviation-chart__rows">${rows}</div></div></div>`;
   }
 
 

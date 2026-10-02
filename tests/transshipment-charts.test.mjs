@@ -247,8 +247,12 @@ openFilter('static-date');
 assert.ok(drawer.classList.values.has('dt3-drawer_static-date'));
 
 const css = await readFile(new URL('../assets/css/components.css', import.meta.url), 'utf8');
+assert.match(css, /\.chart-bars,\s*\.chart-donut\s*\{[^}]*outline: 0;/);
+assert.match(css, /\.chart-bars__segment:focus-visible\s*\{[^}]*stroke: var\(--design-elements-border-strong\);/);
 assert.match(css, /\.chart-bars--stacked\s*\{\s*--chart-bars-bar-size: var\(--space-3\);/);
-assert.match(css, /\.chart-bars--stacked \.chart-bars__axis-line\s*\{\s*stroke-width: 2;/);
+assert.match(css, /\.chart-bars__axis-line\s*\{\s*stroke: var\(--design-elements-icon-primary\);\s*stroke-width: 1;/);
+assert.doesNotMatch(css, /\.chart-bars--stacked \.chart-bars__axis-line/);
+assert.match(css, /\.chart-bars__grid-line,\s*\.chart-bars__vertical-line\s*\{\s*stroke: var\(--design-elements-border-default\);\s*stroke-width: 1;/);
 assert.match(css, /\.dt3-drawer_static-date \[data-chart-departments-filter\]\s*\{\s*display: none;/);
 assert.doesNotMatch(css, /chart-viewport--horizontal/);
 assert.doesNotMatch(engine, /chart-viewport--horizontal/);

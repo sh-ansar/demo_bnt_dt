@@ -3379,7 +3379,7 @@ textarea.form-input__control--text {
 }
 
 .quality-detail-drawer-card__chart .payment-deviation-chart__track {
-  height: var(--space-2);
+  height: var(--space-4);
 }
 
 .quality-detail-drawer-card__chart .payment-deviation-chart__label {
@@ -4368,7 +4368,11 @@ textarea.form-input__control--text {
 }
 
 .chart-card {
+  --chart-card-max-height: 640px;
+  box-sizing: border-box;
   min-width: 0;
+  min-height: 0;
+  max-height: var(--chart-card-max-height);
   padding: var(--space-3);
   display: flex;
   flex-direction: column;
@@ -5400,7 +5404,7 @@ textarea.form-input__control--text {
 
 .origin-breakdown__bar {
   min-width: 0;
-  height: var(--space-5);
+  height: var(--space-4);
   display: flex;
   overflow: hidden;
   background: transparent;
@@ -5733,7 +5737,7 @@ textarea.form-input__control--text {
 .payment-deviation-chart__track {
   position: relative;
   min-width: 0;
-  height: var(--space-3);
+  height: var(--space-4);
 }
 
 .payment-deviation-chart__bar {
@@ -5904,7 +5908,7 @@ textarea.form-input__control--text {
 .procurement-plan-fact-chart__track {
   position: relative;
   min-width: 0;
-  height: var(--space-3);
+  height: var(--space-4);
 }
 
 .procurement-plan-fact-chart__bar,
@@ -5935,7 +5939,7 @@ textarea.form-input__control--text {
 .procurement-budget-deviation-chart__range {
   position: relative;
   min-width: 0;
-  height: var(--space-3);
+  height: var(--space-4);
   display: block;
   cursor: pointer;
 }
@@ -6800,6 +6804,48 @@ textarea.form-input__control--text {
   overflow-x: auto;
 }
 
+.chart-card > * {
+  flex-shrink: 0;
+}
+
+.chart-card > :is(.chart-viewport, .chart-donut__viewport, .financial-chart__viewport, .origin-chart-panel, .logistics-bar-list, .payment-risk-map__content) {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+.chart-card .chart-viewport:has(.chart-viewport__plot),
+.chart-card :is(.payment-deviation-chart, .procurement-plan-fact-chart, .procurement-budget-deviation-chart, .procurement-stock-chart, .procurement-turnover-bar-chart, .analytics-capacity-chart__plot, .logistics-bar-list) {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.chart-card :is(.payment-deviation-chart__axis, .procurement-plan-fact-chart__axis, .procurement-budget-deviation-chart__axis, .procurement-stock-chart__axis, .procurement-turnover-bar-chart__axis, .analytics-capacity-chart__axis, .logistics-bar-scale) {
+  flex: none;
+  margin-right: var(--progress-bar-track-scroll-size);
+}
+
+.chart-viewport__plot {
+  position: relative;
+  flex: 0 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-gutter: stable;
+  outline: 0;
+}
+
+.chart-viewport__axis {
+  flex: none;
+  width: 100%;
+  height: var(--chart-axis-height, var(--space-5));
+  display: block;
+  overflow: hidden;
+}
+
 .table-wrap,
 .modal-card,
 .drawer-body,
@@ -7021,12 +7067,12 @@ textarea.form-input__control--text {
   width: 100%;
   height: auto;
   display: block;
+  outline: 0;
   font-family: var(--font-family-primary);
 }
 
 .chart-bars--stacked {
-  --chart-bars-bar-size: var(--space-3);
-  min-width: var(--chart-bars-min-width);
+  --chart-bars-bar-size: var(--space-4);
   height: var(--chart-bars-height, 420px);
   flex: none;
 }
@@ -7051,10 +7097,6 @@ textarea.form-input__control--text {
   stroke: var(--design-elements-icon-primary);
   stroke-width: 1;
   vector-effect: non-scaling-stroke;
-}
-
-.chart-bars--stacked .chart-bars__axis-line {
-  stroke-width: 2;
 }
 
 .chart-bars__tick,

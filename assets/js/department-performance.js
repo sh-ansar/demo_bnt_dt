@@ -41,6 +41,7 @@
             <div class="payment-deviation-chart__axis" aria-hidden="true">
               <span>80</span><span>82</span><span>84</span><span>86</span><span>88</span><span>90</span><span>92</span><span>94</span><span>96</span><span>98</span><span>100</span>
             </div>
+            <div class="chart-viewport__plot chart-scrollbar">
             <div class="payment-deviation-chart__body">
               <div class="payment-deviation-chart__grid" aria-hidden="true">
                 <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
@@ -82,6 +83,7 @@
                   </span>
                 </div>
               </div>
+            </div>
             </div>
           </div>
         </div>

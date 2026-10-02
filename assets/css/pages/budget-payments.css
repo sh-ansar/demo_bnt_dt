@@ -140,7 +140,7 @@
 .payment-deviation-chart__track {
   position: relative;
   min-width: 0;
-  height: var(--space-3);
+  height: var(--space-4);
 }
 
 .payment-deviation-chart__bar {
