@@ -6,9 +6,9 @@
   <title>BNT — Операционная аналитика</title>
   <link rel="stylesheet" href="/assets/css/tokens.css?v=19">
   <link rel="stylesheet" href="/assets/css/layout.css">
-  <link rel="stylesheet" href="/assets/css/components.css?v=231">
+  <link rel="stylesheet" href="/assets/css/components.css?v=232">
   <link rel="stylesheet" href="/assets/css/pages/budget-payments.css?v=16">
-  <link rel="stylesheet" href="/assets/css/pages/operations.css?v=135">
+  <link rel="stylesheet" href="/assets/css/pages/operations.css?v=136">
   <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9128">
 </head>
 <body data-page="operations">
@@ -299,19 +299,12 @@
               </div>
             </div>
             <div class="chart-card__filters">
-              <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title" data-cash-period-label>с 01.01 по 31.12.2026</span><button type="button" data-cash-reset aria-label="Сбросить выбранный месяц"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+              <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest"><span class="filter-summary__count-title" data-cash-period-label>с 01.01 по 31.12.2026</span><button class="filter-summary__count-chevron" type="button" data-cash-reset aria-label="Сбросить выбранный месяц"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
             </div>
           </div>
           <div class="chart-actions">
             <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-cash-export aria-label="Скачать данные оплат"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
-            <div class="cash-flow__filter">
-              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-cash-filter aria-expanded="false" aria-controls="cash-flow-filter-panel"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">1</span></button>
-              <div id="cash-flow-filter-panel" class="cash-flow__filter-panel" data-cash-filter-panel role="dialog" aria-label="Фильтр по периоду" hidden>
-                <div class="cash-flow__filter-heading"><strong class="typography-label-small">Период</strong><button class="origin-breakdown__info-close" type="button" data-cash-filter-close aria-label="Закрыть фильтр"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></div>
-                <button class="cash-flow__filter-option typography-body-small" type="button" data-cash-period-option="year">Весь 2026 год</button>
-                <div class="cash-flow__filter-months" data-cash-month-options></div>
-              </div>
-            </div>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
             <a class="section-expand-link button-smallest-secondary-radius typography-button-smallest" href="/reports" aria-label="К управленческой отчетности">
               <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
               <span>К управленческой отчетности</span>
@@ -401,118 +394,7 @@
           <span>К Pelogas</span>
         </a>
       </header>
-
-      <article class="chart-card chart-card--wide" aria-labelledby="transshipment-volume-title">
-        <header class="chart-card__header">
-          <div class="chart-card__heading">
-            <div class="chart-card__title-row">
-              <h3 id="transshipment-volume-title" class="typography-caption-small">Объем перевалки по периодам</h3>
-              <button class="sign_BTN_smallest info-icon-button" type="button" data-transshipment-info="volume" aria-label="Информация об объеме перевалки">
-                <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
-              </button>
-            </div>
-            <div class="chart-card__filters">
-              <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title" data-transshipment-period-label>с 01.01.2020 до 31.12.2025</span><button type="button" aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
-              <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">Ед. изм. МТ</span><button type="button" aria-label="Убрать единицу измерения"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
-            </div>
-          </div>
-          <div class="chart-actions">
-            <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-transshipment-export="volume" aria-label="Скачать данные об объеме перевалки"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
-            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-transshipment-filter="volume"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">2</span></button>
-          </div>
-        </header>
-        <div class="chart-tabs" role="tablist" aria-label="Операция перевалки">
-          <button class="typography-label-small is-active" type="button" role="tab" aria-selected="true" data-transshipment-tab="shipment">Отгрузка</button>
-          <button class="typography-label-small" type="button" role="tab" aria-selected="false" data-transshipment-tab="receipt">Приёмка</button>
-          <button class="typography-label-small" type="button" role="tab" aria-selected="false" data-transshipment-tab="storage">Хранение</button>
-        </div>
-        <div class="chart-viewport chart-scrollbar" data-transshipment-chart-viewport>
-          <svg class="chart-bars" data-transshipment-cylinder viewBox="0 0 1440 420" role="img" aria-label="Объем перевалки по периодам"></svg>
-          <div class="chart-tooltip typography-body-smallest" data-chart-tooltip data-transshipment-chart-tooltip role="tooltip" hidden>
-            <strong class="chart-tooltip__title typography-caption-small" data-tooltip-title></strong>
-            <div><span>Период</span><strong data-tooltip-period></strong></div>
-            <div><span>Кол-во</span><strong data-tooltip-value></strong></div>
-          </div>
-        </div>
-        <div class="chart-legend typography-body-smallest" data-transshipment-cylinder-legend aria-label="Легенда диаграммы">
-          <span class="chart-legend__item" data-transshipment-series="0" role="button" tabindex="0"><i class="chart-legend__dot series-crude"></i>Crude Oil</span>
-          <span class="chart-legend__item" data-transshipment-series="2" role="button" tabindex="0"><i class="chart-legend__dot series-dark"></i>Dark</span>
-          <span class="chart-legend__item" data-transshipment-series="3" role="button" tabindex="0"><i class="chart-legend__dot series-gas"></i>Gas</span>
-          <span class="chart-legend__item" data-transshipment-series="1" role="button" tabindex="0"><i class="chart-legend__dot series-light"></i>Light</span>
-        </div>
-      </article>
-
-      <div class="chart-grid--two-column">
-        <article class="chart-card" aria-labelledby="transshipment-product-title">
-          <header class="chart-card__header">
-            <div class="chart-card__heading">
-              <div class="chart-card__title-row">
-                <h3 id="transshipment-product-title" class="typography-caption-small">Объем перевалки по периодам</h3>
-                <button class="sign_BTN_smallest info-icon-button" type="button" data-transshipment-info="products" aria-label="Информация о продуктах"><svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg></button>
-              </div>
-              <div class="chart-card__filters">
-                <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">с 01.09 по 30.09.2025</span><button type="button" aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
-                <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">Ед. изм. МТ</span><button type="button" aria-label="Убрать единицу измерения"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
-              </div>
-            </div>
-            <div class="chart-actions">
-              <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-transshipment-export="products" aria-label="Скачать данные по продуктам"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
-              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-transshipment-filter="products"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">2</span></button>
-            </div>
-          </header>
-          <div class="chart-tabs" role="tablist" aria-label="Операция по продуктам">
-            <button class="typography-label-small is-active" type="button" role="tab" aria-selected="true" data-product-tab="shipment">Отгрузка</button>
-            <button class="typography-label-small" type="button" role="tab" aria-selected="false" data-product-tab="receipt">Приёмка</button>
-            <button class="typography-label-small" type="button" role="tab" aria-selected="false" data-product-tab="storage">Хранение</button>
-          </div>
-          <div class="chart-donut__viewport"><svg class="chart-donut" data-transshipment-donut viewBox="0 0 640 390" role="img" aria-label="Распределение объема перевалки по нефтепродуктам"></svg></div>
-          <div class="chart-legend chart-legend--wrap typography-body-smallest" data-product-legend aria-label="Легенда нефтепродуктов"></div>
-        </article>
-
-        <article class="chart-card chart-card--origin" aria-labelledby="transshipment-origin-title">
-          <header class="chart-card__header">
-            <div class="chart-card__heading">
-              <div class="chart-card__title-row">
-                <h3 id="transshipment-origin-title" class="typography-caption-small">Происхождение нефтепродукта</h3>
-                <div class="origin-title-info">
-                  <button class="sign_BTN_smallest info-icon-button" type="button" data-transshipment-info="origin" aria-expanded="false" aria-controls="origin-title-info" aria-label="Информация о происхождении нефтепродукта"><svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg></button>
-                  <div id="origin-title-info" class="origin-breakdown__info-popover" data-origin-info-popover role="dialog" aria-label="Информация о диаграмме" hidden>
-                    <button class="origin-breakdown__info-close" type="button" data-origin-info-close aria-label="Закрыть информацию"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button>
-                    <p class="typography-body-smallest">«Все» показывает долю стран. «По типам», «По сортам» и «По кодам FPN» показывают состав внутри выбранной страны. Разбивка демонстрационная.</p>
-                  </div>
-                </div>
-              </div>
-              <div class="chart-card__filters">
-                <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">за 2025 год</span><button type="button" aria-label="Убрать год"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
-                <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">Ед. изм. МТ</span><button type="button" aria-label="Убрать единицу измерения"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
-              </div>
-            </div>
-            <div class="chart-actions">
-              <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-transshipment-export="origin" aria-label="Скачать данные о происхождении"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
-              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-transshipment-filter="origin"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">2</span></button>
-            </div>
-          </header>
-          <div class="chart-tabs chart-tabs--four" role="tablist" aria-label="Группировка происхождения">
-            <button id="origin-tab-all" class="typography-label-small is-active" type="button" role="tab" aria-selected="true" aria-controls="origin-chart-panel" data-origin-tab="all">Все</button>
-            <button id="origin-tab-type" class="typography-label-small" type="button" role="tab" aria-selected="false" aria-controls="origin-chart-panel" tabindex="-1" data-origin-tab="type">По типам</button>
-            <button id="origin-tab-grade" class="typography-label-small" type="button" role="tab" aria-selected="false" aria-controls="origin-chart-panel" tabindex="-1" data-origin-tab="grade">По сортам</button>
-            <button id="origin-tab-fpn" class="typography-label-small" type="button" role="tab" aria-selected="false" aria-controls="origin-chart-panel" tabindex="-1" data-origin-tab="fpn">По кодам FPN</button>
-          </div>
-          <div id="origin-chart-panel" class="origin-chart-panel" role="tabpanel" aria-labelledby="origin-tab-all" data-origin-panel>
-            <div class="chart-donut__viewport" data-origin-pie-viewport><svg class="chart-donut" data-transshipment-pie viewBox="0 0 640 390" role="img" aria-label="Распределение нефтепродуктов по происхождению"></svg></div>
-            <div class="chart-legend chart-legend--wrap typography-body-smallest" data-origin-legend aria-label="Легенда происхождения"></div>
-            <div class="origin-breakdown" data-origin-breakdown hidden>
-              <div class="origin-breakdown__plot">
-                <div class="origin-breakdown__grid" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
-                <div class="origin-breakdown__scale" aria-hidden="true"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
-                <div class="origin-breakdown__rows" data-origin-rows></div>
-              </div>
-              <div class="origin-breakdown__details" data-origin-details aria-live="polite"></div>
-              <div class="origin-breakdown__tooltip" data-origin-tooltip role="tooltip" hidden><strong data-origin-tooltip-title></strong><span data-origin-tooltip-value></span></div>
-            </div>
-          </div>
-        </article>
-      </div>
+      <div class="div-block" data-transshipment-charts></div>
     </section>
     <section class="egpz-summary" data-egpz-summary aria-labelledby="egpz-summary-title">
       <header class="egpz-summary__header">
@@ -576,7 +458,9 @@
   <script src="/assets/js/data/logistics.js"></script>
   <script src="/assets/js/shell.js?v=9121"></script>
   <script src="/assets/js/chart-donut.js?v=10"></script>
-  <script src="/assets/js/department-performance.js?v=1"></script>
-  <script src="/assets/js/pages/operations.js?v=94"></script>
+  <script src="/assets/js/chart-filter.js?v=1"></script>
+  <script src="/assets/js/department-performance.js?v=2"></script>
+  <script src="/assets/js/transshipment-analytics.js?v=2"></script>
+  <script src="/assets/js/pages/operations.js?v=95"></script>
 </body>
 </html>
