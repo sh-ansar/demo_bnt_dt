@@ -6,39 +6,42 @@
   <title>BNT — ТОиР</title>
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/css/layout.css">
-  <link rel="stylesheet" href="/assets/css/components.css?v=224">
+  <link rel="stylesheet" href="/assets/css/components.css?v=225">
   <link rel="stylesheet" href="/assets/css/pages/enterprise.css?v=40">
   <link rel="stylesheet" href="/assets/css/pages/analytics-v91.css?v=9160">
   <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9128">
 </head>
 <body data-page="toir">
 <main id="page-content" class="page-content analytics-page">
-  <section id="toir-evidence-primary" class="kpi-grid toir-kpi-grid" aria-label="Ключевые показатели фактической базы"></section>
-  <section id="toir-evidence-secondary" class="kpi-grid toir-kpi-grid" aria-label="Дополнительные показатели фактической базы"></section>
+  <section class="content-block" aria-label="Качество ремонта">
+    <div class="div-block" aria-label="Дополнительные показатели фактической базы">
+      <section id="toir-evidence-secondary" class="kpi-grid toir-kpi-grid" aria-label="Дополнительные показатели фактической базы"></section>
+    </div>
 
-  <section class="repair-quality-report" data-toir-quality-report aria-labelledby="toir-quality-report-title">
-    <header class="chart-card__header">
-      <div class="title-table-legend__heading">
-        <div class="chart-card__title-row">
-          <h4 id="toir-quality-report-title" class="title-table-legend typography-h4">Отчет по качеству ремонта</h4>
+    <section class="repair-quality-report div-block" data-toir-quality-report aria-labelledby="toir-quality-report-title">
+      <header class="chart-card__header">
+        <div class="title-table-legend__heading">
+          <div class="chart-card__title-row">
+            <h4 id="toir-quality-report-title" class="title-table-legend typography-h4">Отчет по качеству ремонта</h4>
+          </div>
+          <div class="chart-card__filters">
+            <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest">
+              <span class="filter-summary__count-title">с 01.01 по 31.05.2026</span>
+              <button class="filter-summary__count-chevron" type="button" data-toir-quality-period-clear aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button>
+            </span>
+          </div>
         </div>
-        <div class="chart-card__filters">
-          <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest">
-            <span class="filter-summary__count-title">с 01.01 по 31.05.2026</span>
-            <button class="filter-summary__count-chevron" type="button" data-toir-quality-period-clear aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button>
-          </span>
+        <div class="chart-actions">
+          <button class="button-small button-small--secondary typography-button-small" type="button" data-toir-quality-filter-toggle aria-expanded="false" aria-controls="toir-quality-filter-modal">
+            <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg>
+            <span>Фильтр</span>
+          </button>
         </div>
-      </div>
-      <div class="chart-actions">
-        <button class="button-small button-small--secondary typography-button-small" type="button" data-toir-quality-filter-toggle aria-expanded="false" aria-controls="toir-quality-filter-modal">
-          <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg>
-          <span>Фильтр</span>
-        </button>
-      </div>
-    </header>
-    <div class="chart-legend chart-legend--wrap typography-body-smallest repair-quality-report__legend" data-toir-quality-legend aria-label="Легенда отчета по качеству ремонта"></div>
-    <section class="card table-block repair-quality-report__table-block">
-      <div class="table-wrap" data-toir-quality-grid></div>
+      </header>
+      <div class="chart-legend chart-legend--wrap typography-body-smallest repair-quality-report__legend" data-toir-quality-legend aria-label="Легенда отчета по качеству ремонта"></div>
+      <section class="card table-block repair-quality-report__table-block">
+        <div class="table-wrap" data-toir-quality-grid></div>
+      </section>
     </section>
   </section>
 
@@ -442,7 +445,7 @@
 <script src="/assets/js/ui.js?v=14"></script>
 <script src="/assets/js/data/assets.js"></script>
 <script src="/assets/js/data/scenarios.js?v=6"></script>
-<script src="/assets/js/pages/toir.js?v=37"></script>
+<script src="/assets/js/pages/toir.js?v=38"></script>
 <script src="/assets/js/shell.js?v=9121"></script>
 </body>
 </html>

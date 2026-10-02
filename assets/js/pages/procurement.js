@@ -12,6 +12,7 @@
     priority: allPriority
   });
   const cloneFilters = source => ({...source});
+  const evidenceRoot = document.getElementById("procurement-evidence-primary");
   const kpiRoot = document.getElementById("procurement-kpis");
   const rowsRoot = document.getElementById("parts-rows");
   const urgentPurchaseButton = document.getElementById("urgent-purchase");
@@ -52,6 +53,12 @@
   let egpzDepartments = new Set([egpzAllDepartment]);
   let filters = defaultFilters();
   let draftFilters = cloneFilters(filters);
+  const procurementEvidenceCards = [
+    {label: "Активы", value: "207", context: "реестр оборудования и связанных объектов"},
+    {label: "Запасы склада", value: "76 800 USD", context: "дефицитных позиций из общего запаса 1 280 000 USD", ring: {percent: 6, display: "6%", tone: "info"}},
+    {label: "Пополнение дефицита", value: "12 дней", context: "влияние ЗИП на ремонтное окно"},
+    {label: "Плановая дисциплина", value: "+3 пункта", context: "к плановому уровню 91%", ring: {percent: 94, display: "94%", tone: "positive"}}
+  ];
 
   const escape = value => ui.escape(value);
   const normalize = value => String(value ?? "").toLocaleLowerCase("ru-RU").trim();
@@ -601,6 +608,46 @@
         </div>
       </div>
     </article>`;
+  }
+
+  function evidenceRingTone(ring) {
+    if (ring?.tone === "error") return " payment-summary-card--error";
+    if (ring?.tone === "warning") return " payment-summary-card--warning";
+    if (ring?.tone === "positive") return " payment-summary-card--positive";
+    return " payment-summary-card--info";
+  }
+
+  function renderEvidenceKpi({label, value, context, ring = null}) {
+    if (ring) {
+      return `<article class="payment-summary-card${evidenceRingTone(ring)}">
+        <header class="payment-summary-card__heading">
+          <h3 class="payment-summary-card__title typography-body-smallest">${escape(label)}</h3>
+          ${kpiArrow(label)}
+        </header>
+        <div class="payment-summary-card__content">
+          ${ui.progressRing({label, percent: ring.percent, display: ring.display})}
+          <div class="payment-summary-card__copy">
+            <strong class="payment-summary-card__amount typography-label-base">${escape(value)}</strong>
+            <span class="payment-summary-card__description typography-body-smallest">${escape(context)}</span>
+          </div>
+        </div>
+      </article>`;
+    }
+    return `<article class="analytics-kpi">
+      <div class="analytics-kpi__heading">
+        <span class="analytics-kpi__label typography-body-smallest">${escape(label)}</span>
+        ${kpiArrow(label)}
+      </div>
+      <div class="kpi-card__body">
+        <strong class="analytics-kpi__value typography-label-base">${escape(value)}</strong>
+        <p class="analytics-kpi__context typography-body-smallest">${escape(context)}</p>
+      </div>
+    </article>`;
+  }
+
+  function renderProcurementEvidence() {
+    if (!evidenceRoot) return;
+    evidenceRoot.innerHTML = procurementEvidenceCards.map(renderEvidenceKpi).join("");
   }
 
   function numberContent(value, label = "") {
@@ -1611,6 +1658,7 @@
   }
 
   function render() {
+    renderProcurementEvidence();
     const below = data.parts.filter(part => part.stock < part.min);
     const coverage = Math.round(data.parts.reduce((sum, part) => sum + Math.min(1, part.stock / part.min), 0) / data.parts.length * 100);
     kpiRoot.innerHTML = [

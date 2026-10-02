@@ -4428,12 +4428,6 @@ textarea.form-input__control--text {
   --repair-quality-planned: var(--design-elements-border-strong);
 }
 
-.repair-quality-report {
-  min-width: 0;
-  display: grid;
-  gap: var(--space-3);
-}
-
 .repair-quality-report > .repair-quality-report__legend.chart-legend {
   justify-content: flex-start;
   margin-top: 0;

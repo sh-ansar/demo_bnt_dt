@@ -79,14 +79,10 @@
   let filters=defaultFilters();
   let draftFilters=defaultFilters();
   const evidenceCards=[
-    {label:"Активы",value:"207",note:"реестр оборудования и связанных об-тов"},
     {label:"Аварийных сбоев",value:"84 случая",note:"к 87 случаям за тот же период 2026 года",ring:{percent:3,display:"-3%",tone:"positive",short:true}},
     {label:"Не выполнено плановых",value:"28 случаев",note:"к 27 за тот же период 2026 года",ring:{percent:2,display:"+2%",tone:"error",short:true}},
     {label:"Кол-во повторных рем-тов",value:"28 раз",note:"к 31 разу за тот же период 2026 года",ring:{percent:3,display:"-3%",tone:"positive",short:true}},
-    {label:"Запасы склада",value:"76 800 USD",note:"дефицитных позиций из общего запаса 1 280 000 USD",ring:{percent:6,display:"6%",tone:"info"}},
-    {label:"Пополнение дефицита",value:"12 дней",note:"влияние ЗИП на ремонтное окно"},
     {label:"Ремонт / новый актив",value:"12 756 USD",note:"Стоимость ремонта к 45 000 USD стоимости нового",ring:{percent:28,display:"28%",tone:"positive"}},
-    {label:"Плановая дисциплина",value:"+3 пункта",note:"к плановому уровню 91%",ring:{percent:94,display:"94%",tone:"positive"}}
   ];
   const summaryKpiCards=[
     {id:"open-orders",label:"Открытые наряды",value:()=>String(openOrdersCount),note:"3 с высоким приоритетом"},
@@ -160,7 +156,7 @@
   function closeQualityDetail(){if(!qualityDetailDrawer)return;qualityDetailDrawer.hidden=true;}
   function openQualityFilter(){if(!qualityFilterModal)return;closeQualityDetail();closeFilter();closeFormDrawer();closeFormMenu();qualityFilterModal.hidden=false;qualityFilterToggle?.setAttribute("aria-expanded","true");requestAnimationFrame(()=>qualityFilterModal.querySelector(".form-input__control")?.focus());}
   function closeQualityFilter(){if(!qualityFilterModal)return;qualityFilterModal.hidden=true;qualityFilterToggle?.setAttribute("aria-expanded","false");}
-  function renderEvidence(){const primary=document.getElementById("toir-evidence-primary");const secondary=document.getElementById("toir-evidence-secondary");if(!primary||!secondary)return;const primaryIndexes=new Set([0,4,5,7]);primary.innerHTML=evidenceCards.filter((_,index)=>primaryIndexes.has(index)).map(item=>toirKpiCard({...item,modifier:"toir-summary-kpi"})).join("");secondary.innerHTML=evidenceCards.filter((_,index)=>!primaryIndexes.has(index)).map(item=>toirKpiCard({...item,modifier:"toir-summary-kpi"})).join("");}
+  function renderEvidence(){const secondary=document.getElementById("toir-evidence-secondary");if(!secondary)return;secondary.innerHTML=evidenceCards.map(item=>toirKpiCard({...item,modifier:"toir-summary-kpi"})).join("");}
   function renderKpis(){const target=document.getElementById("toir-kpis");if(!target)return;target.innerHTML=summaryKpiCards.map(item=>toirKpiCard({...item,modifier:"toir-summary-kpi"})).join("");}
   function renderOrders(){const target=document.getElementById("work-order-rows");if(!target)return;const visibleOrders=orders.filter(orderMatchesFilters);target.innerHTML=visibleOrders.length?visibleOrders.map(r=>`<tr><td>${textContent(r[0])}</td><td>${textContent(r[1])}</td><td>${textContent(r[2])}</td><td class="data-table__date-cell">${textContent(r[3])}</td><td>${ui.badge(r[4],r[4]==="Критично"?"red":r[4]==="В работе"?"orange":"green")}</td><td>${textContent(r[5])}</td><td>${textContent(r[6])}</td></tr>`).join(""):`<tr><td colspan="7">${textContent("Нет работ по выбранным условиям")}</td></tr>`;}
   function renderFormMenu(){if(!formMenuList)return;formMenuList.innerHTML=forms.filter(f=>menuFormIds.has(f[0])).map(f=>`<span class="dt3-search-scope-option ui-dropdown__option toir-form-menu__option typography-body-smallest" role="none" data-form="${ui.escape(f[0])}"><button class="toir-form-menu__action typography-body-smallest" type="button" role="menuitem">${ui.escape(f[1])}</button><button class="toir-form-menu__info" type="button" data-toir-form-info data-toir-form-info-title="${ui.escape(f[1])}" data-toir-form-info-message="${ui.escape(f[2])}" aria-label="Описание: ${ui.escape(f[1])}"><svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg></button></span>`).join("");}
