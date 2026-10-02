@@ -1602,6 +1602,10 @@ button.data-table__tree-toggle:focus-visible {
   backdrop-filter: var(--backdrop-blur-elevation);
 }
 
+.dt3-drawer_static-date [data-chart-departments-filter] {
+  display: none;
+}
+
 .filter-modal__head {
   min-height: 36px;
   height: auto;
@@ -7004,6 +7008,12 @@ textarea.form-input__control--text {
   height: auto;
   display: block;
   font-family: var(--font-family-primary);
+}
+
+.chart-bars--stacked {
+  min-width: var(--chart-bars-min-width);
+  height: 420px;
+  flex: none;
 }
 
 .chart-donut__label,

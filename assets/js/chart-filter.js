@@ -129,6 +129,7 @@
     const label = chartTitle ? `Фильтр: ${chartTitle}` : 'Фильтр';
     title.textContent = label;
     drawer.setAttribute('aria-label', label);
+    drawer.classList.toggle('dt3-drawer_static-date', trigger.dataset.chartFilterVariant === 'static-date');
     filterModal.hidden = false;
     trigger.setAttribute('aria-expanded', 'true');
     search.focus();

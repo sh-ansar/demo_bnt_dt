@@ -21,7 +21,7 @@
           </div>
           <div class="chart-actions">
             <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-transshipment-export="volume" aria-label="Скачать данные об объеме перевалки"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
-            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-chart-filter data-chart-filter-variant="static-date" aria-expanded="false" aria-controls="chart-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
           </div>
         </header>
         <div class="chart-tabs" role="tablist" aria-label="Операция перевалки">
@@ -60,7 +60,7 @@
             </div>
             <div class="chart-actions">
               <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-transshipment-export="products" aria-label="Скачать данные по продуктам"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
-              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-chart-filter data-chart-filter-variant="static-date" aria-expanded="false" aria-controls="chart-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
             </div>
           </header>
           <div class="chart-tabs" role="tablist" aria-label="Операция по продуктам">
@@ -92,7 +92,7 @@
             </div>
             <div class="chart-actions">
               <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-transshipment-export="origin" aria-label="Скачать данные о происхождении"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
-              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-chart-filter data-chart-filter-variant="static-date" aria-expanded="false" aria-controls="chart-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
             </div>
           </header>
           <div class="chart-tabs chart-tabs--four" role="tablist" aria-label="Группировка происхождения">
