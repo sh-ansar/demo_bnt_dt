@@ -1603,7 +1603,8 @@
   --logistics-chart-gap: var(--space-3);
   position: relative;
   min-width: 0;
-  padding: var(--space-3);
+  padding-left: var(--space-3);
+  padding-right: var(--space-3);
 }
 
 .logistics-bar-scale {

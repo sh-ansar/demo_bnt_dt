@@ -125,7 +125,7 @@
   function open(trigger) {
     close();
     activeTrigger = trigger;
-    const chartTitle = trigger.closest('.chart-card')?.querySelector('.chart-card__title-row :is(h2, h3)')?.textContent.trim();
+    const chartTitle = trigger.closest('header')?.querySelector('h2, h3')?.textContent.trim();
     const label = chartTitle ? `Фильтр: ${chartTitle}` : 'Фильтр';
     title.textContent = label;
     drawer.setAttribute('aria-label', label);

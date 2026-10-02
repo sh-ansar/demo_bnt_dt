@@ -2315,7 +2315,7 @@
     if (event.key === 'Escape') closeKpiInfo();
   });
 
-  root.querySelectorAll('[data-financial-filter], [data-financial-chart-filter]').forEach(function (button) {
+  root.querySelectorAll('[data-financial-chart-filter]').forEach(function (button) {
     button.addEventListener('click', function () {
       toast('Фильтр', 'Активен 1 параметр: «На текущую дату»');
     });
@@ -2355,9 +2355,6 @@
   function clearFilter(buttonSelector, chipSelector) {
     root.querySelector(buttonSelector)?.addEventListener('click', function (event) {
       event.currentTarget.closest(chipSelector)?.remove();
-      root.querySelectorAll('[data-financial-filter-count]').forEach(function (counter) {
-        counter.textContent = String(Math.max(0, Number(counter.textContent) - 1));
-      });
     });
   }
 

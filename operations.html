@@ -191,9 +191,9 @@
       <header class="financial-overview__header">
         <div class="financial-overview__heading">
           <h2 id="financial-overview-title" class="typography-h5">Финансовые показатели</h2>
-          <span class="pill pill--default pill--round typography-body-smallest" data-financial-date-filter>
-            <span class="pill__title">На текущую дату</span>
-            <button type="button" data-financial-clear-date aria-label="Убрать фильтр «На текущую дату»">
+          <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest" data-financial-date-filter>
+            <span class="filter-summary__count-title">На текущую дату</span>
+            <button class="filter-summary__count-chevron" type="button" data-financial-clear-date aria-label="Убрать фильтр «На текущую дату»">
               <svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
             </button>
           </span>
@@ -203,10 +203,9 @@
           <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-financial-export aria-label="Скачать финансовые показатели">
             <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg>
           </button>
-          <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-financial-filter>
+          <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal">
             <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg>
             <span>Фильтр</span>
-            <span class="button-smallest-secondary-radius__counter" data-financial-filter-count>1</span>
           </button>
           <a class="section-expand-link button-smallest-secondary-radius typography-button-smallest" href="/reports" aria-label="К управленческой отчетности">
             <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
@@ -458,9 +457,9 @@
   <script src="/assets/js/data/logistics.js"></script>
   <script src="/assets/js/shell.js?v=9121"></script>
   <script src="/assets/js/chart-donut.js?v=10"></script>
-  <script src="/assets/js/chart-filter.js?v=2"></script>
+  <script src="/assets/js/chart-filter.js?v=3"></script>
   <script src="/assets/js/department-performance.js?v=3"></script>
   <script src="/assets/js/transshipment-analytics.js?v=4"></script>
-  <script src="/assets/js/pages/operations.js?v=96"></script>
+  <script src="/assets/js/pages/operations.js?v=97"></script>
 </body>
 </html>

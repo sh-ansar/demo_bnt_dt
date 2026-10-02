@@ -162,13 +162,13 @@ function assertGeometry({ chart, axis, viewport }) {
   assert.equal(rowStep, labelLineHeight + 24);
   horizontalLines.forEach((line, index) => {
     assert.equal(Number(line[1]), left);
-    assert.equal(Number(line[3]), width - 18);
+    assert.equal(Number(line[3]), width - 4);
     assert.equal(line[2], line[4]);
     assert.ok(Math.abs(Number(line[2]) - Number(horizontalLines[0][2]) - rowStep * index) < .001);
   });
   const verticalLines = [...chart.innerHTML.matchAll(/<line class="chart-bars__vertical-line" x1="([^"]+)"[^>]*x2="([^"]+)"/g)];
   assert.equal(verticalLines.length, ticks.length);
-  assert.equal(Number(verticalLines.at(-1)[1]), width - 18);
+  assert.equal(Number(verticalLines.at(-1)[1]), width - 4);
   assert.ok(rects.length > 0);
   for (const [rect] of rects) {
     const attributes = Object.fromEntries([...rect.matchAll(/([\w-]+)="([^"]*)"/g)].map(match => [match[1], match[2]]));
@@ -258,9 +258,15 @@ filterDocument.createElement = () => ({ content: { firstElementChild: modal } })
 vm.runInNewContext(await readFile(new URL('../assets/js/chart-filter.js', import.meta.url), 'utf8'), {
   document: filterDocument, window: {}
 });
-function openFilter(variant) {
+function openFilter(variant, heading = 'Данные по клиентам') {
   const trigger = element({ chartFilterVariant: variant });
-  trigger.closest = () => ({ querySelector() { return { textContent: 'Данные по клиентам' }; } });
+  trigger.closest = selector => {
+    assert.equal(selector, 'header');
+    return { querySelector(titleSelector) {
+      assert.equal(titleSelector, 'h2, h3');
+      return { textContent: heading };
+    } };
+  };
   filterDocument.events.click({ target: { closest() { return trigger; } }, preventDefault() {} });
   return trigger;
 }
@@ -278,6 +284,25 @@ assert.equal(regularTrigger.attributes['aria-expanded'], 'false');
 assert.equal(regularTrigger.focused, true);
 openFilter('static-date');
 assert.ok(drawer.classList.values.has('dt3-drawer_static-date'));
+
+const financialTrigger = openFilter(undefined, 'Финансовые показатели');
+assert.equal(filterTitle.textContent, 'Фильтр: Финансовые показатели');
+assert.equal(drawer.attributes['aria-label'], filterTitle.textContent);
+assert.ok(!drawer.classList.values.has('dt3-drawer_static-date'));
+assert.equal(financialTrigger.attributes['aria-expanded'], 'true');
+assert.equal(search.focused, true);
+modal.events.click({ target: { closest(selector) { return selector.includes('[data-chart-filter-apply]') ? {} : null; } } });
+assert.equal(modal.hidden, true);
+assert.equal(financialTrigger.attributes['aria-expanded'], 'false');
+assert.equal(financialTrigger.focused, true);
+
+const operationsHtml = await readFile(new URL('../operations.html', import.meta.url), 'utf8');
+const financialHeader = operationsHtml.match(/<header class="financial-overview__header">([\s\S]*?)<\/header>/)[1];
+assert.match(financialHeader, /data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"/);
+assert.match(financialHeader, /filter-summary__count_static pill pill--default pill--radius/);
+assert.match(financialHeader, /class="filter-summary__count-chevron"[^>]*data-financial-clear-date/);
+assert.match(financialHeader, /На текущую дату/);
+assert.doesNotMatch(financialHeader, /__counter|data-financial-filter/);
 
 const css = await readFile(new URL('../assets/css/components.css', import.meta.url), 'utf8');
 assert.match(css, /\.chart-bars,\s*\.chart-donut\s*\{[^}]*outline: 0;/);
