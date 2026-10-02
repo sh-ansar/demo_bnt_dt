@@ -603,7 +603,7 @@
 .badge.red { background: var(--system-elements-semantic-error-secondary-fade); color: var(--system-elements-semantic-error-primary); }
 .badge.purple { background: var(--system-elements-semantic-purple-secondary-fade); color: var(--system-elements-semantic-purple-primary); }
 .badge.drawer {
-  min-height: 36px;
+  min-height: 32px;
   padding-right: var(--space-2);
   padding-left: var(--space-2);
 }
@@ -3170,7 +3170,9 @@ textarea.form-input__control--text {
 .quality-detail-drawer__fields {
   min-width: 0;
   display: grid;
+  grid-auto-rows: max-content;
   align-content: start;
+  align-items: start;
   gap: var(--space-1);
   margin: 0;
   padding: 0;
@@ -3190,6 +3192,7 @@ textarea.form-input__control--text {
   max-height: var(--quality-detail-drawer-card-max-height);
   padding: var(--space-3);
   display: grid;
+  grid-auto-rows: max-content;
   align-content: start;
   justify-items: stretch;
   gap: 0;
@@ -3216,7 +3219,7 @@ textarea.form-input__control--text {
 
 .quality-detail-drawer-card--accordion {
   padding: var(--space-3);
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: max-content max-content;
 }
 
 .quality-detail-drawer-card__heading {
@@ -5135,6 +5138,22 @@ textarea.form-input__control--text {
 
 .chart-grid--two-column > :is(.chart-card--wide, .chart-card--wide-vertical) {
   grid-column: 1 / -1;
+}
+
+.cash-flow-section {
+  width: 100%;
+  min-width: 0;
+  color: var(--text-primary);
+  font-family: var(--font-family-primary);
+}
+
+.department-performance-card h2 {
+  margin: 0;
+}
+
+.department-performance-card .payment-deviation-chart {
+  --payment-deviation-label-width: 320px;
+  --payment-deviation-divisions: 10;
 }
 
 .payment-deviation-chart__viewport {

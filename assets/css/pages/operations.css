@@ -1458,20 +1458,8 @@
   display: grid;
 }
 
-.cash-flow-section {
-  width: 100%;
-  min-width: 0;
-  color: var(--text-primary);
-  font-family: var(--font-family-primary);
-}
-
 .cash-flow-card h2 {
   margin: 0;
-}
-
-.department-performance-card .payment-deviation-chart {
-  --payment-deviation-label-width: 320px;
-  --payment-deviation-divisions: 10;
 }
 
 .cash-flow-chart {

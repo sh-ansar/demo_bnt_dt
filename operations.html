@@ -6,9 +6,9 @@
   <title>BNT — Операционная аналитика</title>
   <link rel="stylesheet" href="/assets/css/tokens.css?v=19">
   <link rel="stylesheet" href="/assets/css/layout.css">
-  <link rel="stylesheet" href="/assets/css/components.css?v=177">
+  <link rel="stylesheet" href="/assets/css/components.css?v=231">
   <link rel="stylesheet" href="/assets/css/pages/budget-payments.css?v=16">
-  <link rel="stylesheet" href="/assets/css/pages/operations.css?v=134">
+  <link rel="stylesheet" href="/assets/css/pages/operations.css?v=135">
   <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9128">
 </head>
 <body data-page="operations">
@@ -568,104 +568,7 @@
       </p>
     </section>
 
-    <section class="cash-flow-section department-performance-section" data-department-performance aria-labelledby="department-performance-title">
-      <article class="chart-card chart-card--wide cash-flow-card department-performance-card">
-        <header class="chart-card__header">
-          <div class="chart-card__heading">
-            <div class="chart-card__title-row">
-              <h2 id="department-performance-title" class="typography-h5">KPI подразделений и их укомплектованность</h2>
-            </div>
-            <div class="chart-card__filters">
-              <span class="pill pill--default pill--round typography-body-smallest" data-department-period-pill>
-                <span class="pill__title" data-department-period-label>На текущую дату</span>
-                <button type="button" data-department-period-clear aria-label="Убрать период">
-                  <svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
-                </button>
-              </span>
-            </div>
-          </div>
-          <div class="chart-actions">
-            <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-department-export aria-label="Скачать показатели подразделений">
-              <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg>
-            </button>
-            <div class="cash-flow__filter">
-              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-department-filter aria-expanded="false" aria-controls="department-performance-filter-panel">
-                <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg>
-                <span>Фильтр</span>
-                <span class="button-smallest-secondary-radius__counter" data-department-filter-count>1</span>
-              </button>
-              <div id="department-performance-filter-panel" class="cash-flow__filter-panel" data-department-filter-panel role="dialog" aria-label="Фильтр показателей подразделений" hidden>
-                <div class="cash-flow__filter-heading">
-                  <strong class="typography-label-small">Период</strong>
-                  <button class="origin-breakdown__info-close" type="button" data-department-filter-close aria-label="Закрыть фильтр"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button>
-                </div>
-                <button class="cash-flow__filter-option typography-body-small is-active" type="button" data-department-period="2025">2025 год</button>
-                <button class="cash-flow__filter-option typography-body-small" type="button" data-department-period="2024">2024 год</button>
-              </div>
-            </div>
-            <a class="section-expand-link button-smallest-secondary-radius typography-button-smallest" href="/hr" aria-label="К кадрам">
-              <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
-              <span>К кадрам</span>
-            </a>
-          </div>
-        </header>
-
-        <div class="chart-viewport chart-scrollbar payment-deviation-chart__viewport">
-          <div class="payment-deviation-chart" role="img" aria-label="Укомплектованность и KPI подразделений в процентах">
-            <div class="payment-deviation-chart__axis" aria-hidden="true">
-              <span>80</span><span>82</span><span>84</span><span>86</span><span>88</span><span>90</span><span>92</span><span>94</span><span>96</span><span>98</span><span>100</span>
-            </div>
-            <div class="payment-deviation-chart__body">
-              <div class="payment-deviation-chart__grid" aria-hidden="true">
-                <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-              </div>
-              <div class="payment-deviation-chart__rows">
-                <div class="payment-deviation-chart__row" role="img" aria-label="Отдел безопасности: укомплектованность 96 процентов, KPI подразделения 98 процентов">
-                  <span class="payment-deviation-chart__label" title="Отдел безопасности">Отдел безопасности</span>
-                  <span class="payment-deviation-chart__tracks" aria-hidden="true">
-                    <span class="payment-deviation-chart__track" style="--payment-deviation-value:80%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--plan"></i></span>
-                    <span class="payment-deviation-chart__track" style="--payment-deviation-value:90%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--fact"></i></span>
-                  </span>
-                </div>
-                <div class="payment-deviation-chart__row" role="img" aria-label="Планово-экономический отдел: укомплектованность 94 процента, KPI подразделения 91 процент">
-                  <span class="payment-deviation-chart__label" title="Планово-экономический отдел">Планово-экономический отдел</span>
-                  <span class="payment-deviation-chart__tracks" aria-hidden="true">
-                    <span class="payment-deviation-chart__track" style="--payment-deviation-value:70%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--plan"></i></span>
-                    <span class="payment-deviation-chart__track" style="--payment-deviation-value:55%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--fact"></i></span>
-                  </span>
-                </div>
-                <div class="payment-deviation-chart__row" role="img" aria-label="Отдел коммерции и логистики: укомплектованность 92 процента, KPI подразделения 87 процентов">
-                  <span class="payment-deviation-chart__label" title="Отдел коммерции и логистики">Отдел коммерции и логистики</span>
-                  <span class="payment-deviation-chart__tracks" aria-hidden="true">
-                    <span class="payment-deviation-chart__track" style="--payment-deviation-value:60%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--plan"></i></span>
-                    <span class="payment-deviation-chart__track" style="--payment-deviation-value:35%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--fact"></i></span>
-                  </span>
-                </div>
-                <div class="payment-deviation-chart__row" role="img" aria-label="Административный отдел: укомплектованность 99 процентов, KPI подразделения 94 процента">
-                  <span class="payment-deviation-chart__label" title="Административный отдел">Административный отдел</span>
-                  <span class="payment-deviation-chart__tracks" aria-hidden="true">
-                    <span class="payment-deviation-chart__track" style="--payment-deviation-value:95%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--plan"></i></span>
-                    <span class="payment-deviation-chart__track" style="--payment-deviation-value:70%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--fact"></i></span>
-                  </span>
-                </div>
-                <div class="payment-deviation-chart__row" role="img" aria-label="Отдел качества и контроля нефтепродуктов: укомплектованность 99 процентов, KPI подразделения 97 процентов">
-                  <span class="payment-deviation-chart__label" title="Отдел качества и контроля нефтепродуктов">Отдел качества и контроля нефтепродуктов</span>
-                  <span class="payment-deviation-chart__tracks" aria-hidden="true">
-                    <span class="payment-deviation-chart__track" style="--payment-deviation-value:95%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--plan"></i></span>
-                    <span class="payment-deviation-chart__track" style="--payment-deviation-value:85%"><i class="payment-deviation-chart__bar payment-deviation-chart__bar--fact"></i></span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="chart-legend typography-body-smallest" aria-label="Легенда показателей подразделений">
-          <span><i class="chart-legend__dot payment-deviation__dot--plan" aria-hidden="true"></i>Укомплектованность, %</span>
-          <span><i class="chart-legend__dot payment-deviation__dot--fact" aria-hidden="true"></i>KPI подразделений, %</span>
-        </div>
-      </article>
-    </section>
+    <section class="cash-flow-section department-performance-section" data-department-performance aria-labelledby="department-performance-title"></section>
 
   </main>
   <script src="/assets/js/navigation.js"></script>
@@ -673,6 +576,7 @@
   <script src="/assets/js/data/logistics.js"></script>
   <script src="/assets/js/shell.js?v=9121"></script>
   <script src="/assets/js/chart-donut.js?v=10"></script>
-  <script src="/assets/js/pages/operations.js?v=93"></script>
+  <script src="/assets/js/department-performance.js?v=1"></script>
+  <script src="/assets/js/pages/operations.js?v=94"></script>
 </body>
 </html>
