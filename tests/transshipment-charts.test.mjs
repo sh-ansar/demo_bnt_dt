@@ -10,6 +10,8 @@ function element(dataset = {}) {
     style: { values: {}, setProperty(key, value) { this.values[key] = value; } },
     classList: { values: new Set(), toggle(key, active) { active ? this.values.add(key) : this.values.delete(key); } },
     setAttribute(key, value) { this.attributes[key] = value; },
+    appendChild(child) { this.lastChild = child; },
+    remove() {},
     addEventListener(key, callback) { this.events[key] = callback; },
     getBoundingClientRect() { return { left: 0, top: 0, width: this.clientWidth, height: this.clientHeight }; },
     focus() { this.focused = true; },
@@ -54,11 +56,13 @@ const host = {
   querySelector(selector) { return cards.get(selector.match(/"([^"]+)"/)[1]).card; }
 };
 let exportedBlob;
+let labelLineHeight = 16;
 const document = {
   // shell.js moves page-content into app-shell > app-main before page scripts run.
   querySelector(selector) {
     return selector === '#page-content[data-transshipment-analytics]' ? host : null;
   },
+  createElementNS() { return element(); },
   createElement() { return { click() {} }; }
 };
 const context = vm.createContext({
@@ -67,7 +71,10 @@ const context = vm.createContext({
   window: {
     setTimeout() {},
     getComputedStyle() {
-      return { getPropertyValue(name) { return ({ '--chart-bars-bar-size': '12px', '--space-2': '8px' })[name] || ''; } };
+      return {
+        lineHeight: `${labelLineHeight}px`,
+        getPropertyValue(name) { return ({ '--chart-bars-bar-size': '12px', '--space-2': '8px', '--space-3': '12px' })[name] || ''; }
+      };
     }
   }
 });
@@ -99,8 +106,8 @@ assert.equal(controllers.get('transshipment-clients').options.series.at(-1).labe
 assert.equal(controllers.get('transshipment-countries').options.axisPosition, 'top');
 assert.equal(controllers.get('transshipment-countries').options.orientation, 'horizontal');
 assert.equal(countries.chart.events.wheel, undefined);
-assert.equal(countries.chart.style.values['--chart-bars-height'], '1212px');
-assert.equal(clients.chart.style.values['--chart-bars-height'], '420px');
+assert.equal(countries.chart.style.values['--chart-bars-height'], '1020px');
+assert.equal(clients.chart.style.values['--chart-bars-height'], '260px');
 assert.match(countries.chart.innerHTML, /class="chart-bars__tick"[^>]*y="28"/);
 
 function assertGeometry(chart) {
@@ -122,6 +129,7 @@ function assertGeometry(chart) {
   const horizontalLines = [...chart.innerHTML.matchAll(/<line class="chart-bars__grid-line" x1="([^"]+)" y1="([^"]+)" x2="([^"]+)" y2="([^"]+)"/g)];
   assert.equal(horizontalLines.length, rows.size + 1);
   const rowStep = (Number(horizontalLines.at(-1)[2]) - Number(horizontalLines[0][2])) / rows.size;
+  assert.equal(rowStep, labelLineHeight + 24);
   horizontalLines.forEach((line, index) => {
     assert.equal(line[1], '64');
     assert.equal(Number(line[3]), width - 18);
@@ -190,8 +198,16 @@ for (const width of [375, 768, 1440, 1920]) {
   countries.viewport.clientWidth = width;
   countryController.setTab('all');
   assertGeometry(countries.chart);
-  assert.equal(countries.chart.style.values['--chart-bars-height'], '1212px');
+  assert.equal(countries.chart.style.values['--chart-bars-height'], '1020px');
 }
+labelLineHeight = 24;
+countryController.setTab('all');
+assert.equal(countries.chart.style.values['--chart-bars-height'], '1212px');
+assertGeometry(countries.chart);
+clientController.setTab('all');
+assert.equal(clients.chart.style.values['--chart-bars-height'], '300px');
+assertGeometry(clients.chart);
+labelLineHeight = 16;
 
 const modal = element();
 const drawer = element();

@@ -3378,10 +3378,6 @@ textarea.form-input__control--text {
   color: var(--text-primary);
 }
 
-.quality-detail-drawer-card__chart .payment-deviation-chart__row {
-  min-height: var(--space-5);
-}
-
 .quality-detail-drawer-card__chart .payment-deviation-chart__track {
   height: var(--space-2);
 }
@@ -5326,8 +5322,6 @@ textarea.form-input__control--text {
   grid-template-columns: minmax(0, var(--origin-label-width)) minmax(0, 1fr);
   align-items: center;
   gap: var(--origin-label-gap);
-  min-height: 52px;
-  padding: var(--space-3) 0;
 }
 
 .origin-breakdown__row::after {
@@ -5601,6 +5595,30 @@ textarea.form-input__control--text {
   --payment-deviation-divisions: 10;
 }
 
+.origin-breakdown__row,
+.payment-deviation-chart__row,
+.procurement-plan-fact-chart__row,
+.procurement-budget-deviation-chart__row,
+.procurement-stock-chart__row,
+.procurement-turnover-bar-chart__row,
+.analytics-capacity-chart__row {
+  box-sizing: border-box;
+  height: auto;
+  min-height: 0;
+  padding-block: var(--space-3);
+}
+
+.origin-breakdown__rows,
+.payment-deviation-chart__rows,
+.procurement-plan-fact-chart__rows,
+.procurement-budget-deviation-chart__rows,
+.procurement-stock-chart__rows,
+.procurement-turnover-bar-chart__rows,
+.analytics-capacity-chart__rows {
+  grid-auto-rows: max-content;
+  align-content: start;
+}
+
 .payment-deviation-chart__viewport {
   min-width: 0;
   padding-inline: var(--space-3);
@@ -5672,7 +5690,6 @@ textarea.form-input__control--text {
 .payment-deviation-chart__row {
   position: relative;
   min-width: 0;
-  min-height: 54px;
   display: grid;
   grid-template-columns: minmax(0, var(--payment-deviation-label-width)) minmax(0, 1fr);
   align-items: center;
@@ -5846,7 +5863,6 @@ textarea.form-input__control--text {
 .procurement-budget-deviation-chart__row {
   position: relative;
   min-width: 0;
-  min-height: 56px;
   display: grid;
   grid-template-columns: minmax(0, var(--procurement-chart-label-width)) minmax(0, 1fr);
   align-items: center;
@@ -6335,7 +6351,6 @@ textarea.form-input__control--text {
 .procurement-stock-chart__row {
   position: relative;
   min-width: 0;
-  min-height: 44px;
   display: grid;
   grid-template-columns: minmax(0, var(--procurement-stock-label-width)) minmax(0, 1fr);
   align-items: center;
@@ -6474,7 +6489,6 @@ textarea.form-input__control--text {
 .procurement-turnover-bar-chart__row {
   position: relative;
   min-width: 0;
-  min-height: 56px;
   display: grid;
   grid-template-columns: minmax(0, var(--procurement-turnover-label-width)) minmax(0, 1fr);
   align-items: center;

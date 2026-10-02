@@ -923,8 +923,6 @@
 .analytics-page .analytics-capacity-chart__row {
   position: relative;
   min-width: 0;
-  height: 42px;
-  min-height: 42px;
   display: grid;
   grid-template-columns: minmax(0, var(--capacity-label-width)) minmax(0, 1fr);
   gap: var(--capacity-chart-gap);

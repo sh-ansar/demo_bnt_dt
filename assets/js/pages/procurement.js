@@ -747,7 +747,7 @@
     }).join("");
 
     chart.style.setProperty("--payment-deviation-divisions", String(tickCount - 1));
-    chart.innerHTML = `<div class="payment-deviation-chart__axis" aria-hidden="true">${ticks}</div><div class="payment-deviation-chart__body" style="height:324px"><div class="payment-deviation-chart__grid" aria-hidden="true">${grid}</div><div class="payment-deviation-chart__rows" style="height:324px;grid-template-rows:repeat(${rowsData.length},minmax(0,1fr))">${rows}</div></div>`;
+    chart.innerHTML = `<div class="payment-deviation-chart__axis" aria-hidden="true">${ticks}</div><div class="payment-deviation-chart__body"><div class="payment-deviation-chart__grid" aria-hidden="true">${grid}</div><div class="payment-deviation-chart__rows">${rows}</div></div>`;
     chart.setAttribute("aria-label", `Прогноз закупок по ${groupLabel}: ${egpzForecastSeries.map(item => item.label.toLocaleLowerCase("ru-RU")).join(", ")}`);
     legend.innerHTML = egpzForecastSeries.map(item => `<span><i class="chart-legend__dot ${item.className}" aria-hidden="true"></i>${escape(item.label)}</span>`).join("");
     syncEgpzForecastTabs();
@@ -1023,7 +1023,7 @@
     }).join("");
 
     chart.style.setProperty("--procurement-chart-divisions", String(tickCount - 1));
-    chart.innerHTML = `<div class="procurement-plan-fact-chart__axis" aria-hidden="true">${ticks}</div><div class="procurement-plan-fact-chart__body" style="height:280px"><div class="procurement-plan-fact-chart__grid" aria-hidden="true">${grid}</div><div class="procurement-plan-fact-chart__rows" style="height:280px;grid-template-rows:repeat(${rowsData.length},minmax(0,1fr))">${rows}</div></div>`;
+    chart.innerHTML = `<div class="procurement-plan-fact-chart__axis" aria-hidden="true">${ticks}</div><div class="procurement-plan-fact-chart__body"><div class="procurement-plan-fact-chart__grid" aria-hidden="true">${grid}</div><div class="procurement-plan-fact-chart__rows">${rows}</div></div>`;
     chart.setAttribute("aria-label", `План vs Факт по ${planFactGroupLabels[planFactMode] || planFactGroupLabels.department}`);
     legend.innerHTML = planFactSeries.map(item => `<span><i class="chart-legend__dot ${item.className}" aria-hidden="true"></i>${escape(item.label)}</span>`).join("");
     syncTabSet("[data-plan-fact-tab]", planFactMode, "[data-plan-fact-panel]");
@@ -1063,7 +1063,7 @@
     }).join("");
 
     chart.style.setProperty("--procurement-budget-divisions", String(divisionCount));
-    chart.innerHTML = `<div class="procurement-budget-deviation-chart__axis" aria-hidden="true">${ticks}</div><div class="procurement-budget-deviation-chart__body" style="height:280px"><div class="procurement-budget-deviation-chart__grid" aria-hidden="true">${grid}</div><div class="procurement-budget-deviation-chart__rows" style="height:280px;grid-template-rows:repeat(${rowsData.length},minmax(0,1fr))">${rows}</div></div>`;
+    chart.innerHTML = `<div class="procurement-budget-deviation-chart__axis" aria-hidden="true">${ticks}</div><div class="procurement-budget-deviation-chart__body"><div class="procurement-budget-deviation-chart__grid" aria-hidden="true">${grid}</div><div class="procurement-budget-deviation-chart__rows">${rows}</div></div>`;
     chart.setAttribute("aria-label", `Отклонение по бюджету по ${planFactGroupLabels[budgetDeviationMode] || planFactGroupLabels.category}`);
     legend.innerHTML = [
       { label: "Экономия", className: "series-gas" },
@@ -1196,10 +1196,8 @@
         <span class="procurement-stock-chart__track">${segments}</span>
       </div>`;
     }).join("");
-    const chartHeight = Math.max(260, rowsData.length * 48);
-
     chart.style.setProperty("--procurement-stock-divisions", String(tickCount - 1));
-    chart.innerHTML = `<div class="procurement-stock-chart__axis" aria-hidden="true">${ticks}</div><div class="procurement-stock-chart__body" style="height:${chartHeight}px"><div class="procurement-stock-chart__grid" aria-hidden="true">${grid}</div><div class="procurement-stock-chart__rows" style="height:${chartHeight}px;grid-template-rows:repeat(${rowsData.length},minmax(0,1fr))">${rows}</div></div>`;
+    chart.innerHTML = `<div class="procurement-stock-chart__axis" aria-hidden="true">${ticks}</div><div class="procurement-stock-chart__body"><div class="procurement-stock-chart__grid" aria-hidden="true">${grid}</div><div class="procurement-stock-chart__rows">${rows}</div></div>`;
     chart.setAttribute("aria-label", ariaLabel);
     legend.innerHTML = legendItems.map(item => `<span><i class="chart-legend__dot ${item.className}" aria-hidden="true"></i>${escape(item.label)}</span>`).join("");
     if (tabSelector && panelSelector) syncTabSet(tabSelector, activeMode, panelSelector);
@@ -1278,10 +1276,8 @@
         </span>
       </div>`;
     }).join("");
-    const chartHeight = 320;
-
     chart.style.setProperty("--procurement-turnover-divisions", String(tickCount - 1));
-    chart.innerHTML = `<div class="procurement-turnover-bar-chart__axis" aria-hidden="true">${ticks}</div><div class="procurement-turnover-bar-chart__body" style="height:${chartHeight}px"><div class="procurement-turnover-bar-chart__grid" aria-hidden="true">${grid}</div><div class="procurement-turnover-bar-chart__rows" style="height:${chartHeight}px;grid-template-rows:repeat(${turnoverCategoryRows.length},minmax(0,1fr))">${rows}</div></div>`;
+    chart.innerHTML = `<div class="procurement-turnover-bar-chart__axis" aria-hidden="true">${ticks}</div><div class="procurement-turnover-bar-chart__body"><div class="procurement-turnover-bar-chart__grid" aria-hidden="true">${grid}</div><div class="procurement-turnover-bar-chart__rows">${rows}</div></div>`;
     legend.innerHTML = `<span><i class="chart-legend__dot series-turquoise" aria-hidden="true"></i>${escape("Дни оборачиваемости")}</span>`;
   }
 

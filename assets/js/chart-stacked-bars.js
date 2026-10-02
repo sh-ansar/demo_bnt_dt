@@ -77,15 +77,27 @@
       const minWidth = horizontal ? 1120 : Math.max(960, visibleRows.length * 56 + 94);
       chart.style.setProperty('--chart-bars-min-width', `${minWidth}px`);
       const width = Math.max(minWidth, Math.round(viewport.clientWidth || minWidth));
-      const height = horizontal ? Math.max(420, visibleRows.length * 48 + 60) : 420;
-      chart.style.setProperty('--chart-bars-height', `${height}px`);
       const margin = { top: axisTop ? 44 : 16, right: 18, bottom: axisTop ? 16 : 44, left: horizontal ? 64 : 76 };
+      let horizontalBarSize = 0;
+      let rowHeight = 0;
+      let tickOffset = 0;
+      if (horizontal) {
+        const styles = window.getComputedStyle(chart);
+        horizontalBarSize = parseFloat(styles.getPropertyValue('--chart-bars-bar-size'));
+        const rowPadding = parseFloat(styles.getPropertyValue('--space-3'));
+        tickOffset = parseFloat(styles.getPropertyValue('--space-2'));
+        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        label.setAttribute('class', 'chart-bars__category');
+        label.textContent = visibleRows[0]?.label || '0';
+        chart.appendChild(label);
+        const labelHeight = parseFloat(window.getComputedStyle(label).lineHeight) || label.getBBox().height;
+        label.remove();
+        rowHeight = Math.max(horizontalBarSize, labelHeight) + rowPadding * 2;
+      }
+      const height = horizontal ? visibleRows.length * rowHeight + margin.top + margin.bottom : 420;
+      chart.style.setProperty('--chart-bars-height', `${height}px`);
       const plotWidth = width - margin.left - margin.right;
       const plotHeight = height - margin.top - margin.bottom;
-      const horizontalBarSize = horizontal
-        ? parseFloat(window.getComputedStyle(chart).getPropertyValue('--chart-bars-bar-size'))
-        : 0;
-      const tickOffset = horizontal ? parseFloat(window.getComputedStyle(chart).getPropertyValue('--space-2')) : 0;
       const bottom = height - margin.bottom;
       const largest = Math.max(...visibleRows.map(row => row.values.reduce((sum, value) => sum + value, 0)));
       const rawMax = Math.max(options.axisMax, largest);
@@ -127,7 +139,7 @@
           stack += length;
         });
         svg.push(horizontal
-          ? `<text class="chart-bars__category" x="${margin.left - 16}" y="${center + 5}" text-anchor="end">${escape(row.label)}</text>`
+          ? `<text class="chart-bars__category" x="${margin.left - 16}" y="${center}" dominant-baseline="middle" text-anchor="end">${escape(row.label)}</text>`
           : `<line class="chart-bars__vertical-line" x1="${margin.left + offset}" y1="${margin.top}" x2="${margin.left + offset}" y2="${bottom}"/><text class="chart-bars__category" x="${center}" y="${bottom + 26}" text-anchor="middle">${escape(row.label)}</text>`);
         offset += slot;
       });

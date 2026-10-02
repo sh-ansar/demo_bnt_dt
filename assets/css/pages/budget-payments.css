@@ -97,7 +97,6 @@
 .payment-deviation-chart__row {
   position: relative;
   min-width: 0;
-  min-height: 54px;
   display: grid;
   grid-template-columns: minmax(0, var(--payment-deviation-label-width)) minmax(0, 1fr);
   align-items: center;

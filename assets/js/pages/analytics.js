@@ -1483,7 +1483,7 @@
       String(tickCount - 1)
     );
     chart.innerHTML =
-      `<div class="payment-deviation-chart__axis" aria-hidden="true">${ticks}</div><div class="payment-deviation-chart__body" style="height:324px"><div class="payment-deviation-chart__grid" aria-hidden="true">${grid}</div><div class="payment-deviation-chart__rows" style="height:324px;grid-template-rows:repeat(${resourceStabilityData.deficit.rows.length},minmax(0,1fr))">${rows}</div></div>`;
+      `<div class="payment-deviation-chart__axis" aria-hidden="true">${ticks}</div><div class="payment-deviation-chart__body"><div class="payment-deviation-chart__grid" aria-hidden="true">${grid}</div><div class="payment-deviation-chart__rows">${rows}</div></div>`;
   }
 
 
