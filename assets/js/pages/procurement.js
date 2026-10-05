@@ -48,8 +48,6 @@
   };
   const egpzCheckIcon = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.2L9.2 16.4L19 6.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>';
   const egpzMinusIcon = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 12H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>';
-  const egpzDateWeekdays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
-  const egpzMonthFormatter = new Intl.DateTimeFormat("ru-RU", {month: "long", year: "numeric"});
   let egpzDepartments = new Set([egpzAllDepartment]);
   let filters = defaultFilters();
   let draftFilters = cloneFilters(filters);
@@ -329,154 +327,13 @@
     return `${day}.${month}.${date.getFullYear()}`;
   }
 
-  function egpzMonthKey(date) {
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-  }
+  function closeEgpzDatePickers(except = null) { ui.closeDatePickers("egpz", except); }
 
-  function parseEgpzMonthKey(value) {
-    const match = /^(\d{4})-(\d{2})$/.exec(value || "");
-    if (!match) return null;
-    return new Date(Number(match[1]), Number(match[2]) - 1, 1);
-  }
+  function syncEgpzDateField(root, value) { ui.syncDateField(root, value, "egpz"); }
 
-  function closeEgpzDatePickers(except = null) {
-    document.querySelectorAll(".equipment-date-field.is-open").forEach(root => {
-      if (root === except) return;
-      root.classList.remove("is-open", "is-open-up");
-      root.querySelector("[data-egpz-date-toggle]")?.setAttribute("aria-expanded", "false");
-      const popover = root.querySelector("[data-egpz-date-popover]");
-      if (popover) popover.hidden = true;
-    });
-  }
+  function positionEgpzDatePicker(root) { ui.positionDatePicker(root, "egpz"); }
 
-  function syncEgpzDateField(root, value) {
-    const dateValue = value || "";
-    if (dateValue) root.dataset.egpzDateValue = dateValue;
-    else delete root.dataset.egpzDateValue;
-    root.classList.toggle("has-value", Boolean(dateValue));
-    const input = root.querySelector("[data-egpz-date]");
-    if (input) input.value = dateValue;
-    const defaultValue = root.dataset.egpzDateDefault || "";
-    root.querySelector("[data-egpz-date-text]").textContent = formatEgpzDisplayDate(dateValue || defaultValue);
-    if (root.classList.contains("is-open")) renderEgpzDatePicker(root);
-  }
-
-  function positionEgpzDatePicker(root) {
-    const control = root.querySelector(".equipment-date-input");
-    const popover = root.querySelector("[data-egpz-date-popover]");
-    if (!control || !popover || popover.hidden) return;
-    const gap = 4;
-    const viewportGap = 16;
-    const rect = control.getBoundingClientRect();
-    const desiredHeight = popover.scrollHeight || 360;
-    const availableBelow = window.innerHeight - viewportGap - rect.bottom - gap;
-    const availableAbove = rect.top - viewportGap - gap;
-    root.classList.toggle("is-open-up", availableBelow < desiredHeight && availableAbove > availableBelow);
-  }
-
-  function renderEgpzDatePicker(root) {
-    const selected = parseEgpzISODate(root.dataset.egpzDateValue);
-    const fallback = parseEgpzISODate(root.dataset.egpzDateDefault) || new Date();
-    const current = parseEgpzMonthKey(root.dataset.egpzDateMonth) || new Date(selected || fallback);
-    current.setDate(1);
-    root.dataset.egpzDateMonth = egpzMonthKey(current);
-    const start = new Date(current);
-    start.setDate(1 - ((start.getDay() + 6) % 7));
-    const selectedISO = selected ? toEgpzISODate(selected) : "";
-    const todayISO = toEgpzISODate(new Date());
-    const days = Array.from({length: 42}, (_, index) => {
-      const date = new Date(start);
-      date.setDate(start.getDate() + index);
-      const iso = toEgpzISODate(date);
-      const classes = [
-        "equipment-date-popover__day",
-        "typography-body-smallest",
-        date.getMonth() !== current.getMonth() ? "is-outside" : "",
-        iso === todayISO ? "is-today" : "",
-        iso === selectedISO ? "is-selected" : ""
-      ].filter(Boolean).join(" ");
-      return `<button class="${classes}" type="button" data-egpz-date-day="${iso}" aria-pressed="${iso === selectedISO}">${date.getDate()}</button>`;
-    }).join("");
-    const prevIcon = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    const nextIcon = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    const title = egpzMonthFormatter.format(current);
-    root.querySelector("[data-egpz-date-popover]").innerHTML = `
-      <span class="equipment-date-popover__head">
-        <span class="equipment-date-popover__title typography-caption-small">${escape(title)}</span>
-        <button class="equipment-date-popover__nav" type="button" data-egpz-date-nav="-1" aria-label="Предыдущий месяц">${prevIcon}</button>
-        <button class="equipment-date-popover__nav" type="button" data-egpz-date-nav="1" aria-label="Следующий месяц">${nextIcon}</button>
-      </span>
-      <span class="equipment-date-popover__grid" aria-hidden="true">
-        ${egpzDateWeekdays.map(day => `<span class="equipment-date-popover__weekday typography-caption-smallest">${day}</span>`).join("")}
-      </span>
-      <span class="equipment-date-popover__grid" role="grid" aria-label="${escape(title)}">${days}</span>
-      <span class="equipment-date-popover__footer">
-        <button class="equipment-date-popover__action button-smallest-ghost typography-button-smallest" type="button" data-egpz-date-clear>Удалить</button>
-        <button class="equipment-date-popover__action button-smallest-ghost typography-button-smallest" type="button" data-egpz-date-today>Сегодня</button>
-      </span>`;
-  }
-
-  function openEgpzDatePicker(root) {
-    const selected = parseEgpzISODate(root.dataset.egpzDateValue);
-    const fallback = parseEgpzISODate(root.dataset.egpzDateDefault) || new Date();
-    root.dataset.egpzDateMonth = egpzMonthKey(selected || fallback);
-    root.classList.add("is-open", "has-value");
-    root.querySelector("[data-egpz-date-toggle]")?.setAttribute("aria-expanded", "true");
-    const popover = root.querySelector("[data-egpz-date-popover]");
-    if (popover) popover.hidden = false;
-    renderEgpzDatePicker(root);
-    requestAnimationFrame(() => positionEgpzDatePicker(root));
-  }
-
-  function handleEgpzDateClick(event) {
-    const dateToggle = event.target.closest("[data-egpz-date-toggle]");
-    if (dateToggle) {
-      event.preventDefault();
-      const root = dateToggle.closest("[data-egpz-date-root]");
-      const open = !root.classList.contains("is-open");
-      closeEgpzDepartmentsField();
-      closeEgpzDatePickers(root);
-      if (open) openEgpzDatePicker(root);
-      else closeEgpzDatePickers();
-      return true;
-    }
-    const dateNav = event.target.closest("[data-egpz-date-nav]");
-    if (dateNav) {
-      event.preventDefault();
-      const root = dateNav.closest("[data-egpz-date-root]");
-      const current = parseEgpzMonthKey(root.dataset.egpzDateMonth) || new Date();
-      current.setMonth(current.getMonth() + Number(dateNav.dataset.egpzDateNav));
-      root.dataset.egpzDateMonth = egpzMonthKey(current);
-      renderEgpzDatePicker(root);
-      requestAnimationFrame(() => positionEgpzDatePicker(root));
-      return true;
-    }
-    const dateDay = event.target.closest("[data-egpz-date-day]");
-    if (dateDay) {
-      event.preventDefault();
-      const root = dateDay.closest("[data-egpz-date-root]");
-      syncEgpzDateField(root, dateDay.dataset.egpzDateDay);
-      closeEgpzDatePickers();
-      return true;
-    }
-    const dateClear = event.target.closest("[data-egpz-date-clear]");
-    if (dateClear) {
-      event.preventDefault();
-      const root = dateClear.closest("[data-egpz-date-root]");
-      syncEgpzDateField(root, "");
-      closeEgpzDatePickers();
-      return true;
-    }
-    const dateToday = event.target.closest("[data-egpz-date-today]");
-    if (dateToday) {
-      event.preventDefault();
-      const root = dateToday.closest("[data-egpz-date-root]");
-      syncEgpzDateField(root, toEgpzISODate(new Date()));
-      closeEgpzDatePickers();
-      return true;
-    }
-    return false;
-  }
+  function handleEgpzDateClick(event) { return ui.handleDateFieldClick(event, "egpz", closeEgpzDepartmentsField); }
 
   function filtered() {
     const query = normalize(filters.search);
@@ -592,34 +449,16 @@
     </a>`;
   }
 
-  function renderKpi({label, value, context, toneClass = "", ring = null}) {
-    const valueClass = toneClass ? ` ${toneClass}` : "";
-    const cardClass = ring ? " financial-kpi--with-ring financial-kpi--warning" : "";
-    return `<article class="financial-kpi${cardClass}">
-      <div class="financial-kpi__heading">
-        <span class="financial-kpi__title">${escape(label)}</span>
-        ${kpiArrow(label)}
-      </div>
-      <div class="financial-kpi__body">
-        ${ring ? ui.progressRing({label, percent: ring.percent, ariaLabel: `${label}: ${ring.percent} процентов`}) : ""}
-        <div class="financial-kpi__copy">
-          <strong class="financial-kpi__value${valueClass}">${escape(value)}</strong>
-          <span class="financial-kpi__trend-context">${escape(context)}</span>
-        </div>
-      </div>
-    </article>`;
-  }
-
-  function evidenceRingTone(ring) {
+  function kpiRingTone(ring) {
     if (ring?.tone === "error") return " payment-summary-card--error";
     if (ring?.tone === "warning") return " payment-summary-card--warning";
     if (ring?.tone === "positive") return " payment-summary-card--positive";
     return " payment-summary-card--info";
   }
 
-  function renderEvidenceKpi({label, value, context, ring = null}) {
+  function renderKpi({label, value, context, toneClass = "", ring = null}) {
     if (ring) {
-      return `<article class="payment-summary-card${evidenceRingTone(ring)}">
+      return `<article class="payment-summary-card${kpiRingTone(ring)}">
         <header class="payment-summary-card__heading">
           <h3 class="payment-summary-card__title typography-body-smallest">${escape(label)}</h3>
           ${kpiArrow(label)}
@@ -633,13 +472,14 @@
         </div>
       </article>`;
     }
+    const valueClass = toneClass ? ` ${toneClass}` : "";
     return `<article class="analytics-kpi">
       <div class="analytics-kpi__heading">
         <span class="analytics-kpi__label typography-body-smallest">${escape(label)}</span>
         ${kpiArrow(label)}
       </div>
       <div class="kpi-card__body">
-        <strong class="analytics-kpi__value typography-label-base">${escape(value)}</strong>
+        <strong class="analytics-kpi__value typography-label-base${valueClass}">${escape(value)}</strong>
         <p class="analytics-kpi__context typography-body-smallest">${escape(context)}</p>
       </div>
     </article>`;
@@ -647,7 +487,7 @@
 
   function renderProcurementEvidence() {
     if (!evidenceRoot) return;
-    evidenceRoot.innerHTML = procurementEvidenceCards.map(renderEvidenceKpi).join("");
+    evidenceRoot.innerHTML = procurementEvidenceCards.map(renderKpi).join("");
   }
 
   function numberContent(value, label = "") {
@@ -1660,7 +1500,7 @@
     kpiRoot.innerHTML = [
       {label: "Критические позиции", value: "18 400 USD", context: "1 позиция требует срочной закупки", toneClass: "is-negative"},
       {label: "Ниже минимума", value: `${below.length} позиции`, context: `Из ${data.parts.length} контролируемых позиций`, toneClass: "is-negative"},
-      {label: "Покрытие склада", value: "241 000 USD", context: "Из 482 000 USD страхового запаса", ring: {percent: coverage}},
+      {label: "Покрытие склада", value: "241 000 USD", context: "Из 482 000 USD страхового запаса", ring: {percent: coverage, tone: "warning"}},
       {label: "Открытые тендеры", value: "241 000 USD", context: `${data.tenders.length} тендера`}
     ].map(renderKpi).join("");
 
@@ -1706,30 +1546,21 @@
   }
 
   function priorityRoot() {
-    return filterModal.querySelector("[data-procurement-priority-filter]");
+    return filterModal.querySelector('[data-form-input="procurement-priority"]');
   }
 
   function closePriorityFilter() {
     const root = priorityRoot();
     if (!root) return;
-    root.classList.remove("is-open", "is-open-up");
-    root.querySelector("[data-procurement-priority-trigger]")?.setAttribute("aria-expanded", "false");
-    const menu = root.querySelector("[data-procurement-priority-menu]");
-    if (menu) menu.hidden = true;
+    ui.setSingleFormInputOpen(root, false);
   }
 
   function syncPriorityFilter() {
     const root = priorityRoot();
     if (!root) return;
     const value = draftFilters.priority || allPriority;
+    ui.syncSingleFormInput(root, value);
     root.classList.toggle("has-selection", value !== allPriority);
-    root.querySelector("[data-procurement-priority-value]").textContent = value;
-    root.querySelector("[data-procurement-priority-trigger]")?.setAttribute("aria-label", `Приоритет: ${value}`);
-    root.querySelectorAll("[data-procurement-priority-option]").forEach(option => {
-      const active = option.dataset.procurementPriorityOption === value;
-      option.classList.toggle("is-selected", active);
-      option.setAttribute("aria-selected", String(active));
-    });
   }
 
   function syncFilterModal() {
@@ -2058,6 +1889,17 @@
   });
   document.querySelector("[data-budget-deviation-panel]")?.addEventListener("scroll", hideBudgetDeviationTooltip, {passive: true});
   document.querySelector("[data-slow-turnover-panel]")?.addEventListener("scroll", hideSlowTurnoverTooltip, {passive: true});
+  const priorityField = filterModal.querySelector("[data-procurement-priority-field]");
+  if (priorityField) priorityField.outerHTML = ui.renderFormInput({
+    name: "procurement-priority", label: "Приоритет", mode: "single", value: allPriority,
+    options: [allPriority, "Критические", "Высокий", "Средний", "Низкий"]
+  });
+  filterModal.addEventListener("change", event => {
+    if (event.target.closest('[data-form-input="procurement-priority"]')) {
+      draftFilters.priority = event.target.value;
+      syncPriorityFilter();
+    }
+  });
   filterModal.addEventListener("click", event => {
     if (event.target.closest("[data-procurement-filter-close]")) {
       closeFilter();
@@ -2080,27 +1922,12 @@
       filterModal.querySelector("[data-procurement-filter-search]")?.focus();
       return;
     }
-    const priorityTrigger = event.target.closest("[data-procurement-priority-trigger]");
+    const priorityTrigger = event.target.closest('[data-form-input="procurement-priority"] .form-input__control');
     if (priorityTrigger) {
-      const root = priorityTrigger.closest("[data-procurement-priority-filter]");
-      const menu = root.querySelector("[data-procurement-priority-menu]");
-      const open = priorityTrigger.getAttribute("aria-expanded") !== "true";
       closeSearchScope();
-      closePriorityFilter();
-      root.classList.toggle("is-open", open);
-      priorityTrigger.setAttribute("aria-expanded", String(open));
-      menu.hidden = !open;
-      if (open) requestAnimationFrame(() => ui.positionFormInputMenu(root));
       return;
     }
-    const priorityOption = event.target.closest("[data-procurement-priority-option]");
-    if (priorityOption) {
-      draftFilters.priority = priorityOption.dataset.procurementPriorityOption;
-      syncPriorityFilter();
-      closePriorityFilter();
-      return;
-    }
-    if (!event.target.closest("[data-procurement-priority-filter]") && !event.target.closest("[data-procurement-search-scope]")) {
+    if (!event.target.closest('[data-form-input="procurement-priority"]') && !event.target.closest("[data-procurement-search-scope]")) {
       closeSearchScope();
       closePriorityFilter();
     }

@@ -19,9 +19,8 @@ function getScope(){return scopeButton?.dataset.value||'all';}
 function closeScope(){scopeButton?.setAttribute('aria-expanded','false');scopeButton?.closest('.dt3-search-scope')?.classList.remove('is-open');if(scopeMenu)scopeMenu.hidden=true;}
 function openScope(){scopeButton?.setAttribute('aria-expanded','true');scopeButton?.closest('.dt3-search-scope')?.classList.add('is-open');if(scopeMenu)scopeMenu.hidden=false;}
 function setScope(value,{update=true}={}){const selected=scopeOptions.find(option=>option.dataset.value===value)||scopeOptions[0];scopeButton.dataset.value=selected.dataset.value;scopeLabel.textContent=selected.textContent;scopeOptions.forEach(option=>{const active=option===selected;option.classList.toggle('is-selected',active);option.classList.toggle('typography-caption-smallest',active);option.classList.toggle('typography-body-smallest',!active);option.setAttribute('aria-selected',String(active));});if(update)render();}
-function closeZoneSelect(){zoneSelectButton?.setAttribute('aria-expanded','false');zoneSelectButton?.closest('.dt3-zone-dropdown')?.classList.remove('is-open');if(zoneSelectMenu)zoneSelectMenu.hidden=true;}
-function openZoneSelect(){zoneSelectButton?.setAttribute('aria-expanded','true');zoneSelectButton?.closest('.dt3-zone-dropdown')?.classList.add('is-open');if(zoneSelectMenu)zoneSelectMenu.hidden=false;}
-function renderZoneSelect(zone,node){if(!zoneSelectMenu||!zoneSelectLabel)return;const selectedId=node.id==='terminal'?'terminal':zone?.id||node.id;zoneSelectLabel.textContent=selectedId==='terminal'?'Весь терминал':nodes.get(selectedId)?.name||'Весь терминал';const zones=[...nodes.values()].filter(n=>n.type==='zone');zoneSelectMenu.innerHTML=[{id:'terminal',name:'Весь терминал'},...zones].map(item=>{const active=item.id===selectedId;return `<button class="dt3-zone-dropdown__option ui-dropdown__option ${active?'is-selected typography-caption-smallest':'typography-body-smallest'}" type="button" role="option" aria-selected="${active}" data-zone-target="${escape(item.id)}">${escape(item.name)}</button>`;}).join('');}
+function closeZoneSelect(){window.BNTUI.setDropdownOpen(zoneSelectButton?.closest('[data-ui-dropdown]'),false);}
+function renderZoneSelect(zone,node){if(!zoneSelectMenu||!zoneSelectLabel)return;const selectedId=node.id==='terminal'?'terminal':zone?.id||node.id;const zones=[...nodes.values()].filter(n=>n.type==='zone');zoneSelectMenu.innerHTML=window.BNTUI.renderDropdownOptions([{value:'terminal',label:'Весь терминал'},...zones.map(item=>({value:item.id,label:item.name}))],selectedId);window.BNTUI.syncDropdown(zoneSelectButton.closest('[data-ui-dropdown]'),selectedId);}
 function setDrawerExpanded(expanded){workspace.classList.toggle('is-drawer-collapsed',!expanded);drawerToggle.classList.toggle('is-expanded',expanded);drawerToggle.setAttribute('aria-expanded',String(expanded));drawerToggle.setAttribute('aria-label',expanded?'Свернуть панель':'Развернуть панель');if(!expanded)closeZoneSelect();}
 function setZoomUi(value){if(!zoomControl||!zoomRange)return;const min=Number(zoomRange.min)||50,max=Number(zoomRange.max)||150,progress=(value-min)/(max-min)*100;zoomControl.style.setProperty('--zoom-progress',`${Math.max(0,Math.min(100,progress))}%`);zoomRange.value=String(value);zoomRange.setAttribute('aria-valuetext',`${value} процентов`);if(zoomValue)zoomValue.textContent=`${value}%`;}
 function applyZoom(value){if(!zoomRange)return;const min=Number(zoomRange.min)||50,max=Number(zoomRange.max)||150,step=Number(zoomRange.step)||5,next=Math.max(min,Math.min(max,Math.round(Number(value)/step)*step));if(scene&&next!==zoomPercent)scene.zoom(zoomPercent/next);zoomPercent=next;setZoomUi(next);}
@@ -131,8 +130,8 @@ document.querySelector('.dt3-workspace').addEventListener('click',e=>{const btn=
 $('#dt-search').addEventListener('input',render);
 scopeButton.addEventListener('click',()=>{const open=scopeButton.getAttribute('aria-expanded')==='true';if(open)closeScope();else{closeZoneSelect();closeSpeedDials();openScope();}});
 scopeOptions.forEach(option=>option.addEventListener('click',()=>{setScope(option.dataset.value);closeScope();$('#dt-search').focus();}));
-zoneSelectButton.addEventListener('click',()=>{const open=zoneSelectButton.getAttribute('aria-expanded')==='true';if(open)closeZoneSelect();else{closeScope();closeSpeedDials();openZoneSelect();}});
-zoneSelectMenu.addEventListener('click',e=>{const option=e.target.closest('[data-zone-target]');if(!option)return;select(option.dataset.zoneTarget);closeZoneSelect();});
+zoneSelectButton.addEventListener('click',()=>{closeScope();closeSpeedDials();});
+zoneSelectButton.closest('[data-ui-dropdown]').addEventListener('change',e=>{select(e.currentTarget.dataset.value);});
 viewMenu?.addEventListener('click',e=>{const option=e.target.closest('[data-dt-view]');if(!option)return;setView(option.dataset.dtView);closeSpeedDials();viewTrigger?.focus();});
 legendToggle?.addEventListener('click',()=>setLegendOpen(legendToggle.getAttribute('aria-expanded')!=='true'));
 setView('iso',{apply:false});setLegendOpen(true);
@@ -165,7 +164,7 @@ window.addEventListener('pagehide',e=>{if(!e.persisted){themeObserver?.disconnec
 const cameraButtons=[...document.querySelectorAll('.dt3-view-select button,#dt-motion,.dt3-zoom button,.dt3-zoom input')];
 cameraButtons.forEach(button=>button.disabled=true);
 try {
- const {createTerminalScene}=await import('/assets/3d/terminal-scene-realistic.js?v=11001');
+ const {createTerminalScene}=await import('/assets/3d/terminal-scene-realistic.js?v=11010');
  scene=createTerminalScene(viewport,id=>select(id));
  syncSceneTheme();
  themeObserver=new MutationObserver(syncSceneTheme);

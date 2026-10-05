@@ -552,6 +552,7 @@ body > .app-shell > .app-main {
 }
 
 .app-topbar .shell-sections {
+  --shell-section-radius: var(--space-4);
   height: 100% !important;
   display: flex !important;
   align-items: flex-end !important;
@@ -560,6 +561,7 @@ body > .app-shell > .app-main {
 }
 
 .app-topbar .shell-section {
+  --shell-section-background: transparent;
   position: relative !important;
   min-width: 0 !important;
   height: clamp(44px, 3.055556vw, 58.666667px) !important;
@@ -569,9 +571,9 @@ body > .app-shell > .app-main {
   align-items: center !important;
   justify-content: center !important;
   gap: clamp(8px, .555556vw, 10.666667px) !important;
-  border-radius: clamp(8px, .555556vw, 10.666667px) clamp(8px, .555556vw, 10.666667px) 0 0 !important;
+  border-radius: var(--shell-section-radius) var(--shell-section-radius) 0 0 !important;
   border: 0 !important;
-  background: transparent !important;
+  background: var(--shell-section-background) !important;
   color: var(--text-primary) !important;
   text-decoration: none !important;
   font-size: var(--shell-label-small-size) !important;
@@ -589,12 +591,14 @@ body > .app-shell > .app-main {
 }
 
 .app-topbar .shell-section:not(.active):hover {
-  background: var(--interaction-bg-hover-modifier-light) !important;
+  --shell-section-background: var(--interaction-bg-hover-modifier-light);
+  background: var(--shell-section-background) !important;
   color: var(--text-primary) !important;
 }
 
 .app-topbar .shell-section.active {
-  background: var(--background-page) !important;
+  --shell-section-background: var(--background-page);
+  background: var(--shell-section-background) !important;
   color: var(--system-elements-semantic-info-primary) !important;
   box-shadow: var(--shadow-raised-up) !important;
   backdrop-filter: var(--backdrop-blur-raised) !important;
@@ -633,15 +637,24 @@ body > .app-shell > .app-main {
   color: var(--system-elements-semantic-info-primary) !important;
 }
 
-.app-topbar .shell-section.active::after {
+.app-topbar .shell-section:is(.active, :hover)::before,
+.app-topbar .shell-section:is(.active, :hover)::after {
   content: "" !important;
   position: absolute !important;
-  right: 0 !important;
   bottom: 0 !important;
-  left: 0 !important;
-  height: 1px !important;
-  border-radius: 100px !important;
-  background: var(--background-page) !important;
+  width: var(--shell-section-radius) !important;
+  height: var(--shell-section-radius) !important;
+  pointer-events: none !important;
+}
+
+.app-topbar .shell-section:is(.active, :hover)::before {
+  right: 100% !important;
+  background: radial-gradient(circle var(--shell-section-radius) at top left, transparent 100%, var(--shell-section-background) 100%) !important;
+}
+
+.app-topbar .shell-section:is(.active, :hover)::after {
+  left: 100% !important;
+  background: radial-gradient(circle var(--shell-section-radius) at top right, transparent 100%, var(--shell-section-background) 100%) !important;
 }
 
 .app-topbar .shell-search {
@@ -845,7 +858,7 @@ body > .app-shell > .app-main {
   padding: 0 var(--shell-gutter) !important;
   background: var(--background-page) !important;
   border: 0 !important;
-  border-radius: var(--space-2) var(--space-2) 0 0 !important;
+  border-radius: var(--space-3) var(--space-3) 0 0 !important;
   color: var(--text-primary) !important;
   font-family: var(--font-family-primary) !important;
   font-size: var(--shell-body-small-size) !important;

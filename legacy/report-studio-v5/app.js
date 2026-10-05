@@ -7,7 +7,9 @@
     loadJson('BNT_TEMPLATES','templates.json'),
     loadJson('BNT_REPORTS','report-data.json')
   ]);
-  const root=$('#app'), modal=$('#modal-root'), toastRoot=$('#toast-root'), fileInput=$('#template-import');
+  const embeddedMailings=document.body.dataset.page==='mailings';
+  const embeddedData=document.body.dataset.page==='data';
+  const root=$(embeddedMailings||embeddedData?'#page-content':'#app'), modal=$('#modal-root'), toastRoot=$('#toast-root'), fileInput=$('#template-import');
   const MONTHS=['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
   const MONTHS_FULL=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
   const KIND_NAMES={metrics:'Ключевые показатели',cf:'Денежные потоки (CF)',fi:'Финансовые показатели',ai:'Баланс',ci:'CAPEX',production:'Pelogas — производственные данные'};
@@ -74,6 +76,8 @@
     overrides:{},templateOverrides:{},seedOverrides:{},manualLog:[],customTemplates:[],customBlocks:{},schedules:[],dataKind:'metrics'
   };
   try{const s=JSON.parse(localStorage.getItem('bnt-studio-v5')||'null');if(s)Object.assign(state,s)}catch(e){}
+  if(embeddedMailings)state.view='schedules';
+  if(embeddedData)state.view='data';
   const persist=()=>localStorage.setItem('bnt-studio-v5',JSON.stringify(state));
   const srcName=id=>({1:'БНТ',2:'БМП',3:'Консолидация'}[id]||id);
   const divider=()=>state.unit==='raw'?1:state.unit==='million'?1e6:1e3;
@@ -123,6 +127,7 @@
   function getBlockMeta(id){return blockCatalog[id]||state.customBlocks[id]||{title:id,kind:'metrics',type:'unknown',size:'half'}}
 
   function shell(content,title){
+    if(embeddedMailings)return content;
     const nav=[['reports','reports','Отчеты'],['templates','templates','Шаблоны'],['builder','builder','Конструктор'],['data','data','Данные'],['schedules','schedule','Рассылки'],['sync','sync','Синхронизация']];
     return `<div class="app"><aside class="sidebar"><div class="brand"><svg viewBox="0 0 114 29"><use href="#Logo"></use></svg></div><div class="nav-label">Управленческая отчетность</div><nav>${nav.map(([v,i,l])=>`<button class="nav-item ${state.view===v?'active':''}" data-nav="${v}">${icon(i)}<span>${l}</span></button>`).join('')}</nav><div class="nav-label">Система</div><nav><button class="nav-item" data-action="reset-demo">${icon('sync')}<span>Сбросить демо</span></button></nav><div class="sidebar-foot"><div class="avatar">ДБ</div><div><b>Демо-пользователь</b><small>Администратор отчетности</small></div></div></aside><main><header><div class="crumbs"><span>ITP Portal</span><span>/</span><span>Управленческая отчетность</span><span>/</span><b>${esc(title)}</b></div><div class="header-actions"><span class="sync-dot"></span><small>1С + Pelogas · данные доступны</small><button class="btn small" data-action="sync">${icon('sync')}Синхронизировать</button></div></header><div class="content">${content}</div></main></div>`;
   }
@@ -198,15 +203,36 @@
   function templatesPage(){const all=[...TEMPLATES,...state.customTemplates];return shell(`${pageHead('Шаблоны','Готовые формы открываются со своими реальными контрольными данными, периодом и источником. Их можно копировать, редактировать, выгружать и назначать на автоматическую рассылку.',`<button class="btn" data-action="import-template">${icon('import')}Принять JSON</button><button class="btn primary" data-action="save-template">${icon('save')}Сохранить текущий</button>`)}<div class="templates">${all.map((t,i)=>`<article class="template"><div class="template-top"><span class="tag">${esc(t.tag||'Личный')}</span><div><button class="icon-btn" data-action="schedule-template" data-index="${i}" title="Рассылка">${icon('mail')}</button><button class="icon-btn" data-action="share-template" data-index="${i}" title="JSON">${icon('share')}</button></div></div><h3>${esc(t.name)}</h3><p>${esc(t.description||'Пользовательский шаблон')}</p><div class="template-meta"><span>${esc(t.sourceLabel||'1С')}</span><span>${t.filters?.year||state.year}</span></div><div class="template-mock">${(t.blocks||[]).slice(0,8).map(b=>`<i class="${getBlockMeta(b).size==='full'?'wide':getBlockMeta(b).size==='third'?'third':''}"></i>`).join('')}</div><div class="template-bottom"><span>${(t.blocks||[]).length} блоков</span><button class="btn small" data-action="open-template" data-index="${i}">Открыть ${icon('chev')}</button></div></article>`).join('')}</div>`, 'Шаблоны')}
   function builderPage(){const dynamic=Object.entries(blockCatalog).filter(([id,b])=>!b.seed);return shell(`${pageHead('Конструктор','Соберите новую форму из готовых блоков или создайте отдельный график по любому показателю. Рабочая область остается широкой — настройки открываются отдельно.',`<button class="btn" data-action="create-chart">${icon('chart')}График по показателю</button><button class="btn" data-action="preview">Предпросмотр</button><button class="btn primary" data-action="save-template">${icon('save')}Сохранить шаблон</button>`)}${filters()}<div class="builder-layout"><aside class="catalog"><h3>Библиотека блоков</h3><p>Финансовые, производственные и контрольные представления.</p>${dynamic.map(([id,b])=>`<button class="catalog-item" data-action="catalog-add" data-id="${id}"><div><b>${esc(b.title)}</b><small>${esc(KIND_NAMES[b.kind]||'Отчет')} · ${esc(b.type)}</small></div>${icon('add')}</button>`).join('')}<h3 class="catalog-section-title">Готовые формы</h3>${['general_oil','general_oil_dry','general_total_cargo','is_income','is_expenses','cons_production','cons_finance'].map(id=>{const b=getBlockMeta(id);return `<button class="catalog-item" data-action="catalog-add" data-id="${id}"><div><b>${esc(b.title)}</b><small>${esc(b.kind==='production'?'Pelogas':KIND_NAMES[b.kind])}</small></div>${icon('add')}</button>`}).join('')}</aside><section class="canvas"><div class="canvas-head"><div><h3>Холст отчета</h3><p>Перетаскивайте блоки. Индивидуальные графики сохраняются вместе с шаблоном.</p></div><button class="btn" data-action="add-block">${icon('add')}Добавить блок</button></div><div class="canvas-grid">${state.blocks.map(id=>{const b=getBlockMeta(id);return `<div class="canvas-block" draggable="true" data-canvas-block="${id}"><span class="drag">${icon('drag')}</span><div><b>${esc(b.title)}</b><small>${esc(b.size==='full'?'На всю ширину':b.size==='third'?'1/3 страницы':'1/2 страницы')}</small></div><button class="icon-btn" data-action="remove-block" data-id="${id}">${icon('close')}</button></div>`}).join('')}</div></section></div>`, 'Конструктор')}
 
-  function dataPage(){const dbKinds=['metrics','cf','fi','ai','ci'].filter(k=>dataset(k));const kinds=['production',...dbKinds];const kind=state.dataKind&&kinds.includes(state.dataKind)?state.dataKind:kinds[0];state.dataKind=kind;if(kind==='production')return productionDataPage(kinds);const rr=rows(kind).slice(0,100);return shell(`${pageHead('Данные','Исходные значения из 1С. Для каждого показателя можно сразу построить отдельный график или изменить конкретный месяц с обязательным комментарием.',`<button class="btn" data-action="history">${icon('history')}История изменений</button>`)}${filters()}<div class="data-layout"><aside class="dataset-list">${kinds.map(k=>`<button class="dataset-item ${k===kind?'active':''}" data-action="select-kind" data-kind="${k}"><span>${esc(KIND_NAMES[k])}</span><em>${k==='production'?REPORTS.general.blocks.general_total_cargo.rows.length:rows(k).length}</em></button>`).join('')}</aside><div class="data-card"><div class="data-head"><h3>${esc(KIND_NAMES[kind])}</h3><span>${srcName(state.source)} · Факт · ${state.year}</span></div><div class="data-scroll"><table><thead><tr><th>Код / показатель</th><th>График</th>${MONTHS.map(m=>`<th>${m}</th>`).join('')}<th>Период</th></tr></thead><tbody>${rr.map(r=>`<tr><td>${esc(r.name)}${state.showCodes?`<small>${esc(r.code)}</small>`:''}</td><td><button class="icon-btn inline" data-action="chart-row" data-kind="${kind}" data-row="${esc(r.id)}" title="Создать график">${icon('chart')}</button></td>${MONTHS.map((m,i)=>`<td class="num editable" data-source-edit data-kind="${kind}" data-row="${esc(r.id)}" data-month="${i+1}">${fmt(rawMonth(kind,r,i+1))}</td>`).join('')}<td class="num total-cell">${fmt(aggregate(kind,r))}</td></tr>`).join('')}</tbody></table></div></div></div>`, 'Данные')}
+  function dataPage(){if(embeddedData)return corporateDataPage();const dbKinds=['metrics','cf','fi','ai','ci'].filter(k=>dataset(k));const kinds=['production',...dbKinds];const kind=state.dataKind&&kinds.includes(state.dataKind)?state.dataKind:kinds[0];state.dataKind=kind;if(kind==='production')return productionDataPage(kinds);const rr=rows(kind).slice(0,100);return shell(`${pageHead('Данные','Исходные значения из 1С. Для каждого показателя можно сразу построить отдельный график или изменить конкретный месяц с обязательным комментарием.',`<button class="btn" data-action="history">${icon('history')}История изменений</button>`)}${filters()}<div class="data-layout"><aside class="dataset-list">${kinds.map(k=>`<button class="dataset-item ${k===kind?'active':''}" data-action="select-kind" data-kind="${k}"><span>${esc(KIND_NAMES[k])}</span><em>${k==='production'?REPORTS.general.blocks.general_total_cargo.rows.length:rows(k).length}</em></button>`).join('')}</aside><div class="data-card"><div class="data-head"><h3>${esc(KIND_NAMES[kind])}</h3><span>${srcName(state.source)} · Факт · ${state.year}</span></div><div class="data-scroll"><table><thead><tr><th>Код / показатель</th><th>График</th>${MONTHS.map(m=>`<th>${m}</th>`).join('')}<th>Период</th></tr></thead><tbody>${rr.map(r=>`<tr><td>${esc(r.name)}${state.showCodes?`<small>${esc(r.code)}</small>`:''}</td><td><button class="icon-btn inline" data-action="chart-row" data-kind="${kind}" data-row="${esc(r.id)}" title="Создать график">${icon('chart')}</button></td>${MONTHS.map((m,i)=>`<td class="num editable" data-source-edit data-kind="${kind}" data-row="${esc(r.id)}" data-month="${i+1}">${fmt(rawMonth(kind,r,i+1))}</td>`).join('')}<td class="num total-cell">${fmt(aggregate(kind,r))}</td></tr>`).join('')}</tbody></table></div></div></div>`, 'Данные')}
   function productionDataPage(kinds){const seed=REPORTS.general.blocks.general_total_cargo,series=REPORTS.general.series;return shell(`${pageHead('Данные','Производственные данные представлены отдельным источником Pelogas. В демо используются реальные значения из предоставленной формы «Общие показатели».',`<button class="btn" data-action="create-chart">${icon('chart')}Новый график</button>`)}<div class="integration-strip"><div><span class="status ok">Подключено</span><b>Pelogas</b><small>Производственные объемы, виды грузов, тарифные показатели</small></div><div><b>Последняя синхронизация</b><small>28.08.2026 15:50</small></div></div><div class="data-layout"><aside class="dataset-list">${kinds.map(k=>`<button class="dataset-item ${k==='production'?'active':''}" data-action="select-kind" data-kind="${k}"><span>${esc(KIND_NAMES[k])}</span><em>${k==='production'?seed.rows.length:rows(k).length}</em></button>`).join('')}</aside><div class="data-card"><div class="data-head"><h3>Pelogas — производственные показатели</h3><span>Контрольный срез · 8 мес 2026</span></div><div class="data-scroll"><table class="production-table"><thead><tr><th>Показатель</th><th>График</th>${series.map(s=>`<th class="num">${esc(s)}</th>`).join('')}</tr></thead><tbody>${seed.rows.map((r,ri)=>`<tr><td>${esc(r.name)}</td><td><button class="icon-btn inline" data-action="chart-seed-row" data-source-block="general_total_cargo" data-row-index="${ri}" title="Создать график">${icon('chart')}</button></td>${r.values.map((v,si)=>`<td class="num seed-edit" data-seed-edit data-block-id="general_total_cargo" data-row-index="${ri}" data-series-index="${si}" data-value-label="${esc(r.name+' · '+series[si])}" data-base="${v}">${fmtSeed(seedValue('general_total_cargo',ri,si,v),seed.unit)}</td>`).join('')}</tr>`).join('')}</tbody></table></div></div></div>`, 'Данные')}
 
-  function schedulesPage(){const all=[...TEMPLATES,...state.customTemplates];return shell(`${pageHead('Автоматические рассылки','Настройте ежедневную, еженедельную или ежемесячную отправку выбранного шаблона на e-mail. В демо расписания сохраняются локально; на backend это подключается к SMTP/очереди задач.',`<button class="btn primary" data-action="new-schedule">${icon('add')}Новая рассылка</button>`)}<div class="schedule-summary"><div><b>${state.schedules.filter(s=>s.enabled).length}</b><span>активных</span></div><div><b>${state.schedules.length}</b><span>всего правил</span></div><div><b>${new Set(state.schedules.flatMap(s=>s.recipients||[])).size}</b><span>получателей</span></div></div><div class="schedule-list">${state.schedules.length?state.schedules.map((s,i)=>{const t=all.find(x=>x.id===s.templateId);return `<article class="schedule-card"><div class="schedule-status"><span class="status ${s.enabled?'ok':''}">${s.enabled?'Активна':'Пауза'}</span><button class="icon-btn" data-action="delete-schedule" data-index="${i}">${icon('close')}</button></div><h3>${esc(t?.name||s.templateId)}</h3><p>${esc(s.frequencyLabel)} · ${esc(s.time)} · ${esc(s.format)}</p><div class="schedule-recipients">${(s.recipients||[]).map(x=>`<span>${esc(x)}</span>`).join('')}</div><div class="schedule-actions"><button class="btn small" data-action="test-schedule" data-index="${i}">${icon('mail')}Тестовая отправка</button><button class="btn small" data-action="toggle-schedule" data-index="${i}">${s.enabled?'Приостановить':'Включить'}</button></div></article>`}).join(''):empty('Рассылки еще не настроены')}</div>`, 'Рассылки')}
+  const schedulesDescription='Настройте ежедневную, еженедельную или ежемесячную отправку выбранного шаблона на e-mail. В демо расписания сохраняются локально; на backend это подключается к SMTP/очереди задач.';
+  function schedulesPage(){
+    const all=[...TEMPLATES,...state.customTemplates];
+    const heading=embeddedMailings?`<section class="page-title-actions">
+      <div class="page-title-actions__heading"><div class="page-title-actions__title-row">
+        <h1 class="typography-h4">Автоматические рассылки</h1>
+        <button class="sign_BTN_smallest info-icon-button" type="button" data-action="schedule-info" aria-expanded="false" aria-label="Информация об автоматических рассылках"><svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg></button>
+      </div></div>
+      <div class="page-title-actions__buttons"><button class="button-small button-small--primary typography-button-small" type="button" data-action="new-schedule"><svg width="24" height="24" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 4.375V15.625M15.625 10H4.375" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg><span>Новая рассылка</span></button></div>
+    </section>`:pageHead('Автоматические рассылки',schedulesDescription,`<button class="btn primary" data-action="new-schedule">${icon('add')}Новая рассылка</button>`);
+    const counts=[['активных',state.schedules.filter(s=>s.enabled).length],['всего правил',state.schedules.length],['получателей',new Set(state.schedules.flatMap(s=>s.recipients||[])).size]];
+    const summary=embeddedMailings?`<div class="schedule-summary dt3-metrics scenario-impact" style="--scenario-impact-columns: 3">${counts.map(([label,value])=>`<div><span>${esc(label)}</span><strong>${value}</strong></div>`).join('')}</div>`:`<div class="schedule-summary">${counts.map(([label,value])=>`<div><b>${value}</b><span>${esc(label)}</span></div>`).join('')}</div>`;
+    const body=state.schedules.length?`<div class="schedule-list">${state.schedules.map((s,i)=>{const t=all.find(x=>x.id===s.templateId);return `<article class="schedule-card"><div class="schedule-status"><span class="status ${s.enabled?'ok':''}">${s.enabled?'Активна':'Пауза'}</span><button class="icon-btn" data-action="delete-schedule" data-index="${i}">${icon('close')}</button></div><h3>${esc(t?.name||s.templateId)}</h3><p>${esc(s.frequencyLabel)} · ${esc(s.time)} · ${esc(s.format)}</p><div class="schedule-recipients">${(s.recipients||[]).map(x=>`<span>${esc(x)}</span>`).join('')}</div><div class="schedule-actions"><button class="btn small" data-action="test-schedule" data-index="${i}">${icon('mail')}Тестовая отправка</button><button class="btn small" data-action="toggle-schedule" data-index="${i}">${s.enabled?'Приостановить':'Включить'}</button></div></article>`}).join('')}</div>`:embeddedMailings?`<section class="empty-state empty-state--illustrated" aria-labelledby="mailings-empty-title">
+      <div class="div-block empty-state__content">
+        <svg class="empty-state__illustration" width="120" height="120" viewBox="0 0 120 120" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=2#EmptyStateBox"></use></svg>
+        <h2 class="empty-state__title typography-label-base" id="mailings-empty-title">Рассылки еще не настроены</h2>
+        <p class="empty-state__description typography-body-small">Настройте отправку выбранного шаблона на e-mail.</p>
+        <button class="button-small button-small--secondary typography-button-small" type="button" data-action="new-schedule"><span>Создать рассылку</span></button>
+      </div>
+    </section>`:`<div class="schedule-list">${empty('Рассылки еще не настроены')}</div>`;
+    return shell(`${heading}${summary}${body}`, 'Рассылки');
+  }
   function syncPage(){const snaps=DB.datasets.filter(d=>d.source===Number(state.source)&&d.year===Number(state.year));return shell(`${pageHead('Синхронизация','Контролируемая загрузка финансовых данных из 1С и производственных данных из Pelogas. Ручные корректировки шаблонов сохраняются отдельно от исходных данных.',`<button class="btn primary" data-action="sync">${icon('sync')}Запустить синхронизацию</button>`)}${filters()}<div class="integration-grid"><div class="integration-card"><div class="integration-head"><span class="status ok">Подключено</span><b>1С</b></div><h3>Финансовые данные</h3><p>CF, IS, баланс, CAPEX, KPI, планы и фактические значения.</p><div class="integration-stats"><span>${snaps.length} наборов</span><span>${snaps.reduce((s,d)=>s+d.rows.length,0)} строк</span></div></div><div class="integration-card"><div class="integration-head"><span class="status ok">Подключено</span><b>Pelogas</b></div><h3>Производственные данные</h3><p>Объем перевалки, типы грузов и производственные показатели.</p><div class="integration-stats"><span>${REPORTS.general.blocks.general_total_cargo.rows.length} показателей</span><span>контроль 8 мес 2026</span></div></div></div><div class="sync-layout"><div class="sync-card hero"><span class="status ok">Актуально</span><strong>${snaps.length+1}</strong><h3>источников и наборов</h3><p>${srcName(state.source)} · ${state.year} · ручных корректировок: ${state.manualLog.length}</p><div class="sync-metrics"><div><b>${snaps.reduce((s,d)=>s+d.rows.length,0)}</b><span>строк 1С</span></div><div><b>${REPORTS.general.blocks.general_total_cargo.rows.length}</b><span>Pelogas KPI</span></div><div><b>${state.schedules.filter(s=>s.enabled).length}</b><span>рассылки</span></div><div><b>${state.manualLog.length}</b><span>корректировки</span></div></div></div><div class="sync-card"><h3>Последние срезы</h3>${snaps.slice().sort((a,b)=>String(b.timestamp).localeCompare(String(a.timestamp))).slice(0,6).map(d=>`<div class="snapshot"><i></i><div><b>${esc(d.kindName)} · ${esc(d.basisName)}</b><span>${esc(d.timestamp)} · ${d.rows.length} строк</span></div></div>`).join('')}<div class="snapshot"><i></i><div><b>Pelogas · производственные данные</b><span>28.08.2026 15:50 · контрольный срез</span></div></div></div></div>`, 'Синхронизация')}
 
   function applyTemplate(t){if(!t)return;state.activeTemplateId=t.id;state.blocks=[...(t.blocks||[])];if(t.filters)Object.assign(state,t.filters);if(t.customBlocks)Object.assign(state.customBlocks,t.customBlocks);state.view='reports';render();toast('Шаблон открыт',t.name)}
-  function render(){if(state.monthFrom>state.monthTo)state.monthFrom=state.monthTo;root.innerHTML=state.view==='reports'?reportPage():state.view==='templates'?templatesPage():state.view==='builder'?builderPage():state.view==='data'?dataPage():state.view==='schedules'?schedulesPage():syncPage();bindDrag();persist()}
-  function toast(title,text=''){const d=document.createElement('div');d.className='toast';d.innerHTML=`<span>${icon('check')}</span><div><b>${esc(title)}</b>${text?`<small>${esc(text)}</small>`:''}</div>`;toastRoot.appendChild(d);setTimeout(()=>d.remove(),3000)}
+  function render(){if(embeddedMailings||embeddedData)window.BNTUI?.closeInfoPopover();if(state.monthFrom>state.monthTo)state.monthFrom=state.monthTo;root.innerHTML=state.view==='reports'?reportPage():state.view==='templates'?templatesPage():state.view==='builder'?builderPage():state.view==='data'?dataPage():state.view==='schedules'?schedulesPage():syncPage();bindDrag();persist()}
+  function toast(title,text=''){if(embeddedData){window.BNTUI.toast(title,text);return;}const d=document.createElement('div');d.className='toast';d.innerHTML=`<span>${icon('check')}</span><div><b>${esc(title)}</b>${text?`<small>${esc(text)}</small>`:''}</div>`;toastRoot.appendChild(d);setTimeout(()=>d.remove(),3000)}
 
   function blockModal(){modal.innerHTML=`<div class="overlay" data-close><div class="modal" onclick="event.stopPropagation()"><div class="modal-head"><h3>Добавить блок</h3><button class="icon-btn" data-close>${icon('close')}</button></div><div class="modal-body"><div class="block-picker">${Object.entries(blockCatalog).map(([id,b])=>`<button data-action="modal-add-block" data-id="${id}"><div class="block-icon">${icon(b.kind==='production'?'chart':b.kind==='cf'?'reports':b.kind==='ci'?'builder':'data')}</div><div><b>${esc(b.title)}</b><span>${esc(b.kind==='production'?'Pelogas':KIND_NAMES[b.kind]||'Отчет')} · ${b.size==='full'?'полная ширина':b.size==='third'?'1/3 страницы':'1/2 страницы'}</span></div></button>`).join('')}</div></div></div></div>`}
   function saveTemplateModal(){modal.innerHTML=`<div class="overlay" data-close><div class="modal sm" onclick="event.stopPropagation()"><div class="modal-head"><h3>Сохранить шаблон</h3><button class="icon-btn" data-close>${icon('close')}</button></div><div class="modal-body"><label class="field">Название<input id="tpl-name" value="Копия — ${esc(activeTemplate()?.name||'Управленческий отчет')}"></label><label class="field">Описание<textarea id="tpl-desc">${state.blocks.length} блоков · ${MONTHS[state.monthFrom-1]}–${MONTHS[state.monthTo-1]} ${state.year}</textarea></label><label class="field">Доступ<select id="tpl-tag"><option>Личный</option><option>ПЭО</option><option>Общий</option></select></label></div><div class="modal-foot"><button class="btn" data-close>Отмена</button><button class="btn primary" data-action="confirm-save">Сохранить</button></div></div></div>`}
@@ -217,7 +243,133 @@
   function syncModal(){modal.innerHTML=`<div class="overlay" data-close><div class="modal sm" onclick="event.stopPropagation()"><div class="modal-head"><h3>Синхронизация источников</h3><button class="icon-btn" data-close>${icon('close')}</button></div><div class="modal-body"><div class="checklist"><div>${icon('check')}<span><b>1С — срез прошел валидацию</b><small>Источник, период и структура проверены</small></span></div><div>${icon('check')}<span><b>Pelogas — данные доступны</b><small>Производственные показатели готовы к обновлению</small></span></div><div>${icon('check')}<span><b>Корректировки шаблонов защищены</b><small>Не перезаписываются синхронизацией</small></span></div></div></div><div class="modal-foot"><button class="btn" data-close>Отмена</button><button class="btn primary" data-action="confirm-sync">Применить срезы</button></div></div></div>`}
   function chartModal(opts={}){const dbKinds=['metrics','cf','fi','ai','ci'].filter(k=>dataset(k));const kind=opts.kind||dbKinds[0]||'metrics';const rr=rows(kind).slice(0,150);modal.innerHTML=`<div class="overlay" data-close><div class="modal" onclick="event.stopPropagation()"><div class="modal-head"><h3>Создать график по показателю</h3><button class="icon-btn" data-close>${icon('close')}</button></div><div class="modal-body"><div class="chart-form-grid"><label class="field">Набор данных<select id="chart-kind">${dbKinds.map(k=>`<option value="${k}" ${k===kind?'selected':''}>${esc(KIND_NAMES[k])}</option>`).join('')}</select></label><label class="field">Показатель<select id="chart-row">${rr.map(r=>`<option value="${esc(r.id)}" ${opts.rowId===r.id?'selected':''}>${esc(r.name)}</option>`).join('')}</select></label><label class="field">Тип графика<select id="chart-type"><option value="indicatorLine">Линейный</option><option value="indicatorColumn">Столбчатый</option></select></label><label class="field">Ширина<select id="chart-size"><option value="half">1/2 страницы</option><option value="full">На всю ширину</option><option value="third">1/3 страницы</option></select></label></div><p class="modal-note">График будет добавлен в текущий шаблон и сохранится в JSON-конфигурации.</p></div><div class="modal-foot"><button class="btn" data-close>Отмена</button><button class="btn primary" data-action="confirm-chart">${icon('chart')}Добавить график</button></div></div></div>`;$('#chart-kind')?.addEventListener('change',e=>chartModal({kind:e.target.value}))}
   function seedChartModal(sourceBlockId,rowIndex){const seed=seedBlock(sourceBlockId),row=seed?.rows?.[rowIndex];if(!row)return;modal.innerHTML=`<div class="overlay" data-close><div class="modal sm" onclick="event.stopPropagation()"><div class="modal-head"><h3>Добавить график</h3><button class="icon-btn" data-close>${icon('close')}</button></div><div class="modal-body"><h4>${esc(row.name)}</h4><p class="modal-note">Будет создан отдельный график по реальным сравнительным значениям из производственной формы.</p><label class="field">Название<input id="seed-chart-title" value="${esc(row.name)}"></label><label class="field">Ширина<select id="seed-chart-size"><option value="half">1/2 страницы</option><option value="third">1/3 страницы</option><option value="full">На всю ширину</option></select></label></div><div class="modal-foot"><button class="btn" data-close>Отмена</button><button class="btn primary" data-action="confirm-seed-chart" data-source-block="${sourceBlockId}" data-row-index="${rowIndex}">${icon('chart')}Добавить</button></div></div></div>`}
-  function scheduleModal(templateId=state.activeTemplateId){const all=[...TEMPLATES,...state.customTemplates];modal.innerHTML=`<div class="overlay" data-close><div class="modal sm" onclick="event.stopPropagation()"><div class="modal-head"><h3>Автоматическая отправка отчета</h3><button class="icon-btn" data-close>${icon('close')}</button></div><div class="modal-body"><label class="field">Шаблон<select id="schedule-template">${all.map(t=>`<option value="${t.id}" ${t.id===templateId?'selected':''}>${esc(t.name)}</option>`).join('')}</select></label><label class="field">Получатели<input id="schedule-recipients" placeholder="director@company.ge, peo@company.ge"></label><div class="chart-form-grid"><label class="field">Периодичность<select id="schedule-frequency"><option value="daily">Каждый день</option><option value="weekly">Каждую неделю</option><option value="monthly">Каждый месяц</option></select></label><label class="field">Время<input id="schedule-time" type="time" value="08:00"></label><label class="field">Формат<select id="schedule-format"><option>PDF</option><option>Excel</option><option>PDF + Excel</option></select></label><label class="field">Тема письма<input id="schedule-subject" value="Управленческий отчет"></label></div><p class="modal-note">Для промышленной версии правило подключается к SMTP и планировщику задач. В демо конфигурация сохраняется и тестовая отправка имитируется.</p></div><div class="modal-foot"><button class="btn" data-close>Отмена</button><button class="btn primary" data-action="confirm-schedule">${icon('mail')}Сохранить рассылку</button></div></div></div>`}
+  const corporateDataDescriptions = {
+    financial: 'Исходные значения из 1С. Для каждого показателя можно сразу построить отдельный график или изменить конкретный месяц с обязательным комментарием.',
+    production: 'Производственные данные представлены отдельным источником Pelogas. В демо используются реальные значения из предоставленной формы «Общие показатели».'
+  };
+  const studioIcon = name => `<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#${name}"></use></svg>`;
+  const studioSelect = (id, label, options, value) => window.BNTUI.renderFormInput({name: id, label, options, value, mode: 'single'});
+  const studioText = (id, label, value = '', type = 'text') => `<label class="form-input"><span class="form-input__label typography-label-smallest">${esc(label)}</span><input class="form-input__control form-input__control--text typography-body-smallest" type="${type}"${type === 'number' ? ' step="any" required' : ''} id="${id}" value="${esc(value)}"></label>`;
+  const studioSubmit = (action, text) => `<button class="button-smallest-primary-radius typography-button-smallest" type="submit" data-action="${action}"><span>${esc(text)}</span></button>`;
+  const studioCancel = () => `<button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-close>${window.BNTUI.icon('close')}<span>Отмена</span></button>`;
+  function dataKinds() { return ['production', ...['metrics', 'cf', 'fi', 'ai', 'ci'].filter(kind => dataset(kind))]; }
+  function corporateDataPage() {
+    const ui = window.BNTUI, kinds = dataKinds();
+    if (!kinds.includes(state.dataKind)) state.dataKind = kinds[0];
+    const kind = state.dataKind, production = kind === 'production';
+    const seed = seedBlock('general_total_cargo'), series = REPORTS.general?.series || [];
+    const dropdown = ui.renderDropdown({id: 'data-kind', label: 'Набор данных', size: 'small', value: kind, options: kinds.map(value => ({value, label: KIND_NAMES[value], count: value === 'production' ? seed?.rows?.length || 0 : rows(value).length}))});
+    const graphButton = attributes => `<button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button"${ui.attrs(attributes)} title="Создать график" aria-label="Создать график">${studioIcon('NewChart')}</button>`;
+    const title = `<section class="page-title-actions"><div class="page-title-actions__heading"><div class="page-title-actions__title-row"><h1 class="typography-h4">Данные</h1><button class="sign_BTN_smallest" type="button" data-action="data-info" aria-label="О данных" aria-haspopup="dialog" aria-expanded="false"><svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#Info"></use></svg></button></div></div><div class="page-title-actions__buttons">${dropdown}<button class="button-small button-small--secondary typography-button-small" type="button" data-action="${production ? 'create-chart' : 'history'}" aria-haspopup="dialog" aria-expanded="false">${studioIcon(production ? 'NewChart' : 'History')}<span>${production ? 'Новый график' : 'История изменений'}</span></button><button class="button-small button-small--secondary typography-button-small" type="button" data-action="data-filter" aria-haspopup="dialog" aria-expanded="false">${studioIcon('Filter')}<span>Фильтр</span></button></div></section>`;
+    const heading = production ? 'Pelogas — производственные показатели' : KIND_NAMES[kind];
+    const source = production ? 'Контрольный срез · 8 мес 2026' : `${srcName(state.source)} · Факт · ${state.year}`;
+    const headers = production ? series : [...MONTHS, 'Период'];
+    const tableRows = production ? (seed?.rows || []).map((row, ri) => `<tr><td><div class="table-cell-content"><strong>${esc(row.name)}</strong></div></td><td class="data-table__action-cell">${graphButton({'data-action': 'chart-seed-row', 'data-source-block': 'general_total_cargo', 'data-row-index': ri})}</td>${row.values.map((value, si) => `<td class="data-table__numeric-cell" data-seed-edit data-block-id="general_total_cargo" data-row-index="${ri}" data-series-index="${si}" data-value-label="${esc(row.name + ' · ' + series[si])}" data-base="${value}" tabindex="0" role="button" aria-label="Изменить ${esc(row.name + ' · ' + series[si])}">${fmtSeed(seedValue('general_total_cargo', ri, si, value), seed.unit)}</td>`).join('')}</tr>`).join('') : rows(kind).slice(0, 100).map(row => `<tr><td><div class="table-cell-content"><strong>${esc(row.name)}</strong>${state.showCodes ? `<small>${esc(row.code)}</small>` : ''}</div></td><td class="data-table__action-cell">${graphButton({'data-action': 'chart-row', 'data-kind': kind, 'data-row': row.id})}</td>${MONTHS.map((_month, index) => `<td class="data-table__numeric-cell" data-source-edit data-kind="${kind}" data-row="${esc(row.id)}" data-month="${index + 1}" tabindex="0" role="button" aria-label="Изменить ${esc(row.name + ' · ' + MONTHS_FULL[index])}">${fmt(rawMonth(kind, row, index + 1))}</td>`).join('')}<td class="data-table__numeric-cell"><strong>${fmt(aggregate(kind, row))}</strong></td></tr>`).join('');
+    return `${title}<section class="content-block" aria-label="${esc(heading)}"><div class="analytics-block-heading"><h2 class="typography-caption-small">${esc(heading)}</h2><span class="typography-body-smallest">${esc(source)}</span></div><section class="card table-block table-block--sticky-head"><div class="table-wrap ui-scrollbar"><table class="data-table"><thead><tr><th><div class="data-table__column-heading">${production ? 'Показатель' : 'Код / показатель'}</div></th><th class="data-table__head-cell--action"><div class="data-table__column-heading">График</div></th>${headers.map(header => `<th class="data-table__head-cell--numeric"><div class="data-table__column-heading">${esc(header)}</div></th>`).join('')}</tr></thead><tbody>${tableRows || `<tr><td colspan="${headers.length + 2}">Нет данных</td></tr>`}</tbody></table></div></section></section>`;
+  }
+  function openStudioDrawer(options, trigger = document.activeElement) {
+    window.BNTUI.closeInfoPopover();
+    window.BNTUI.closeDropdowns();
+    closeScheduleDrawer(false);
+    scheduleDrawerTrigger = trigger;
+    trigger?.setAttribute('aria-expanded', 'true');
+    modal.innerHTML = window.BNTUI.renderDrawer(options);
+    requestAnimationFrame(() => modal.querySelector('.dt3-drawer-toggle')?.focus());
+  }
+  function dataPeriod(year = state.year) {
+    const ui = window.BNTUI;
+    // Source values are monthly; dates retain the range while totals use inclusive months.
+    const from = state.dataDateFrom?.startsWith(`${year}-`) ? state.dataDateFrom : ui.isoDate(new Date(year, state.monthFrom - 1, 1));
+    const to = state.dataDateTo?.startsWith(`${year}-`) ? state.dataDateTo : ui.isoDate(new Date(year, state.monthTo, 0));
+    return {from, to};
+  }
+  function dataFilterDrawer(trigger) {
+    const ui = window.BNTUI, period = dataPeriod();
+    const years = [...new Set([2024, 2025, 2026, state.year])].sort();
+    const dates = `<div class="equipment-date-grid">${ui.renderDateField({name: 'data-date-from', label: 'Дата с', value: period.from, min: `${state.year}-01-01`, max: `${state.year}-12-31`})}${ui.renderDateField({name: 'data-date-to', label: 'Дата по', value: period.to, min: `${state.year}-01-01`, max: `${state.year}-12-31`})}</div>`;
+    openStudioDrawer({id: 'data-filter-drawer', title: 'Фильтр', fields: studioSelect('data-source', 'Компания', [1, 2, 3].map(value => ({value, label: srcName(value)})), state.source) + studioSelect('data-year', 'Год', years, state.year) + dates + studioSelect('data-currency', 'Валюта', ['USD', 'GEL'], state.currency) + studioSelect('data-unit', 'Единица', [{value: 'raw', label: 'ед.'}, {value: 'thousand', label: 'тыс.'}, {value: 'million', label: 'млн'}], state.unit), footer: studioSubmit('apply-data-filter', 'Применить') + `<button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-action="reset-data-filter">${ui.icon('close')}<span>Сбросить всё</span></button>`, formAttributes: {'data-data-filter-form': true}}, trigger);
+  }
+  function syncDataFilterYear() {
+    const ui = window.BNTUI, year = Number($('#data-year')?.value);
+    ['from', 'to'].forEach(part => {
+      const root = modal.querySelector(`[data-bnt-date-root="data-date-${part}"]`);
+      if (!root) return;
+      const previous = ui.parseDate(root.querySelector('[data-bnt-date]')?.value);
+      const month = previous?.getMonth() ?? (part === 'from' ? 0 : 11);
+      const day = Math.min(previous?.getDate() || (part === 'from' ? 1 : 31), new Date(year, month + 1, 0).getDate());
+      root.dataset.dateMin = `${year}-01-01`; root.dataset.dateMax = `${year}-12-31`;
+      ui.syncDateField(root, ui.isoDate(new Date(year, month, day)));
+    });
+    ui.closeDatePickers();
+  }
+  function applyDataFilter() {
+    const ui = window.BNTUI, year = Number($('#data-year')?.value);
+    const from = $('#data-date-from')?.value, to = $('#data-date-to')?.value;
+    if (!ui.parseDate(from) || !ui.parseDate(to) || from > to || !from.startsWith(`${year}-`) || !to.startsWith(`${year}-`)) { toast('Проверьте период', 'Дата с должна быть не позже даты по в выбранном году'); return; }
+    Object.assign(state, {source: Number($('#data-source')?.value), year, monthFrom: ui.parseDate(from).getMonth() + 1, monthTo: ui.parseDate(to).getMonth() + 1, dataDateFrom: from, dataDateTo: to, currency: $('#data-currency')?.value, unit: $('#data-unit')?.value, activeTemplateId: 'draft'});
+    closeScheduleDrawer(false); render(); root.querySelector('[data-action="data-filter"]')?.focus();
+  }
+  function dataHistoryDrawer(trigger) {
+    const content = state.manualLog.length ? `<section class="card table-block"><div class="table-wrap ui-scrollbar"><table class="data-table"><thead><tr>${['Дата', 'Область', 'Показатель', 'Было', 'Стало', 'Причина'].map(label => `<th><div class="data-table__column-heading">${label}</div></th>`).join('')}</tr></thead><tbody>${state.manualLog.slice().reverse().map(item => `<tr><td>${esc(item.date)}</td><td>${esc(item.scope || 'Данные')}</td><td>${esc(item.name)}</td><td class="data-table__numeric-cell">${esc(fmtRaw(item.old))}</td><td class="data-table__numeric-cell">${esc(fmtRaw(item.value))}</td><td>${esc(item.reason)}</td></tr>`).join('')}</tbody></table></div></section>` : '<div class="div-block typography-body-small">Изменений пока нет</div>';
+    openStudioDrawer({id: 'data-history-drawer', title: 'История изменений', fields: content, footer: studioCancel()}, trigger);
+  }
+  function dataChartDrawer(opts = {}, trigger) {
+    const kinds = dataKinds(), kind = opts.kind || state.dataKind;
+    const production = kind === 'production', seed = seedBlock('general_total_cargo');
+    const touched = [...modal.querySelectorAll('.form-input.is-touched')].map(field => field.dataset.formInput).filter(Boolean);
+    const availableRows = production ? (seed?.rows || []).map((row, index) => ({value: index, label: row.name})) : rows(kind).slice(0, 150).map(row => ({value: row.id, label: row.name}));
+    const selected = availableRows.find(row => String(row.value) === String(opts.rowId ?? opts.rowIndex)) || availableRows[0];
+    const fields = studioSelect('chart-kind', 'Набор данных', kinds.map(value => ({value, label: KIND_NAMES[value]})), kind) + studioSelect('chart-row', 'Показатель', availableRows, opts.rowId ?? opts.rowIndex ?? availableRows[0]?.value) + (production ? '' : studioSelect('chart-type', 'Тип графика', [{value: 'indicatorLine', label: 'Линейный'}, {value: 'indicatorColumn', label: 'Столбчатый'}], opts.type || 'indicatorLine')) + studioSelect('chart-size', 'Ширина', [{value: 'half', label: '1/2 страницы'}, {value: 'full', label: 'На всю ширину'}, {value: 'third', label: '1/3 страницы'}], opts.size || 'half');
+    openStudioDrawer({id: 'data-chart-drawer', title: 'Новый график', fields: fields + (production ? studioText('chart-title', 'Название', selected?.label || '') : ''), footer: studioSubmit('confirm-data-chart', 'Добавить график') + studioCancel(), formAttributes: {'data-data-chart-form': true}}, trigger);
+    touched.filter(id => id !== 'chart-row').forEach(id => window.BNTUI.touchFormInput(modal.querySelector(`[data-form-input="${id}"]`)));
+  }
+  function saveDataChart() {
+    const kind = $('#chart-kind')?.value, rowId = $('#chart-row')?.value, size = $('#chart-size')?.value || 'half';
+    const production = kind === 'production', row = production ? seedBlock('general_total_cargo')?.rows?.[Number(rowId)] : dataset(kind)?.rows.find(item => String(item.id) === rowId);
+    if (!row) { toast('Выберите показатель'); return; }
+    const id = `${production ? 'seedchart' : 'chart'}-${Date.now()}`;
+    state.customBlocks[id] = production ? {title: $('#chart-title')?.value.trim() || row.name, kind, type: 'seedIndicator', size, sourceBlockId: 'general_total_cargo', rowIndex: Number(rowId)} : {title: row.name, kind, type: $('#chart-type')?.value || 'indicatorLine', size, rowKey: row.code};
+    state.blocks.push(id); state.view = 'reports'; persist(); closeScheduleDrawer(false);
+    window.location.assign('/reports.html');
+  }
+  function dataEditDrawer(cell) {
+    const production = cell.hasAttribute('data-seed-edit');
+    const kind = cell.dataset.kind, row = production ? null : dataset(kind)?.rows.find(item => String(item.id) === cell.dataset.row);
+    if (!production && !row) return;
+    const id = production ? 'seed' : 'source', value = production ? Number(cell.dataset.base) : rawMonth(kind, row, Number(cell.dataset.month));
+    const label = production ? cell.dataset.valueLabel : row.name;
+    const metrics = production ? [['Исходное значение формы', fmtRaw(value)], ['Шаблон', activeTemplate()?.name || 'Черновик']] : [['Исходное из 1С', fmtRaw(row.values?.[Number(cell.dataset.month) - 1])], ['Действующее', fmtRaw(value)]];
+    const summary = `<div class="dt3-metrics scenario-impact" style="--scenario-impact-columns: 2">${metrics.map(([caption, text]) => `<div><span>${esc(caption)}</span><strong>${esc(text)}</strong></div>`).join('')}</div>`;
+    const fields = `<div class="analytics-block-heading"><h3 class="typography-caption-small">${esc(label)}</h3></div>${summary}${studioText(`${id}-edit-value`, 'Новое значение', value ?? '', 'number')}<label class="form-input"><span class="form-input__label typography-label-smallest">Причина</span><textarea class="form-input__control form-input__control--text typography-body-smallest" id="${id}-edit-reason" rows="5"></textarea></label>`;
+    const attributes = production ? {'data-block-id': cell.dataset.blockId, 'data-row-index': cell.dataset.rowIndex, 'data-series-index': cell.dataset.seriesIndex, 'data-value-label': label, 'data-base': value} : {'data-kind': kind, 'data-row': row.id, 'data-month': cell.dataset.month};
+    const footer = `<button class="button-smallest-primary-radius typography-button-smallest" type="submit" data-action="save-${id}-edit"${window.BNTUI.attrs(attributes)}><span>Сохранить</span></button>` + studioCancel();
+    openStudioDrawer({id: 'data-edit-drawer', title: production ? 'Корректировка в шаблоне' : 'Ручная корректировка исходных данных', fields, footer, formAttributes: {'data-data-edit-form': true}}, cell);
+  }
+  let scheduleDrawerTrigger = null;
+  function closeScheduleDrawer(restoreFocus = true) {
+    window.BNTUI?.closeSingleFormInputs(modal);
+    window.BNTUI?.closeTimeFields(modal);
+    window.BNTUI?.closeDatePickers('bnt', null, modal);
+    modal.innerHTML = '';
+    scheduleDrawerTrigger?.setAttribute('aria-expanded', 'false');
+    if (restoreFocus) scheduleDrawerTrigger?.focus?.();
+    scheduleDrawerTrigger = null;
+  }
+  function scheduleModal(templateId = state.activeTemplateId, trigger = document.activeElement) {
+    const ui = window.BNTUI;
+    if (!ui) { legacyScheduleModal(templateId); return; }
+    const all = [...TEMPLATES, ...state.customTemplates];
+    const select = (name, label, options, value) => ui.renderFormInput({name: `schedule-${name}`, label, options, value, mode: 'single'});
+    const text = (name, label, value = '', placeholder = '') => `<label class="form-input"><span class="form-input__label typography-label-smallest">${esc(label)}</span><input class="form-input__control form-input__control--text typography-body-smallest" type="text" id="schedule-${name}" name="${name}" value="${esc(value)}" placeholder="${esc(placeholder)}"></label>`;
+    const fields = select('template', 'Шаблон', all.map(t => ({value: t.id, label: t.name})), templateId)
+      + text('recipients', 'Получатели', '', 'director@company.ge, peo@company.ge')
+      + select('frequency', 'Периодичность', [{value: 'daily', label: 'Каждый день'}, {value: 'weekly', label: 'Каждую неделю'}, {value: 'monthly', label: 'Каждый месяц'}], 'daily')
+      + ui.renderTimeField({name: 'schedule-time', label: 'Время', value: '08:00'})
+      + select('format', 'Формат', ['PDF', 'Excel', 'PDF + Excel'], 'PDF')
+      + text('subject', 'Тема письма', 'Управленческий отчет');
+    openStudioDrawer({id: 'schedule-drawer', title: 'Автоматическая отправка отчета', fields, footer: studioSubmit('confirm-schedule', 'Сохранить рассылку') + studioCancel(), formAttributes: {'data-schedule-form': true}}, trigger);
+  }
+  function legacyScheduleModal(templateId=state.activeTemplateId){const all=[...TEMPLATES,...state.customTemplates];modal.innerHTML=`<div class="overlay" data-close><div class="modal sm" onclick="event.stopPropagation()"><div class="modal-head"><h3>Автоматическая отправка отчета</h3><button class="icon-btn" data-close>${icon('close')}</button></div><div class="modal-body"><label class="field">Шаблон<select id="schedule-template">${all.map(t=>`<option value="${t.id}" ${t.id===templateId?'selected':''}>${esc(t.name)}</option>`).join('')}</select></label><label class="field">Получатели<input id="schedule-recipients" placeholder="director@company.ge, peo@company.ge"></label><div class="chart-form-grid"><label class="field">Периодичность<select id="schedule-frequency"><option value="daily">Каждый день</option><option value="weekly">Каждую неделю</option><option value="monthly">Каждый месяц</option></select></label><label class="field">Время<input id="schedule-time" type="time" value="08:00"></label><label class="field">Формат<select id="schedule-format"><option>PDF</option><option>Excel</option><option>PDF + Excel</option></select></label><label class="field">Тема письма<input id="schedule-subject" value="Управленческий отчет"></label></div></div><div class="modal-foot"><button class="btn primary" data-action="confirm-schedule">Сохранить рассылку</button><button class="btn" data-close>Отмена</button></div></div></div>`}
 
   function exportTemplate(t){const tid=t?.id||currentTemplateKey();const payload={version:5,id:tid,name:t?.name||activeTemplate()?.name||'BNT report template',reportTitle:t?.reportTitle||reportTitle(),sourceLabel:t?.sourceLabel||sourceLabel(),filters:t?.filters||{source:state.source,year:state.year,monthFrom:state.monthFrom,monthTo:state.monthTo,currency:state.currency,unit:state.unit},blocks:t?.blocks||state.blocks,customBlocks:state.customBlocks,templateOverrides:state.templateOverrides[tid]||{},seedOverrides:state.seedOverrides[tid]||{}};downloadBlob(JSON.stringify(payload,null,2),'application/json','BNT_Report_Template.json')}
   function downloadBlob(content,type,name){const a=document.createElement('a'),url=URL.createObjectURL(new Blob([content],{type}));a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
@@ -229,7 +381,7 @@
 
   root.addEventListener('click',e=>{
     const nav=e.target.closest('[data-nav]');if(nav){state.view=nav.dataset.nav;render();return}
-    const seedCell=e.target.closest('[data-seed-edit]');if(seedCell){seedEditModal(seedCell.dataset.blockId,Number(seedCell.dataset.rowIndex),Number(seedCell.dataset.seriesIndex),seedCell.dataset.valueLabel,Number(seedCell.dataset.base));return}
+    const seedCell=e.target.closest('[data-seed-edit]');if(seedCell){if(embeddedData)dataEditDrawer(seedCell);else seedEditModal(seedCell.dataset.blockId,Number(seedCell.dataset.rowIndex),Number(seedCell.dataset.seriesIndex),seedCell.dataset.valueLabel,Number(seedCell.dataset.base));return}
     const tplCell=e.target.closest('[data-template-edit]');if(tplCell){templateEditModal(tplCell.dataset.blockId,tplCell.dataset.valueKey,tplCell.dataset.valueLabel,Number(tplCell.dataset.base));return}
     const a=e.target.closest('[data-action]');if(!a)return;const ac=a.dataset.action;
     if(ac==='toggle-layout'){state.editLayout=!state.editLayout;render()}
@@ -247,25 +399,92 @@
     else if(ac==='share-template'){const all=[...TEMPLATES,...state.customTemplates];exportTemplate(all[Number(a.dataset.index)])}
     else if(ac==='import-template')fileInput.click()
     else if(ac==='select-kind'){state.dataKind=a.dataset.kind;render()}
-    else if(ac==='history')historyModal()
+    else if(ac==='history'){if(embeddedData)dataHistoryDrawer(a);else historyModal()}
+    else if(ac==='data-info')window.BNTUI.showInfoPopover(a,{title:'Данные',message:corporateDataDescriptions[state.dataKind==='production'?'production':'financial']})
+    else if(ac==='data-filter')dataFilterDrawer(a)
     else if(ac==='sync')syncModal()
-    else if(ac==='create-chart')chartModal()
-    else if(ac==='chart-row'){chartModal({kind:a.dataset.kind,rowId:a.dataset.row})}
-    else if(ac==='chart-seed-row')seedChartModal(a.dataset.sourceBlock,Number(a.dataset.rowIndex))
-    else if(ac==='schedule-current')scheduleModal()
-    else if(ac==='new-schedule')scheduleModal()
-    else if(ac==='schedule-template'){const all=[...TEMPLATES,...state.customTemplates];scheduleModal(all[Number(a.dataset.index)]?.id)}
+    else if(ac==='create-chart'){if(embeddedData)dataChartDrawer({},a);else chartModal()}
+    else if(ac==='chart-row'){if(embeddedData)dataChartDrawer({kind:a.dataset.kind,rowId:a.dataset.row},a);else chartModal({kind:a.dataset.kind,rowId:a.dataset.row})}
+    else if(ac==='chart-seed-row'){if(embeddedData)dataChartDrawer({kind:'production',rowIndex:Number(a.dataset.rowIndex)},a);else seedChartModal(a.dataset.sourceBlock,Number(a.dataset.rowIndex))}
+    else if(ac==='schedule-current')scheduleModal(undefined,a)
+    else if(ac==='schedule-info')window.BNTUI?.showInfoPopover(a,{title:'Автоматические рассылки',message:schedulesDescription})
+    else if(ac==='new-schedule')scheduleModal(undefined,a)
+    else if(ac==='schedule-template'){const all=[...TEMPLATES,...state.customTemplates];scheduleModal(all[Number(a.dataset.index)]?.id,a)}
     else if(ac==='test-schedule'){toast('Тестовое письмо сформировано','В промышленной версии будет отправлено через SMTP')}
     else if(ac==='toggle-schedule'){const s=state.schedules[Number(a.dataset.index)];if(s){s.enabled=!s.enabled;render()}}
     else if(ac==='delete-schedule'){state.schedules.splice(Number(a.dataset.index),1);render()}
     else if(ac==='reset-demo'){if(confirm('Сбросить демо и локальные настройки?')){localStorage.removeItem('bnt-studio-v5');location.reload()}}
   });
   root.addEventListener('change',e=>{const f=e.target.dataset.filter;if(f){state[f]=['source','year','monthFrom','monthTo'].includes(f)?Number(e.target.value):e.target.value;state.activeTemplateId='draft';render()}});
-  root.addEventListener('click',e=>{const td=e.target.closest('[data-source-edit]');if(td&&state.view==='data')sourceEditModal(td.dataset.kind,td.dataset.row,Number(td.dataset.month))});
+  root.addEventListener('change', event => {
+    if (!embeddedData || !event.target.matches('[data-ui-dropdown="data-kind"]')) return;
+    state.dataKind = event.target.dataset.value;
+    render(); root.querySelector('#data-kind')?.focus();
+  });
+  root.addEventListener('keydown', event => {
+    if (!embeddedData || !['Enter', ' '].includes(event.key)) return;
+    const cell = event.target.closest('[data-source-edit], [data-seed-edit]');
+    if (cell) { event.preventDefault(); cell.click(); }
+  });
+  root.addEventListener('click',e=>{const td=e.target.closest('[data-source-edit]');if(td&&state.view==='data'){if(embeddedData)dataEditDrawer(td);else sourceEditModal(td.dataset.kind,td.dataset.row,Number(td.dataset.month))}});
 
+  function saveSchedule() {
+    const timeField = modal.querySelector('[data-time-input].is-open');
+    if (timeField && !window.BNTUI.applyTimeField(timeField)) return;
+    const recipients = String($('#schedule-recipients')?.value || '').split(',').map(x => x.trim()).filter(Boolean);
+    if (!recipients.length) { toast('Укажите хотя бы один e-mail'); $('#schedule-recipients')?.focus?.(); return; }
+    const freq = $('#schedule-frequency')?.value || 'daily';
+    const labels = {daily: 'Каждый день', weekly: 'Каждую неделю', monthly: 'Каждый месяц'};
+    state.schedules.push({templateId: $('#schedule-template')?.value, recipients, frequency: freq, frequencyLabel: labels[freq], time: $('#schedule-time')?.value || '08:00', format: $('#schedule-format')?.value || 'PDF', subject: $('#schedule-subject')?.value || 'Управленческий отчет', enabled: true});
+    closeScheduleDrawer(false);
+    state.view = 'schedules';
+    render();
+    root.querySelector('[data-action="new-schedule"]')?.focus();
+    toast('Рассылка настроена', `${labels[freq]} в ${state.schedules.at(-1).time}`);
+  }
+  modal.addEventListener('submit', event => {
+    if (event.target.matches('[data-schedule-form]')) { event.preventDefault(); saveSchedule(); }
+    else if (event.target.matches('[data-data-filter-form]')) { event.preventDefault(); applyDataFilter(); }
+    else if (event.target.matches('[data-data-chart-form]')) { event.preventDefault(); saveDataChart(); }
+    else if (event.target.matches('[data-data-edit-form]')) { event.preventDefault(); event.target.querySelector('[type="submit"]')?.click(); }
+  });
+  modal.addEventListener('change', event => {
+    if (!embeddedData) return;
+    if (event.target.id === 'data-year') syncDataFilterYear();
+    else if (event.target.id === 'chart-kind') dataChartDrawer({kind: event.target.value, size: $('#chart-size')?.value, type: $('#chart-type')?.value}, scheduleDrawerTrigger);
+    else if (event.target.id === 'chart-row' && $('#chart-kind')?.value === 'production') {
+      const input = $('#chart-title');
+      if (input && !input.classList.contains('is-touched')) input.value = seedBlock('general_total_cargo')?.rows?.[Number(event.target.value)]?.name || '';
+    }
+  });
+  document.addEventListener('keydown', event => {
+    const drawer = modal.querySelector('#schedule-drawer') || modal.querySelector('[data-studio-drawer]');
+    if (!drawer) return;
+    if (event.key === 'Escape') { event.preventDefault(); closeScheduleDrawer(); return; }
+    if (event.key !== 'Tab') return;
+    const controls = [...drawer.querySelectorAll('button, input:not([type="hidden"]), textarea, [tabindex="0"]')].filter(control => !control.disabled && !control.closest('[hidden]'));
+    const first = controls[0], last = controls.at(-1);
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+  });
   modal.addEventListener('click',e=>{
-    if(e.target.closest('[data-close]')){modal.innerHTML='';return}
+    if(e.target.closest('[data-close]')){closeScheduleDrawer();return}
     const a=e.target.closest('[data-action]');if(!a)return;const ac=a.dataset.action;
+    if(embeddedData && ['save-source-edit','save-seed-edit'].includes(ac)){
+      const input=$(`#${ac==='save-source-edit'?'source':'seed'}-edit-value`);
+      if(!input?.value.trim() || !input.reportValidity()){toast('Заполните значение и причину');return;}
+    }
+    if(ac==='apply-data-filter'){e.preventDefault();applyDataFilter();return}
+    if(ac==='confirm-data-chart'){e.preventDefault();saveDataChart();return}
+    if(ac==='reset-data-filter'){
+      const ui=window.BNTUI;
+      for(const [id,value] of [['data-source',1],['data-year',2026],['data-currency','USD'],['data-unit','thousand']])ui.syncSingleFormInput(modal.querySelector(`[data-form-input="${id}"]`),value);
+      for(const [part,value] of [['from','2026-01-01'],['to','2026-12-31']]){
+        const field=modal.querySelector(`[data-bnt-date-root="data-date-${part}"]`);
+        field.dataset.dateMin='2026-01-01';field.dataset.dateMax='2026-12-31';ui.syncDateField(field,value);
+      }
+      ui.closeSingleFormInputs(modal);ui.closeDatePickers();return;
+    }
     if(ac==='modal-add-block'){if(!state.blocks.includes(a.dataset.id))state.blocks.push(a.dataset.id);modal.innerHTML='';render();toast('Блок добавлен')}
     else if(ac==='confirm-save'){const id='custom-'+Date.now(),t={id,name:$('#tpl-name')?.value||'Новый шаблон',description:$('#tpl-desc')?.value||'',tag:$('#tpl-tag')?.value||'Личный',reportTitle:$('#tpl-name')?.value||'Новый шаблон',sourceLabel:sourceLabel(),filters:{source:state.source,year:state.year,monthFrom:state.monthFrom,monthTo:state.monthTo,currency:state.currency,unit:state.unit},blocks:[...state.blocks],customBlocks:JSON.parse(JSON.stringify(state.customBlocks))};const from=currentTemplateKey();state.customTemplates.push(t);state.templateOverrides[id]=JSON.parse(JSON.stringify(state.templateOverrides[from]||{}));state.seedOverrides[id]=JSON.parse(JSON.stringify(state.seedOverrides[from]||{}));state.activeTemplateId=id;modal.innerHTML='';persist();toast('Шаблон сохранен',t.name)}
     else if(ac==='save-template-edit'){const value=Number(String($('#tpl-edit-value')?.value||'').replace(',','.')),reason=$('#tpl-edit-reason')?.value.trim();if(!Number.isFinite(value)||!reason){toast('Заполните значение и причину');return}setTemplateVal(a.dataset.blockId,a.dataset.valueKey,value);state.manualLog.push({date:new Date().toLocaleString('ru-RU'),scope:`Шаблон: ${activeTemplate()?.name||'Черновик'}`,name:a.dataset.valueLabel,old:Number(a.dataset.base),value,reason});modal.innerHTML='';render();toast('Значение изменено','Только в текущем шаблоне')}
@@ -274,7 +493,7 @@
     else if(ac==='confirm-sync'){modal.innerHTML='';toast('Срезы применены','1С и Pelogas синхронизированы, шаблоны пересчитаны')}
     else if(ac==='confirm-chart'){const kind=$('#chart-kind')?.value,rowId=$('#chart-row')?.value,type=$('#chart-type')?.value,size=$('#chart-size')?.value||'half',r=dataset(kind)?.rows.find(x=>x.id===rowId);if(!r)return;const id='chart-'+Date.now();state.customBlocks[id]={title:r.name,kind,type,size,rowKey:r.code};state.blocks.push(id);modal.innerHTML='';state.view='reports';render();toast('График добавлен',r.name)}
     else if(ac==='confirm-seed-chart'){const sourceBlockId=a.dataset.sourceBlock,rowIndex=Number(a.dataset.rowIndex),id='seedchart-'+Date.now();state.customBlocks[id]={title:$('#seed-chart-title')?.value||'Показатель',kind:'production',type:'seedIndicator',size:$('#seed-chart-size')?.value||'half',sourceBlockId,rowIndex};state.blocks.push(id);modal.innerHTML='';state.view='reports';render();toast('График добавлен')}
-    else if(ac==='confirm-schedule'){const recipients=String($('#schedule-recipients')?.value||'').split(',').map(x=>x.trim()).filter(Boolean);if(!recipients.length){toast('Укажите хотя бы один e-mail');return}const freq=$('#schedule-frequency')?.value||'daily',labels={daily:'Каждый день',weekly:'Каждую неделю',monthly:'Каждый месяц'};state.schedules.push({templateId:$('#schedule-template')?.value,recipients,frequency:freq,frequencyLabel:labels[freq],time:$('#schedule-time')?.value||'08:00',format:$('#schedule-format')?.value||'PDF',subject:$('#schedule-subject')?.value||'Управленческий отчет',enabled:true});modal.innerHTML='';state.view='schedules';render();toast('Рассылка настроена',`${labels[freq]} в ${state.schedules.at(-1).time}`)}
+    else if(ac==='confirm-schedule'){e.preventDefault();saveSchedule()}
   });
 
   fileInput.addEventListener('change',async()=>{const f=fileInput.files?.[0];if(!f)return;try{const x=JSON.parse(await f.text());if(!Array.isArray(x.blocks))throw 0;const id=x.id||'import-'+Date.now(),t={id,name:x.name||'Импортированный шаблон',description:'Импортирован из JSON',tag:'Импорт',reportTitle:x.reportTitle||x.name,sourceLabel:x.sourceLabel,filters:x.filters||{},blocks:x.blocks,customBlocks:x.customBlocks||{}};state.customTemplates.push(t);if(x.templateOverrides)state.templateOverrides[id]=x.templateOverrides;if(x.seedOverrides)state.seedOverrides[id]=x.seedOverrides;applyTemplate(t);toast('Шаблон принят')}catch(e){toast('Не удалось прочитать JSON')}finally{fileInput.value=''}});

@@ -167,7 +167,7 @@ body[data-page="toir"] .toir-kpi-grid {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--space-3);
 }
-.procurement-kpis .financial-kpi {
+.procurement-kpis > :is(.analytics-kpi, .payment-summary-card) {
   height: 100%;
 }
 @media(max-width:1200px){.asset-cards{grid-template-columns:repeat(2,1fr)}.toir-actions{grid-template-columns:repeat(4,1fr)}.module-launcher{grid-template-columns:repeat(2,1fr)}.procurement-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}

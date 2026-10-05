@@ -9,6 +9,64 @@ window.BNTUI = {
       return ` ${name}="${this.escape(value)}"`;
     }).join("");
   },
+  renderDrawer({id, title, fields, footer, formAttributes = {}}) {
+    return `<div id="${this.escape(id)}" class="filter-modal" role="dialog" aria-modal="true" aria-labelledby="${this.escape(id)}-title" data-studio-drawer>
+      <div class="filter-modal__overlay" data-close></div>
+      <form class="filter-modal__drawer dt3-drawer"${this.attrs(formAttributes)} aria-label="${this.escape(title)}" novalidate>
+        <header class="filter-modal__head">
+          <h2 id="${this.escape(id)}-title" class="filter-modal__title typography-caption-small">${this.escape(title)}</h2>
+          <button class="dt3-drawer-toggle button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest is-expanded" type="button" data-close aria-label="Закрыть">${this.icon("close")}</button>
+        </header>
+        <span class="ui-divider brand-divider" aria-hidden="true"></span>
+        <div class="filter-modal__body filter-modal__body--form"><div class="filter-modal__fields ui-scrollbar">${fields}</div></div>
+        <span class="ui-divider brand-divider" aria-hidden="true"></span>
+        <footer class="filter-modal__footer">${footer}</footer>
+      </form>
+    </div>`;
+  },
+  renderDropdownOptions(options, value) {
+    return options.map(item => `<button class="dt3-zone-dropdown__option ui-dropdown__option typography-body-smallest${String(item.value) === String(value) ? " is-selected" : ""}" type="button" role="option" aria-selected="${String(item.value) === String(value)}" data-ui-dropdown-option="${this.escape(item.value)}"><span>${this.escape(item.label)}${item.count == null ? "" : ` <span class="ui-dropdown__count">(${this.escape(item.count)})</span>`}</span></button>`).join("");
+  },
+  renderDropdown({id, label, options = [], value, size = "smallest"}) {
+    const selected = options.find(item => String(item.value) === String(value)) || options[0];
+    return `<span class="dt3-zone-dropdown ui-dropdown${size === "small" ? " ui-dropdown--small" : ""}" data-ui-dropdown="${this.escape(id)}">
+      <button id="${this.escape(id)}" type="button" class="dt3-zone-dropdown__trigger ui-dropdown__trigger typography-caption-${size}" aria-label="${this.escape(label)}" aria-haspopup="listbox" aria-expanded="false" aria-controls="${this.escape(id)}-options"><span data-ui-dropdown-label>${this.escape(selected?.label)}${selected?.count == null ? "" : ` <span class="ui-dropdown__count">(${this.escape(selected.count)})</span>`}</span><span class="dt3-zone-dropdown__chevron ui-dropdown__chevron nav-chevron" aria-hidden="true">${this.icon("chevron")}</span></button>
+      <div id="${this.escape(id)}-options" class="dt3-zone-dropdown__menu ui-dropdown__menu ui-scrollbar" role="listbox" aria-label="${this.escape(label)}" hidden>${this.renderDropdownOptions(options, selected?.value)}</div>
+    </span>`;
+  },
+  setDropdownOpen(root, open, {focus = false} = {}) {
+    if (!root) return;
+    if (open) { this.closeDropdowns(root); this.closeSingleFormInputs(); this.closeTimeFields(); this.closeDatePickers(); }
+    root.classList.toggle("is-open", open);
+    root.querySelector(".ui-dropdown__trigger")?.setAttribute("aria-expanded", String(open));
+    const menu = root.querySelector(".ui-dropdown__menu");
+    if (menu) menu.hidden = !open;
+    if (focus) (open ? root.querySelector('[data-ui-dropdown-option][aria-selected="true"]') || root.querySelector("[data-ui-dropdown-option]") : root.querySelector(".ui-dropdown__trigger"))?.focus();
+  },
+  closeDropdowns(except = null) {
+    document.querySelectorAll("[data-ui-dropdown].is-open").forEach(root => { if (root !== except) this.setDropdownOpen(root, false); });
+  },
+  syncDropdown(root, value) {
+    if (!root) return;
+    const options = [...root.querySelectorAll("[data-ui-dropdown-option]")];
+    const selected = options.find(option => option.dataset.uiDropdownOption === String(value));
+    if (!selected) return;
+    root.dataset.value = String(value);
+    const label = root.querySelector("[data-ui-dropdown-label]");
+    if (label) label.innerHTML = selected.innerHTML;
+    options.forEach(option => {
+      const active = option === selected;
+      option.classList.toggle("is-selected", active);
+      option.setAttribute("aria-selected", String(active));
+    });
+  },
+  selectDropdownOption(option) {
+    const root = option.closest("[data-ui-dropdown]");
+    if (!root || option.disabled) return;
+    this.syncDropdown(root, option.dataset.uiDropdownOption);
+    this.setDropdownOpen(root, false, {focus: true});
+    root.dispatchEvent(new Event("change", {bubbles: true}));
+  },
   badge(label, tone = "") {
     return `<span class="badge ${tone}">${this.escape(label)}</span>`;
   },
@@ -46,6 +104,7 @@ window.BNTUI = {
       check: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.2L9.2 16.4L19 6.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>',
       close: '<svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>',
       search: '<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><use href="/assets/icons/bnt-sprite.svg?v=3#search"></use></svg>',
+      clock: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12.5 6.75C12.5 6.33579 12.1642 6 11.75 6C11.3358 6 11 6.33579 11 6.75H11.75H12.5ZM11.75 12.75H11C11 13.1642 11.3358 13.5 11.75 13.5V12.75ZM15.75 13.5C16.1642 13.5 16.5 13.1642 16.5 12.75C16.5 12.3358 16.1642 12 15.75 12V12.75V13.5ZM21.25 12H20.5C20.5 16.6944 16.6944 20.5 12 20.5V21.25V22C17.5228 22 22 17.5228 22 12H21.25ZM12 21.25V20.5C7.30558 20.5 3.5 16.6944 3.5 12H2.75H2C2 17.5228 6.47715 22 12 22V21.25ZM2.75 12H3.5C3.5 7.30558 7.30558 3.5 12 3.5V2.75V2C6.47715 2 2 6.47715 2 12H2.75ZM12 2.75V3.5C16.6944 3.5 20.5 7.30558 20.5 12H21.25H22C22 6.47715 17.5228 2 12 2V2.75ZM11.75 6.75H11V12.75H11.75H12.5V6.75H11.75ZM11.75 12.75V13.5H15.75V12.75V12H11.75V12.75Z" fill="currentColor"/></svg>',
       warning: '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8.33346 11.0828C8.33346 11.2669 8.18422 11.4161 8.00013 11.4161C7.81603 11.4161 7.66679 11.2669 7.66679 11.0828C7.66679 10.8987 7.81603 10.7495 8.00013 10.7495C8.18422 10.7495 8.33346 10.8987 8.33346 11.0828Z" fill="currentColor"/><path d="M8.00013 5.83358V9.16691M7.12113 2.68524L1.96079 12.0072C1.58979 12.6776 2.07413 13.5002 2.83979 13.5002H13.1608C13.9265 13.5002 14.4108 12.6776 14.0398 12.0072L8.87913 2.68524C8.49646 1.99424 7.50379 1.99424 7.12113 2.68524ZM8.33346 11.0828C8.33346 11.2669 8.18422 11.4161 8.00013 11.4161C7.81603 11.4161 7.66679 11.2669 7.66679 11.0828C7.66679 10.8987 7.81603 10.7495 8.00013 10.7495C8.18422 10.7495 8.33346 10.8987 8.33346 11.0828Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
       calendar: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17.75 19.5H6.25V21H17.75V19.5ZM6.25 19.5C5.28371 19.5 4.5 18.7163 4.5 17.75H3C3 19.5447 4.45529 21 6.25 21V19.5ZM4.5 17.75V6.25H3V17.75H4.5ZM4.5 6.25C4.5 5.28371 5.28371 4.5 6.25 4.5V3C4.45529 3 3 4.45529 3 6.25H4.5ZM6.25 4.5H17.75V3H6.25V4.5ZM17.75 4.5C18.7163 4.5 19.5 5.28371 19.5 6.25H21C21 4.45529 19.5447 3 17.75 3V4.5ZM19.5 6.25V17.75H21V6.25H19.5ZM19.5 17.75C19.5 18.7163 18.7163 19.5 17.75 19.5V21C19.5447 21 21 19.5447 21 17.75H19.5ZM3.75 8.5H20.25V7H3.75V8.5ZM13.75 13.5H15.75V12H13.75V13.5ZM15.75 13.5C15.8883 13.5 16 13.6117 16 13.75H17.5C17.5 12.7833 16.7167 12 15.75 12V13.5ZM16 13.75V15.75H17.5V13.75H16ZM16 15.75C16 15.8883 15.8883 16 15.75 16V17.5C16.7167 17.5 17.5 16.7167 17.5 15.75H16ZM15.75 16H13.75V17.5H15.75V16ZM13.75 16C13.6117 16 13.5 15.8883 13.5 15.75H12C12 16.7167 12.7833 17.5 13.75 17.5V16ZM13.5 15.75V13.75H12V15.75H13.5ZM13.5 13.75C13.5 13.6117 13.6117 13.5 13.75 13.5V12C12.7833 12 12 12.7833 12 13.75H13.5Z" fill="currentColor"/></svg>'
     };
@@ -74,8 +133,28 @@ window.BNTUI = {
     const counter = values.length > 1 ? `<span class="form-input__tag-more" data-form-input-tag-more hidden><button class="form-input__tag-count pill pill--default pill--radius typography-body-smallest" type="button" data-form-input-hidden-toggle aria-expanded="false"><span class="form-input__tag-count-icon" aria-hidden="true">${this.icon("plus")}</span><span class="form-input__tag-count-value" data-form-input-hidden-count>${values.length - 1}</span><span class="form-input__tag-count-chevron nav-chevron" aria-hidden="true">${this.icon("chevron")}</span></button><span class="form-input__tag-rollover" data-form-input-hidden-menu role="menu" hidden></span></span>` : "";
     return `${tags}${counter}`;
   },
-  renderFormInput({name, label, options = [], allValue = "Всё", emptyMessage = "Ничего не выбрано"} = {}) {
+  renderFormInput({name, label, options = [], allValue = "Всё", emptyMessage = "Ничего не выбрано", mode = "multiple", value = "", id = name} = {}) {
     const safeName = this.escape(name);
+    if (mode === "single") {
+      const items = options.map(option => typeof option === "object" ? option : {value: option, label: option});
+      const selected = items.find(option => String(option.value) === String(value)) || items[0];
+      return `<div class="form-input${selected ? " has-selection" : ""}" data-form-input="${safeName}" data-form-input-mode="single">
+        <span id="${safeName}-label" class="form-input__label typography-label-smallest">${this.escape(label)}</span>
+        <div class="form-input__field">
+          <button class="form-input__control" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="${safeName}-options" aria-label="${this.escape(`${label}: ${selected?.label || emptyMessage}`)}">
+            <span class="form-input__value typography-body-smallest" data-form-input-value>${this.escape(selected?.label || emptyMessage)}</span>
+            <span class="form-input__chevron nav-chevron" aria-hidden="true">${this.icon("chevron")}</span>
+          </button>
+          <div id="${safeName}-options" class="form-input__menu" role="listbox" aria-labelledby="${safeName}-label" aria-multiselectable="false" hidden>
+            <span class="form-input__divider" aria-hidden="true"></span>
+            <div class="form-input__options ui-scrollbar" data-form-input-options>
+              ${items.map(option => `<button class="form-input__option typography-body-smallest${option === selected ? " is-selected" : ""}" type="button" role="option" data-form-input-option="${this.escape(option.value)}" aria-selected="${option === selected}"><span class="form-input__checkbox" aria-hidden="true">${this.icon("check")}</span><span class="form-input__option-label">${this.escape(option.label)}</span></button>`).join("")}
+            </div>
+          </div>
+        </div>
+        <input type="hidden" id="${this.escape(id)}" name="${safeName}" data-form-input-selected value="${this.escape(selected?.value ?? "")}">
+      </div>`;
+    }
     return `<div class="form-input" data-form-input="${safeName}" data-form-input-all="${this.escape(allValue)}" data-form-input-empty="${this.escape(emptyMessage)}">
       <span class="form-input__label typography-label-smallest">${this.escape(label)}</span>
       <div class="form-input__field">
@@ -94,21 +173,256 @@ window.BNTUI = {
       <span class="form-input__warning typography-indicator-small" data-form-input-empty-warning hidden>${this.icon("warning")}<span>${this.escape(emptyMessage)}</span></span>
     </div>`;
   },
-  renderDateField({name, label, prefix = "bnt", value = ""} = {}) {
+  renderDateField({name, label, prefix = "bnt", value = "", min = "", max = ""} = {}) {
     const safeName = this.escape(name);
     const safeValue = this.escape(value);
     const dataPrefix = this.escape(prefix);
-    return `<div class="equipment-date-field" data-${dataPrefix}-date-root="${safeName}">
+    return `<div class="equipment-date-field${value ? " has-value" : ""}" data-${dataPrefix}-date-root="${safeName}" data-${dataPrefix}-date-value="${safeValue}"${this.attrs({"data-date-min": min || null, "data-date-max": max || null})}>
       <span class="typography-label-smallest">${this.escape(label)}</span>
       <span class="equipment-date-input">
         <button class="equipment-date-display typography-body-smallest" type="button" data-${dataPrefix}-date-toggle aria-haspopup="dialog" aria-expanded="false">
-          <span data-${dataPrefix}-date-text>дд.мм.гггг</span>
+          <span data-${dataPrefix}-date-text>${this.formatDate(value)}</span>
           ${this.icon("calendar")}
         </button>
-        <input type="hidden" data-${dataPrefix}-date="${safeName}" value="${safeValue}">
+        <input type="hidden" id="${safeName}" name="${safeName}" data-${dataPrefix}-date="${safeName}" value="${safeValue}">
         <span class="equipment-date-popover" data-${dataPrefix}-date-popover hidden></span>
       </span>
     </div>`;
+  },
+  parseDate(value) {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value || "");
+    if (!match) return null;
+    const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+    return date.getFullYear() === Number(match[1]) && date.getMonth() === Number(match[2]) - 1 && date.getDate() === Number(match[3]) ? date : null;
+  },
+  isoDate(date) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  },
+  formatDate(value) {
+    const date = this.parseDate(value);
+    return date ? `${String(date.getDate()).padStart(2, "0")}.${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}` : "дд.мм.гггг";
+  },
+  syncDateField(root, value, prefix = "bnt") {
+    if (!root) return;
+    root.setAttribute(`data-${prefix}-date-value`, value || "");
+    root.classList.toggle("has-value", Boolean(value));
+    const input = root.querySelector(`[data-${prefix}-date]`);
+    if (input) input.value = value || "";
+    const text = root.querySelector(`[data-${prefix}-date-text]`);
+    if (text) text.textContent = this.formatDate(value || root.getAttribute(`data-${prefix}-date-default`));
+    if (root.classList.contains("is-open")) this.renderDatePicker(root, prefix);
+  },
+  renderDatePicker(root, prefix = "bnt") {
+    const selected = this.parseDate(root.getAttribute(`data-${prefix}-date-value`));
+    const current = this.parseDate(`${root.getAttribute(`data-${prefix}-date-month`)}-01`) || new Date(selected || this.parseDate(root.getAttribute(`data-${prefix}-date-default`)) || new Date());
+    current.setDate(1);
+    root.setAttribute(`data-${prefix}-date-month`, this.isoDate(current).slice(0, 7));
+    const start = new Date(current);
+    start.setDate(1 - ((start.getDay() + 6) % 7));
+    const min = root.dataset.dateMin, max = root.dataset.dateMax;
+    const days = Array.from({length: 42}, (_, index) => {
+      const date = new Date(start);
+      date.setDate(start.getDate() + index);
+      const iso = this.isoDate(date), active = iso === (selected && this.isoDate(selected));
+      const classes = ["equipment-date-popover__day", "typography-body-smallest", date.getMonth() !== current.getMonth() ? "is-outside" : "", iso === this.isoDate(new Date()) ? "is-today" : "", active ? "is-selected" : ""].filter(Boolean).join(" ");
+      return `<button class="${classes}" type="button" data-${prefix}-date-day="${iso}" aria-pressed="${active}"${this.attrs({disabled: Boolean(min && iso < min || max && iso > max)})}>${date.getDate()}</button>`;
+    }).join("");
+    const title = new Intl.DateTimeFormat("ru-RU", {month: "long", year: "numeric"}).format(current);
+    const nav = direction => `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="${direction < 0 ? "M15 6L9 12L15 18" : "M9 6L15 12L9 18"}" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    root.querySelector(`[data-${prefix}-date-popover]`).innerHTML = `<span class="equipment-date-popover__head"><span class="equipment-date-popover__title typography-caption-small">${this.escape(title)}</span><button class="equipment-date-popover__nav" type="button" data-${prefix}-date-nav="-1" aria-label="Предыдущий месяц">${nav(-1)}</button><button class="equipment-date-popover__nav" type="button" data-${prefix}-date-nav="1" aria-label="Следующий месяц">${nav(1)}</button></span><span class="equipment-date-popover__grid" aria-hidden="true">${["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"].map(day => `<span class="equipment-date-popover__weekday typography-caption-smallest">${day}</span>`).join("")}</span><span class="equipment-date-popover__grid" role="grid" aria-label="${this.escape(title)}">${days}</span><span class="equipment-date-popover__footer"><button class="equipment-date-popover__action button-smallest-ghost typography-button-smallest" type="button" data-${prefix}-date-clear>Удалить</button><button class="equipment-date-popover__action button-smallest-ghost typography-button-smallest" type="button" data-${prefix}-date-today>Сегодня</button></span>`;
+  },
+  positionDatePicker(root, prefix = "bnt") {
+    const control = root.querySelector(".equipment-date-input"), popover = root.querySelector(`[data-${prefix}-date-popover]`);
+    if (!control || !popover || popover.hidden) return;
+    const rect = control.getBoundingClientRect();
+    const below = window.innerHeight - 16 - rect.bottom - 4, above = rect.top - 16 - 4;
+    root.classList.toggle("is-open-up", below < (popover.scrollHeight || 360) && above > below);
+  },
+  closeDatePickers(prefix = "bnt", except = null, scope = document) {
+    scope.querySelectorAll(`[data-${prefix}-date-root].is-open`).forEach(root => {
+      if (root === except) return;
+      root.classList.remove("is-open", "is-open-up");
+      root.querySelector(`[data-${prefix}-date-toggle]`)?.setAttribute("aria-expanded", "false");
+      const popover = root.querySelector(`[data-${prefix}-date-popover]`);
+      if (popover) popover.hidden = true;
+    });
+  },
+  handleDateFieldClick(event, prefix = "bnt", beforeOpen = () => {}) {
+    const root = event.target.closest(`[data-${prefix}-date-root]`);
+    if (!root) return false;
+    const toggle = event.target.closest(`[data-${prefix}-date-toggle]`);
+    const nav = event.target.closest(`[data-${prefix}-date-nav]`);
+    const day = event.target.closest(`[data-${prefix}-date-day]`);
+    const clear = event.target.closest(`[data-${prefix}-date-clear]`);
+    const today = event.target.closest(`[data-${prefix}-date-today]`);
+    if (!toggle && !nav && !day && !clear && !today) return false;
+    event.preventDefault();
+    if (toggle) {
+      const open = !root.classList.contains("is-open");
+      beforeOpen();
+      this.closeDatePickers(prefix, open ? root : null);
+      if (open) {
+        const initial = this.parseDate(root.getAttribute(`data-${prefix}-date-value`)) || this.parseDate(root.getAttribute(`data-${prefix}-date-default`)) || new Date();
+        root.setAttribute(`data-${prefix}-date-month`, this.isoDate(initial).slice(0, 7));
+        root.classList.add("is-open");
+        toggle.setAttribute("aria-expanded", "true");
+        root.querySelector(`[data-${prefix}-date-popover]`).hidden = false;
+        this.renderDatePicker(root, prefix);
+        requestAnimationFrame(() => this.positionDatePicker(root, prefix));
+      }
+    } else if (nav) {
+      const current = this.parseDate(`${root.getAttribute(`data-${prefix}-date-month`)}-01`) || new Date();
+      current.setMonth(current.getMonth() + Number(nav.getAttribute(`data-${prefix}-date-nav`)));
+      root.setAttribute(`data-${prefix}-date-month`, this.isoDate(current).slice(0, 7));
+      this.renderDatePicker(root, prefix);
+      requestAnimationFrame(() => this.positionDatePicker(root, prefix));
+    } else {
+      if (day?.disabled) return true;
+      const value = day ? day.getAttribute(`data-${prefix}-date-day`) : today ? this.isoDate(new Date()) : "";
+      if (value && (root.dataset.dateMin && value < root.dataset.dateMin || root.dataset.dateMax && value > root.dataset.dateMax)) return true;
+      this.syncDateField(root, value, prefix);
+      this.touchFormInput(root);
+      this.closeDatePickers(prefix);
+      root.querySelector(`[data-${prefix}-date-toggle]`)?.focus();
+      root.querySelector(`[data-${prefix}-date]`)?.dispatchEvent(new Event("change", {bubbles: true}));
+    }
+    return true;
+  },
+  syncSingleFormInput(root, value) {
+    if (!root) return;
+    const options = Array.from(root.querySelectorAll("[data-form-input-option]"));
+    const selected = options.find(option => option.dataset.formInputOption === String(value));
+    if (!selected) return;
+    const label = selected.querySelector(".form-input__option-label")?.textContent || "";
+    root.querySelector("[data-form-input-value]").textContent = label;
+    const input = root.querySelector("[data-form-input-selected]");
+    if (input) input.value = String(value);
+    root.classList.add("has-selection");
+    root.querySelector(".form-input__control")?.setAttribute("aria-label", `${root.querySelector(".form-input__label")?.textContent || ""}: ${label}`);
+    options.forEach(option => {
+      const active = option === selected;
+      option.classList.toggle("is-selected", active);
+      option.setAttribute("aria-selected", String(active));
+    });
+  },
+  setSingleFormInputOpen(root, open, {focus = false, edge = "selected"} = {}) {
+    if (!root) return;
+    const control = root.querySelector(".form-input__control");
+    const menu = root.querySelector(".form-input__menu");
+    if (open) {
+      this.closeSingleFormInputs(document, root);
+      this.closeTimeFields();
+      this.closeDatePickers();
+    }
+    root.classList.toggle("is-open", open);
+    if (!open) root.classList.remove("is-open-up");
+    control?.setAttribute("aria-expanded", String(open));
+    if (menu) menu.hidden = !open;
+    if (open) {
+      this.positionFormInputMenu(root);
+      if (focus) {
+        const options = Array.from(root.querySelectorAll("[data-form-input-option]")).filter(option => !option.hidden && !option.disabled);
+        const selected = options.find(option => option.getAttribute("aria-selected") === "true");
+        (edge === "last" ? options.at(-1) : edge === "first" ? options[0] : selected || options[0])?.focus();
+      }
+    } else if (focus) control?.focus();
+  },
+  closeSingleFormInputs(scope = document, except = null) {
+    scope.querySelectorAll('[data-form-input-mode="single"].is-open').forEach(root => {
+      if (root !== except) this.setSingleFormInputOpen(root, false);
+    });
+  },
+  selectSingleFormInput(option) {
+    const root = option?.closest('[data-form-input-mode="single"]');
+    if (!root || option.disabled) return;
+    const input = root.querySelector("[data-form-input-selected]");
+    const previous = input?.value;
+    this.syncSingleFormInput(root, option.dataset.formInputOption);
+    this.touchFormInput(root);
+    this.setSingleFormInputOpen(root, false, {focus: true});
+    if (input && input.value !== previous) {
+      input.dispatchEvent(new Event("input", {bubbles: true}));
+      input.dispatchEvent(new Event("change", {bubbles: true}));
+    }
+  },
+  renderTimeField({name, label, id = name, value = "08:00"} = {}) {
+    const safeName = this.escape(name);
+    const time = /^([01]\d|2[0-3]):[0-5]\d$/.test(value) ? value : "08:00";
+    const [hours, minutes] = time.split(":");
+    const numberField = (part, caption, max, initial) => `<label class="form-input"><span class="form-input__label typography-label-smallest">${caption}</span><span class="form-input__text-field form-input__text-field--inline-icon"><input class="form-input__control form-input__control--text typography-body-smallest" type="number" min="0" max="${max}" step="1" required value="${initial}" data-time-input-part="${part}"><button class="form-input__number-stepper" type="button" data-form-input-number-stepper aria-label="Изменить ${caption.toLowerCase()}"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#SortDefault"></use></svg></button></span></label>`;
+    return `<div class="equipment-date-field has-value" data-time-input="${safeName}">
+      <span id="${safeName}-label" class="form-input__label typography-label-smallest">${this.escape(label)}</span>
+      <div class="equipment-date-input">
+        <button class="equipment-date-display typography-body-smallest" type="button" data-time-input-toggle aria-haspopup="dialog" aria-expanded="false" aria-controls="${safeName}-popover" aria-label="${this.escape(`${label}: ${time}`)}"><span data-time-input-text>${time}</span>${this.icon("clock")}</button>
+        <input type="hidden" id="${this.escape(id)}" name="${safeName}" data-time-input-value value="${time}">
+        <div id="${safeName}-popover" class="equipment-date-popover" data-time-input-popover role="dialog" aria-labelledby="${safeName}-label" hidden>
+          <div class="equipment-date-grid">${numberField("hours", "Часы", 23, hours)}${numberField("minutes", "Минуты", 59, minutes)}</div>
+          <div class="equipment-date-popover__footer"><button class="equipment-date-popover__action button-smallest-ghost typography-button-smallest" type="button" data-time-input-apply><span>Применить</span></button><button class="equipment-date-popover__action button-smallest-ghost typography-button-smallest" type="button" data-time-input-cancel>${this.icon("close")}<span>Отмена</span></button></div>
+        </div>
+      </div>
+    </div>`;
+  },
+  setTimeFieldValue(root, value) {
+    if (!root || !/^([01]\d|2[0-3]):[0-5]\d$/.test(value)) return false;
+    const input = root.querySelector("[data-time-input-value]");
+    if (input) input.value = value;
+    root.querySelector("[data-time-input-text]").textContent = value;
+    root.querySelector("[data-time-input-toggle]")?.setAttribute("aria-label", `${root.querySelector(".form-input__label")?.textContent || ""}: ${value}`);
+    return true;
+  },
+  positionTimeField(root) {
+    const control = root?.querySelector("[data-time-input-toggle]");
+    const popover = root?.querySelector("[data-time-input-popover]");
+    if (!control || !popover || popover.hidden) return;
+    const rect = control.getBoundingClientRect();
+    const gap = 4;
+    const availableBelow = window.innerHeight - rect.bottom - gap - 16;
+    const availableAbove = rect.top - gap - 16;
+    root.classList.toggle("is-open-up", availableBelow < popover.offsetHeight && availableAbove > availableBelow);
+  },
+  setTimeFieldOpen(root, open, {focus = false} = {}) {
+    if (!root) return;
+    const control = root.querySelector("[data-time-input-toggle]");
+    const popover = root.querySelector("[data-time-input-popover]");
+    if (open) {
+      this.closeSingleFormInputs();
+      this.closeDatePickers();
+      this.closeTimeFields(document, root);
+      const [hours, minutes] = (root.querySelector("[data-time-input-value]")?.value || "08:00").split(":");
+      root.querySelector('[data-time-input-part="hours"]').value = hours;
+      root.querySelector('[data-time-input-part="minutes"]').value = minutes;
+    }
+    root.classList.toggle("is-open", open);
+    if (!open) root.classList.remove("is-open-up");
+    control?.setAttribute("aria-expanded", String(open));
+    if (popover) popover.hidden = !open;
+    if (open) {
+      this.positionTimeField(root);
+      if (focus) root.querySelector("[data-time-input-part]")?.focus();
+    } else if (focus) control?.focus();
+  },
+  closeTimeFields(scope = document, except = null) {
+    scope.querySelectorAll("[data-time-input].is-open").forEach(root => {
+      if (root !== except) this.setTimeFieldOpen(root, false);
+    });
+  },
+  applyTimeField(root) {
+    const parts = Array.from(root?.querySelectorAll("[data-time-input-part]") || []);
+    if (parts.length !== 2) return false;
+    for (const part of parts) {
+      if (!part.reportValidity()) return false;
+    }
+    const value = parts.map(part => String(Number(part.value)).padStart(2, "0")).join(":");
+    const input = root.querySelector("[data-time-input-value]");
+    const previous = input?.value;
+    if (!this.setTimeFieldValue(root, value)) return false;
+    this.touchFormInput(root);
+    this.setTimeFieldOpen(root, false, {focus: true});
+    if (input && previous !== value) {
+      input.dispatchEvent(new Event("input", {bubbles: true}));
+      input.dispatchEvent(new Event("change", {bubbles: true}));
+    }
+    return true;
   },
   measureFormInputTag(tag) {
     const clone = tag.cloneNode(true);
@@ -929,6 +1243,12 @@ window.BNTUI = {
   positionOpenFormInputMenus(scope = document) {
     scope.querySelectorAll(".form-input.is-open").forEach(root => this.positionFormInputMenu(root));
   },
+  touchFormInput(input) {
+    if (!input) return;
+    input.classList.add("is-touched");
+    input.closest(".form-input")?.classList.add("is-touched");
+    input.closest(".equipment-date-field")?.classList.add("is-touched");
+  },
   stepFormInputNumber(stepper, direction = 1) {
     const field = stepper?.closest(".form-input__text-field");
     const input = field?.querySelector('input[type="number"].form-input__control--text');
@@ -950,8 +1270,7 @@ window.BNTUI = {
     }
 
     input.focus();
-    input.classList.add("is-touched");
-    input.closest(".form-input")?.classList.add("is-touched");
+    this.touchFormInput(input);
     if (input.value !== previous) {
       input.dispatchEvent(new Event("input", {bubbles: true}));
       input.dispatchEvent(new Event("change", {bubbles: true}));
@@ -966,6 +1285,50 @@ window.BNTUI = {
 };
 
 document.addEventListener("click", event => {
+  const ui = window.BNTUI;
+  const dropdown = event.target.closest("[data-ui-dropdown]");
+  ui.closeDropdowns(dropdown);
+  const dropdownOption = dropdown && event.target.closest("[data-ui-dropdown-option]");
+  if (dropdownOption) { event.preventDefault(); ui.selectDropdownOption(dropdownOption); return; }
+  const dropdownTrigger = dropdown && event.target.closest(".ui-dropdown__trigger");
+  if (dropdownTrigger) { event.preventDefault(); ui.setDropdownOpen(dropdown, dropdownTrigger.getAttribute("aria-expanded") !== "true"); return; }
+  const dateRoot = event.target.closest("[data-bnt-date-root]");
+  ui.closeDatePickers("bnt", dateRoot);
+  if (ui.handleDateFieldClick(event, "bnt", () => { ui.closeSingleFormInputs(); ui.closeTimeFields(); })) return;
+  ui.touchFormInput(event.target.closest(".form-input__option, .form-input__tag-remove, .equipment-date-popover button"));
+  const singleRoot = event.target.closest('[data-form-input-mode="single"]');
+  ui.closeSingleFormInputs(document, singleRoot);
+  const singleOption = singleRoot && event.target.closest("[data-form-input-option]");
+  if (singleOption) {
+    event.preventDefault();
+    ui.selectSingleFormInput(singleOption);
+    return;
+  }
+  const singleControl = singleRoot && event.target.closest(".form-input__control");
+  if (singleControl) {
+    event.preventDefault();
+    ui.setSingleFormInputOpen(singleRoot, singleControl.getAttribute("aria-expanded") !== "true");
+    return;
+  }
+
+  const timeRoot = event.target.closest("[data-time-input]");
+  ui.closeTimeFields(document, timeRoot);
+  if (timeRoot && event.target.closest("[data-time-input-toggle]")) {
+    event.preventDefault();
+    ui.setTimeFieldOpen(timeRoot, !timeRoot.classList.contains("is-open"), {focus: true});
+    return;
+  }
+  if (timeRoot && event.target.closest("[data-time-input-apply]")) {
+    event.preventDefault();
+    ui.applyTimeField(timeRoot);
+    return;
+  }
+  if (timeRoot && event.target.closest("[data-time-input-cancel]")) {
+    event.preventDefault();
+    ui.setTimeFieldOpen(timeRoot, false, {focus: true});
+    return;
+  }
+
   const numberStepper = event.target.closest("[data-form-input-number-stepper]");
   if (numberStepper) {
     event.preventDefault();
@@ -992,11 +1355,80 @@ document.addEventListener("click", event => {
 
 window.addEventListener("resize", () => {
   requestAnimationFrame(() => window.BNTUI.positionOpenFormInputMenus());
+  document.querySelectorAll("[data-bnt-date-root].is-open").forEach(root => window.BNTUI.positionDatePicker(root));
+  document.querySelectorAll("[data-time-input].is-open").forEach(root => window.BNTUI.positionTimeField(root));
 });
 
 document.addEventListener("scroll", () => {
   requestAnimationFrame(() => window.BNTUI.positionOpenFormInputMenus());
+  document.querySelectorAll("[data-bnt-date-root].is-open").forEach(root => window.BNTUI.positionDatePicker(root));
+  document.querySelectorAll("[data-time-input].is-open").forEach(root => window.BNTUI.positionTimeField(root));
 }, true);
+
+document.addEventListener("focusin", event => {
+  window.BNTUI.closeDropdowns(event.target.closest("[data-ui-dropdown]"));
+  window.BNTUI.closeDatePickers("bnt", event.target.closest("[data-bnt-date-root]"));
+  window.BNTUI.closeSingleFormInputs(document, event.target.closest('[data-form-input-mode="single"]'));
+  window.BNTUI.closeTimeFields(document, event.target.closest("[data-time-input]"));
+});
+
+document.addEventListener("keydown", event => {
+  const ui = window.BNTUI;
+  const dropdown = event.target.closest("[data-ui-dropdown]");
+  if (dropdown && ["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) {
+    event.preventDefault();
+    const wasOpen = dropdown.classList.contains("is-open");
+    ui.setDropdownOpen(dropdown, true, {focus: !wasOpen});
+    if (!wasOpen) return;
+    const options = [...dropdown.querySelectorAll("[data-ui-dropdown-option]")].filter(item => !item.disabled && !item.hidden);
+    const index = options.indexOf(event.target.closest("[data-ui-dropdown-option]"));
+    const next = event.key === "Home" ? 0 : event.key === "End" ? options.length - 1 : (index + (event.key === "ArrowUp" ? -1 : 1) + options.length) % options.length;
+    options[next]?.focus();
+    return;
+  }
+  const root = event.target.closest('[data-form-input-mode="single"]');
+  const control = root && event.target.closest(".form-input__control");
+  if (control && ["ArrowDown", "ArrowUp", "Enter", " "].includes(event.key)) {
+    event.preventDefault();
+    ui.setSingleFormInputOpen(root, true, {focus: true, edge: event.key === "ArrowUp" ? "last" : "selected"});
+    return;
+  }
+  const option = root && event.target.closest("[data-form-input-option]");
+  if (option && ["ArrowDown", "ArrowUp", "Home", "End", "Enter", " "].includes(event.key)) {
+    event.preventDefault();
+    if (event.key === "Enter" || event.key === " ") {
+      ui.selectSingleFormInput(option);
+      return;
+    }
+    const options = Array.from(root.querySelectorAll("[data-form-input-option]")).filter(item => !item.hidden && !item.disabled);
+    const index = options.indexOf(option);
+    const next = event.key === "Home" ? 0 : event.key === "End" ? options.length - 1 : (index + (event.key === "ArrowUp" ? -1 : 1) + options.length) % options.length;
+    options[next]?.focus();
+    return;
+  }
+  const timeRoot = event.target.closest("[data-time-input]");
+  if (timeRoot && event.key === "Enter" && event.target.closest("[data-time-input-part]")) {
+    event.preventDefault();
+    ui.applyTimeField(timeRoot);
+    return;
+  }
+  if (event.key !== "Escape") return;
+  const openDropdown = document.querySelector("[data-ui-dropdown].is-open");
+  const openDate = document.querySelector("[data-bnt-date-root].is-open");
+  if (openDropdown || openDate) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    if (openDropdown) ui.setDropdownOpen(openDropdown, false, {focus: true});
+    if (openDate) { ui.closeDatePickers(); openDate.querySelector("[data-bnt-date-toggle]")?.focus(); }
+    return;
+  }
+  const open = document.querySelector('[data-form-input-mode="single"].is-open, [data-time-input].is-open');
+  if (!open) return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  if (open.dataset.formInputMode === "single") ui.setSingleFormInputOpen(open, false, {focus: true});
+  else ui.setTimeFieldOpen(open, false, {focus: true});
+});
 
 document.addEventListener("pointerover", event => {
   const point = event.target.closest(".financial-chart__point");
@@ -1028,12 +1460,12 @@ document.addEventListener("focusin", event => {
   window.BNTUI.showFinancialLineChartTooltip(chart, point, rect.left + rect.width / 2, rect.top + rect.height / 2);
 });
 
+document.addEventListener("input", event => {
+  window.BNTUI.touchFormInput(event.target.closest(".form-input__control--text"));
+});
+
 document.addEventListener("focusout", event => {
-  const textControl = event.target.closest(".form-input__control--text");
-  if (textControl) {
-    textControl.classList.add("is-touched");
-    textControl.closest(".form-input")?.classList.add("is-touched");
-  }
+  window.BNTUI.touchFormInput(event.target.closest(".form-input__control, .equipment-date-display"));
 
   const point = event.target.closest(".financial-chart__point");
   const chart = point?.closest(".financial-chart__line-chart");

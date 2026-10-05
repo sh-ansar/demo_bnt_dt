@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>BNT — Закупки</title>
-  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/tokens.css?v=20">
   <link rel="stylesheet" href="/assets/css/layout.css">
-  <link rel="stylesheet" href="/assets/css/components.css?v=245">
-  <link rel="stylesheet" href="/assets/css/pages/enterprise.css?v=33">
-  <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9128">
+  <link rel="stylesheet" href="/assets/css/components.css?v=254">
+  <link rel="stylesheet" href="/assets/css/pages/enterprise.css?v=43">
+  <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9130">
 </head>
 <body data-page="procurement">
   <main id="page-content" class="page-content procurement-page">
@@ -710,42 +710,7 @@
           </div>
         </form>
         <div class="filter-modal__fields ui-scrollbar">
-          <div class="form-input" data-procurement-priority-filter>
-            <span class="form-input__label typography-label-smallest">Приоритет</span>
-            <div class="form-input__field">
-              <button class="form-input__control" type="button" data-procurement-priority-trigger aria-haspopup="listbox" aria-expanded="false" aria-label="Приоритет: Все">
-                <span class="form-input__value typography-body-smallest" data-procurement-priority-value>Все</span>
-                <span class="form-input__chevron nav-chevron" aria-hidden="true">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 10L12 14L16 10" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>
-                </span>
-              </button>
-              <div class="form-input__menu" role="listbox" aria-label="Приоритет" data-procurement-priority-menu hidden>
-                <span class="form-input__divider" aria-hidden="true"></span>
-                <div class="form-input__options ui-scrollbar">
-                  <button class="form-input__option typography-body-smallest is-selected" type="button" role="option" data-procurement-priority-option="Все" aria-selected="true">
-                    <span class="form-input__checkbox" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.2L9.2 16.4L19 6.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></span>
-                    <span class="form-input__option-label">Все</span>
-                  </button>
-                  <button class="form-input__option typography-body-smallest" type="button" role="option" data-procurement-priority-option="Критические" aria-selected="false">
-                    <span class="form-input__checkbox" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.2L9.2 16.4L19 6.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></span>
-                    <span class="form-input__option-label">Критические</span>
-                  </button>
-                  <button class="form-input__option typography-body-smallest" type="button" role="option" data-procurement-priority-option="Высокий" aria-selected="false">
-                    <span class="form-input__checkbox" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.2L9.2 16.4L19 6.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></span>
-                    <span class="form-input__option-label">Высокий</span>
-                  </button>
-                  <button class="form-input__option typography-body-smallest" type="button" role="option" data-procurement-priority-option="Средний" aria-selected="false">
-                    <span class="form-input__checkbox" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.2L9.2 16.4L19 6.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></span>
-                    <span class="form-input__option-label">Средний</span>
-                  </button>
-                  <button class="form-input__option typography-body-smallest" type="button" role="option" data-procurement-priority-option="Низкий" aria-selected="false">
-                    <span class="form-input__checkbox" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.2L9.2 16.4L19 6.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></span>
-                    <span class="form-input__option-label">Низкий</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <div data-procurement-priority-field></div>
         </div>
       </div>
       <span class="ui-divider brand-divider" aria-hidden="true"></span>
@@ -829,10 +794,10 @@
     </form>
   </div>
   <script src="/assets/js/navigation.js"></script>
-  <script src="/assets/js/ui.js?v=16"></script>
+  <script src="/assets/js/ui.js?v=21"></script>
   <script src="/assets/js/data/procurement.js?v=3"></script>
   <script src="/assets/js/chart-donut.js?v=12"></script>
-  <script src="/assets/js/pages/procurement.js?v=57"></script>
+  <script src="/assets/js/pages/procurement.js?v=61"></script>
   <script src="/assets/js/shell.js?v=9121"></script>
 </body>
 </html>

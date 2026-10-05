@@ -84,6 +84,9 @@
   --design-elements-border-secondary: rgba(68, 112, 134, .24);
   --design-elements-border-strong: var(--design-elements-border-secondary);
   --design-elements-illustration-primary: #ffffff;
+  --design-elements-illustration-secondary: #98c7fe;
+  --design-elements-illustration-tertiary: #82b8f5;
+  --design-elements-illustration-quarternary: #8ebdf4;
   --design-elements-icon-primary: #7199ac;
   --design-elements-icon-secondary: #c9dee8;
   --design-elements-icon-tertiary: #e6eff4;
@@ -221,6 +224,9 @@
   --design-elements-border-secondary: rgba(141, 192, 216, .2);
   --design-elements-border-strong: var(--design-elements-border-secondary);
   --design-elements-illustration-primary: #7199ac;
+  --design-elements-illustration-secondary: #0a5e99;
+  --design-elements-illustration-tertiary: #0c4a6e;
+  --design-elements-illustration-quarternary: #075985;
   --design-elements-icon-primary: #7199ac;
   --design-elements-icon-secondary: #0f4057;
   --design-elements-icon-tertiary: #2e556b;
