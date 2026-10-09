@@ -3,25 +3,10 @@
   const root = page && page.querySelector('[data-payment-analytics]');
   const deviationRoot = page && page.querySelector('[data-payment-deviation]');
   const riskRoot = page && page.querySelector('[data-payment-risk-map]');
-  const riskScroller = riskRoot && riskRoot.querySelector('[data-payment-risk-scroll]');
-  const riskColumn = riskRoot && riskRoot.querySelector('[data-payment-risk-column]');
   if (!page) return;
 
   const numberFormatter = new Intl.NumberFormat('ru-RU');
   const datasets = {
-    statuses: {
-      accessibleLabel: 'Статусы исполнения платежей за сентябрь 2025 года',
-      centerValue: '77',
-      startAngle: -16.36,
-      data: [
-        { label: 'Просрочено (не закрыты, срок истёк)', value: 7, percent: '9,09%', className: 'series-negative' },
-        { label: 'Выполнено вовремя', value: 38, percent: '49,35%', className: 'series-gas' },
-        { label: 'Выполнено с просрочкой', value: 7, percent: '9,09%', className: 'series-orange' },
-        { label: 'В работе', value: 19, percent: '24,68%', className: 'series-crude' },
-        { label: 'На контроле (<7 дней до срока)', value: 6, percent: '7,79%', className: 'series-dark' }
-      ],
-      legendOrder: ['В работе', 'Выполнено вовремя', 'Выполнено с просрочкой', 'На контроле (<7 дней до срока)', 'Просрочено (не закрыты, срок истёк)']
-    },
     budget: {
       accessibleLabel: 'Исполнение бюджета по обязательствам за январь — сентябрь 2025 года',
       centerValue: '1 000M',
@@ -109,6 +94,7 @@
   }
 
   function renderAll() {
+    window.BNTCharts?.renderPaymentStatuses?.(root);
     Object.keys(datasets).forEach(renderCard);
   }
 
@@ -143,7 +129,7 @@
 
     chart.style.setProperty('--payment-deviation-divisions', String(tickCount - 1));
     chart.setAttribute('aria-label', config.accessibleLabel);
-    chart.innerHTML = `<div class="payment-deviation-chart__axis" aria-hidden="true">${ticks}</div><div class="payment-deviation-chart__body"><div class="payment-deviation-chart__grid" aria-hidden="true">${grid}</div><div class="payment-deviation-chart__rows">${rows}</div></div>`;
+    chart.innerHTML = `<div class="payment-deviation-chart__axis" aria-hidden="true">${ticks}</div><div class="chart-viewport__plot chart-scrollbar"><div class="payment-deviation-chart__body"><div class="payment-deviation-chart__grid" aria-hidden="true">${grid}</div><div class="payment-deviation-chart__rows">${rows}</div></div></div>`;
     if (panel) panel.setAttribute('aria-labelledby', `payment-deviation-${key}-tab`);
     activeDeviationDataset = key;
   }
@@ -202,19 +188,12 @@
     chart.innerHTML = svg.join('');
   }
 
-  function updateRiskScrollFades() {
-    if (!riskScroller || !riskColumn) return;
-    const maxScroll = Math.max(0, riskScroller.scrollHeight - riskScroller.clientHeight);
-    riskColumn.classList.toggle('has-fade-top', riskScroller.scrollTop > 1);
-    riskColumn.classList.toggle('has-fade-bottom', maxScroll - riskScroller.scrollTop > 1);
-  }
-
   function toast(title, message) {
     if (window.BNTUI && typeof window.BNTUI.toast === 'function') window.BNTUI.toast(title, message);
   }
 
   function downloadCsv(key) {
-    const config = datasets[key];
+    const config = key === 'statuses' ? window.BNTCharts.paymentStatusDataset : datasets[key];
     const rows = [['Показатель', 'Значение', 'Доля']].concat(config.data.map(function (item) {
       return [item.label, item.value, item.percent];
     }));
@@ -263,10 +242,7 @@
   page.addEventListener('click', function (event) {
     const clearButton = event.target.closest('[data-payment-filter-clear]');
     if (clearButton) {
-      const card = clearButton.closest('[data-payment-chart-card]');
-      clearButton.closest('.pill')?.remove();
-      const counter = card?.querySelector('.button-smallest-secondary-radius__counter');
-      if (counter) counter.textContent = String(card.querySelectorAll('.chart-card__filters .pill').length);
+      clearButton.closest('.filter-summary__count')?.remove();
       return;
     }
 
@@ -294,13 +270,6 @@
       closeDeviationInfo();
       if (popover) popover.hidden = !opening;
       infoButton.setAttribute('aria-expanded', String(opening));
-      return;
-    }
-
-    const filterButton = event.target.closest('[data-payment-filter]');
-    if (filterButton) {
-      const count = filterButton.querySelector('.button-smallest-secondary-radius__counter')?.textContent || '0';
-      toast('Фильтр', `Выбрано параметров: ${count}`);
       return;
     }
 
@@ -335,10 +304,7 @@
   renderAll();
   renderDeviationChart(activeDeviationDataset);
   renderRiskChart();
-  window.requestAnimationFrame(updateRiskScrollFades);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(renderAll);
-
-  riskScroller?.addEventListener('scroll', updateRiskScrollFades, { passive: true });
 
   if (typeof ResizeObserver === 'function') {
     let resizeFrame = 0;
@@ -348,9 +314,5 @@
     });
     root?.querySelectorAll('.chart-donut__viewport').forEach(function (viewport) { observer.observe(viewport); });
 
-    const riskObserver = new ResizeObserver(updateRiskScrollFades);
-    if (riskScroller) riskObserver.observe(riskScroller);
-    const riskList = riskScroller && riskScroller.querySelector('.payment-risk-list');
-    if (riskList) riskObserver.observe(riskList);
   }
 }());

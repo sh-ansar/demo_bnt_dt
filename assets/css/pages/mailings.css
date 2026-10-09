@@ -1,0 +1,4 @@
+body[data-page="mailings"] #page-content:has(> .empty-state--illustrated) {
+  grid-template-rows: max-content max-content minmax(min-content, 1fr);
+  align-content: stretch;
+}

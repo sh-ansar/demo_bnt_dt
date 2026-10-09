@@ -114,10 +114,12 @@
     host.innerHTML = `<div class="logistics-bar-scale" aria-hidden="true">${ticks.map(function (tick) {
       return `<span>${tick}</span>`;
     }).join('')}</div>
+      <div class="chart-viewport__plot chart-scrollbar"><div class="logistics-bar-body">
       <div class="logistics-bar-grid" aria-hidden="true">${ticks.map(function () {
         return '<span></span>';
       }).join('')}</div>
-      <div class="logistics-bar-rows">${bars}</div>`;
+      <div class="logistics-bar-rows">${bars}</div>
+      </div></div>`;
 
     function syncLabelWidth() {
       const labels = Array.from(host.querySelectorAll('.logistics-bar-row__label'));
@@ -156,7 +158,7 @@
           <span class="analytics-kpi__label typography-body-smallest">ВСЕГО ВАГОНОВ</span>
           <div class="financial-kpi__info-wrap" data-logistics-popover-root>
             <button class="analytics-kpi__info" type="button" data-logistics-popover-trigger aria-expanded="false" aria-controls="logistics-total-info" aria-label="Информация об общем количестве вагонов">
-              <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg>
+              <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
             </button>
             <div id="logistics-total-info" class="origin-breakdown__info-popover logistics-kpi-popover" data-logistics-popover role="dialog" aria-label="О количестве вагонов" hidden>
               <button class="origin-breakdown__info-close" type="button" data-logistics-popover-close aria-label="Закрыть информацию"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button>
@@ -178,13 +180,7 @@
           </a>
         </header>
         <div class="payment-summary-card__content">
-          <div class="payment-progress-ring" role="img" aria-label="Подтверждено ${confirmedPercent} процентов общего плана">
-            <svg viewBox="0 0 48 48" aria-hidden="true">
-              <circle class="payment-progress-ring__track" cx="24" cy="24" r="20"></circle>
-              <circle class="payment-progress-ring__bar" cx="24" cy="24" r="20" pathLength="100" stroke-dasharray="${confirmedPercent} 100" transform="rotate(-90 24 24)"></circle>
-            </svg>
-            <strong class="payment-progress-ring__value typography-label-smallest">${confirmedPercent}%</strong>
-          </div>
+          ${ui.progressRing({label: "Подтверждено", percent: confirmedPercent, ariaLabel: `Подтверждено ${confirmedPercent} процентов общего плана`})}
           <div class="payment-summary-card__copy">
             <strong class="payment-summary-card__amount typography-label-base">${confirmed} вагонов</strong>
             <span class="payment-summary-card__description typography-body-smallest">Общий план ${total}</span>
@@ -197,7 +193,7 @@
           <span class="analytics-kpi__label typography-body-smallest">ВХОДЯЩИЙ ОБЪЁМ</span>
           <div class="financial-kpi__info-wrap" data-logistics-popover-root>
             <button class="analytics-kpi__info" type="button" data-logistics-popover-trigger aria-expanded="false" aria-controls="logistics-volume-info" aria-label="Информация о входящем объёме">
-              <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg>
+              <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
             </button>
             <div id="logistics-volume-info" class="origin-breakdown__info-popover logistics-kpi-popover" data-logistics-popover role="dialog" aria-label="О входящем объёме" hidden>
               <button class="origin-breakdown__info-close" type="button" data-logistics-popover-close aria-label="Закрыть информацию"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button>
@@ -225,13 +221,13 @@
       </article>`;
 
     document.getElementById('wagon-plan').innerHTML = sortedWagons().map(row => `<tr>
-      <td>${escapeHtml(row.date)}</td>
+      <td class="data-table__date-cell">${escapeHtml(row.date)}</td>
       <td><strong>${escapeHtml(row.product)}</strong></td>
-      <td class="analytics-table__numeric-cell">${numberFormatter.format(row.wagons)}</td>
-      <td class="analytics-table__numeric-cell"><div class="table-header-content table-header-content--numeric"><strong>${numberFormatter.format(row.volume)}</strong><small>м³</small></div></td>
+      <td class="analytics-table__numeric-cell table-number-cell">${numberFormatter.format(row.wagons)}</td>
+      <td class="analytics-table__numeric-cell table-number-cell"><div class="table-header-content table-header-content--numeric"><strong>${numberFormatter.format(row.volume)}</strong><small>м³</small></div></td>
       <td>${ui.badge(row.status, row.status === 'Разгрузка' ? 'green' : row.status === 'В пути' ? 'orange' : row.status === 'План' ? 'purple' : '')}</td>
       <td>${escapeHtml(row.section)}</td>
-      <td class="analytics-table__numeric-cell"><div class="table-header-content table-header-content--numeric"><strong class="analytics-table__risk-value ${queueTone(row.queue)}">${numberFormatter.format(row.queue)}</strong><small>часы</small></div></td>
+      <td class="analytics-table__numeric-cell table-number-cell"><div class="table-header-content table-header-content--numeric"><strong class="analytics-table__risk-value ${queueTone(row.queue)}">${numberFormatter.format(row.queue)}</strong><small>часы</small></div></td>
     </tr>`).join('');
     updateWagonSortControls();
 
@@ -310,9 +306,6 @@
       const opening = Boolean(popover?.hidden);
       closePopovers();
       if (popover) {
-        const counter = popoverRoot.querySelector('.button-smallest-secondary-radius__counter');
-        const summary = popover.querySelector('[data-logistics-filter-summary]');
-        if (counter && summary) summary.textContent = `Выбрано параметров: ${counter.textContent}`;
         popover.hidden = !opening;
         popoverTrigger.setAttribute('aria-expanded', String(opening));
       }
@@ -345,12 +338,9 @@
       return;
     }
 
-    const chipClose = event.target.closest('.pill button');
+    const chipClose = event.target.closest('[data-logistics-overview-card] .filter-summary__count-chevron');
     if (chipClose) {
-      const card = chipClose.closest('[data-logistics-overview-card]');
       chipClose.closest('.pill')?.remove();
-      const counter = card?.querySelector('.button-smallest-secondary-radius__counter');
-      if (counter) counter.textContent = String(Math.max(0, Number(counter.textContent) - 1));
       return;
     }
 

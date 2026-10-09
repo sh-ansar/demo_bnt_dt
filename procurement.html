@@ -1,1 +1,803 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BNT — Закупки</title><link rel="stylesheet" href="/assets/css/tokens.css"><link rel="stylesheet" href="/assets/css/layout.css"><link rel="stylesheet" href="/assets/css/components.css"><link rel="stylesheet" href="/assets/css/pages/enterprise.css"><link rel="stylesheet" href="/assets/css/shell-v91.css?v=9121"></head><body data-page="procurement"><main id="page-content" class="page-content"><div class="page-actions"><div><h2>Критический ЗИП</h2><p>Покрытие склада, сроки поставки и влияние на надежность активов</p></div><button id="urgent-purchase" class="btn btn-primary">Создать срочную закупку</button></div><div id="procurement-kpis" class="kpi-grid"></div><section class="card"><div class="card-head"><div><h3>Складская потребность</h3><small>Приоритет рассчитан по связанным активам и риску простоя</small></div><label class="field"><span>Фильтр</span><select id="part-filter"><option>Все позиции</option><option>Критические</option><option>Ниже минимума</option></select></label></div><div class="table-wrap"><table class="data-table"><thead><tr><th>Позиция</th><th>Код</th><th>Остаток / минимум</th><th>Покрытие</th><th>Срок</th><th>Связанное оборудование</th><th>Влияние</th><th>Статус</th><th></th></tr></thead><tbody id="parts-rows"></tbody></table></div></section><section class="grid-2 analytics-bottom"><article class="card"><div class="card-head"><h3>Открытые тендеры</h3></div><div class="table-wrap"><table class="data-table"><thead><tr><th>Тендер</th><th>Предмет</th><th>Поставщик</th><th>Сумма</th><th>Срок</th></tr></thead><tbody id="tender-rows"></tbody></table></div></article><article class="card"><div class="card-head"><h3>Рекомендуемые действия</h3></div><div id="purchase-actions" class="warning-list"></div></article></section></main><script src="/assets/js/navigation.js"></script><script src="/assets/js/ui.js"></script><script src="/assets/js/data/procurement.js"></script><script src="/assets/js/pages/procurement.js"></script><script src="/assets/js/shell.js?v=9120"></script></body></html>
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BNT — Закупки</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css?v=37">
+  <link rel="stylesheet" href="/assets/css/layout.css?v=3">
+  <link rel="stylesheet" href="/assets/css/components.css?v=336">
+  <link rel="stylesheet" href="/assets/css/pages/enterprise.css?v=52">
+  <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9140">
+</head>
+<body data-page="procurement">
+  <main id="page-content" class="page-content procurement-page">
+    <div class="content-block">
+      <section class="egpz-summary" data-egpz-summary aria-labelledby="egpz-summary-title">
+      <header class="egpz-summary__header">
+        <div class="egpz-summary__heading">
+          <h2 id="egpz-summary-title" class="typography-h4 procurement-section-title">Текущий ЕГПЗ</h2>
+          <button class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest" type="button" aria-label="На текущую дату">
+            <span class="filter-summary__count-title">На текущую дату</span>
+            <span class="filter-summary__count-chevron" aria-hidden="true">
+              <svg width="20" height="20"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+            </span>
+          </button>
+        </div>
+        <div class="chart-actions">
+          <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-egpz-filter aria-expanded="false" aria-controls="egpz-filter-modal">
+            <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg>
+            <span>Фильтр</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="egpz-summary__metrics" aria-label="Исполнение бюджета ЕГПЗ">
+        <article class="egpz-metric">
+          <div class="egpz-metric__label typography-body-smallest"><span>Бюджет (план)</span><strong class="typography-label-smallest">100%</strong></div>
+          <div class="egpz-metric__value typography-caption-base">637 000 000 KZT</div>
+        </article>
+        <article class="egpz-metric">
+          <div class="egpz-metric__label typography-body-smallest"><i class="egpz-dot egpz-dot--positive"></i><span>Израсходовано</span><strong class="typography-label-smallest">95,3%</strong></div>
+          <div class="egpz-metric__value typography-caption-base">607 145 000 KZT</div>
+        </article>
+        <article class="egpz-metric">
+          <div class="egpz-metric__label typography-body-smallest"><i class="egpz-dot egpz-dot--warning"></i><span>В резерве</span><strong class="typography-label-smallest">4,05%</strong></div>
+          <div class="egpz-metric__value typography-caption-base">25 800 000 KZT</div>
+        </article>
+        <article class="egpz-metric">
+          <div class="egpz-metric__label typography-body-smallest"><i class="egpz-dot egpz-dot--available"></i><span>Доступно</span><strong class="typography-label-smallest">0,64%</strong></div>
+          <div class="egpz-metric__value typography-caption-base">4 055 000 KZT</div>
+        </article>
+      </div>
+
+      <div class="egpz-progress" role="img" aria-label="Израсходовано 95,3 процента, в резерве 4,05 процента, доступно 0,64 процента">
+        <span class="egpz-progress__segment egpz-progress__segment--positive"></span>
+        <span class="egpz-progress__segment egpz-progress__segment--warning"></span>
+        <span class="egpz-progress__remainder"></span>
+      </div>
+      <p class="egpz-summary__deviation typography-body-smallest">
+        <strong class="typography-label-smallest"><svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=2#TrendArrow"></use></svg>0,32%</strong>
+        <span>1 595 000 KZT — отклонение по прошедшим месяцам, основное — Энергетика и Механика</span>
+      </p>
+      </section>
+
+      <section id="procurement-evidence-primary" class="kpi-grid procurement-kpis" aria-label="Ключевые показатели фактической базы"></section>
+
+      <div class="div-block" aria-labelledby="procurement-overview-title">
+        <header class="page-title-actions analytics-page-actions">
+          <div class="page-title-actions__heading analytics-block-heading analytics-page-actions__heading">
+            <span class="analytics-eyebrow typography-label-smallest">ФАКТ, ПЛАН, ПРОГНОЗ</span>
+            <div class="analytics-title-row">
+              <h2 id="procurement-overview-title" class="typography-h4">Закупки</h2>
+            </div>
+          </div>
+          <a class="section-expand-link button-smallest-secondary-radius typography-button-smallest" href="#procurement-stock" aria-label="К закупкам">
+            <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+            <span>К закупкам</span>
+          </a>
+        </header>
+
+        <div class="chart-grid--two-column" data-payment-analytics>
+          <article class="chart-card" data-payment-chart-card="statuses" aria-labelledby="payment-statuses-title">
+        <header class="chart-card__header">
+          <div class="chart-card__heading">
+            <div class="chart-card__title-row">
+              <h3 id="payment-statuses-title" class="typography-caption-small">Статусы исполнения</h3>
+            </div>
+            <div class="chart-card__filters">
+              <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest"><span class="filter-summary__count-title">с 01.09 по 30.09.2025</span><button class="filter-summary__count-chevron" type="button" data-payment-filter-clear aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+            </div>
+          </div>
+          <div class="chart-actions">
+            <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-payment-export="statuses" aria-label="Скачать статусы исполнения"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-egpz-chart-filter aria-expanded="false" aria-controls="egpz-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+          </div>
+        </header>
+        <div class="chart-donut__viewport"><svg class="chart-donut" data-payment-donut="statuses" viewBox="0 0 640 390" role="img" aria-label="Статусы исполнения платежей"></svg></div>
+        <div class="chart-legend chart-legend--wrap typography-body-smallest" data-payment-legend="statuses" aria-label="Легенда статусов исполнения"></div>
+          </article>
+
+          <article class="chart-card chart-card--origin" aria-labelledby="egpz-forecast-chart-title">
+        <header class="chart-card__header">
+          <div class="chart-card__heading">
+            <div class="chart-card__title-row">
+              <h3 id="egpz-forecast-chart-title" class="typography-caption-small">Прогноз закупок</h3>
+            </div>
+            <div class="chart-card__filters">
+              <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest">
+                <span class="filter-summary__count-title">На текущую дату</span>
+                <button class="filter-summary__count-chevron" type="button" aria-label="Убрать дату">
+                  <svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+                </button>
+              </span>
+            </div>
+          </div>
+          <div class="chart-actions">
+            <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" aria-label="Скачать прогноз закупок">
+              <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg>
+            </button>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-egpz-chart-filter aria-expanded="false" aria-controls="egpz-filter-modal">
+              <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg>
+              <span>Фильтр</span>
+            </button>
+          </div>
+        </header>
+
+        <div class="chart-tabs chart-tabs--two" role="tablist" aria-label="Группировка прогноза закупок" data-egpz-forecast-tabs>
+          <button id="egpz-forecast-tab-category" class="typography-label-small is-active" type="button" role="tab" aria-selected="true" aria-controls="egpz-forecast-panel" data-egpz-forecast-tab="category">Категория</button>
+          <button id="egpz-forecast-tab-department" class="typography-label-small" type="button" role="tab" aria-selected="false" aria-controls="egpz-forecast-panel" data-egpz-forecast-tab="department" tabindex="-1">Подразделение</button>
+        </div>
+
+        <div id="egpz-forecast-panel" class="chart-viewport payment-deviation-chart__viewport" style="height:348px;overflow:hidden" role="tabpanel" aria-labelledby="egpz-forecast-tab-category" data-egpz-forecast-panel>
+          <div class="payment-deviation-chart" style="--payment-deviation-label-width:120px;min-width:0" data-egpz-forecast-chart role="img" aria-label="Прогноз закупок по категориям: октябрь, ноябрь, декабрь"></div>
+        </div>
+        <div class="chart-legend chart-legend--wrap typography-body-smallest" data-egpz-forecast-legend aria-label="Легенда прогноза закупок"></div>
+          </article>
+        </div>
+
+        <div class="chart-grid--two-column procurement-budget-grid" data-procurement-budget-analytics>
+          <article class="chart-card" data-payment-chart-card="plan-fact" aria-labelledby="procurement-plan-fact-title">
+            <header class="chart-card__header">
+              <div class="chart-card__heading">
+                <div class="chart-card__title-row">
+                  <h3 id="procurement-plan-fact-title" class="typography-caption-small">План vs Факт</h3>
+                </div>
+                <div class="chart-card__filters">
+                  <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest"><span class="filter-summary__count-title">с 01.09 по 30.09.2025</span><button class="filter-summary__count-chevron" type="button" data-payment-filter-clear aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+                </div>
+              </div>
+              <div class="chart-actions">
+                <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-payment-export="plan-fact" aria-label="Скачать План vs Факт"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+                <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-egpz-chart-filter aria-expanded="false" aria-controls="egpz-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+              </div>
+            </header>
+
+            <div class="chart-tabs chart-tabs--two" role="tablist" aria-label="Группировка План vs Факт" data-plan-fact-tabs>
+              <button id="plan-fact-tab-category" class="typography-label-small" type="button" role="tab" aria-selected="false" aria-controls="plan-fact-panel" data-plan-fact-tab="category" tabindex="-1">Категория</button>
+              <button id="plan-fact-tab-department" class="typography-label-small is-active" type="button" role="tab" aria-selected="true" aria-controls="plan-fact-panel" data-plan-fact-tab="department">Подразделение</button>
+            </div>
+
+            <div id="plan-fact-panel" class="chart-viewport procurement-plan-fact__viewport" role="tabpanel" aria-labelledby="plan-fact-tab-department" data-plan-fact-panel>
+              <div class="procurement-plan-fact-chart" data-plan-fact-chart role="img" aria-label="План vs Факт по подразделениям"></div>
+            </div>
+            <div class="chart-legend chart-legend--wrap typography-body-smallest" data-plan-fact-legend aria-label="Легенда План vs Факт"></div>
+          </article>
+
+          <article class="chart-card" data-payment-chart-card="budget-deviation" aria-labelledby="procurement-budget-deviation-title">
+            <header class="chart-card__header">
+              <div class="chart-card__heading">
+                <div class="chart-card__title-row">
+                  <h3 id="procurement-budget-deviation-title" class="typography-caption-small">Отклонение по бюджету, (%)</h3>
+                </div>
+                <div class="chart-card__filters">
+                  <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest"><span class="filter-summary__count-title">с 01.09 по 30.09.2025</span><button class="filter-summary__count-chevron" type="button" data-payment-filter-clear aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+                </div>
+              </div>
+              <div class="chart-actions">
+                <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-payment-export="budget-deviation" aria-label="Скачать отклонение по бюджету"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+                <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-egpz-chart-filter aria-expanded="false" aria-controls="egpz-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+              </div>
+            </header>
+
+            <div class="chart-tabs chart-tabs--two" role="tablist" aria-label="Группировка отклонения по бюджету" data-budget-deviation-tabs>
+              <button id="budget-deviation-tab-category" class="typography-label-small is-active" type="button" role="tab" aria-selected="true" aria-controls="budget-deviation-panel" data-budget-deviation-tab="category">Категория</button>
+              <button id="budget-deviation-tab-department" class="typography-label-small" type="button" role="tab" aria-selected="false" aria-controls="budget-deviation-panel" data-budget-deviation-tab="department" tabindex="-1">Подразделение</button>
+            </div>
+
+            <div id="budget-deviation-panel" class="chart-viewport procurement-budget-deviation__viewport" role="tabpanel" aria-labelledby="budget-deviation-tab-category" data-budget-deviation-panel>
+              <div class="procurement-budget-deviation-chart" data-budget-deviation-chart role="img" aria-label="Отклонение по бюджету по категориям"></div>
+              <div class="procurement-budget-tooltip" data-budget-deviation-tooltip hidden></div>
+            </div>
+            <div class="chart-legend chart-legend--wrap typography-body-smallest" data-budget-deviation-legend aria-label="Легенда отклонения по бюджету"></div>
+          </article>
+        </div>
+
+        <article class="chart-card chart-card--wide-vertical" data-payment-chart-card="annual-forecast" aria-labelledby="procurement-annual-forecast-title">
+          <header class="chart-card__header">
+            <div class="chart-card__heading">
+              <div class="chart-card__title-row">
+                <h3 id="procurement-annual-forecast-title" class="typography-caption-small">Годовой прогноз закупок (план + прогноз)</h3>
+              </div>
+              <div class="chart-card__filters">
+                <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest">
+                  <span class="filter-summary__count-title">На 2026 год</span>
+                  <button class="filter-summary__count-chevron" type="button" aria-label="Убрать год">
+                    <svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+                  </button>
+                </span>
+              </div>
+            </div>
+            <div class="chart-actions">
+              <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-payment-export="annual-forecast" aria-label="Скачать годовой прогноз закупок"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-egpz-chart-filter aria-expanded="false" aria-controls="egpz-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+            </div>
+          </header>
+
+          <div class="chart-tabs chart-tabs--two procurement-annual__tabs" role="tablist" aria-label="Группировка годового прогноза закупок" data-annual-forecast-tabs>
+            <button id="annual-forecast-tab-category" class="typography-label-small is-active" type="button" role="tab" aria-selected="true" aria-controls="annual-forecast-panel" data-annual-forecast-tab="category">Категория</button>
+            <button id="annual-forecast-tab-department" class="typography-label-small" type="button" role="tab" aria-selected="false" aria-controls="annual-forecast-panel" data-annual-forecast-tab="department" tabindex="-1">Подразделение</button>
+          </div>
+
+          <div id="annual-forecast-panel" class="chart-viewport procurement-annual__viewport" role="tabpanel" aria-labelledby="annual-forecast-tab-category" data-annual-forecast-panel>
+            <div class="procurement-annual-chart" data-annual-forecast-chart role="img" aria-label="Годовой прогноз закупок по категориям"></div>
+            <div class="chart-tooltip" data-chart-tooltip-surface hidden></div>
+          </div>
+          <div class="chart-legend chart-legend--wrap typography-body-smallest" data-annual-forecast-legend aria-label="Легенда годового прогноза закупок"></div>
+        </article>
+      </div>
+    </div>
+
+    <section id="procurement-stock" class="content-block" aria-labelledby="procurement-stock-title">
+      <header class="page-title-actions analytics-page-actions">
+        <div class="page-title-actions__heading analytics-block-heading analytics-page-actions__heading">
+          <span class="analytics-eyebrow typography-label-smallest">ПЛАН, ФАКТ, ПРОГНОЗ</span>
+          <div class="analytics-title-row">
+            <h2 id="procurement-stock-title" class="typography-h4">Склад</h2>
+          </div>
+        </div>
+        <a class="section-expand-link button-smallest-secondary-radius typography-button-smallest" href="#procurement-stock-need" aria-label="К складу">
+          <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+          <span>К складу</span>
+        </a>
+      </header>
+
+      <div class="div-block procurement-stock" aria-labelledby="procurement-stock-reserves-title">
+        <header class="page-title-actions">
+          <div class="page-title-actions__heading analytics-block-heading">
+            <span class="typography-indicator-small">Общее</span>
+            <div class="analytics-block-title-row">
+              <h3 id="procurement-stock-reserves-title" class="typography-caption-small">Резервы</h3>
+            </div>
+          </div>
+          <div class="page-title-actions__buttons">
+            <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-payment-export="stock-reserves" aria-label="Скачать резервы склада">
+              <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg>
+            </button>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-egpz-chart-filter data-egpz-chart-filter-title="Резервы" aria-expanded="false" aria-controls="egpz-filter-modal">
+              <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg>
+              <span>Фильтр</span>
+            </button>
+          </div>
+        </header>
+
+        <div class="chart-grid--three-column procurement-stock-grid">
+          <article class="chart-card procurement-stock-card" aria-labelledby="procurement-stock-balance-title">
+            <header class="chart-card__header">
+              <div class="chart-card__heading">
+                <div class="chart-card__title-row">
+                  <h3 id="procurement-stock-balance-title" class="typography-caption-small">Остатки, (₸)</h3>
+                </div>
+              </div>
+            </header>
+            <div class="chart-tabs chart-tabs--two procurement-stock__tabs" role="tablist" aria-label="Группировка остатков" data-stock-balance-tabs>
+              <button id="stock-balance-tab-category" class="typography-label-small is-active" type="button" role="tab" aria-selected="true" aria-controls="stock-balance-panel" data-stock-balance-tab="category">Категория</button>
+              <button id="stock-balance-tab-department" class="typography-label-small" type="button" role="tab" aria-selected="false" aria-controls="stock-balance-panel" data-stock-balance-tab="department" tabindex="-1">Подразделение</button>
+            </div>
+            <div id="stock-balance-panel" class="chart-viewport procurement-stock-chart__viewport" role="tabpanel" aria-labelledby="stock-balance-tab-category" data-stock-balance-panel>
+              <div class="procurement-stock-chart procurement-stock-chart--single" data-stock-balance-chart role="img" aria-label="Остатки по категориям"></div>
+              <div class="chart-tooltip" data-chart-tooltip-surface hidden></div>
+            </div>
+            <div class="chart-legend chart-legend--wrap typography-body-smallest" data-stock-balance-legend aria-label="Легенда остатков"></div>
+          </article>
+
+          <article class="chart-card procurement-stock-card" aria-labelledby="procurement-stock-reserve-share-title">
+            <header class="chart-card__header">
+              <div class="chart-card__heading">
+                <div class="chart-card__title-row">
+                  <h3 id="procurement-stock-reserve-share-title" class="typography-caption-small">Доля резерва, (₸)</h3>
+                </div>
+              </div>
+            </header>
+            <div class="chart-tabs chart-tabs--two procurement-stock__tabs" role="tablist" aria-label="Группировка доли резерва" data-stock-reserve-tabs>
+              <button id="stock-reserve-tab-category" class="typography-label-small is-active" type="button" role="tab" aria-selected="true" aria-controls="stock-reserve-panel" data-stock-reserve-tab="category">Категория</button>
+              <button id="stock-reserve-tab-department" class="typography-label-small" type="button" role="tab" aria-selected="false" aria-controls="stock-reserve-panel" data-stock-reserve-tab="department" tabindex="-1">Подразделение</button>
+            </div>
+            <div id="stock-reserve-panel" class="chart-viewport procurement-stock-chart__viewport" role="tabpanel" aria-labelledby="stock-reserve-tab-category" data-stock-reserve-panel>
+              <div class="procurement-stock-chart procurement-stock-chart--stacked" data-stock-reserve-chart role="img" aria-label="Доля резерва по категориям"></div>
+              <div class="chart-tooltip" data-chart-tooltip-surface hidden></div>
+            </div>
+            <div class="chart-legend chart-legend--wrap typography-body-smallest" data-stock-reserve-legend aria-label="Легенда доли резерва"></div>
+          </article>
+
+          <article class="chart-card procurement-stock-card" aria-labelledby="procurement-stock-occupancy-title">
+            <header class="chart-card__header">
+              <div class="chart-card__heading">
+                <div class="chart-card__title-row">
+                  <h3 id="procurement-stock-occupancy-title" class="typography-caption-small">Занятость складов, (%)</h3>
+                </div>
+              </div>
+            </header>
+            <div class="chart-viewport procurement-stock-chart__viewport procurement-stock-chart__viewport--occupancy">
+              <div class="procurement-stock-chart procurement-stock-chart--occupancy" data-stock-occupancy-chart role="img" aria-label="Занятость складов"></div>
+              <div class="chart-tooltip" data-chart-tooltip-surface hidden></div>
+            </div>
+            <div class="chart-legend chart-legend--wrap typography-body-smallest" data-stock-occupancy-legend aria-label="Легенда занятости складов"></div>
+          </article>
+        </div>
+      </div>
+
+      <div class="chart-grid--two-column procurement-turnover-grid" data-procurement-turnover-analytics>
+        <article class="chart-card procurement-turnover-card" aria-labelledby="procurement-turnover-category-title">
+          <header class="chart-card__header">
+            <div class="chart-card__heading">
+              <div class="chart-card__title-row">
+                <h3 id="procurement-turnover-category-title" class="typography-caption-small">Средняя оборачиваемость по категориям</h3>
+              </div>
+              <div class="chart-card__filters">
+                <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest"><span class="filter-summary__count-title">с 01.01 по 31.12.2025</span><button class="filter-summary__count-chevron" type="button" data-payment-filter-clear aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+              </div>
+            </div>
+            <div class="chart-actions">
+              <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-payment-export="stock-turnover-category" aria-label="Скачать среднюю оборачиваемость по категориям"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-egpz-chart-filter data-egpz-chart-filter-title="Средняя оборачиваемость по категориям" aria-expanded="false" aria-controls="egpz-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+            </div>
+          </header>
+          <div class="chart-viewport procurement-turnover-bar__viewport">
+            <div class="procurement-turnover-bar-chart" data-turnover-category-chart role="img" aria-label="Средняя оборачиваемость по категориям"></div>
+          </div>
+          <div class="chart-legend chart-legend--wrap typography-body-smallest" data-turnover-category-legend aria-label="Легенда средней оборачиваемости по категориям"></div>
+        </article>
+
+        <article class="chart-card procurement-turnover-card" aria-labelledby="procurement-slow-turnover-title">
+          <header class="chart-card__header">
+            <div class="chart-card__heading">
+              <div class="chart-card__title-row">
+                <h3 id="procurement-slow-turnover-title" class="typography-caption-small">ТОП-5 медленно оборачиваемых позиций</h3>
+              </div>
+              <div class="chart-card__filters">
+                <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest"><span class="filter-summary__count-title">с 01.01 по 31.12.2025</span><button class="filter-summary__count-chevron" type="button" data-payment-filter-clear aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+              </div>
+            </div>
+            <div class="chart-actions">
+              <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-payment-export="slow-turnover" aria-label="Скачать ТОП-5 медленно оборачиваемых позиций"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
+              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-egpz-chart-filter data-egpz-chart-filter-title="ТОП-5 медленно оборачиваемых позиций" aria-expanded="false" aria-controls="egpz-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
+            </div>
+          </header>
+          <div class="chart-viewport procurement-slow-turnover__viewport" data-slow-turnover-panel>
+            <div class="procurement-slow-turnover-chart" data-slow-turnover-chart role="img" aria-label="ТОП-5 медленно оборачиваемых позиций"></div>
+            <div class="procurement-turnover-tooltip" data-slow-turnover-tooltip hidden></div>
+          </div>
+          <div class="chart-legend chart-legend--wrap typography-body-smallest" data-slow-turnover-legend aria-label="Легенда медленно оборачиваемых позиций"></div>
+        </article>
+      </div>
+
+      <article class="chart-card chart-card--wide payment-risk-map risk-map-left" aria-labelledby="procurement-analysis-actions-title">
+        <header class="page-title-actions">
+          <div class="page-title-actions__heading analytics-block-heading">
+            <span class="typography-indicator-small">ПО РЕЗУЛЬТАТАМ АНАЛИЗА</span>
+            <div class="analytics-block-title-row">
+              <h3 id="procurement-analysis-actions-title" class="typography-caption-small">Рекомендуемые действия</h3>
+            </div>
+          </div>
+          <div class="page-title-actions__buttons">
+            <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-payment-export="analysis-deviation" aria-label="Скачать отклонения по месяцам">
+              <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg>
+            </button>
+          </div>
+        </header>
+        <div class="payment-risk-map__layout">
+          <div class="payment-risk-map__risk-column" data-procurement-analysis-risk-column>
+            <div class="payment-risk-map__scroller chart-scrollbar" tabindex="0" aria-label="Рекомендуемые действия по результатам анализа" data-procurement-analysis-risk-scroll>
+              <ol class="payment-risk-list" data-procurement-analysis-actions></ol>
+            </div>
+          </div>
+
+          <article class="chart-card payment-risk-map__opposite payment-risk-map__chart-card" aria-labelledby="procurement-analysis-chart-title">
+            <header class="chart-card__header">
+              <div class="chart-card__heading">
+                <div class="chart-card__title-row">
+                  <h4 id="procurement-analysis-chart-title" class="payment-risk-map__chart-title typography-caption-small">Отклонения по месяцам</h4>
+                </div>
+              </div>
+              <div class="chart-actions">
+                <a class="section-expand-link button-smallest-secondary-radius typography-button-smallest" href="/analytics" aria-label="К аналитике отклонений по месяцам">
+                  <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+                  <span>К аналитике</span>
+                </a>
+              </div>
+            </header>
+            <div class="chart-viewport payment-risk-chart__viewport">
+              <svg class="chart-bars payment-risk-chart" data-procurement-analysis-chart viewBox="0 0 720 260" role="img" aria-label="Отклонения по месяцам: план, факт и отклонение"></svg>
+            </div>
+            <div class="financial-chart__legend typography-body-smallest" data-procurement-analysis-legend aria-label="Легенда отклонений по месяцам"></div>
+          </article>
+        </div>
+        <div class="payment-risk-map__insights chart-grid--two-column" data-procurement-analysis-insights>
+          <article class="chart-card payment-risk-map__expense-card" aria-labelledby="procurement-expense-share-title">
+            <header class="chart-card__header">
+              <div class="chart-card__heading">
+                <div class="chart-card__title-row">
+                  <h4 id="procurement-expense-share-title" class="payment-risk-map__chart-title typography-caption-small">Доля расходов по группам, KZT</h4>
+                </div>
+              </div>
+              <div class="chart-actions">
+                <a class="section-expand-link button-smallest-secondary-radius typography-button-smallest" href="/analytics" aria-label="К аналитике доли расходов">
+                  <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=3#ArrowUpRight"></use></svg>
+                  <span>К аналитике</span>
+                </a>
+              </div>
+            </header>
+            <div class="chart-donut__viewport payment-risk-map__expense-viewport">
+              <svg class="chart-donut" data-procurement-expense-share-chart viewBox="0 0 640 300" role="img" aria-label="Доля расходов по группам"></svg>
+            </div>
+            <div class="chart-legend chart-legend--wrap typography-body-smallest" data-procurement-expense-share-legend aria-label="Легенда доли расходов по группам"></div>
+          </article>
+
+          <section class="payment-risk-map__table-panel div-block div-block--compact" aria-labelledby="procurement-top-deviations-title">
+            <header class="payment-risk-map__table-head">
+              <div class="page-title-actions__heading analytics-block-heading">
+                <div class="page-title-actions__title-row">
+                  <h4 id="procurement-top-deviations-title" class="payment-risk-map__panel-title typography-caption-small">Топ-5 отклонений<br>по позициям</h4>
+                </div>
+              </div>
+              <div class="page-title-actions__buttons">
+                <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" aria-label="Открыть таблицу отклонений на весь экран">
+                  <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=12#FullScreen"></use></svg>
+                </button>
+              </div>
+            </header>
+            <section class="card table-block table-block--scroll-outside payment-risk-map__table-block">
+              <div class="table-wrap">
+                <table class="data-table payment-risk-map__deviation-table">
+                  <thead>
+                    <tr>
+                      <th>ТМЦ / Услуги</th>
+                      <th>Группа ТМЦ и Услуг</th>
+                      <th class="data-table__head-cell--percent">Откл., %</th>
+                      <th class="data-table__head-cell--numeric">Бюджет<br>плановый</th>
+                      <th class="data-table__head-cell--numeric">Фактический<br>расход</th>
+                    </tr>
+                  </thead>
+                  <tbody data-procurement-analysis-deviation-rows></tbody>
+                </table>
+              </div>
+            </section>
+          </section>
+        </div>
+      </article>
+    </section>
+
+    <section class="content-block" aria-label="Закупки">
+      <div class="div-block">
+        <header class="page-title-actions">
+          <div class="page-title-actions__heading">
+            <div class="page-title-actions__title-row">
+              <h2 class="typography-h4 procurement-section-title">Критический ЗИП</h2>
+              <button class="sign_BTN_smallest info-icon-button" type="button" data-procurement-info aria-expanded="false" aria-label="Информация о критическом ЗИП">
+                <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
+              </button>
+            </div>
+          </div>
+          <div class="page-title-actions__buttons">
+            <button id="urgent-purchase" class="button-small button-small--primary typography-button-small" type="button" aria-expanded="false" aria-controls="procurement-purchase-drawer">
+              <svg width="24" height="24" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 4.375V15.625M15.625 10H4.375" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
+              <span>Создать закупку</span>
+            </button>
+          </div>
+        </header>
+
+        <section id="procurement-kpis" class="procurement-kpis" aria-label="Показатели закупок"></section>
+      </div>
+
+      <section id="procurement-stock-need" class="div-block" aria-label="Складская потребность">
+        <header class="page-title-actions">
+          <div class="page-title-actions__heading analytics-block-heading">
+            <span class="typography-indicator-small">Приоритет</span>
+            <div class="analytics-block-title-row">
+              <h3 class="typography-caption-small">Складская потребность</h3>
+              <button class="sign_BTN_smallest info-icon-button" type="button" data-procurement-stock-info aria-expanded="false" aria-label="Информация о складской потребности">
+                <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
+              </button>
+            </div>
+          </div>
+          <div class="page-title-actions__buttons">
+            <button class="button-small button-small--secondary typography-button-small" type="button" data-procurement-filter-toggle aria-expanded="false" aria-controls="procurement-filter-modal">
+              <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg>
+              <span>Фильтр</span>
+            </button>
+          </div>
+        </header>
+        <div id="equipment-filter-summary" class="filter-summary" data-equipment-filter-summary hidden aria-label="Выбранные фильтры">
+          <div class="filter-summary__pills" data-equipment-filter-summary-list></div>
+          <div class="filter-summary__actions" data-equipment-filter-summary-actions></div>
+        </div>
+        <section class="card table-block">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Позиция</th>
+                  <th>Код</th>
+                  <th>Остаток/ Минимум</th>
+                  <th class="data-table__head-cell--progress">Покрытие</th>
+                  <th class="data-table__head-cell--numeric">Срок</th>
+                  <th>Связанное оборудование</th>
+                  <th class="data-table__head-cell--numeric">
+                    <span class="data-table__column-heading">
+                      <span>Влияние</span>
+                      <button class="sign_BTN_smallest info-icon-button procurement-impact-info" type="button" data-procurement-impact-info aria-expanded="false" aria-label="Информация о влиянии">
+                        <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
+                      </button>
+                    </span>
+                  </th>
+                  <th>Статус</th>
+                  <th class="data-table__head-cell--action">Действие</th>
+                </tr>
+              </thead>
+              <tbody id="parts-rows"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <article class="chart-card chart-card--wide payment-risk-map risk-map-left">
+        <header class="page-title-actions">
+          <div class="page-title-actions__heading analytics-block-heading">
+            <span class="typography-indicator-small">3 ТЕНДЕРА</span>
+            <div class="analytics-block-title-row">
+              <h3 id="procurement-actions-title" class="typography-caption-small">Рекомендуемые действия</h3>
+            </div>
+          </div>
+          <div class="page-title-actions__buttons">
+            <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-procurement-export aria-label="Скачать открытые тендеры">
+              <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg>
+            </button>
+          </div>
+        </header>
+        <div class="payment-risk-map__layout">
+          <section class="payment-risk-map__opposite div-block div-block--compact" aria-labelledby="procurement-tenders-title">
+            <h3 id="procurement-tenders-title" class="typography-caption-small">Открытые тендеры</h3>
+            <section class="card table-block">
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Тендер</th>
+                      <th>Предмет</th>
+                      <th>Поставщик</th>
+                      <th class="data-table__head-cell--numeric">Сумма</th>
+                      <th>Срок</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tender-rows"></tbody>
+                </table>
+              </div>
+            </section>
+          </section>
+          <div class="payment-risk-map__risk-column" data-procurement-risk-column>
+            <div class="payment-risk-map__scroller chart-scrollbar" tabindex="0" aria-label="Рекомендуемые действия по закупкам" data-procurement-risk-scroll>
+              <ol id="purchase-actions" class="payment-risk-list"></ol>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </section>
+  </main>
+  <div id="egpz-filter-modal" class="filter-modal" role="dialog" aria-modal="true" aria-labelledby="egpz-filter-title" hidden>
+    <div class="filter-modal__overlay" data-egpz-filter-close></div>
+    <section class="filter-modal__drawer dt3-drawer_static" aria-label="Фильтр текущего ЕГПЗ">
+      <header class="filter-modal__head">
+        <h2 id="egpz-filter-title" class="filter-modal__title typography-caption-small">Фильтр текущего ЕГПЗ</h2>
+        <button class="dt3-drawer-toggle button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest is-expanded" type="button" data-egpz-filter-close aria-label="Закрыть фильтр">
+          <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+        </button>
+      </header>
+      <span class="ui-divider brand-divider" aria-hidden="true"></span>
+      <div class="filter-modal__body">
+        <form class="filter-modal__search dt3-multisearch shell-search" role="search" aria-label="Поиск по фильтру ЕГПЗ" data-egpz-static-search-form>
+          <div class="dt3-multisearch-field dt3-multisearch-field--icon shell-search-field">
+            <span class="dt3-multisearch-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 20 20"><use href="/assets/icons/bnt-sprite.svg?v=3#search"></use></svg>
+            </span>
+            <input class="typography-body-smallest" type="search" placeholder="Поиск" data-egpz-static-search autocomplete="off">
+            <button class="dt3-search-submit" type="submit" aria-label="Найти">
+              <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><use href="/assets/icons/bnt-sprite.svg?v=3#search"></use></svg>
+            </button>
+          </div>
+        </form>
+        <div class="filter-modal__fields ui-scrollbar">
+          <div class="form-input" data-form-input="egpzDepartments" data-egpz-departments-filter>
+            <span class="form-input__label typography-label-smallest">Подразделения</span>
+            <div class="form-input__field">
+              <div class="form-input__control" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false" aria-label="Подразделения: Все">
+                <span class="form-input__value form-input__tags" data-form-input-value><span class="form-input__all typography-body-smallest">Все</span></span>
+                <span class="form-input__chevron nav-chevron" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 10L12 14L16 10" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>
+                </span>
+              </div>
+              <div class="form-input__menu" role="listbox" aria-label="Подразделения" aria-multiselectable="true" hidden>
+                <span class="form-input__divider" aria-hidden="true"></span>
+                <label class="form-input__search"><span aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><use href="/assets/icons/bnt-sprite.svg?v=3#search"></use></svg></span><input class="typography-body-smallest" type="search" placeholder="Поиск" data-form-input-search autocomplete="off"><button class="form-input__search-clear" type="button" data-form-input-search-clear aria-label="Очистить поиск" hidden><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></label>
+                <div class="form-input__options ui-scrollbar" data-form-input-options>
+                  <button class="form-input__option typography-body-smallest is-selected" type="button" role="option" aria-selected="true" data-form-input-option="Все">
+                    <span class="form-input__checkbox" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.2L9.2 16.4L19 6.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></span>
+                    <span class="form-input__option-label">Все</span>
+                  </button>
+                  <button class="form-input__option typography-body-smallest" type="button" role="option" aria-selected="false" data-form-input-option="Отдел безопасности">
+                    <span class="form-input__checkbox" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.2L9.2 16.4L19 6.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></span>
+                    <span class="form-input__option-label">Отдел безопасности</span>
+                  </button>
+                  <button class="form-input__option typography-body-smallest" type="button" role="option" aria-selected="false" data-form-input-option="Планово-экономический отдел">
+                    <span class="form-input__checkbox" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.2L9.2 16.4L19 6.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></span>
+                    <span class="form-input__option-label">Планово-экономический отдел</span>
+                  </button>
+                  <button class="form-input__option typography-body-smallest" type="button" role="option" aria-selected="false" data-form-input-option="Отдел коммерции и логистики">
+                    <span class="form-input__checkbox" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.2L9.2 16.4L19 6.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></span>
+                    <span class="form-input__option-label">Отдел коммерции и логистики</span>
+                  </button>
+                  <button class="form-input__option typography-body-smallest" type="button" role="option" aria-selected="false" data-form-input-option="Административный отдел">
+                    <span class="form-input__checkbox" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.2L9.2 16.4L19 6.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></span>
+                    <span class="form-input__option-label">Административный отдел</span>
+                  </button>
+                  <button class="form-input__option typography-body-smallest" type="button" role="option" aria-selected="false" data-form-input-option="Отдел качества и контроля нефтепродуктов">
+                    <span class="form-input__checkbox" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.2L9.2 16.4L19 6.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></span>
+                    <span class="form-input__option-label">Отдел качества и контроля нефтепродуктов</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="equipment-date-grid">
+            <div class="equipment-date-field" data-egpz-date-root="from" data-egpz-date-default="2026-01-01">
+              <span class="typography-label-smallest">Дата от</span>
+              <span class="equipment-date-input">
+                <button class="equipment-date-display typography-body-smallest" type="button" data-egpz-date-toggle aria-haspopup="dialog" aria-expanded="false">
+                  <span data-egpz-date-text>01.01.2026</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17.75 19.5H6.25V21H17.75V19.5ZM6.25 19.5C5.28371 19.5 4.5 18.7163 4.5 17.75H3C3 19.5447 4.45529 21 6.25 21V19.5ZM4.5 17.75V6.25H3V17.75H4.5ZM4.5 6.25C4.5 5.28371 5.28371 4.5 6.25 4.5V3C4.45529 3 3 4.45529 3 6.25H4.5ZM6.25 4.5H17.75V3H6.25V4.5ZM17.75 4.5C18.7163 4.5 19.5 5.28371 19.5 6.25H21C21 4.45529 19.5447 3 17.75 3V4.5ZM19.5 6.25V17.75H21V6.25H19.5ZM19.5 17.75C19.5 18.7163 18.7163 19.5 17.75 19.5V21C19.5447 21 21 19.5447 21 17.75H19.5ZM3.75 8.5H20.25V7H3.75V8.5ZM13.75 13.5H15.75V12H13.75V13.5ZM15.75 13.5C15.8883 13.5 16 13.6117 16 13.75H17.5C17.5 12.7833 16.7167 12 15.75 12V13.5ZM16 13.75V15.75H17.5V13.75H16ZM16 15.75C16 15.8883 15.8883 16 15.75 16V17.5C16.7167 17.5 17.5 16.7167 17.5 15.75H16ZM15.75 16H13.75V17.5H15.75V16ZM13.75 16C13.6117 16 13.5 15.8883 13.5 15.75H12C12 16.7167 12.7833 17.5 13.75 17.5V16ZM13.5 15.75V13.75H12V15.75H13.5ZM13.5 13.75C13.5 13.6117 13.6117 13.5 13.75 13.5V12C12.7833 12 12 12.7833 12 13.75H13.5Z" fill="currentColor"/></svg>
+                </button>
+                <input type="hidden" data-egpz-date="from">
+                <span class="equipment-date-popover" data-egpz-date-popover hidden></span>
+              </span>
+            </div>
+            <div class="equipment-date-field" data-egpz-date-root="to" data-egpz-date-default="2026-09-29">
+              <span class="typography-label-smallest">Дата до</span>
+              <span class="equipment-date-input">
+                <button class="equipment-date-display typography-body-smallest" type="button" data-egpz-date-toggle aria-haspopup="dialog" aria-expanded="false">
+                  <span data-egpz-date-text>29.09.2026</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17.75 19.5H6.25V21H17.75V19.5ZM6.25 19.5C5.28371 19.5 4.5 18.7163 4.5 17.75H3C3 19.5447 4.45529 21 6.25 21V19.5ZM4.5 17.75V6.25H3V17.75H4.5ZM4.5 6.25C4.5 5.28371 5.28371 4.5 6.25 4.5V3C4.45529 3 3 4.45529 3 6.25H4.5ZM6.25 4.5H17.75V3H6.25V4.5ZM17.75 4.5C18.7163 4.5 19.5 5.28371 19.5 6.25H21C21 4.45529 19.5447 3 17.75 3V4.5ZM19.5 6.25V17.75H21V6.25H19.5ZM19.5 17.75C19.5 18.7163 18.7163 19.5 17.75 19.5V21C19.5447 21 21 19.5447 21 17.75H19.5ZM3.75 8.5H20.25V7H3.75V8.5ZM13.75 13.5H15.75V12H13.75V13.5ZM15.75 13.5C15.8883 13.5 16 13.6117 16 13.75H17.5C17.5 12.7833 16.7167 12 15.75 12V13.5ZM16 13.75V15.75H17.5V13.75H16ZM16 15.75C16 15.8883 15.8883 16 15.75 16V17.5C16.7167 17.5 17.5 16.7167 17.5 15.75H16ZM15.75 16H13.75V17.5H15.75V16ZM13.75 16C13.6117 16 13.5 15.8883 13.5 15.75H12C12 16.7167 12.7833 17.5 13.75 17.5V16ZM13.5 15.75V13.75H12V15.75H13.5ZM13.5 13.75C13.5 13.6117 13.6117 13.5 13.75 13.5V12C12.7833 12 12 12.7833 12 13.75H13.5Z" fill="currentColor"/></svg>
+                </button>
+                <input type="hidden" data-egpz-date="to">
+                <span class="equipment-date-popover" data-egpz-date-popover hidden></span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="ui-divider brand-divider" aria-hidden="true"></span>
+      <footer class="filter-modal__footer">
+        <button class="button-smallest-primary-radius typography-button-smallest" type="button" data-egpz-filter-apply>
+          <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><use href="/assets/icons/bnt-sprite.svg?v=3#search"></use></svg>
+          <span>Поиск</span>
+        </button>
+        <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-egpz-filter-reset>
+          <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+          <span>Сбросить всё</span>
+        </button>
+      </footer>
+    </section>
+  </div>
+  <div id="procurement-filter-modal" class="filter-modal" role="dialog" aria-modal="true" aria-labelledby="procurement-filter-title" hidden>
+    <div class="filter-modal__overlay" data-procurement-filter-close></div>
+    <section class="filter-modal__drawer dt3-drawer" aria-label="Фильтр по закупкам">
+      <header class="filter-modal__head">
+        <h2 id="procurement-filter-title" class="filter-modal__title typography-caption-small">Фильтр по закупкам</h2>
+        <button class="dt3-drawer-toggle button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest is-expanded" type="button" data-procurement-filter-close aria-label="Закрыть фильтр">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>
+        </button>
+      </header>
+      <span class="ui-divider brand-divider" aria-hidden="true"></span>
+      <div class="filter-modal__body">
+        <form class="filter-modal__search dt3-multisearch shell-search" role="search" data-procurement-filter-search-form>
+          <div class="dt3-multisearch-field shell-search-field">
+            <span class="dt3-search-scope ui-dropdown" data-procurement-search-scope>
+              <button class="dt3-search-scope-trigger ui-dropdown__trigger typography-caption-smallest" type="button" data-procurement-search-scope-trigger data-value="name" aria-haspopup="listbox" aria-expanded="false" aria-controls="procurement-search-scope-list">
+                <span data-procurement-search-scope-label>Позиция</span>
+                <span class="dt3-search-scope-chevron ui-dropdown__chevron nav-chevron" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 10L12 14L16 10" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>
+                </span>
+              </button>
+              <div id="procurement-search-scope-list" class="dt3-search-scope-menu ui-dropdown__menu" role="listbox" aria-label="Область поиска" data-procurement-search-scope-list hidden>
+                <button class="dt3-search-scope-option ui-dropdown__option is-selected typography-caption-smallest" type="button" role="option" aria-selected="true" data-procurement-search-scope-option="name">Позиция</button>
+                <button class="dt3-search-scope-option ui-dropdown__option typography-body-smallest" type="button" role="option" aria-selected="false" data-procurement-search-scope-option="code">Код</button>
+              </div>
+            </span>
+            <input class="typography-body-smallest" type="search" placeholder="Поиск" data-procurement-filter-search autocomplete="off">
+            <button class="dt3-search-submit" type="submit" aria-label="Найти">
+              <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><use href="/assets/icons/bnt-sprite.svg?v=3#search"></use></svg>
+            </button>
+          </div>
+        </form>
+        <div class="filter-modal__fields ui-scrollbar">
+          <div data-procurement-priority-field></div>
+        </div>
+      </div>
+      <span class="ui-divider brand-divider" aria-hidden="true"></span>
+      <footer class="filter-modal__footer">
+        <button class="button-smallest-primary-radius typography-button-smallest" type="button" data-procurement-filter-apply>
+          <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><use href="/assets/icons/bnt-sprite.svg?v=3#search"></use></svg>
+          <span>Поиск</span>
+        </button>
+        <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-procurement-filter-reset>
+          <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+          <span>Сбросить всё</span>
+        </button>
+      </footer>
+    </section>
+  </div>
+  <div id="procurement-purchase-drawer" class="filter-modal" role="dialog" aria-modal="true" aria-labelledby="procurement-purchase-title" hidden>
+    <div class="filter-modal__overlay" data-procurement-purchase-close></div>
+    <form class="filter-modal__drawer dt3-drawer" aria-label="Заявка на закупку" data-procurement-purchase-form>
+      <header class="filter-modal__head">
+        <h2 id="procurement-purchase-title" class="filter-modal__title typography-caption-small">Заявка на закупку</h2>
+        <button class="dt3-drawer-toggle button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest is-expanded" type="button" data-procurement-purchase-close aria-label="Закрыть заявку">
+          <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+        </button>
+      </header>
+      <span class="ui-divider brand-divider" aria-hidden="true"></span>
+      <div class="filter-modal__body filter-modal__body--form">
+        <div class="filter-modal__fields ui-scrollbar">
+          <label class="form-input">
+            <span class="form-input__label typography-label-smallest">Позиция</span>
+            <input class="form-input__control form-input__control--text typography-body-smallest" name="part" type="text" required>
+          </label>
+          <label class="form-input">
+            <span class="form-input__label typography-label-smallest">Код</span>
+            <input class="form-input__control form-input__control--text typography-body-smallest" name="code" type="text" required>
+          </label>
+          <label class="form-input">
+            <span class="form-input__label typography-label-smallest">Количество</span>
+            <span class="form-input__text-field form-input__text-field--inline-icon">
+              <input class="form-input__control form-input__control--text typography-body-smallest" name="quantity" type="number" min="1" step="1" required>
+              <button class="form-input__number-stepper" type="button" data-form-input-number-stepper aria-label="Изменить количество">
+                <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#SortDefault"></use></svg>
+              </button>
+            </span>
+          </label>
+          <label class="form-input">
+            <span class="form-input__label typography-label-smallest">Требуемый срок</span>
+            <span class="equipment-date-field" data-egpz-date-root="purchase-deadline" data-egpz-date-default="2026-09-15">
+              <span class="equipment-date-input">
+                <button class="equipment-date-display typography-body-smallest" type="button" data-egpz-date-toggle aria-haspopup="dialog" aria-expanded="false">
+                  <span data-egpz-date-text>15.09.2026</span>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17.75 19.5H6.25V21H17.75V19.5ZM6.25 19.5C5.28371 19.5 4.5 18.7163 4.5 17.75H3C3 19.5447 4.45529 21 6.25 21V19.5ZM4.5 17.75V6.25H3V17.75H4.5ZM4.5 6.25C4.5 5.28371 5.28371 4.5 6.25 4.5V3C4.45529 3 3 4.45529 3 6.25H4.5ZM6.25 4.5H17.75V3H6.25V4.5ZM17.75 4.5C18.7163 4.5 19.5 5.28371 19.5 6.25H21C21 4.45529 19.5447 3 17.75 3V4.5ZM19.5 6.25V17.75H21V6.25H19.5ZM19.5 17.75C19.5 18.7163 18.7163 19.5 17.75 19.5V21C19.5447 21 21 19.5447 21 17.75H19.5ZM3.75 8.5H20.25V7H3.75V8.5ZM13.75 13.5H15.75V12H13.75V13.5ZM15.75 13.5C15.8883 13.5 16 13.6117 16 13.75H17.5C17.5 12.7833 16.7167 12 15.75 12V13.5ZM16 13.75V15.75H17.5V13.75H16ZM16 15.75C16 15.8883 15.8883 16 15.75 16V17.5C16.7167 17.5 17.5 16.7167 17.5 15.75H16ZM15.75 16H13.75V17.5H15.75V16ZM13.75 16C13.6117 16 13.5 15.8883 13.5 15.75H12C12 16.7167 12.7833 17.5 13.75 17.5V16ZM13.5 15.75V13.75H12V15.75H13.5ZM13.5 13.75C13.5 13.6117 13.6117 13.5 13.75 13.5V12C12.7833 12 12 12.7833 12 13.75H13.5Z" fill="currentColor"/></svg>
+                </button>
+                <input type="hidden" name="deadline" data-egpz-date="purchase-deadline" required>
+                <span class="equipment-date-popover" data-egpz-date-popover hidden></span>
+              </span>
+            </span>
+          </label>
+          <label class="form-input">
+            <span class="form-input__label typography-label-smallest">Поставщик</span>
+            <input class="form-input__control form-input__control--text typography-body-smallest" name="supplier" type="text" required>
+          </label>
+          <label class="form-input">
+            <span class="form-input__label typography-label-smallest">Обоснование</span>
+            <span class="form-input__text-field">
+              <svg class="form-input__text-icon" width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Pencil"></use></svg>
+              <textarea class="form-input__control form-input__control--text typography-body-smallest" name="reason" rows="5" required></textarea>
+            </span>
+          </label>
+        </div>
+      </div>
+      <span class="ui-divider brand-divider" aria-hidden="true"></span>
+      <footer class="filter-modal__footer">
+        <button class="button-smallest-primary-radius typography-button-smallest" type="submit">
+          <span>Создать заявку</span>
+        </button>
+        <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-procurement-purchase-close>
+          <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg>
+          <span>Отмена</span>
+        </button>
+      </footer>
+    </form>
+  </div>
+  <script src="/assets/js/navigation.js?v=12002"></script>
+  <script src="/assets/js/ui.js?v=61"></script>
+  <script src="/assets/js/data/procurement.js?v=3"></script>
+  <script src="/assets/js/chart-donut.js?v=14"></script>
+  <script src="/assets/js/pages/procurement.js?v=65"></script>
+  <script src="/assets/js/shell.js?v=9125"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@ import {tankZone,buildings} from './site-plan.js';
 export function createHierarchy(tanks, assets) {
   const nodes = new Map();
   const add = node => { node.children = []; nodes.set(node.id, node); if (node.parent) nodes.get(node.parent).children.push(node.id); return node; };
-  add({id:'terminal',name:'Батумский терминал',type:'terminal',code:'BNT'});
+  add({id:'terminal',name:'Батумский нефтяной терминал',type:'terminal',code:'Batumi Oil Terminal'});
   const zoneDefs = [
     ['west','Западный парк',1,16,'#1597bd'],
     ['central','Центральный парк',17,27,'#2980d6'],

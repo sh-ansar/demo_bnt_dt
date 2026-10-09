@@ -119,7 +119,7 @@
     }).join('');
 
     chart.style.setProperty('--payment-deviation-divisions', String(tickCount - 1));
-    chart.innerHTML = `<div class="payment-deviation-chart__axis" aria-hidden="true">${ticks}</div><div class="payment-deviation-chart__body"><div class="payment-deviation-chart__grid" aria-hidden="true">${grid}</div><div class="payment-deviation-chart__rows">${rows}</div></div>`;
+    chart.innerHTML = `<div class="payment-deviation-chart__axis" aria-hidden="true">${ticks}</div><div class="chart-viewport__plot chart-scrollbar"><div class="payment-deviation-chart__body"><div class="payment-deviation-chart__grid" aria-hidden="true">${grid}</div><div class="payment-deviation-chart__rows">${rows}</div></div></div>`;
   }
 
   function closeInfo() {
@@ -136,8 +136,7 @@
   page.addEventListener('click', function (event) {
     const clearButton = event.target.closest('[data-contract-filter-clear]');
     if (clearButton) {
-      clearButton.closest('.pill')?.remove();
-      toast('Фильтр', 'Период удалён');
+      clearButton.closest('.filter-summary__count')?.remove();
       return;
     }
 
@@ -152,13 +151,6 @@
 
     if (event.target.closest('[data-contract-info-close]')) {
       closeInfo();
-      return;
-    }
-
-    const filterButton = event.target.closest('[data-contract-filter]');
-    if (filterButton) {
-      const count = filterButton.querySelector('.button-smallest-secondary-radius__counter')?.textContent || '0';
-      toast('Фильтр', `Выбрано параметров: ${count}`);
       return;
     }
 

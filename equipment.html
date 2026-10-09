@@ -1,3 +1,142 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BNT — Активы</title><link rel="stylesheet" href="/assets/css/tokens.css"><link rel="stylesheet" href="/assets/css/layout.css"><link rel="stylesheet" href="/assets/css/components.css"><link rel="stylesheet" href="/assets/css/pages/enterprise.css"><link rel="stylesheet" href="/assets/css/shell-v91.css?v=9121"></head>
-<body data-page="equipment"><main id="page-content" class="page-content"><div class="page-actions"><div><h2>Реестр оборудования</h2><p>Техническое состояние и сервисные интервалы по всем объектам терминала</p></div><div class="actions"><button class="btn" id="export-assets">Экспорт реестра</button><a class="btn btn-primary" href="/toir?action=new-asset">+ Новый актив</a></div></div><section class="card"><div class="filters" id="asset-filters"></div><div class="table-wrap"><table class="data-table"><thead><tr><th>Оборудование</th><th>Категория</th><th>Локация</th><th>Внутр. №</th><th>Возраст</th><th>Нагрузка</th><th>Износ</th><th>Последнее ТО</th><th>Следующее ТО</th><th>Статус</th><th></th></tr></thead><tbody id="asset-rows"></tbody></table></div></section><section><h3 class="section-title">Активы повышенного внимания</h3><div id="asset-cards" class="asset-cards"></div></section></main><script src="/assets/js/navigation.js"></script><script src="/assets/js/ui.js"></script><script src="/assets/js/data/assets.js"></script><script src="/assets/js/pages/equipment.js"></script><script src="/assets/js/shell.js?v=9120"></script></body></html>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BNT — Активы</title><link rel="stylesheet" href="/assets/css/tokens.css?v=37"><link rel="stylesheet" href="/assets/css/layout.css?v=3"><link rel="stylesheet" href="/assets/css/components.css?v=336"><link rel="stylesheet" href="/assets/css/pages/enterprise.css?v=52"><link rel="stylesheet" href="/assets/css/shell-v91.css?v=9140"></head>
+<body data-page="equipment">
+  <main id="page-content" class="page-content equipment-page">
+    <section class="equipment-registry">
+      <header class="page-title-actions equipment-page-actions">
+        <div class="page-title-actions__heading">
+          <div class="page-title-actions__title-row">
+            <h2 class="typography-h4">Реестр оборудования</h2>
+            <button class="sign_BTN_smallest info-icon-button" type="button" data-equipment-info aria-expanded="false" aria-label="Информация о реестре оборудования">
+              <svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg>
+            </button>
+          </div>
+        </div>
+        <div class="page-title-actions__buttons">
+          <a class="button-small button-small--primary typography-button-small" href="/toir?action=new-asset">
+            <svg width="24" height="24" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 4.375V15.625M15.625 10H4.375" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
+            <span>Новый актив</span>
+          </a>
+          <button class="button-small button-small--secondary typography-button-small" id="export-assets" type="button">
+            <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg>
+            <span>Экспорт реестра</span>
+          </button>
+          <button class="button-small button-small--secondary typography-button-small" type="button" data-asset-filter-toggle aria-expanded="false" aria-controls="equipment-filter-modal">
+            <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg>
+            <span>Фильтр</span>
+          </button>
+        </div>
+      </header>
+      <div id="equipment-filter-summary" class="filter-summary" data-equipment-filter-summary hidden aria-label="Выбранные фильтры">
+        <div class="filter-summary__pills" data-equipment-filter-summary-list></div>
+        <div class="filter-summary__actions" data-equipment-filter-summary-actions></div>
+      </div>
+      <section class="card table-block equipment-registry__table table-block--scroll-outside table-block--sticky-head">
+        <div class="table-wrap">
+          <table class="data-table data-table--tree">
+            <thead>
+              <tr>
+                <th>
+                  <span class="data-table__column-heading">
+                    <span>Наименование</span>
+                    <button class="data-table__search" type="button" data-equipment-column-search="name" aria-haspopup="dialog" aria-expanded="false" aria-controls="equipment-column-filter-popover" aria-label="Найти наименование">
+                      <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg>
+                    </button>
+                  </span>
+                </th>
+                <th>
+                  <span class="data-table__column-heading">
+                    <span>Тип</span>
+                    <button class="data-table__search" type="button" data-equipment-column-search="type" aria-haspopup="dialog" aria-expanded="false" aria-controls="equipment-column-filter-popover" aria-label="Найти тип">
+                      <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg>
+                    </button>
+                  </span>
+                </th>
+                <th aria-sort="none">
+                  <span class="data-table__column-heading">
+                    <span>Локация</span>
+                    <button class="data-table__sort" type="button" data-equipment-sort="location" data-sort-label="локацию" data-sort-direction="default" aria-label="Сортировать локацию от большего к меньшему">
+                      <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg>
+                    </button>
+                    <button class="data-table__search" type="button" data-equipment-column-search="location" aria-haspopup="dialog" aria-expanded="false" aria-controls="equipment-column-filter-popover" aria-label="Найти локацию">
+                      <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg>
+                    </button>
+                  </span>
+                </th>
+                <th aria-sort="none">
+                  <span class="data-table__column-heading">
+                    <span>Внутр. №</span>
+                    <button class="data-table__sort" type="button" data-equipment-sort="internal" data-sort-label="внутренний номер" data-sort-direction="default" aria-label="Сортировать внутренний номер от большего к меньшему">
+                      <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg>
+                    </button>
+                  </span>
+                </th>
+                <th class="data-table__head-cell--numeric" aria-sort="none">
+                  <span class="data-table__column-heading">
+                    <span>Возраст</span>
+                    <button class="data-table__sort" type="button" data-equipment-sort="age" data-sort-label="возраст" data-sort-direction="default" aria-label="Сортировать возраст от большего к меньшему">
+                      <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg>
+                    </button>
+                  </span>
+                </th>
+                <th class="data-table__head-cell--progress" aria-sort="none">
+                  <span class="data-table__column-heading">
+                    <span>Нагрузка</span>
+                    <button class="data-table__sort" type="button" data-equipment-sort="load" data-sort-label="нагрузку" data-sort-direction="default" aria-label="Сортировать нагрузку от большего к меньшему">
+                      <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg>
+                    </button>
+                  </span>
+                </th>
+                <th class="data-table__head-cell--progress" aria-sort="none">
+                  <span class="data-table__column-heading">
+                    <span>Износ</span>
+                    <button class="data-table__sort" type="button" data-equipment-sort="wear" data-sort-label="износ" data-sort-direction="default" aria-label="Сортировать износ от большего к меньшему">
+                      <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg>
+                    </button>
+                  </span>
+                </th>
+                <th aria-sort="none">
+                  <span class="data-table__column-heading">
+                    <span>Последнее ТО</span>
+                    <button class="data-table__sort" type="button" data-equipment-sort="lastService" data-sort-label="дату последнего ТО" data-sort-direction="default" aria-label="Сортировать дату последнего ТО от большего к меньшему">
+                      <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg>
+                    </button>
+                  </span>
+                </th>
+                <th aria-sort="none">
+                  <span class="data-table__column-heading">
+                    <span>Следующее ТО</span>
+                    <button class="data-table__sort" type="button" data-equipment-sort="nextService" data-sort-label="дату следующего ТО" data-sort-direction="default" aria-label="Сортировать дату следующего ТО от большего к меньшему">
+                      <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg>
+                    </button>
+                  </span>
+                </th>
+                <th aria-sort="none">
+                  <span class="data-table__column-heading">
+                    <span>Статус</span>
+                    <button class="data-table__sort" type="button" data-equipment-sort="status" data-sort-label="статус" data-sort-direction="default" aria-label="Сортировать статус от большего к меньшему">
+                      <svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg>
+                    </button>
+                  </span>
+                </th>
+                <th class="data-table__head-cell--action">Паспорт</th>
+              </tr>
+            </thead>
+            <tbody id="asset-rows"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+    <section class="equipment-attention-section">
+      <h4 class="section-title">Активы повышенного внимания</h4>
+      <div id="asset-cards" class="asset-cards"></div>
+    </section>
+  </main>
+  <script src="/assets/js/navigation.js?v=12002"></script>
+  <script src="/assets/js/ui.js?v=61"></script>
+  <script src="/assets/js/data/assets.js"></script>
+  <script src="/assets/js/data/assets-hierarchy.js?v=1"></script>
+  <script src="/assets/js/shell.js?v=9125"></script>
+  <script src="/assets/js/pages/equipment.js?v=58"></script>
+</body>
+</html>
 

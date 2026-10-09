@@ -48,7 +48,8 @@
     const kind = part.kind === 'amount' || part.kind === 'percent' || part.kind === 'separator'
       ? ` chart-donut__${part.kind}`
       : '';
-    return `<tspan class="chart-donut__text${kind}"${attributes || ''}>${escapeXml(part.text)}</tspan>`;
+    const typography = part.kind === 'amount' ? ' typography-label-smallest' : ' typography-body-smallest';
+    return `<tspan class="chart-donut__text${kind}${typography}"${attributes || ''}>${escapeXml(part.text)}</tspan>`;
   }
 
   function textPartsMarkup(parts) {
@@ -294,7 +295,7 @@
     const totalWeight = data.reduce(function (sum, item) { return sum + Number(item.weight == null ? item.value : item.weight); }, 0);
     const totalValue = data.reduce(function (sum, item) { return sum + Number(item.value); }, 0);
     const textMeasurer = createTextMeasurer(chart);
-    const svg = [];
+    const svg = [], sectors = [];
     const initialAngle = Number(options.startAngle) || 0;
     let angle = initialAngle;
 
@@ -302,7 +303,8 @@
       const weight = Number(item.weight == null ? item.value : item.weight);
       const span = weight / totalWeight * 360;
       const detail = defaultValue(item, formatValue, unit);
-      svg.push(`<path class="chart-donut__slice ${item.className}" d="${donutPath(cx, cy, outer, inner, angle, angle + span)}"><title>${escapeXml(`${item.label}: ${detail}`)}</title></path>`);
+      sectors.push({start: angle, end: angle + span});
+      svg.push(`<path class="chart-donut__slice ${item.className}" d="${donutPath(cx, cy, outer, inner, angle, angle + span)}" role="img" aria-label="${escapeXml(`${item.label}: ${detail}`)}"></path>`);
       angle += span;
     });
 
@@ -383,17 +385,29 @@
       const detailMarkup = valueMarkup(position.valueParts, labelX, position.wrapValue);
       Object.assign(position, { route, touchPoint, exitPoint });
       svg.push(`<path class="chart-donut__connector ${position.item.className}" data-chart-donut-connector="${index}" d="${connectorPath(position, lineEndX)}"/>`);
-      svg.push(`<text class="chart-donut__label" data-chart-donut-label="${index}" x="${labelX}" y="${position.labelY - 5 - Math.max(0, position.labelLines.length - 1) * 21}" text-anchor="${anchor}">${titleMarkup}</text>`);
-      svg.push(`<text class="chart-donut__value" data-chart-donut-value="${index}" x="${labelX}" y="${position.labelY + 16}" text-anchor="${anchor}">${detailMarkup}</text>`);
+      svg.push(`<text class="chart-donut__label typography-body-smallest" data-chart-donut-label="${index}" x="${labelX}" y="${position.labelY - 5 - Math.max(0, position.labelLines.length - 1) * 21}" text-anchor="${anchor}">${titleMarkup}</text>`);
+      svg.push(`<text class="chart-donut__value typography-body-smallest" data-chart-donut-value="${index}" x="${labelX}" y="${position.labelY + 16}" text-anchor="${anchor}">${detailMarkup}</text>`);
     });
 
     const centerValue = options.centerValue == null ? formatValue(totalValue) : options.centerValue;
-    svg.push(`<text class="chart-donut__total" x="${cx}" y="${cy + 7}" text-anchor="middle">${escapeXml(centerValue)}</text>`);
+    svg.push(`<text class="chart-donut__total typography-caption-base" x="${cx}" y="${cy + 7}" text-anchor="middle">${escapeXml(centerValue)}</text>`);
     textMeasurer.destroy();
     chart.setAttribute('viewBox', `0 0 ${width} ${height}`);
     chart.innerHTML = svg.join('');
     chart.setAttribute('aria-label', options.accessibleLabel || 'Кольцевая диаграмма');
     fitConnectorRules(chart, labelPositions, width);
+    const slices = [...chart.querySelectorAll('.chart-donut__slice')];
+    const finalPaths = slices.map(slice => slice.getAttribute('d'));
+    chart.bntDonutMotion = {
+      update(progress) {
+        const end = initialAngle + 360 * Math.max(0, Math.min(1, progress));
+        slices.forEach((slice, index) => {
+          const sector = sectors[index];
+          slice.setAttribute('d', end <= sector.start ? '' : donutPath(cx, cy, outer, inner, sector.start, Math.min(sector.end, end)));
+        });
+      },
+      restore() { slices.forEach((slice, index) => slice.setAttribute('d', finalPaths[index])); }
+    };
 
     const legendData = options.legendData || data;
     legend.innerHTML = legendData.map(function (item) {
@@ -401,7 +415,47 @@
     }).join('');
   }
 
+  const paymentStatusDataset = {
+    accessibleLabel: 'Статусы исполнения платежей за сентябрь 2025 года',
+    centerValue: '77',
+    startAngle: -16.36,
+    data: [
+      { label: 'Просрочено (не закрыты, срок истёк)', value: 7, percent: '9,09%', className: 'series-negative' },
+      { label: 'Выполнено вовремя', value: 38, percent: '49,35%', className: 'series-gas' },
+      { label: 'Выполнено с просрочкой', value: 7, percent: '9,09%', className: 'series-orange' },
+      { label: 'В работе', value: 19, percent: '24,68%', className: 'series-crude' },
+      { label: 'На контроле (<7 дней до срока)', value: 6, percent: '7,79%', className: 'series-dark' }
+    ],
+    legendOrder: ['В работе', 'Выполнено вовремя', 'Выполнено с просрочкой', 'На контроле (<7 дней до срока)', 'Просрочено (не закрыты, срок истёк)']
+  };
+
+  function getLegendData(config) {
+    return config.legendOrder.map(function (label) {
+      return config.data.find(function (item) { return item.label === label; });
+    }).filter(Boolean);
+  }
+
+  function renderPaymentStatuses(root) {
+    const scope = root || document;
+    const chart = scope.querySelector('[data-payment-donut="statuses"]');
+    const legend = scope.querySelector('[data-payment-legend="statuses"]');
+    if (!chart || !legend) return;
+
+    render({
+      chart,
+      legend,
+      data: paymentStatusDataset.data,
+      legendData: getLegendData(paymentStatusDataset),
+      accessibleLabel: paymentStatusDataset.accessibleLabel,
+      centerValue: paymentStatusDataset.centerValue,
+      startAngle: paymentStatusDataset.startAngle,
+      unit: ''
+    });
+  }
+
   window.BNTCharts = Object.assign(window.BNTCharts || {}, {
-    renderDonut: render
+    renderDonut: render,
+    paymentStatusDataset,
+    renderPaymentStatuses
   });
 }());

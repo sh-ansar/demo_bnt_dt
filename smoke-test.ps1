@@ -10,7 +10,6 @@ $Routes = @(
     "/dispatcher",
     "/digital-twin",
     "/operations",
-    "/operations-2",
     "/equipment",
     "/equipment-detail",
     "/analytics",

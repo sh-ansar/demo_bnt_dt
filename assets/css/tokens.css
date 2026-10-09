@@ -1,6 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap");
 
 :root {
+  --chart-motion-duration: 650ms;
+  --chart-motion-easing: cubic-bezier(.22, 1, .36, 1);
   --font-family-primary: "Golos Text", Golos, "Segoe UI", Arial, sans-serif;
   --typography-label-base-size: clamp(16px, 1.111111vw, 21.333333px);
   --typography-label-base-line-height: clamp(24px, 1.666667vw, 32px);
@@ -39,10 +41,16 @@
   --typography-button-smallest-line-height: var(--typography-label-smallest-line-height);
   --typography-button-smallest-weight: 600;
   --typography-button-smallest-letter-spacing: 0;
-  --typography-indicator-small-size: 10px;
-  --typography-indicator-small-line-height: 16px;
+  --typography-indicator-small-size: clamp(10px, .666667vw, 12.8px);
+  --typography-indicator-small-line-height: clamp(16px, 1.145833vw, 22px);
   --typography-indicator-small-weight: 500;
   --typography-indicator-small-letter-spacing: 0;
+  --typography-indicator-base-size: 32px;
+  --typography-indicator-base-line-height: 40px;
+  --typography-indicator-base-weight: 400;
+  --typography-indicator-base-letter-spacing: 0;
+  --typography-indicator-base-mobile-size: 14px;
+  --typography-indicator-base-mobile-line-height: 20px;
   --typography-caption-smallest-size: var(--typography-label-smallest-size);
   --typography-caption-smallest-line-height: var(--typography-label-smallest-line-height);
   --typography-caption-smallest-weight: 600;
@@ -61,9 +69,16 @@
   /* Corporate light-theme semantic palette. */
   --background-primary: #e8eff2;
   --background-primary-fade: #e5f6ff;
+  --background-brand-fade-3: rgb(201 222 232 / 20%);
   --background-secondary: #f8fafb;
+  --background-octonary: #f7f7f7;
+  --background-tertiary: #c9dee833;
+  --background-accent-soft: rgba(35, 142, 195, .04);
   --background-quarternary: rgba(255, 255, 255, .8);
+  --background-senary: rgba(255, 255, 255, .8);
   --system-elements-static-primary: #fefefe;
+  --system-elements-overlay-primary: rgb(0 34 51 / 80%);
+  --system-elements-overlay-tertiary: rgb(5 28 39 / 18%);
   --text-secondary: #051c27;
   --bg: var(--background-primary);
   --surface: #ffffff;
@@ -75,11 +90,19 @@
   --background-brand-solid: #0697e0;
   --design-elements-border-default: rgba(68, 112, 134, .08);
   --design-elements-border-primary: var(--design-elements-border-default);
+  --system-elements-semantic-highlight-stroke-solid: rgba(68, 112, 134, .32);
+  --system-elements-semantic-highlight-fill: rgba(43, 184, 255, .24);
   --design-elements-border-secondary: rgba(68, 112, 134, .24);
   --design-elements-border-strong: var(--design-elements-border-secondary);
+  --design-elements-illustration-primary: #ffffff;
+  --design-elements-illustration-secondary: #98c7fe;
+  --design-elements-illustration-tertiary: #82b8f5;
+  --design-elements-illustration-quarternary: #8ebdf4;
   --design-elements-icon-primary: #7199ac;
   --design-elements-icon-secondary: #c9dee8;
+  --design-elements-icon-tertiary: #e6eff4;
   --design-elements-icon-tertiary-neutral: #e6eff4;
+  --design-elements-icon-quarternary: #d7eaf3;
   --interaction-bg-hover-modifier-light: rgba(35, 142, 195, .06);
   --interaction-hover-modifier-light: var(--interaction-bg-hover-modifier-light);
   --interaction-bg-active-modifier-light: var(--surface-blue);
@@ -90,13 +113,17 @@
   --system-elements-semantic-success-modifier-light: #e2f1e7;
   --operational-card-positive-fill: #e2f1e7;
   --operational-card-neutral-fill: #e5f6ff;
-  --system-elements-semantic-neutral-secondary-fade: var(--design-elements-icon-tertiary-neutral);
+  --system-elements-semantic-neutral-secondary-fade: var(--operational-card-neutral-fill);
   --system-elements-semantic-warning-primary: #e5a500;
   --system-elements-semantic-warning-secondary-fade: #f7f1e2;
   --system-elements-semantic-positive-secondary-fade: var(--operational-card-positive-fill);
   --system-elements-semantic-error-secondary-fade: #fde8e8;
   --system-elements-semantic-purple-primary: #5f67be;
   --system-elements-semantic-purple-secondary-fade: rgb(173 202 255 / 20%);
+  --system-elements-semantic-turquoise-primary: #0d7c73;
+  --system-elements-semantic-turquoise-secondary-fade: rgb(85 227 203 / 20%);
+  --system-elements-semantic-mustard-primary: #827009;
+  --system-elements-semantic-mustard-secondary-fade: rgb(236 225 85 / 20%);
   --pier-card-one-fill: #ddf3ee;
   --pier-card-two-fill: #dae7fd;
   --pier-card-three-fill: #dceef2;
@@ -121,18 +148,92 @@
   --shadow-progress-bar-fade: inset 0 1px 2px 0 var(--blue-980-5, rgba(8, 31, 43, .05));
   --progress-bar-track: var(--design-elements-border-default, rgba(68, 112, 134, .08));
   --progress-bar-line: var(--system-elements-semantic-info-primary);
-  --progress-bar-thumb-background: var(--background-page);
+  --progress-bar-thumb-background: var(--background-octonary);
   --progress-bar-thumb-border: var(--design-elements-border-default);
   --progress-bar-thumb-shadow: var(--shadow-primary);
-  --progress-bar-track-size: 4px;
+  --progress-bar-track-size: 2px;
+  --progress-bar-track-scroll-size: 4px;
   --progress-bar-thumb-size: 16px;
-  /* Charts keep the light-theme palette in every theme at 70% opacity. */
-  --chart-series-primary: rgb(6 151 224 / 70%);
-  --chart-series-secondary: rgb(32 185 238 / 70%);
-  --chart-series-positive: rgb(18 161 49 / 70%);
-  --chart-series-warning: rgb(229 165 0 / 70%);
-  --chart-series-negative: rgb(208 23 23 / 70%);
-  --chart-series-purple: rgb(112 90 200 / 70%);
+  /* Fixed light-theme chart colors; geometry controls alpha only once. */
+  --chart-color-primary: #0697e0;
+  --chart-color-secondary: #20b9ee;
+  --chart-color-positive: #12a131;
+  --chart-color-warning: #e5a500;
+  --chart-color-negative: #d01717;
+  --chart-color-purple: #705ac8;
+  --chart-color-blue: #2d9ced;
+  --chart-color-soft-blue: #82bae7;
+  --chart-color-deep-blue: #0869c0;
+  --chart-color-mustard: #827009;
+  --chart-series-primary: color-mix(in srgb, var(--chart-color-primary) 70%, transparent);
+  --chart-series-secondary: color-mix(in srgb, var(--chart-color-secondary) 70%, transparent);
+  --chart-series-positive: color-mix(in srgb, var(--chart-color-positive) 70%, transparent);
+  --chart-series-warning: color-mix(in srgb, var(--chart-color-warning) 70%, transparent);
+  --chart-series-negative: color-mix(in srgb, var(--chart-color-negative) 70%, transparent);
+  --chart-series-purple: color-mix(in srgb, var(--chart-color-purple) 70%, transparent);
+  --chart-series-blue: color-mix(in srgb, var(--chart-color-blue) 70%, transparent);
+  --chart-series-soft-blue: color-mix(in srgb, var(--chart-color-soft-blue) 70%, transparent);
+  --chart-series-deep-blue: color-mix(in srgb, var(--chart-color-deep-blue) 70%, transparent);
+  --chart-series-mustard: color-mix(in srgb, var(--chart-color-mustard) 70%, transparent);
+  --chart-series-blue-60: color-mix(in srgb, var(--chart-color-blue) 60%, transparent);
+  --chart-series-soft-blue-60: color-mix(in srgb, var(--chart-color-soft-blue) 60%, transparent);
+  --chart-series-purple-60: color-mix(in srgb, var(--chart-color-purple) 60%, transparent);
+  --chart-series-positive-60: color-mix(in srgb, var(--chart-color-positive) 60%, transparent);
+  --chart-series-negative-60: color-mix(in srgb, var(--chart-color-negative) 60%, transparent);
+  --chart-series-mustard-60: color-mix(in srgb, var(--chart-color-mustard) 60%, transparent);
+
+  /* Approved origin chart hues, shared unchanged by Light and Dark. */
+  --chart-color-hue-blue-primary: var(--chart-color-deep-blue);
+  --chart-color-hue-blue-secondary: #1884cc;
+  --chart-color-hue-blue-tertiary: #3197d5;
+  --chart-color-hue-blue-quarternary: #57b0de;
+  --chart-color-hue-blue-quinary: var(--chart-color-soft-blue);
+  --chart-color-hue-blue-senary: #aad3ee;
+  --chart-series-hue-blue-primary: color-mix(in srgb, var(--chart-color-hue-blue-primary) 70%, transparent);
+  --chart-series-hue-blue-secondary: color-mix(in srgb, var(--chart-color-hue-blue-secondary) 70%, transparent);
+  --chart-series-hue-blue-tertiary: color-mix(in srgb, var(--chart-color-hue-blue-tertiary) 70%, transparent);
+  --chart-series-hue-blue-quarternary: color-mix(in srgb, var(--chart-color-hue-blue-quarternary) 70%, transparent);
+  --chart-series-hue-blue-quinary: color-mix(in srgb, var(--chart-color-hue-blue-quinary) 70%, transparent);
+  --chart-series-hue-blue-senary: color-mix(in srgb, var(--chart-color-hue-blue-senary) 70%, transparent);
+
+  --chart-color-hue-lavande-primary: #088dbf;
+  --chart-color-hue-lavande-secondary: #19a7cb;
+  --chart-color-hue-lavande-tertiary: #33b8d4;
+  --chart-color-hue-lavande-quarternary: #56c6de;
+  --chart-color-hue-lavande-quinary: #7fd7e8;
+  --chart-color-hue-lavande-senary: #a3e2f0;
+  --chart-series-hue-lavande-primary: color-mix(in srgb, var(--chart-color-hue-lavande-primary) 70%, transparent);
+  --chart-series-hue-lavande-secondary: color-mix(in srgb, var(--chart-color-hue-lavande-secondary) 70%, transparent);
+  --chart-series-hue-lavande-tertiary: color-mix(in srgb, var(--chart-color-hue-lavande-tertiary) 70%, transparent);
+  --chart-series-hue-lavande-quarternary: color-mix(in srgb, var(--chart-color-hue-lavande-quarternary) 70%, transparent);
+  --chart-series-hue-lavande-quinary: color-mix(in srgb, var(--chart-color-hue-lavande-quinary) 70%, transparent);
+  --chart-series-hue-lavande-senary: color-mix(in srgb, var(--chart-color-hue-lavande-senary) 70%, transparent);
+
+  --chart-color-hue-orange-primary: #be5218;
+  --chart-color-hue-orange-secondary: #d7661f;
+  --chart-color-hue-orange-tertiary: #ea792a;
+  --chart-color-hue-orange-quarternary: var(--chart-color-mustard);
+  --chart-color-hue-orange-quinary: #f7ab70;
+  --chart-color-hue-orange-senary: #fcc294;
+  --chart-series-hue-orange-primary: color-mix(in srgb, var(--chart-color-hue-orange-primary) 70%, transparent);
+  --chart-series-hue-orange-secondary: color-mix(in srgb, var(--chart-color-hue-orange-secondary) 70%, transparent);
+  --chart-series-hue-orange-tertiary: color-mix(in srgb, var(--chart-color-hue-orange-tertiary) 70%, transparent);
+  --chart-series-hue-orange-quarternary: color-mix(in srgb, var(--chart-color-hue-orange-quarternary) 70%, transparent);
+  --chart-series-hue-orange-quinary: color-mix(in srgb, var(--chart-color-hue-orange-quinary) 70%, transparent);
+  --chart-series-hue-orange-senary: color-mix(in srgb, var(--chart-color-hue-orange-senary) 70%, transparent);
+
+  --chart-color-hue-mustard-primary: #9f6d08;
+  --chart-color-hue-mustard-secondary: #b98212;
+  --chart-color-hue-mustard-tertiary: #d19a20;
+  --chart-color-hue-mustard-quarternary: #e4b135;
+  --chart-color-hue-mustard-quinary: #ecc65b;
+  --chart-color-hue-mustard-senary: #f1d57e;
+  --chart-series-hue-mustard-primary: color-mix(in srgb, var(--chart-color-hue-mustard-primary) 70%, transparent);
+  --chart-series-hue-mustard-secondary: color-mix(in srgb, var(--chart-color-hue-mustard-secondary) 70%, transparent);
+  --chart-series-hue-mustard-tertiary: color-mix(in srgb, var(--chart-color-hue-mustard-tertiary) 70%, transparent);
+  --chart-series-hue-mustard-quarternary: color-mix(in srgb, var(--chart-color-hue-mustard-quarternary) 70%, transparent);
+  --chart-series-hue-mustard-quinary: color-mix(in srgb, var(--chart-color-hue-mustard-quinary) 70%, transparent);
+  --chart-series-hue-mustard-senary: color-mix(in srgb, var(--chart-color-hue-mustard-senary) 70%, transparent);
   --ink: var(--text-primary);
   --ink-2: var(--text-secondary);
   --muted: var(--text-tertiary);
@@ -176,6 +277,12 @@
   --space-5: 24px;
   --space-6: 32px;
   --space-7: 48px;
+  --form-input-control-height: 40px;
+  --card-with-image-min-height: 340px;
+  --card-with-image-min-width: 320px;
+  --analytics-kpi-min-width: 220px;
+  --table-badge-max-width: 280px;
+  --table-height-group-min-height: 108px;
   --radius: 14px;
   --shadow: 0 8px 28px rgba(24, 66, 103, .08);
   --shadow-sm: 0 3px 13px rgba(24, 66, 103, .06);
@@ -185,8 +292,13 @@
   --background-primary: #081f2b;
   --background-primary-fade: #023c5a;
   --background-secondary: #092634;
+  --background-tertiary: rgb(10 31 41 / 40%);
+  --background-accent-soft: rgba(147, 206, 236, .08);
   --background-quarternary: rgba(112, 184, 219, .05);
+  --background-senary: rgb(10 31 41 / 40%);
   --system-elements-static-primary: #fefefe;
+  --system-elements-overlay-primary: rgb(229 246 255 / 80%);
+  --system-elements-overlay-tertiary: rgb(5 28 39 / 18%);
   --text-secondary: #ffffff;
   --bg: var(--background-primary);
   --surface: #032130;
@@ -198,34 +310,47 @@
   --background-brand-solid: #0697e0;
   --design-elements-border-default: rgba(141, 192, 216, .1);
   --design-elements-border-primary: var(--design-elements-border-default);
+  --system-elements-semantic-highlight-stroke-solid: rgba(141, 192, 216, .28);
+  --system-elements-semantic-highlight-fill: rgba(43, 184, 255, .24);
   --design-elements-border-secondary: rgba(141, 192, 216, .2);
   --design-elements-border-strong: var(--design-elements-border-secondary);
+  --design-elements-illustration-primary: #7199ac;
+  --design-elements-illustration-secondary: #0a5e99;
+  --design-elements-illustration-tertiary: #0c4a6e;
+  --design-elements-illustration-quarternary: #075985;
   --design-elements-icon-primary: #7199ac;
   --design-elements-icon-secondary: #0f4057;
-  --design-elements-icon-tertiary-neutral: #2e556b;
+  --design-elements-icon-tertiary: #2e556b;
+  --design-elements-icon-tertiary-neutral: #e6eff4;
+  --design-elements-icon-quarternary: #023c5a;
+  --interaction-bg-hover-modifier-light: rgba(147, 206, 224, .06);
   --system-elements-semantic-info-primary: #0697e0;
   --system-elements-semantic-success-primary: #17cf3f;
   --system-elements-semantic-success-modifier-light: #e2f1e7;
   --operational-card-positive-fill: #18382b;
   --operational-card-neutral-fill: #16384a;
-  --system-elements-semantic-neutral-secondary-fade: var(--design-elements-icon-tertiary-neutral);
+  --system-elements-semantic-neutral-secondary-fade: rgb(0 136 204 / 20%);
   --system-elements-semantic-warning-primary: #e5a500;
   --system-elements-semantic-warning-secondary-fade: rgba(229, 165, 0, .2);
-  --system-elements-semantic-positive-secondary-fade: var(--operational-card-positive-fill);
-  --system-elements-semantic-error-secondary-fade: rgba(244, 37, 37, .2);
+  --system-elements-semantic-positive-secondary-fade: rgba(18, 161, 49, .24);
+  --system-elements-semantic-error-secondary-fade: rgba(208, 23, 23, .2);
   --system-elements-semantic-purple-primary: #7d85dc;
   --system-elements-semantic-purple-secondary-fade: rgb(173 202 255 / 20%);
+  --system-elements-semantic-turquoise-primary: #4bd9ac;
+  --system-elements-semantic-turquoise-secondary-fade: rgb(93 227 205 / 20%);
+  --system-elements-semantic-mustard-primary: #d1c53a;
+  --system-elements-semantic-mustard-secondary-fade: rgb(221 210 70 / 20%);
   --pier-card-one-fill: #173c37;
   --pier-card-two-fill: #223754;
   --pier-card-three-fill: #1b3840;
   --pier-card-svm-fill: #4a3423;
   --system-elements-semantic-positive-primary: var(--system-elements-semantic-success-primary);
-  --system-elements-semantic-positive-fade: var(--operational-card-positive-fill);
+  --system-elements-semantic-positive-fade: #e2f1e7;
   --system-elements-semantic-neutral-primary: var(--system-elements-semantic-info-primary);
-  --system-elements-semantic-neutral-fade: var(--operational-card-neutral-fill);
+  --system-elements-semantic-neutral-fade: rgb(229 246 255 / 80%);
   --system-elements-semantic-error-primary: #f42525;
   --icons-default: #7199ac;
-  --text-primary: rgba(255, 255, 255, .84);
+  --text-primary: rgba(255, 255, 255, .9);
   --text-tertiary: rgba(255, 255, 255, .4);
   --brand-text: var(--text-secondary);
   --elevation-2: 0 117px 70px rgba(8, 31, 43, .03), 0 52px 52px rgba(8, 31, 43, .04), 0 13px 29px rgba(8, 31, 43, .05);
@@ -250,6 +375,13 @@
   --shadow: 0 8px 28px rgba(0, 0, 0, .28);
   --shadow-sm: 0 3px 13px rgba(0, 0, 0, .2);
   color-scheme: dark;
+}
+
+@media (max-width: 959px) {
+  :root {
+    --typography-indicator-base-size: var(--typography-indicator-base-mobile-size);
+    --typography-indicator-base-line-height: var(--typography-indicator-base-mobile-line-height);
+  }
 }
 
 * { box-sizing: border-box; }

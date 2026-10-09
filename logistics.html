@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>BNT — Вагоны</title>
-  <link rel="stylesheet" href="/assets/css/tokens.css">
-  <link rel="stylesheet" href="/assets/css/layout.css">
-  <link rel="stylesheet" href="/assets/css/components.css?v=15">
-  <link rel="stylesheet" href="/assets/css/pages/enterprise.css?v=9">
-  <link rel="stylesheet" href="/assets/css/pages/operations.css?v=126">
-  <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9121">
+  <link rel="stylesheet" href="/assets/css/tokens.css?v=37">
+  <link rel="stylesheet" href="/assets/css/layout.css?v=3">
+  <link rel="stylesheet" href="/assets/css/components.css?v=336">
+  <link rel="stylesheet" href="/assets/css/pages/enterprise.css?v=52">
+  <link rel="stylesheet" href="/assets/css/pages/operations.css?v=142">
+  <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9140">
 </head>
 <body data-page="logistics">
   <main id="page-content" class="page-content logistics-page">
@@ -33,18 +33,18 @@
           <span class="typography-indicator-small">7 дней</span>
           <h2 id="wagon-plan-title" class="typography-caption-small">Подача вагонов</h2>
         </header>
-        <article class="data-block logistics-plan-surface" aria-labelledby="wagon-plan-title">
+        <article class="table-block logistics-plan-surface" aria-labelledby="wagon-plan-title">
           <div class="table-wrap">
           <table class="data-table analytics-table">
             <thead>
               <tr>
                 <th aria-sort="none"><span class="analytics-table__column-heading"><span>Дата</span><button class="analytics-table__sort" type="button" data-logistics-sort="date" data-sort-label="дату" aria-label="Сортировать дату от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
                 <th aria-sort="none"><span class="analytics-table__column-heading"><span>Продукт</span><button class="analytics-table__sort" type="button" data-logistics-sort="product" data-sort-label="продукт" aria-label="Сортировать продукт от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
-                <th aria-sort="none"><span class="analytics-table__column-heading"><span>Вагоны</span><button class="analytics-table__sort" type="button" data-logistics-sort="wagons" data-sort-label="количество вагонов" aria-label="Сортировать количество вагонов от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
-                <th aria-sort="none"><span class="analytics-table__column-heading"><span>Объём</span><button class="analytics-table__sort" type="button" data-logistics-sort="volume" data-sort-label="объём" aria-label="Сортировать объём от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
+                <th class="analytics-table__head-cell--numeric" aria-sort="none"><span class="analytics-table__column-heading"><span>Вагоны</span><button class="analytics-table__sort" type="button" data-logistics-sort="wagons" data-sort-label="количество вагонов" aria-label="Сортировать количество вагонов от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
+                <th class="analytics-table__head-cell--numeric" aria-sort="none"><span class="analytics-table__column-heading"><span>Объём</span><button class="analytics-table__sort" type="button" data-logistics-sort="volume" data-sort-label="объём" aria-label="Сортировать объём от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
                 <th>Статус</th>
                 <th aria-sort="none"><span class="analytics-table__column-heading"><span>Секция</span><button class="analytics-table__sort" type="button" data-logistics-sort="section" data-sort-label="секцию" aria-label="Сортировать секцию от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
-                <th aria-sort="none"><span class="analytics-table__column-heading"><span>Очередь</span><button class="analytics-table__sort" type="button" data-logistics-sort="queue" data-sort-label="очередь" aria-label="Сортировать очередь от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
+                <th class="analytics-table__head-cell--numeric" aria-sort="none"><span class="analytics-table__column-heading"><span>Очередь</span><button class="analytics-table__sort" type="button" data-logistics-sort="queue" data-sort-label="очередь" aria-label="Сортировать очередь от большего к меньшему"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=5#SortDefault"></use></svg></button></span></th>
               </tr>
             </thead>
             <tbody id="wagon-plan"></tbody>
@@ -79,7 +79,7 @@
             <div class="chart-card__title-row">
               <h3 id="logistics-product-volume-title" class="typography-caption-small">Входящий объём по продукту</h3>
               <div class="origin-title-info" data-logistics-popover-root>
-                <button class="info-icon-button" type="button" data-logistics-popover-trigger aria-expanded="false" aria-controls="logistics-products-info" aria-label="Информация о входящем объёме"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg></button>
+                <button class="sign_BTN_smallest info-icon-button" type="button" data-logistics-popover-trigger aria-expanded="false" aria-controls="logistics-products-info" aria-label="Информация о входящем объёме"><svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg></button>
                 <div id="logistics-products-info" class="origin-breakdown__info-popover" data-logistics-popover role="dialog" aria-label="О входящем объёме" hidden>
                   <button class="origin-breakdown__info-close" type="button" data-logistics-popover-close aria-label="Закрыть информацию"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button>
                   <p class="typography-body-smallest">Суммарный входящий объём по недельному плану подачи вагонов.</p>
@@ -87,19 +87,13 @@
               </div>
             </div>
             <div class="chart-card__filters">
-              <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">7 дней</span><button type="button" aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
-              <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">Ед. изм. м³</span><button type="button" aria-label="Убрать единицу измерения"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+              <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest"><span class="filter-summary__count-title">7 дней</span><button class="filter-summary__count-chevron" type="button" aria-label="Убрать период"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+              <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest"><span class="filter-summary__count-title">Ед. изм. м³</span><button class="filter-summary__count-chevron" type="button" aria-label="Убрать единицу измерения"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
             </div>
           </div>
           <div class="chart-actions">
             <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-logistics-overview-export="products" aria-label="Скачать данные входящего объёма"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
-            <div class="cash-flow__filter" data-logistics-popover-root>
-              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-logistics-popover-trigger aria-expanded="false" aria-controls="logistics-products-filter"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">2</span></button>
-              <div id="logistics-products-filter" class="cash-flow__filter-panel logistics-filter-popover" data-logistics-popover role="dialog" aria-label="Фильтр входящего объёма" hidden>
-                <div class="cash-flow__filter-heading"><strong class="typography-label-small">Фильтр</strong><button class="origin-breakdown__info-close" type="button" data-logistics-popover-close aria-label="Закрыть фильтр"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></div>
-                <p class="typography-body-smallest" data-logistics-filter-summary>Выбрано параметров: 2</p>
-              </div>
-            </div>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
           </div>
         </header>
         <div id="product-volume" class="logistics-bar-list" data-logistics-product-volume aria-label="Входящий объём по продуктам"></div>
@@ -114,7 +108,7 @@
             <div class="chart-card__title-row">
               <h3 id="logistics-capacity-title" class="typography-caption-small">Свободная ёмкость резервуаров</h3>
               <div class="origin-title-info" data-logistics-popover-root>
-                <button class="info-icon-button" type="button" data-logistics-popover-trigger aria-expanded="false" aria-controls="logistics-capacities-info" aria-label="Информация о свободной ёмкости"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Info"></use></svg></button>
+                <button class="sign_BTN_smallest info-icon-button" type="button" data-logistics-popover-trigger aria-expanded="false" aria-controls="logistics-capacities-info" aria-label="Информация о свободной ёмкости"><svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=10#Info"></use></svg></button>
                 <div id="logistics-capacities-info" class="origin-breakdown__info-popover" data-logistics-popover role="dialog" aria-label="О свободной ёмкости" hidden>
                   <button class="origin-breakdown__info-close" type="button" data-logistics-popover-close aria-label="Закрыть информацию"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button>
                   <p class="typography-body-smallest">Доступная ёмкость по секциям и резервуарному парку на текущую дату.</p>
@@ -122,19 +116,13 @@
               </div>
             </div>
             <div class="chart-card__filters">
-              <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">На текущую дату</span><button type="button" aria-label="Убрать дату"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
-              <span class="pill pill--default pill--round typography-body-smallest"><span class="pill__title">Ед. изм. м³</span><button type="button" aria-label="Убрать единицу измерения"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+              <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest"><span class="filter-summary__count-title">На текущую дату</span><button class="filter-summary__count-chevron" type="button" aria-label="Убрать дату"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
+              <span class="filter-summary__count filter-summary__count_static pill pill--default pill--radius typography-body-smallest"><span class="filter-summary__count-title">Ед. изм. м³</span><button class="filter-summary__count-chevron" type="button" aria-label="Убрать единицу измерения"><svg width="16" height="16" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></span>
             </div>
           </div>
           <div class="chart-actions">
             <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-logistics-overview-export="capacities" aria-label="Скачать данные свободной ёмкости"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Download"></use></svg></button>
-            <div class="cash-flow__filter" data-logistics-popover-root>
-              <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-logistics-popover-trigger aria-expanded="false" aria-controls="logistics-capacities-filter"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span><span class="button-smallest-secondary-radius__counter">2</span></button>
-              <div id="logistics-capacities-filter" class="cash-flow__filter-panel logistics-filter-popover" data-logistics-popover role="dialog" aria-label="Фильтр свободной ёмкости" hidden>
-                <div class="cash-flow__filter-heading"><strong class="typography-label-small">Фильтр</strong><button class="origin-breakdown__info-close" type="button" data-logistics-popover-close aria-label="Закрыть фильтр"><svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Cross"></use></svg></button></div>
-                <p class="typography-body-smallest" data-logistics-filter-summary>Выбрано параметров: 2</p>
-              </div>
-            </div>
+            <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-chart-filter aria-expanded="false" aria-controls="chart-filter-modal"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#Filter"></use></svg><span>Фильтр</span></button>
           </div>
         </header>
         <div id="tank-capacity" class="logistics-bar-list" data-logistics-capacity aria-label="Свободная ёмкость резервуаров"></div>
@@ -146,10 +134,11 @@
     </section>
   </main>
 
-  <script src="/assets/js/navigation.js"></script>
-  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/navigation.js?v=12002"></script>
+  <script src="/assets/js/ui.js?v=61"></script>
   <script src="/assets/js/data/logistics.js"></script>
-  <script src="/assets/js/pages/logistics.js?v=8"></script>
-  <script src="/assets/js/shell.js?v=9120"></script>
+  <script src="/assets/js/chart-filter.js?v=4"></script>
+  <script src="/assets/js/pages/logistics.js?v=5"></script>
+  <script src="/assets/js/shell.js?v=9125"></script>
 </body>
 </html>

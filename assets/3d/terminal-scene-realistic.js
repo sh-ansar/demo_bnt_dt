@@ -1,19 +1,30 @@
 import * as T from 'three';
 import {OrbitControls} from './vendor/OrbitControls.js';
+import {createTerminalAtmosphere} from './terminal-atmosphere.js?v=5';
 import {tankPixels,plan,coastPixels,scopePixels,roads,parks,buildings,UNITS_PER_METRE as U,METRES_PER_PIXEL as MPP} from './site-plan.js';
 import {createSurfaces} from './surface-materials.js';
 import {buildInfrastructure} from './mapped-infrastructure.js';
+import {terminalSceneTheme} from './theme.js';
 export function createTerminalScene(container, onSelect, rendererFactory = () => new T.WebGLRenderer({antialias:true})) {
 const colors=['#29AAE1','#FFB228','#55C98C','#A782EF'],names=['Газ','Дизтопливо','Бензин','Нефть'];
 const renderer=rendererFactory();
 renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.setSize(container.clientWidth,container.clientHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;container.append(renderer.domElement);
-const scene=new T.Scene();scene.background=new T.Color('#aebdc4');scene.fog=new T.Fog('#aebdc4',750,1600);
-const camera=new T.PerspectiveCamera(38,container.clientWidth/container.clientHeight,.5,1800),home=new T.Vector3(0,455,510),openingTarget=new T.Vector3(...[plan(805,505)[0],0,plan(805,505)[1]]),openingCamera=openingTarget.clone().add(new T.Vector3(12,192,267));camera.position.copy(openingCamera);
-const controls=new OrbitControls(camera,renderer.domElement);controls.target.copy(openingTarget);controls.enableDamping=true;controls.minDistance=3.5;controls.maxDistance=1000;controls.maxPolarAngle=Math.PI*.485;controls.minPolarAngle=.03;
-scene.add(new T.HemisphereLight('#e7f4ff','#879083',1.8));const sun=new T.DirectionalLight('#fff8ee',3);sun.position.set(-110,200,-70);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-205,right:205,top:160,bottom:-160,near:1,far:500});sun.shadow.bias=-.00025;sun.shadow.normalBias=.045;scene.add(sun);
+const scene=new T.Scene();scene.background=new T.Color(terminalSceneTheme.sky.light);scene.fog=new T.Fog(terminalSceneTheme.fog.light,750,1600);
+const foundationTop=-.19,foundationDepth=80*U;
+const [foundationMinX,foundationMinZ]=plan(-40,-70),[foundationMaxX,foundationMaxZ]=plan(1260,800);
+const foundationBounds=new T.Box3(new T.Vector3(foundationMinX,foundationTop-foundationDepth,foundationMinZ),new T.Vector3(foundationMaxX,foundationTop,foundationMaxZ));
+const atmosphere=createTerminalAtmosphere({exposure:renderer.toneMappingExposure,fogTop:foundationTop-foundationDepth*.12,fogDepth:foundationDepth*2.5,far:1800,foundationBounds});
+const sky=atmosphere.sky;scene.add(sky);
+const camera=new T.PerspectiveCamera(38,container.clientWidth/container.clientHeight,.5,1800);
+// Preserve overview distance and azimuth while leaving sky above the horizon.
+function overviewOffset(x,y,z){const offset=new T.Vector3(x,y,z);return offset.setFromSphericalCoords(offset.length(),T.MathUtils.degToRad(90-camera.fov*.09),Math.atan2(x,z));}
+const home=overviewOffset(0,455,510),openingTarget=new T.Vector3(...[plan(805,505)[0],0,plan(805,505)[1]]),openingCamera=openingTarget.clone().add(overviewOffset(12,192,267));camera.position.copy(openingCamera);
+const controls=new OrbitControls(camera,renderer.domElement);controls.target.copy(openingTarget);controls.enableDamping=true;controls.minDistance=3.5;controls.maxDistance=1000;controls.maxPolarAngle=T.MathUtils.degToRad(87);controls.minPolarAngle=.03;
+const hemisphere=new T.HemisphereLight('#e7f4ff','#879083',1.8);scene.add(hemisphere);const sun=new T.DirectionalLight('#fff8ee',3);sun.position.set(-110,200,-70);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-205,right:205,top:160,bottom:-160,near:1,far:500});sun.shadow.bias=-.00025;sun.shadow.normalBias=.045;scene.add(sun);
+sun.position.copy(atmosphere.daylightDirection.clone().multiplyScalar(sun.position.length()));
 const fixed=new T.Group(),dynamic=new T.Group();scene.add(fixed,dynamic);const surfaces=createSurfaces();
 const mat=(color,opts={})=>new T.MeshStandardMaterial({color,roughness:.6,metalness:.15,...opts});
-const white=mat('#d9dcdb',{roughness:.54,metalness:.22}),silver=mat('#aeb8bb',{metalness:.78,roughness:.32}),asphalt=mat('#4f565b',{map:surfaces.asphaltMap,roughness:.93,metalness:.02}),paving=mat('#8d9495',{map:surfaces.concreteMap,roughness:.88,metalness:.03}),ground=mat('#7f8b80',{roughness:.98}),dark=mat('#222b30',{metalness:.58,roughness:.48}),rail=mat('#515b60',{metalness:.9,roughness:.3}),sleeper=mat('#414548',{roughness:.96}),grass=mat('#6f8068',{roughness:1}),foliage=mat('#5f7658',{roughness:1}),categories=colors.map(c=>mat(c,{roughness:.42,metalness:.35})),windows=mat('#5b7581',{metalness:.58,roughness:.18});
+const white=mat('#d9dcdb',{roughness:.54,metalness:.22}),silver=mat('#aeb8bb',{metalness:.78,roughness:.32}),asphalt=mat(terminalSceneTheme.asphalt.light,{map:surfaces.asphaltMap,roughness:.93,metalness:.02}),paving=mat('#8d9495',{map:surfaces.concreteMap,roughness:.88,metalness:.03}),ground=mat(terminalSceneTheme.ground.light,{roughness:.98}),dark=mat('#222b30',{metalness:.58,roughness:.48}),rail=mat('#515b60',{metalness:.9,roughness:.3}),sleeper=mat('#414548',{roughness:.96}),grass=mat('#6f8068',{roughness:1}),foliage=mat('#5f7658',{roughness:1}),categories=colors.map(c=>mat(c,{roughness:.42,metalness:.35})),windows=mat('#5b7581',{metalness:.58,roughness:.18});
 const boxGeo=new T.BoxGeometry(1,1,1),cylGeo=new T.CylinderGeometry(1,1,1,32),ballGeo=new T.SphereGeometry(1,16,12),ringCache=new Map();
 function add(geo,m,x,y,z,parent=fixed){const o=new T.Mesh(geo,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
 function box(x,z,w,d,h,m=white,y=0,parent=fixed){const o=add(boxGeo,m,x,y+h/2,z,parent);o.scale.set(w,h,d);return o}
@@ -28,8 +39,11 @@ function strip(points,width,m,y=.04){for(let i=1;i<points.length;i++){const [x,z
 // One consistent metric scale for traced geometry and transport.
 const path=pts=>pts.map(p=>plan(...p));
 const coast=path(coastPixels);
+const foundationMaterial=ground.clone();
+const foundation=new T.Mesh(new T.BoxGeometry(foundationMaxX-foundationMinX,foundationDepth,foundationMaxZ-foundationMinZ),foundationMaterial);
+foundation.name='terminal-foundation';foundation.position.set((foundationMinX+foundationMaxX)/2,foundationTop-foundationDepth/2,(foundationMinZ+foundationMaxZ)/2);foundation.receiveShadow=true;scene.add(foundation);
 poly([...coast,...path([[1260,800],[-40,800]])],ground,-.18);
-const water=mat('#527f92',{metalness:.22,roughness:.42});poly([...coast,...path([[1260,-70],[-40,-70],[-40,320]])],water,-.16);
+const water=mat(terminalSceneTheme.water.light,{metalness:.22,roughness:.42});poly([...coast,...path([[1260,-70],[-40,-70],[-40,320]])],water,-.16);
 water.onBeforeCompile=s=>{s.uniforms.waveTime={value:0};water.userData.shader=s;s.vertexShader='varying vec3 wavePos;\n'+s.vertexShader.replace('#include <worldpos_vertex>','#include <worldpos_vertex>\nwavePos=(modelMatrix*vec4(transformed,1.0)).xyz;');s.fragmentShader='uniform float waveTime; varying vec3 wavePos;\n'+s.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\nfloat ripple=sin(wavePos.x*2.8+wavePos.z*5.0+waveTime*.65)*sin(wavePos.z*3.8-waveTime*.5);diffuseColor.rgb+=ripple*.012;')};
 strip(coast,.6,silver);
 const mainRoad=path(roads[0][1]),dockRoad=path(roads[1][1]);
@@ -126,9 +140,26 @@ fixed.updateMatrixWorld(true);const batches=new Map(),remove=[];fixed.traverse(o
 const records=new Map(), pickables=[],zoneMeshes=[],equipmentRoot=new T.Group();scene.add(equipmentRoot);
 let catalog, currentId='terminal', selectionBox=null,down=null,animating=!matchMedia('(prefers-reduced-motion: reduce)').matches,isLight=true,clock=0,last=0,cameraGoal=null,frameId;
 const ray=new T.Raycaster(),pointer=new T.Vector2();
-const highlightMaterial=new T.MeshBasicMaterial({color:'#13bfd9',transparent:true,opacity:.13,depthWrite:false});
+const highlightMaterial=new T.MeshBasicMaterial({color:'#2bb8ff',transparent:true,opacity:.24,depthWrite:false});
 const selectionGroup=new T.Group();scene.add(selectionGroup);
+const selectionStrokeToken='--system-elements-semantic-highlight-stroke-solid';
+const selectionFillToken='--system-elements-semantic-highlight-fill';
+function cssToken(name,fallback){if(typeof getComputedStyle!=='function')return fallback;const root=document?.documentElement||document?.body||container;return getComputedStyle(root).getPropertyValue(name).trim()||fallback;}
+function parseCssColor(value,fallback='rgba(68, 112, 134, .08)'){const source=(value||fallback).trim(),rgb=/^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)(?:\s*,\s*([\d.]+))?\s*\)$/i.exec(source);if(rgb)return {color:`rgb(${rgb[1]}, ${rgb[2]}, ${rgb[3]})`,opacity:rgb[4]===undefined?1:Number(rgb[4])};return {color:source,opacity:1};}
+function applySelectionFillMaterial(material){const fill=parseCssColor(cssToken(selectionFillToken,'rgba(43, 184, 255, .24)'));material.color.setStyle(fill.color);material.opacity=Number.isFinite(fill.opacity)?fill.opacity:1;material.transparent=material.opacity<1;material.needsUpdate=true;}
+function applySelectionStrokeMaterial(material){const stroke=parseCssColor(cssToken(selectionStrokeToken));material.color.setStyle(stroke.color);material.opacity=Number.isFinite(stroke.opacity)?stroke.opacity:1;material.transparent=material.opacity<1;material.needsUpdate=true;}
+function applySelectionTheme(){selectionGroup.traverse(o=>{if(o.userData.selectionStroke&&o.material)applySelectionStrokeMaterial(o.material);if(o.userData.selectionFill&&o.material)applySelectionFillMaterial(o.material);});}
 function go(pos,target){cameraGoal={pos:pos.clone(),target:target.clone()};}
+function focusZone(bounds,center){
+ const direction=overviewOffset(.25,1,1.2).normalize(),right=new T.Vector3().crossVectors(camera.up,direction).normalize(),up=new T.Vector3().crossVectors(direction,right);
+ const tanVertical=Math.tan(T.MathUtils.degToRad(camera.fov/2))*.8,tanHorizontal=tanVertical*camera.aspect;
+ let distance=controls.minDistance;
+ for(const x of [bounds.min.x,bounds.max.x])for(const y of [bounds.min.y,bounds.max.y])for(const z of [bounds.min.z,bounds.max.z]){
+  const corner=new T.Vector3(x,y,z).sub(center);
+  distance=Math.max(distance,corner.dot(direction)+Math.abs(corner.dot(right))/tanHorizontal,corner.dot(direction)+Math.abs(corner.dot(up))/tanVertical);
+ }
+ go(center.clone().addScaledVector(direction,Math.min(distance,controls.maxDistance)),center);
+}
 controls.addEventListener('start',()=>cameraGoal=null);
 function tagged(group,id){group.traverse(o=>{if(o.isMesh){o.userData.entityId=id;pickables.push(o);}});}
 function equipment(node,pos) {
@@ -176,6 +207,7 @@ function bind(nodes) {
   const outline=new T.LineLoop(new T.BufferGeometry().setFromPoints([new T.Vector3(bounds.min.x,.13,bounds.min.z),new T.Vector3(bounds.max.x,.13,bounds.min.z),new T.Vector3(bounds.max.x,.13,bounds.max.z),new T.Vector3(bounds.min.x,.13,bounds.max.z)]),new T.LineBasicMaterial({color:zone.color,transparent:true,opacity:.5}));scene.add(outline);
   records.set(zone.id,{bounds,plane,outline});
  }
+ atmosphere.attach(scene);
 }
 function isWithin(id,ancestor){for(let n=catalog.get(id);n;n=catalog.get(n.parent))if(n.id===ancestor)return true;return false;}
 function visible(object){for(let o=object;o;o=o.parent)if(!o.visible)return false;return true;}
@@ -192,10 +224,10 @@ function selectEntity(id,focus=true){
  const record=records.get(id);
  if(record){
   const bounds=record.bounds?.clone()||new T.Box3().setFromObject(record.group);bounds.expandByScalar(.45);
-  const helper=new T.Box3Helper(bounds,new T.Color('#008fca'));helper.material.depthTest=false;helper.material.transparent=true;helper.material.opacity=.9;helper.renderOrder=10;selectionGroup.add(helper);
+  const helper=new T.Box3Helper(bounds,new T.Color('#008fca'));helper.userData.selectionStroke=true;helper.material.depthTest=false;applySelectionStrokeMaterial(helper.material);helper.renderOrder=10;selectionGroup.add(helper);
   const size=bounds.getSize(new T.Vector3()),center=bounds.getCenter(new T.Vector3());
-  const fill=new T.Mesh(new T.BoxGeometry(size.x,size.y,size.z),highlightMaterial.clone());fill.position.copy(center);selectionGroup.add(fill);
-  if(focus){const span=Math.max(size.x,size.z,1.5),distance=Math.max(4.5,span*(node.type==='zone'?1.25:1.7));go(center.clone().add(new T.Vector3(distance*.25,distance,distance*1.2)),center);}
+  const fillMaterial=highlightMaterial.clone();applySelectionFillMaterial(fillMaterial);const fill=new T.Mesh(new T.BoxGeometry(size.x,size.y,size.z),fillMaterial);fill.userData.selectionFill=true;fill.position.copy(center);selectionGroup.add(fill);
+  if(focus){if(node.type==='zone')focusZone(bounds,center);else{const span=Math.max(size.x,size.z,1.5),distance=Math.max(4.5,span*1.7);go(center.clone().add(new T.Vector3(distance*.25,distance,distance*1.2)),center);}}
  }else if(focus)go(openingCamera,openingTarget);
  container.dataset.selectedId=id;
 }
@@ -205,14 +237,16 @@ renderer.domElement.setAttribute('aria-label','3D-модель терминал�
 renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();container.dispatchEvent(new CustomEvent('scene-error',{detail:'3D временно недоступно. Перезагрузите страницу для восстановления.'}));});
 function resize(){const w=container.clientWidth,h=container.clientHeight;if(!w||!h)return;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h);}
 const observer=new ResizeObserver(resize);observer.observe(container);
+atmosphere.attach(scene);
 function zoom(f){const p=camera.position.clone().sub(controls.target);p.setLength(T.MathUtils.clamp(p.length()*f,controls.minDistance,controls.maxDistance));go(p.add(controls.target),controls.target);}
-function theme(){isLight=!isLight;const bg=isLight?'#aebdc4':'#092634';scene.background.set(bg);scene.fog.color.set(bg);ground.color.set(isLight?'#7f8b80':'#20404d');asphalt.color.set(isLight?'#4f565b':'#48606b');water.color.set(isLight?'#a9cbd6':'#204f65');return isLight;}
-function frame(now){frameId=requestAnimationFrame(frame);if(document.hidden){last=now;return;}const dt=Math.min((now-last)/1000,.05);last=now;if(animating)clock+=dt;if(cameraGoal){const a=1-Math.exp(-dt*5);camera.position.lerp(cameraGoal.pos,a);controls.target.lerp(cameraGoal.target,a);if(camera.position.distanceTo(cameraGoal.pos)<.05)cameraGoal=null;}if(water.userData.shader)water.userData.shader.uniforms.waveTime.value=clock;if(animating){trainU+=trainDirection*dt*1.2*U/tracks[12].getLength();const lower=movingWagons.at(-1).offset+.03;if(trainU>.97){trainU=.97;trainDirection=-1;}if(trainU<lower){trainU=lower;trainDirection=1;}}for(const w of movingWagons)onCurve(w.g,tracks[12],(trainU-w.offset+1)%1);for(const v of vehicles){if(animating)v.u=(v.u+dt*2.8*U/v.curve.getLength())%1;onCurve(v.g,v.curve,v.u);}controls.update();renderer.render(scene,camera);}
+function setTheme(mode){isLight=mode!=='dark';const key=isLight?'light':'dark';scene.background.set(terminalSceneTheme.sky[key]);scene.fog.color.set(terminalSceneTheme.fog[key]);ground.color.set(terminalSceneTheme.ground[key]);foundationMaterial.color.set(terminalSceneTheme.ground[key]);asphalt.color.set(terminalSceneTheme.asphalt[key]);water.color.set(terminalSceneTheme.water[key]);atmosphere.setTheme(key);hemisphere.intensity=isLight?1.8:1.1;hemisphere.color.set(isLight?'#e7f4ff':terminalSceneTheme.sky.light);hemisphere.groundColor.set(isLight?'#879083':terminalSceneTheme.ground.dark);sun.intensity=isLight?3:.75;sun.color.set(isLight?'#fff8ee':terminalSceneTheme.sky.light);applySelectionTheme();return isLight;}
+function theme(){return setTheme(isLight?'dark':'light');}
+function frame(now){frameId=requestAnimationFrame(frame);if(document.hidden){last=now;return;}const dt=Math.min((now-last)/1000,.05);last=now;if(animating)clock+=dt;if(cameraGoal){const a=1-Math.exp(-dt*5);camera.position.lerp(cameraGoal.pos,a);controls.target.lerp(cameraGoal.target,a);if(camera.position.distanceTo(cameraGoal.pos)<.05)cameraGoal=null;}if(water.userData.shader)water.userData.shader.uniforms.waveTime.value=clock;if(animating){trainU+=trainDirection*dt*1.2*U/tracks[12].getLength();const lower=movingWagons.at(-1).offset+.03;if(trainU>.97){trainU=.97;trainDirection=-1;}if(trainU<lower){trainU=lower;trainDirection=1;}}for(const w of movingWagons)onCurve(w.g,tracks[12],(trainU-w.offset+1)%1);for(const v of vehicles){if(animating)v.u=(v.u+dt*2.8*U/v.curve.getLength())%1;onCurve(v.g,v.curve,v.u);}controls.update();sky.position.copy(camera.position);atmosphere.update(clock,container.clientWidth);renderer.render(scene,camera);}
 frameId=requestAnimationFrame(frame);
-return {tanks,bind,select:selectEntity,zoom,theme,
+return {tanks,bind,select:selectEntity,zoom,theme,setTheme,
  setFill(id,value){const rec=records.get(id);if(rec?.tank)setFill(rec.tank,value/100);},
  view(mode){if(mode==='plan'){const target=new T.Vector3(-41,0,-21),height=Math.max(500/camera.aspect,380)*.58/Math.tan(T.MathUtils.degToRad(camera.fov/2));go(target.clone().add(new T.Vector3(0,height,.1)),target);}else if(mode==='top'){const target=controls.target.clone();go(target.clone().add(new T.Vector3(0,Math.max(25,camera.position.distanceTo(target)),.1)),target);}else if(mode==='port')go(home,new T.Vector3());else selectEntity(currentId);},
  pause(){animating=!animating;return animating;},get animating(){return animating;},
- dispose(){cancelAnimationFrame(frameId);observer.disconnect();controls.dispose();surfaces.dispose();renderer.dispose();scene.traverse(o=>{o.geometry?.dispose();if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material?.dispose();});renderer.domElement.remove();}
+ dispose(){cancelAnimationFrame(frameId);observer.disconnect();controls.dispose();surfaces.dispose();atmosphere.dispose();renderer.dispose();scene.traverse(o=>{o.geometry?.dispose();if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material?.dispose();});renderer.domElement.remove();}
 };
 }

@@ -6,7 +6,9 @@
 .report-host .page-head { margin-bottom: 14px; }
 .report-host .page-head h1 { color: var(--ink); }
 .app-sidebar .brand { height: var(--topbar); padding: 14px 16px; }
-.app-sidebar .brand-mark { color: #fff; }
-.app-topbar .btn { min-height: 36px; border-radius: 9px; }
 .app-topbar .profile .avatar { width: 36px; height: 36px; }
+@media print {
+  body[data-page="reports"] #app > .div-block > .page-title-actions { display: none; }
+  body[data-page="reports"] .data-block { border: 0; box-shadow: none; backdrop-filter: none; }
+}
 @media(max-width:680px){.report-host{padding:10px}.report-host .filterbar{overflow:auto}.report-host .page-head{align-items:flex-start}}
