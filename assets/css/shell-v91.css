@@ -495,19 +495,8 @@ body > .app-shell > .app-sidebar {
   background: var(--design-elements-border-default) !important;
 }
 
-.app-sidebar .live-line {
-  display: flex !important;
-  align-items: center !important;
-  gap: var(--space-2) !important;
-}
-
 .app-sidebar .live-dot {
-  width: clamp(8px, .555556vw, 10.666667px) !important;
-  height: clamp(8px, .555556vw, 10.666667px) !important;
-  min-width: clamp(8px, .555556vw, 10.666667px) !important;
-  border-radius: 50% !important;
-  background: var(--system-elements-semantic-positive-primary) !important;
-  box-shadow: 0 0 0 4px var(--system-elements-semantic-positive-secondary-fade) !important;
+  --live-dot-size: clamp(8px, .555556vw, 10.666667px);
 }
 
 body > .app-shell > .app-main {
@@ -872,8 +861,8 @@ body > .app-shell > .app-main {
 }
 
 .app-main > .app-contextbar.is-hidden {
-  transform: translateY(calc(var(--sidebar-gutter) - var(--contextbar))) !important;
-  opacity: 1 !important;
+  transform: translateY(-100%) !important;
+  opacity: 0 !important;
   pointer-events: none !important;
 }
 
@@ -1022,29 +1011,14 @@ body[data-theme="dark"] .app-topbar .shell-search input {
   color: var(--text-primary) !important;
 }
 
-body[data-theme="dark"] .card,
-body[data-theme="dark"] .btn:not(.btn-primary),
-body[data-theme="dark"] .icon-btn,
-body[data-theme="dark"] .field input,
-body[data-theme="dark"] .field select,
-body[data-theme="dark"] .field textarea,
-body[data-theme="dark"] .modal-card,
-body[data-theme="dark"] .app-toast {
+body[data-theme="dark"] .card:where(:not(.data-block, .table-block, .chart-card)) {
   border-color: var(--line) !important;
   background: var(--surface) !important;
   color: var(--ink-2) !important;
 }
 
-body[data-theme="dark"] .data-table th {
-  border-color: var(--line) !important;
-  background: var(--surface-soft) !important;
-}
-
-body[data-theme="dark"] .data-table tbody tr:hover td {
-  background: #132a35 !important;
-}
-
 #page-content {
+  max-width: none !important;
   min-height: calc(100vh - var(--topbar) - var(--contextbar)) !important;
   box-sizing: border-box !important;
   margin-left: 0 !important;

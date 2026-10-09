@@ -3,7 +3,7 @@
 Source scene: https://batumi-terminal-3d.spry-tide-6642.chatgpt.site/
 Imported 2026-09-10 at the project owner's request. The scene and its Three.js dependencies are self-hosted. No requests to the source site occur at runtime.
 
-`terminal-scene.js` preserves the supplied model geometry and animation, and mounts it into a container using ResizeObserver. `hierarchy.js` builds the navigation tree. `dispatcher-3d.js` drives the shared side panel and keeps selection, camera focus, highlighting and URL in sync.
+`terminal-scene-realistic.js` mounts the active model into a container using ResizeObserver. The unreferenced previous scene was removed on 2026-10-08. `hierarchy.js` builds the navigation tree. `dispatcher-3d.js` drives the shared side panel and keeps selection, camera focus, highlighting and URL in sync.
 
 Zones and equipment placement are illustrative. Registered assets reuse `BNT_DATA.assets` without changing their metrics. Other tanks and equipment are explicitly marked as demonstration entities and do not link to fabricated passports. P-3 is mapped to model tank 3 for this demo. Zone membership and pump positioning require validation against a real plant register before operational use. Fill sliders only alter scene memory; they do not change the registry.
 

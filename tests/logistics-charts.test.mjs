@@ -4,6 +4,27 @@ import vm from 'node:vm';
 
 const operations = await readFile(new URL('../assets/js/pages/operations.js', import.meta.url), 'utf8');
 const logistics = await readFile(new URL('../assets/js/pages/logistics.js', import.meta.url), 'utf8');
+const css = await readFile(new URL('../assets/css/pages/operations.css', import.meta.url), 'utf8');
+const components = await readFile(new URL('../assets/css/components.css', import.meta.url), 'utf8');
+assert.doesNotMatch(css, /\.logistics-overview__card\s*\{[^}]*min-height:/, 'Overview cards inherit the intrinsic chart-card height');
+assert.match(components, /\.logistics-overview__card > :is\(\.chart-legend, \.financial-chart__legend\)\s*\{\s*margin-top: 0;/, 'Legend follows the plot without an auto-margin spacer');
+assert.match(components, /\.chart-card\s*\{[^}]*min-height: 0;[^}]*gap: var\(--space-3\);/);
+assert.doesNotMatch(css, /\.logistics-overview__legend\s*\{[^}]*padding-top:/, 'The existing chart-card gap is not doubled by legend padding');
+for (const selector of ['logistics-bar-row__fill', 'logistics-overview__legend-dot']) {
+  const rule = css.match(new RegExp(`\\.${selector}\\s*\\{([^}]+)\\}`))?.[1];
+  assert.ok(rule, `${selector}: shared chart geometry or legend rule exists`);
+  assert.match(rule, /background: var\(--chart-series-primary\)/);
+  assert.doesNotMatch(rule, /\brgb\(|\bopacity:/, 'Chart alpha comes from the series token, without a second opacity');
+}
+assert.match(css, /\.logistics-bar-row__track\s*\{[^}]*background: transparent/);
+for (const [direction, tone] of [['incoming', 'positive'], ['outgoing', 'warning']]) {
+  const rule = css.match(new RegExp(`\\.metric-card--${direction}\\s*\\{([^}]+)\\}`))?.[1];
+  assert.ok(rule?.includes(`background: var(--system-elements-semantic-${tone}-secondary-fade)`));
+}
+for (const pier of ['svm', 'one', 'two', 'three']) {
+  assert.ok(css.includes(`--daily-pier-${pier}-fill: var(--system-elements-semantic-neutral-secondary-fade)`));
+}
+assert.doesNotMatch(css, /rgb\((?:106 207 239|90 201 132|254 174 101) \/ 20%\)/);
 const dataContext = vm.createContext({ window: {} });
 vm.runInContext(await readFile(new URL('../assets/js/data/logistics.js', import.meta.url), 'utf8'), dataContext);
 const data = dataContext.window.BNT_DATA.logistics;

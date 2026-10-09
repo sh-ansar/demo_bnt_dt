@@ -2,11 +2,11 @@ body[data-page="dispatcher"] {
   background: var(--background-page) !important;
 }
 
-.dt3-body {
+.layout-body {
   grid-template-columns: minmax(0, 1fr) 400px;
 }
 
-.dt3-model {
+.layout-surface {
   background: var(--background-page);
 }
 
@@ -18,11 +18,11 @@ body[data-page="dispatcher"] {
 }
 
 @media (max-width: 800px) {
-  .dt3-body {
+  .layout-body {
     display: flex;
   }
 
-  .dt3-model {
+  .layout-surface {
     height: 62dvh;
   }
 }

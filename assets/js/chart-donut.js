@@ -295,7 +295,7 @@
     const totalWeight = data.reduce(function (sum, item) { return sum + Number(item.weight == null ? item.value : item.weight); }, 0);
     const totalValue = data.reduce(function (sum, item) { return sum + Number(item.value); }, 0);
     const textMeasurer = createTextMeasurer(chart);
-    const svg = [];
+    const svg = [], sectors = [];
     const initialAngle = Number(options.startAngle) || 0;
     let angle = initialAngle;
 
@@ -303,6 +303,7 @@
       const weight = Number(item.weight == null ? item.value : item.weight);
       const span = weight / totalWeight * 360;
       const detail = defaultValue(item, formatValue, unit);
+      sectors.push({start: angle, end: angle + span});
       svg.push(`<path class="chart-donut__slice ${item.className}" d="${donutPath(cx, cy, outer, inner, angle, angle + span)}" role="img" aria-label="${escapeXml(`${item.label}: ${detail}`)}"></path>`);
       angle += span;
     });
@@ -395,6 +396,18 @@
     chart.innerHTML = svg.join('');
     chart.setAttribute('aria-label', options.accessibleLabel || 'Кольцевая диаграмма');
     fitConnectorRules(chart, labelPositions, width);
+    const slices = [...chart.querySelectorAll('.chart-donut__slice')];
+    const finalPaths = slices.map(slice => slice.getAttribute('d'));
+    chart.bntDonutMotion = {
+      update(progress) {
+        const end = initialAngle + 360 * Math.max(0, Math.min(1, progress));
+        slices.forEach((slice, index) => {
+          const sector = sectors[index];
+          slice.setAttribute('d', end <= sector.start ? '' : donutPath(cx, cy, outer, inner, sector.start, Math.min(sector.end, end)));
+        });
+      },
+      restore() { slices.forEach((slice, index) => slice.setAttribute('d', finalPaths[index])); }
+    };
 
     const legendData = options.legendData || data;
     legend.innerHTML = legendData.map(function (item) {

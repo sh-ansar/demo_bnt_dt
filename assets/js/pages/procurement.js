@@ -31,8 +31,6 @@
   const filterSummaryList = filterSummary?.querySelector("[data-equipment-filter-summary-list]");
   const filterSummaryActions = filterSummary?.querySelector("[data-equipment-filter-summary-actions]");
   const exportButton = document.querySelector("[data-procurement-export]");
-  const riskScroller = document.querySelector("[data-procurement-risk-scroll]");
-  const riskColumn = document.querySelector("[data-procurement-risk-column]");
   const filterSummaryLabels = {
     search: "Поиск",
     priority: "Приоритет"
@@ -370,13 +368,7 @@
   }
 
   function closeFilterSummaryMenus(except = null) {
-    filterSummary?.querySelectorAll("[data-equipment-filter-summary-group]").forEach(group => {
-      if (group === except) return;
-      group.classList.remove("is-open");
-      group.querySelector("[data-equipment-filter-summary-toggle]")?.setAttribute("aria-expanded", "false");
-      const menu = group.querySelector("[data-equipment-filter-summary-menu]");
-      if (menu) menu.hidden = true;
-    });
+    ui.closeFilterSummaryMenus(except, filterSummary);
   }
 
   function syncAppliedFilters() {
@@ -400,32 +392,6 @@
     syncAppliedFilters();
   }
 
-  function filterSummaryValuePill(group, item) {
-    return `<span class="filter-summary__pill pill pill--default pill--radius typography-body-smallest">
-      <span class="pill__title">${escape(item.label)}</span>
-      <button type="button" data-equipment-filter-remove-value="${escape(group.key)}" data-equipment-filter-remove-item="${escape(item.value)}" aria-label="Удалить ${escape(item.label)}">${filterSummaryIcons.close}</button>
-    </span>`;
-  }
-
-  function filterSummaryMenu(group) {
-    return `<span class="filter-summary__rollover form-input__tag-rollover" data-equipment-filter-summary-menu hidden>
-      ${group.values.map(item => `<span class="filter-summary__rollover-item form-input__tag form-input__tag--rollover pill pill--default pill--radius typography-body-smallest">
-        <span class="pill__title">${escape(item.label)}</span>
-        <button class="form-input__tag-remove" type="button" data-equipment-filter-remove-value="${escape(group.key)}" data-equipment-filter-remove-item="${escape(item.value)}" aria-label="Удалить ${escape(item.label)}">${filterSummaryIcons.close}</button>
-      </span>`).join("")}
-    </span>`;
-  }
-
-  function filterSummaryGroup(group) {
-    return `<span class="filter-summary__group form-input__tag-more" data-equipment-filter-summary-group="${escape(group.key)}">
-      <button class="filter-summary__count pill pill--default pill--radius typography-body-smallest" type="button" data-equipment-filter-summary-toggle aria-expanded="false">
-        <span class="filter-summary__count-title">${escape(group.label)} (${escape(group.count)})</span>
-        <span class="filter-summary__count-chevron" aria-hidden="true">${filterSummaryIcons.chevron}</span>
-      </button>
-      ${filterSummaryMenu(group)}
-    </span>`;
-  }
-
   function renderFilterSummary() {
     if (!filterSummary || !filterSummaryList || !filterSummaryActions) return;
     const groups = activeFilterGroups();
@@ -435,9 +401,7 @@
       filterSummaryActions.innerHTML = "";
       return;
     }
-    filterSummaryList.innerHTML = groups.length === 1
-      ? groups[0].values.map(item => filterSummaryValuePill(groups[0], item)).join("")
-      : groups.map(filterSummaryGroup).join("");
+    filterSummaryList.innerHTML = ui.renderFilterSummary(groups, {icons: filterSummaryIcons});
     filterSummaryActions.innerHTML = `
       <button class="filter-summary__clear button-smallest-ghost button-smallest-ghost--error typography-button-smallest" type="button" data-equipment-filter-summary-clear aria-label="Сбросить выбранные фильтры">${filterSummaryIcons.trash}</button>
       <button class="filter-summary__template-action button-smallest-ghost button-smallest-ghost--2 typography-button-smallest" type="button" data-equipment-filter-template>${filterSummaryIcons.plus}<span>Создать шаблон</span></button>`;
@@ -644,13 +608,13 @@
   };
   const annualForecastSeries = [
     { label: "Годовой (план + прогноз)", className: "procurement-annual-chart__dot--year" },
-    { label: "Q1 (план)", className: "series-turquoise" },
+    { label: "Q1 (план)", className: "series-blue" },
     { label: "Q2 (план)", className: "series-soft-blue" },
     { label: "Q3 (план)", className: "series-purple" },
-    { label: "Q4 (прогноз)", className: "series-orange" }
+    { label: "Q4 (прогноз)", className: "series-mustard" }
   ];
   const annualForecastPlotHeight = 212;
-  const annualForecastColors = ["#2D9CED", "#2D9CED", "#82BAE7", "#705AC8", "#F38B40"];
+  const annualForecastColors = ["blue", "blue", "soft-blue", "purple", "mustard"].map(tone => `var(--chart-color-${tone})`);
   const annualForecastSvgNamespace = "http://www.w3.org/2000/svg";
 
   const annualForecastRowsByMode = {
@@ -1653,36 +1617,15 @@
     render();
   }
 
-  function csvCell(value) {
-    return `"${String(value ?? "").replace(/"/g, '""')}"`;
-  }
-
   function downloadProcurementCsv() {
     const tenderRows = [["Тендер", "Предмет", "Поставщик", "Сумма", "Срок"], ...data.tenders];
     const actionRows = [["Задача", "Описание"], ...data.actions.map(action => [action.title, action.text])];
-    const csv = [
-      ...tenderRows.map(row => row.map(csvCell).join(";")),
-      "",
-      ...actionRows.map(row => row.map(csvCell).join(";"))
-    ].join("\r\n");
-    const url = URL.createObjectURL(new Blob([`\ufeff${csv}`], {type: "text/csv;charset=utf-8"}));
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "procurement-tenders-actions-2026.csv";
-    link.click();
-    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    ui.downloadCsv("procurement-tenders-actions-2026.csv", [...tenderRows, [], ...actionRows]);
     ui.toast("Экспорт", "Тендеры и задачи скачаны в CSV");
   }
 
   function amountContent(value) {
     return numberContent(String(value ?? "").replace(/^\s*\$\s*/, ""), "USD");
-  }
-
-  function updateRiskScrollFades() {
-    if (!riskScroller || !riskColumn) return;
-    const maxScroll = Math.max(0, riskScroller.scrollHeight - riskScroller.clientHeight);
-    riskColumn.classList.toggle("has-fade-top", riskScroller.scrollTop > 1);
-    riskColumn.classList.toggle("has-fade-bottom", maxScroll - riskScroller.scrollTop > 1);
   }
 
   document.getElementById("tender-rows").innerHTML = data.tenders.map(tender => `<tr>
@@ -1706,18 +1649,10 @@
     </div>
   </li>`).join("");
   renderAnalysisBlock();
-  window.requestAnimationFrame(updateRiskScrollFades);
 
   egpzFilterToggles.forEach(toggle => toggle.addEventListener("click", openEgpzFilter));
   filterToggle?.addEventListener("click", openFilter);
   exportButton?.addEventListener("click", downloadProcurementCsv);
-  riskScroller?.addEventListener("scroll", updateRiskScrollFades, {passive: true});
-  if (typeof ResizeObserver === "function" && riskScroller && riskColumn) {
-    const riskObserver = new ResizeObserver(updateRiskScrollFades);
-    riskObserver.observe(riskScroller);
-    riskObserver.observe(riskColumn);
-    riskObserver.observe(document.getElementById("purchase-actions"));
-  }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => {
     renderEgpzStatusChart();
     renderAnalysisExpenseShareChart();
@@ -1962,19 +1897,6 @@
     const paymentExport = event.target.closest("[data-payment-export]");
     if (paymentExport) {
       ui.toast("Экспорт", "Данные диаграммы подготовлены к скачиванию");
-      return;
-    }
-
-    const summaryToggle = event.target.closest("[data-equipment-filter-summary-toggle]");
-    if (summaryToggle) {
-      event.preventDefault();
-      const group = summaryToggle.closest("[data-equipment-filter-summary-group]");
-      const menu = group?.querySelector("[data-equipment-filter-summary-menu]");
-      const open = summaryToggle.getAttribute("aria-expanded") !== "true";
-      closeFilterSummaryMenus(group);
-      group?.classList.toggle("is-open", open);
-      summaryToggle.setAttribute("aria-expanded", String(open));
-      if (menu) menu.hidden = !open;
       return;
     }
 

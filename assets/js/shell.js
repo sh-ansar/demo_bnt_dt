@@ -145,9 +145,9 @@
       <path d="M6 12.0564L10.0878 4" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
     </svg>`,
     notification: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <path d="M13.0398 16.8691C12.3389 17.76 11.2378 18.334 9.99973 18.334C8.76161 18.3339 7.66057 17.7601 6.95969 16.8691C8.97774 17.1426 11.0217 17.1425 13.0398 16.8691Z" fill="#0697E0"/>
-      <path fill-rule="evenodd" clip-rule="evenodd" d="M9.99973 1.66797C13.1059 1.66797 15.6238 4.27932 15.6238 7.50098V8.08789C15.6238 8.79198 15.8253 9.48057 16.2019 10.0664L17.1247 11.502C17.9675 12.8133 17.3241 14.596 15.8581 15.0107C12.023 16.0956 7.97749 16.0955 4.14231 15.0107C2.6763 14.5961 2.03203 12.8133 2.87473 11.502L3.79758 10.0664C4.17414 9.48057 4.37567 8.79198 4.37571 8.08789V7.50098C4.37571 4.27937 6.8936 1.66806 9.99973 1.66797Z" fill="#0697E0"/>
-      <circle cx="13.5415" cy="4.16797" r="2.5" fill="#D01717"/>
+      <path d="M13.0398 16.8691C12.3389 17.76 11.2378 18.334 9.99973 18.334C8.76161 18.3339 7.66057 17.7601 6.95969 16.8691C8.97774 17.1426 11.0217 17.1425 13.0398 16.8691Z" fill="var(--background-brand-solid)"/>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M9.99973 1.66797C13.1059 1.66797 15.6238 4.27932 15.6238 7.50098V8.08789C15.6238 8.79198 15.8253 9.48057 16.2019 10.0664L17.1247 11.502C17.9675 12.8133 17.3241 14.596 15.8581 15.0107C12.023 16.0956 7.97749 16.0955 4.14231 15.0107C2.6763 14.5961 2.03203 12.8133 2.87473 11.502L3.79758 10.0664C4.17414 9.48057 4.37567 8.79198 4.37571 8.08789V7.50098C4.37571 4.27937 6.8936 1.66806 9.99973 1.66797Z" fill="var(--background-brand-solid)"/>
+      <circle cx="13.5415" cy="4.16797" r="2.5" fill="var(--system-elements-semantic-error-primary)"/>
     </svg>`,
     sun: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
       <path fill-rule="evenodd" clip-rule="evenodd" d="M2.5 14.7917C2.5 14.4465 2.77982 14.1667 3.125 14.1667H14.7917C15.1368 14.1667 15.4167 14.4465 15.4167 14.7917C15.4167 15.1368 15.1368 15.4167 14.7917 15.4167H3.125C2.77982 15.4167 2.5 15.1368 2.5 14.7917ZM5 17.2917C5 16.9465 5.27982 16.6667 5.625 16.6667H12.2917C12.6368 16.6667 12.9167 16.9465 12.9167 17.2917C12.9167 17.6368 12.6368 17.9167 12.2917 17.9167H5.625C5.27982 17.9167 5 17.6368 5 17.2917Z" fill="currentColor"/>
@@ -369,20 +369,35 @@
   contextbar.className = "app-contextbar";
   contextbar.innerHTML = `
     <div class="contextbar-shell">
-      <nav class="shell-breadcrumbs" aria-label="Хлебные крошки">
-        <a class="context-home" href="${routeHref("/")}" aria-label="Главная">${icon("home")}</a>
-        <span class="breadcrumb-segment">
-          <span class="context-separator" aria-hidden="true">${shellIcon("breadcrumbSlash")}</span>
-          <a href="${routeHref("/")}">Главная</a>
-        </span>
-        <span class="breadcrumb-segment">
-          <span class="context-separator" aria-hidden="true">${shellIcon("breadcrumbSlash")}</span>
-          <span aria-current="page">${currentItem[2] || meta[0]}</span>
-        </span>
-      </nav>
+      <nav class="shell-breadcrumbs" aria-label="Хлебные крошки"></nav>
       <div class="contextbar-filters" data-shell-context-filters hidden></div>
     </div>
   `;
+
+  function setBreadcrumbs(items = [{label: currentItem[2] || meta[0]}]) {
+    const breadcrumbs = contextbar.querySelector('.shell-breadcrumbs');
+    const escape = value => window.BNTUI.escape(value);
+    const segments = [{label: activeGroup.label, href: activeGroup.defaultHref}, ...items];
+    const enterprise = nav.groups[0];
+    breadcrumbs.innerHTML = `<a class="context-home" href="${escape(routeHref(enterprise.defaultHref))}" aria-label="${escape(nav.pages[enterprise.defaultPage][0])}">${icon('home')}</a>` + segments.map((item, index) => {
+      const current = index === segments.length - 1;
+      const label = escape(item.label);
+      const content = !current && item.href
+        ? `<a href="${escape(routeHref(item.href))}"${typeof item.onClick === 'function' ? ` data-shell-breadcrumb="${index}"` : ''}>${label}</a>`
+        : `<span${current ? ' aria-current="page"' : ''}>${label}</span>`;
+      return `<span class="breadcrumb-segment"><span class="context-separator" aria-hidden="true">${shellIcon('breadcrumbSlash')}</span>${content}</span>`;
+    }).join('');
+    breadcrumbs.querySelectorAll('[data-shell-breadcrumb]').forEach(link => {
+      link.addEventListener('click', event => {
+        if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        segments[Number(link.dataset.shellBreadcrumb)].onClick();
+      });
+    });
+  }
+
+  window.BNTShell = {...window.BNTShell, setBreadcrumbs, routeHref};
+  setBreadcrumbs();
 
   const main = document.createElement("div");
   main.className = "app-main";

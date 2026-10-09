@@ -400,52 +400,6 @@
   line-height: 1.45;
 }
 
-.analytics-page .badge,
-.analytics-page .scenario-source {
-  min-height: calc(var(--typography-indicator-small-line-height) + var(--space-1));
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-  padding: 2px var(--space-1);
-  border: 0;
-  border-radius: var(--space-1);
-  background: var(--system-elements-semantic-neutral-fade);
-  color: var(--system-elements-semantic-neutral-primary);
-  box-shadow: var(--shadow-raised);
-  backdrop-filter: var(--backdrop-blur-raised);
-  font-size: var(--typography-indicator-small-size);
-  line-height: var(--typography-indicator-small-line-height);
-  font-weight: var(--typography-indicator-small-weight);
-  letter-spacing: var(--typography-indicator-small-letter-spacing);
-  white-space: nowrap;
-}
-
-.analytics-page .scenario-source {
-  margin-top: 0;
-}
-
-.analytics-page .badge.green,
-.analytics-page .scenario-source.data {
-  background: var(--system-elements-semantic-positive-secondary-fade);
-  color: var(--system-elements-semantic-positive-primary);
-}
-
-.analytics-page .badge.orange {
-  background: var(--system-elements-semantic-warning-secondary-fade);
-  color: var(--system-elements-semantic-warning-primary);
-}
-
-.analytics-page .badge.red {
-  background: var(--system-elements-semantic-error-secondary-fade);
-  color: var(--system-elements-semantic-error-primary);
-}
-
-.analytics-page .scenario-source.model {
-  background: var(--system-elements-semantic-purple-secondary-fade);
-  color: var(--system-elements-semantic-purple-primary);
-}
-
 .analytics-page .scenario-panel {
   position: static;
   top: auto;
@@ -454,25 +408,12 @@
 }
 
 .analytics-page .scenario-panel .card-body {
-  padding: var(--space-3);
   display: grid;
   gap: var(--space-4);
 }
 
-.analytics-page .scenario-copy {
-  display: grid;
-  gap: var(--space-2);
-}
-
-.analytics-page .scenario-copy > .scenario-source {
+.analytics-page .scenario-copy > .badge {
   justify-self: start;
-}
-
-.analytics-page .scenario-copy__title-row {
-  min-width: 0;
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-2);
 }
 
 .analytics-page .scenario-copy h3 {
@@ -646,8 +587,7 @@
   border: 1px solid var(--design-elements-border-default);
   border-radius: var(--space-2);
   background: var(--background-surface-4);
-  box-shadow: var(--shadow-raised);
-  backdrop-filter: var(--backdrop-blur-raised);
+  box-shadow: var(--card-shadow);
 }
 
 .analytics-page .scenario-impact span {

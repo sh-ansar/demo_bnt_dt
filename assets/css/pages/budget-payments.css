@@ -377,13 +377,6 @@
   font-variant-numeric: lining-nums tabular-nums;
 }
 
-@supports selector(::-webkit-scrollbar) {
-  .payment-risk-map__scroller::-webkit-scrollbar {
-    width: var(--progress-bar-track-scroll-size);
-    height: var(--progress-bar-track-scroll-size);
-  }
-}
-
 @media (max-width: 900px) {
   .payment-summary__grid {
     grid-template-columns: minmax(0, 1fr);

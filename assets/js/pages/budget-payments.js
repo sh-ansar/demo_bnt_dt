@@ -3,8 +3,6 @@
   const root = page && page.querySelector('[data-payment-analytics]');
   const deviationRoot = page && page.querySelector('[data-payment-deviation]');
   const riskRoot = page && page.querySelector('[data-payment-risk-map]');
-  const riskScroller = riskRoot && riskRoot.querySelector('[data-payment-risk-scroll]');
-  const riskColumn = riskRoot && riskRoot.querySelector('[data-payment-risk-column]');
   if (!page) return;
 
   const numberFormatter = new Intl.NumberFormat('ru-RU');
@@ -190,13 +188,6 @@
     chart.innerHTML = svg.join('');
   }
 
-  function updateRiskScrollFades() {
-    if (!riskScroller || !riskColumn) return;
-    const maxScroll = Math.max(0, riskScroller.scrollHeight - riskScroller.clientHeight);
-    riskColumn.classList.toggle('has-fade-top', riskScroller.scrollTop > 1);
-    riskColumn.classList.toggle('has-fade-bottom', maxScroll - riskScroller.scrollTop > 1);
-  }
-
   function toast(title, message) {
     if (window.BNTUI && typeof window.BNTUI.toast === 'function') window.BNTUI.toast(title, message);
   }
@@ -313,10 +304,7 @@
   renderAll();
   renderDeviationChart(activeDeviationDataset);
   renderRiskChart();
-  window.requestAnimationFrame(updateRiskScrollFades);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(renderAll);
-
-  riskScroller?.addEventListener('scroll', updateRiskScrollFades, { passive: true });
 
   if (typeof ResizeObserver === 'function') {
     let resizeFrame = 0;
@@ -326,9 +314,5 @@
     });
     root?.querySelectorAll('.chart-donut__viewport').forEach(function (viewport) { observer.observe(viewport); });
 
-    const riskObserver = new ResizeObserver(updateRiskScrollFades);
-    if (riskScroller) riskObserver.observe(riskScroller);
-    const riskList = riskScroller && riskScroller.querySelector('.payment-risk-list');
-    if (riskList) riskObserver.observe(riskList);
   }
 }());

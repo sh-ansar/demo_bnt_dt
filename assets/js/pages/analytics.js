@@ -476,23 +476,9 @@
   }
 
 
-  function sourceBadge(
-    scenario
-  ) {
-
-    return `
-
-      <span
-        class="
-          scenario-source
-          ${scenario.source}
-        "
-      >
-        ${scenario.sourceLabel}
-      </span>
-    `;
+  function sourceBadge(scenario) {
+    return window.BNTUI.badge(scenario.sourceLabel, scenario.source === "data" ? "green" : scenario.source === "model" ? "purple" : "neutral");
   }
-
 
   function analyticsKpiCard({
     label,
@@ -1046,7 +1032,7 @@
               state === "complete"
                 ? `
                   <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                    <path d="M2.5 5.20832L4.16667 7.08332L7.5 2.91666" stroke="#E6EFF4" stroke-width="0.8" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+                    <path d="M2.5 5.20832L4.16667 7.08332L7.5 2.91666" stroke="var(--design-elements-icon-tertiary)" stroke-width="0.8" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
                   </svg>
                 `
                 : ""

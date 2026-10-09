@@ -82,6 +82,9 @@ const context = vm.createContext({
   }
 });
 const engine = await readFile(new URL('../assets/js/chart-stacked-bars.js', import.meta.url), 'utf8');
+const uiSource = await readFile(new URL('../assets/js/ui.js', import.meta.url), 'utf8');
+const scaleStart = uiSource.indexOf('  chartScale('), scaleEnd = uiSource.indexOf('  renderFinancialLineChart(', scaleStart);
+vm.runInContext(`window.BNTUI = {${uiSource.slice(scaleStart, scaleEnd)}};`, context);
 const page = await readFile(new URL('../assets/js/pages/transshipment.js', import.meta.url), 'utf8');
 vm.runInContext(engine, context);
 const controllers = new Map();
@@ -114,10 +117,16 @@ assert.equal(controllers.get('transshipment-clients').options.series.at(-1).labe
 assert.equal(controllers.get('transshipment-countries').options.axisPosition, 'top');
 assert.equal(controllers.get('transshipment-countries').options.orientation, 'horizontal');
 assert.equal(countries.chart.events.wheel, undefined);
-assert.equal(countries.chart.style.values['--chart-bars-height'], '960px');
-assert.equal(clients.chart.style.values['--chart-bars-height'], '200px');
+assert.equal(countries.chart.style.values['--chart-bars-height'], '961px');
+assert.equal(clients.chart.style.values['--chart-bars-height'], '201px');
 assert.match(countries.axis.innerHTML, /class="chart-bars__tick"[^>]*y="16"/);
 assert.match(clients.markup, /data-stacked-axis[^>]*><\/svg>\s*<div class="chart-viewport__plot chart-scrollbar"/);
+clients.viewport.scrollLeft = 120;
+clients.viewport.events.scroll();
+assert.equal(clients.axis.style.transform, 'translateX(-120px)', 'The reference chart keeps its fixed scale aligned with the single horizontal plot scroller');
+clients.viewport.scrollLeft = 0;
+clients.viewport.events.scroll();
+assert.equal(clients.axis.style.transform, 'translateX(0px)');
 assert.doesNotMatch(engine, /chart-bars-min-width|1120/);
 
 function assertGeometry({ chart, axis, viewport }) {
@@ -141,8 +150,8 @@ function assertGeometry({ chart, axis, viewport }) {
   assert.ok(Number(axes[0][4]) > Number(axes[0][2]));
   const ticks = [...axis.innerHTML.matchAll(/<text class="chart-bars__tick" x="([^"]+)"[^>]*text-anchor="(?:start|end)" data-tick-value="(\d+)"/g)];
   assert.ok(ticks.length > 0);
-  assert.equal(Number(ticks[0][1]), left);
-  assert.match(ticks[0][0], /text-anchor="start"/);
+  assert.equal(Number(ticks[0][1]), left - 8);
+  assert.match(ticks[0][0], /text-anchor="end"/);
   assert.match(ticks[1][0], /text-anchor="end"/);
   assert.equal(Number(ticks.at(-1)[2]), 2000000);
   for (let index = 1; index < ticks.length; index += 1) {
@@ -158,6 +167,9 @@ function assertGeometry({ chart, axis, viewport }) {
   const rows = new Set([...chart.innerHTML.matchAll(/data-row-index="(\d+)"/g)].map(match => match[1]));
   const horizontalLines = [...chart.innerHTML.matchAll(/<line class="chart-bars__grid-line" x1="([^"]+)" y1="([^"]+)" x2="([^"]+)" y2="([^"]+)"/g)];
   assert.equal(horizontalLines.length, rows.size + 1);
+  assert.equal((chart.innerHTML.match(/data-chart-closing-axis/g) || []).length, 1);
+  assert.match(chart.innerHTML, /<line class="chart-bars__grid-line"[^>]*data-chart-closing-axis/);
+  assert.equal(Number(horizontalLines.at(-1)[2]), height - 1, 'The closing grid line has space inside the SVG and is not clipped');
   const rowStep = (Number(horizontalLines.at(-1)[2]) - Number(horizontalLines[0][2])) / rows.size;
   assert.equal(rowStep, labelLineHeight + 24);
   horizontalLines.forEach((line, index) => {
@@ -231,14 +243,14 @@ for (const width of [375, 768, 1440, 1920]) {
   countries.viewport.clientWidth = width;
   countryController.setTab('all');
   assertGeometry(countries);
-  assert.equal(countries.chart.style.values['--chart-bars-height'], '960px');
+  assert.equal(countries.chart.style.values['--chart-bars-height'], '961px');
 }
 labelLineHeight = 24;
 countryController.setTab('all');
-assert.equal(countries.chart.style.values['--chart-bars-height'], '1152px');
+assert.equal(countries.chart.style.values['--chart-bars-height'], '1153px');
 assertGeometry(countries);
 clientController.setTab('all');
-assert.equal(clients.chart.style.values['--chart-bars-height'], '240px');
+assert.equal(clients.chart.style.values['--chart-bars-height'], '241px');
 assertGeometry(clients);
 labelLineHeight = 16;
 
@@ -258,8 +270,8 @@ filterDocument.createElement = () => ({ content: { firstElementChild: modal } })
 vm.runInNewContext(await readFile(new URL('../assets/js/chart-filter.js', import.meta.url), 'utf8'), {
   document: filterDocument, window: {}
 });
-function openFilter(variant, heading = 'Данные по клиентам') {
-  const trigger = element({ chartFilterVariant: variant });
+function openFilter(variant, heading = 'Данные по клиентам', explicitTitle) {
+  const trigger = element({ chartFilterVariant: variant, chartFilterTitle: explicitTitle });
   trigger.closest = selector => {
     assert.equal(selector, 'header');
     return { querySelector(titleSelector) {
@@ -295,6 +307,16 @@ modal.events.click({ target: { closest(selector) { return selector.includes('[da
 assert.equal(modal.hidden, true);
 assert.equal(financialTrigger.attributes['aria-expanded'], 'false');
 assert.equal(financialTrigger.focused, true);
+
+const repairTrigger = openFilter('static-date', 'Предиктивная рекомендация', '  История ремонтов  ');
+assert.equal(filterTitle.textContent, 'Фильтр: История ремонтов');
+assert.equal(drawer.attributes['aria-label'], filterTitle.textContent);
+assert.ok(drawer.classList.values.has('dt3-drawer_static-date'));
+assert.equal(repairTrigger.attributes['aria-expanded'], 'true');
+filterDocument.events.keydown({ key: 'Escape', preventDefault() {} });
+assert.equal(modal.hidden, true);
+assert.equal(repairTrigger.attributes['aria-expanded'], 'false');
+assert.equal(repairTrigger.focused, true);
 
 for (const heading of ['Входящий объём по продукту', 'Свободная ёмкость резервуаров', 'Текущий ЕГПЗ',
   'Доля контуров в общем риске', 'План vs Факт (Расход / Доход / Прибыль)']) {

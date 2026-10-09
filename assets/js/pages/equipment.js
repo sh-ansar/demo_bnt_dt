@@ -136,9 +136,6 @@
     direction: "default"
   };
   const textCollator = new Intl.Collator("ru-RU", {numeric: true, sensitivity: "base"});
-  const datePlaceholder = "дд.мм.гггг";
-  const dateMonthFormatter = new Intl.DateTimeFormat("ru-RU", {month: "long", year: "numeric"});
-  const dateWeekdays = ["пн", "вт", "ср", "чт", "пт", "сб", "вс"];
 
   // Shared plus/minus: New active / ui-zoom__button.
   const sharedPlusIcon = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 4.375V15.625M15.625 10H4.375" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>';
@@ -153,41 +150,12 @@
     trash: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M2.70831 4.04199C2.2941 4.04199 1.95831 4.37778 1.95831 4.79199C1.95831 5.20621 2.2941 5.54199 2.70831 5.54199V4.79199V4.04199ZM17.2916 5.54199C17.7059 5.54199 18.0416 5.20621 18.0416 4.79199C18.0416 4.37778 17.7059 4.04199 17.2916 4.04199V4.79199V5.54199ZM9.29165 8.12533C9.29165 7.71111 8.95586 7.37533 8.54165 7.37533C8.12743 7.37533 7.79165 7.71111 7.79165 8.12533H8.54165H9.29165ZM7.79165 14.3753C7.79165 14.7895 8.12743 15.1253 8.54165 15.1253C8.95586 15.1253 9.29165 14.7895 9.29165 14.3753H8.54165H7.79165ZM12.2083 8.12533C12.2083 7.71111 11.8725 7.37533 11.4583 7.37533C11.0441 7.37533 10.7083 7.71111 10.7083 8.12533H11.4583H12.2083ZM10.7083 14.3753C10.7083 14.7895 11.0441 15.1253 11.4583 15.1253C11.8725 15.1253 12.2083 14.7895 12.2083 14.3753H11.4583H10.7083ZM4.91316 4.71975C4.87326 4.30747 4.5067 4.00558 4.09441 4.04548C3.68212 4.08538 3.38024 4.45194 3.42013 4.86423L4.16665 4.79199L4.91316 4.71975ZM5.27081 16.2024L6.01734 16.1303L6.01733 16.1302L5.27081 16.2024ZM14.7287 16.2024L13.9822 16.1301L13.9822 16.1303L14.7287 16.2024ZM16.5798 4.86426C16.6197 4.45197 16.3179 4.08539 15.9056 4.04548C15.4933 4.00557 15.1267 4.30744 15.0868 4.71973L15.8333 4.79199L16.5798 4.86426ZM12.2916 4.79199H13.0416V4.58366H12.2916H11.5416V4.79199H12.2916ZM12.2916 4.58366H13.0416C13.0416 2.90361 11.68 1.54199 9.99998 1.54199V2.29199V3.04199C10.8516 3.04199 11.5416 3.73204 11.5416 4.58366H12.2916ZM9.99998 2.29199V1.54199C8.31993 1.54199 6.95831 2.90361 6.95831 4.58366H7.70831H8.45831C8.45831 3.73204 9.14836 3.04199 9.99998 3.04199V2.29199ZM7.70831 4.58366H6.95831V4.79199H7.70831H8.45831V4.58366H7.70831ZM2.70831 4.79199V5.54199H17.2916V4.79199V4.04199H2.70831V4.79199ZM8.54165 8.12533H7.79165V14.3753H8.54165H9.29165V8.12533H8.54165ZM11.4583 8.12533H10.7083V14.3753H11.4583H12.2083V8.12533H11.4583ZM4.16665 4.79199L3.42013 4.86423L4.5243 16.2746L5.27081 16.2024L6.01733 16.1302L4.91316 4.71975L4.16665 4.79199ZM5.27081 16.2024L4.52429 16.2745C4.64393 17.5132 5.68543 18.4587 6.92956 18.4587V17.7087V16.9587C6.45786 16.9587 6.0627 16.5999 6.01734 16.1303L5.27081 16.2024ZM6.92956 17.7087V18.4587H13.07V17.7087V16.9587H6.92956V17.7087ZM13.07 17.7087V18.4587C14.3145 18.4587 15.3556 17.5137 15.4753 16.2745L14.7287 16.2024L13.9822 16.1303C13.9368 16.6003 13.5421 16.9587 13.07 16.9587V17.7087ZM14.7287 16.2024L15.4752 16.2747L16.5798 4.86426L15.8333 4.79199L15.0868 4.71973L13.9822 16.1301L14.7287 16.2024Z" fill="currentColor"/></svg>',
     search: '<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><use href="/assets/icons/bnt-sprite.svg?v=3#search"></use></svg>',
     warning: '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8.33346 11.0828C8.33346 11.2669 8.18422 11.4161 8.00013 11.4161C7.81603 11.4161 7.66679 11.2669 7.66679 11.0828C7.66679 10.8987 7.81603 10.7495 8.00013 10.7495C8.18422 10.7495 8.33346 10.8987 8.33346 11.0828Z" fill="currentColor"/><path d="M8.00013 5.83358V9.16691M7.12113 2.68524L1.96079 12.0072C1.58979 12.6776 2.07413 13.5002 2.83979 13.5002H13.1608C13.9265 13.5002 14.4108 12.6776 14.0398 12.0072L8.87913 2.68524C8.49646 1.99424 7.50379 1.99424 7.12113 2.68524ZM8.33346 11.0828C8.33346 11.2669 8.18422 11.4161 8.00013 11.4161C7.81603 11.4161 7.66679 11.2669 7.66679 11.0828C7.66679 10.8987 7.81603 10.7495 8.00013 10.7495C8.18422 10.7495 8.33346 10.8987 8.33346 11.0828Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
-    calendar: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17.75 19.5H6.25V21H17.75V19.5ZM6.25 19.5C5.28371 19.5 4.5 18.7163 4.5 17.75H3C3 19.5447 4.45529 21 6.25 21V19.5ZM4.5 17.75V6.25H3V17.75H4.5ZM4.5 6.25C4.5 5.28371 5.28371 4.5 6.25 4.5V3C4.45529 3 3 4.45529 3 6.25H4.5ZM6.25 4.5H17.75V3H6.25V4.5ZM17.75 4.5C18.7163 4.5 19.5 5.28371 19.5 6.25H21C21 4.45529 19.5447 3 17.75 3V4.5ZM19.5 6.25V17.75H21V6.25H19.5ZM19.5 17.75C19.5 18.7163 18.7163 19.5 17.75 19.5V21C19.5447 21 21 19.5447 21 17.75H19.5ZM3.75 8.5H20.25V7H3.75V8.5ZM13.75 13.5H15.75V12H13.75V13.5ZM15.75 13.5C15.8883 13.5 16 13.6117 16 13.75H17.5C17.5 12.7833 16.7167 12 15.75 12V13.5ZM16 13.75V15.75H17.5V13.75H16ZM16 15.75C16 15.8883 15.8883 16 15.75 16V17.5C16.7167 17.5 17.5 16.7167 17.5 15.75H16ZM15.75 16H13.75V17.5H15.75V16ZM13.75 16C13.6117 16 13.5 15.8883 13.5 15.75H12C12 16.7167 12.7833 17.5 13.75 17.5V16ZM13.5 15.75V13.75H12V15.75H13.5ZM13.5 13.75C13.5 13.6117 13.6117 13.5 13.75 13.5V12C12.7833 12 12 12.7833 12 13.75H13.5Z" fill="currentColor"/></svg>'
   };
 
-  function toISODate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
-  function parseISODate(value) {
-    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value || "");
-    if (!match) return null;
-    const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
-    return toISODate(date) === value ? date : null;
-  }
-
-  function formatDisplayDate(value) {
-    const date = parseISODate(value);
-    if (!date) return datePlaceholder;
-    return `${String(date.getDate()).padStart(2, "0")}.${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}`;
-  }
-
-  function monthKey(date) {
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-  }
-
-  function parseMonthKey(value) {
-    const match = /^(\d{4})-(\d{2})$/.exec(value || "");
-    if (!match) return null;
-    return new Date(Number(match[1]), Number(match[2]) - 1, 1);
-  }
+  const formatDisplayDate = value => ui.formatDate(value);
 
   function getDateRoot(name) {
-    return filterModal?.querySelector(`[data-equipment-date-root="${name}"]`);
+    return filterModal?.querySelector(`[data-bnt-date-root="equipment-${name}"]`);
   }
 
   function selectedValues(set) {
@@ -706,13 +674,7 @@
   }
 
   function closeFilterSummaryMenus(except = null) {
-    filterSummary?.querySelectorAll("[data-equipment-filter-summary-group]").forEach(group => {
-      if (group === except) return;
-      group.classList.remove("is-open");
-      group.querySelector("[data-equipment-filter-summary-toggle]")?.setAttribute("aria-expanded", "false");
-      const menu = group.querySelector("[data-equipment-filter-summary-menu]");
-      if (menu) menu.hidden = true;
-    });
+    ui.closeFilterSummaryMenus(except, filterSummary);
   }
 
   function syncAppliedFilters() {
@@ -755,32 +717,6 @@
     syncAppliedFilters();
   }
 
-  function filterSummaryValuePill(group, item) {
-    return `<span class="filter-summary__pill pill pill--default pill--radius typography-body-smallest">
-      <span class="pill__title">${escape(item.label)}</span>
-      <button type="button" data-equipment-filter-remove-value="${escape(group.key)}" data-equipment-filter-remove-item="${escape(item.value)}" aria-label="Удалить ${escape(item.label)}">${icons.close}</button>
-    </span>`;
-  }
-
-  function filterSummaryMenu(group) {
-    return `<span class="filter-summary__rollover form-input__tag-rollover" data-equipment-filter-summary-menu hidden>
-      ${group.values.map(item => `<span class="filter-summary__rollover-item form-input__tag form-input__tag--rollover pill pill--default pill--radius typography-body-smallest">
-        <span class="pill__title">${escape(item.label)}</span>
-        <button class="form-input__tag-remove" type="button" data-equipment-filter-remove-value="${escape(group.key)}" data-equipment-filter-remove-item="${escape(item.value)}" aria-label="Удалить ${escape(item.label)}">${icons.close}</button>
-      </span>`).join("")}
-    </span>`;
-  }
-
-  function filterSummaryGroup(group) {
-    return `<span class="filter-summary__group form-input__tag-more" data-equipment-filter-summary-group="${escape(group.key)}">
-      <button class="filter-summary__count pill pill--default pill--radius typography-body-smallest" type="button" data-equipment-filter-summary-toggle aria-expanded="false">
-        <span class="filter-summary__count-title">${escape(group.label)} (${escape(group.count)})</span>
-        <span class="filter-summary__count-chevron" aria-hidden="true">${icons.chevron}</span>
-      </button>
-      ${filterSummaryMenu(group)}
-    </span>`;
-  }
-
   function renderFilterSummary() {
     if (!filterSummary || !filterSummaryList || !filterSummaryActions) return;
     const groups = activeFilterGroups();
@@ -790,9 +726,7 @@
       filterSummaryActions.innerHTML = "";
       return;
     }
-    filterSummaryList.innerHTML = groups.length === 1
-      ? groups[0].values.map(item => filterSummaryValuePill(groups[0], item)).join("")
-      : groups.map(filterSummaryGroup).join("");
+    filterSummaryList.innerHTML = ui.renderFilterSummary(groups, {icons});
     filterSummaryActions.innerHTML = `
       <button class="filter-summary__clear button-smallest-ghost button-smallest-ghost--error typography-button-smallest" type="button" data-equipment-filter-summary-clear aria-label="Сбросить выбранные фильтры">${icons.trash}</button>
       <button class="filter-summary__template-action button-smallest-ghost button-smallest-ghost--2 typography-button-smallest" type="button" data-equipment-filter-template>${icons.plus}<span>Создать шаблон</span></button>`;
@@ -999,7 +933,7 @@
 
   function passportAction(item) {
     if (!item.detailId) return emptyCell;
-    return `<a class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" href="/equipment-detail?id=${encodeURIComponent(item.detailId)}" aria-label="Открыть паспорт ${escape(item.name)}"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=11#StrokeDoc"></use></svg></a>`;
+    return `<a class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" href="${window.BNTShell.routeHref(`/equipment-detail?id=${encodeURIComponent(item.detailId)}`)}" aria-label="Открыть паспорт ${escape(item.name)}"><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=11#StrokeDoc"></use></svg></a>`;
   }
 
   function syncStickyHeaderScrollOffset() {
@@ -1028,13 +962,13 @@
     const toneClass = tone ? ` card-with-image--${escape(tone)}` : "";
     const category = item.category || item.type;
     const wear = item.wear ?? 0;
-    return `<a class="card-with-image${toneClass}" href="/equipment-detail?id=${encodeURIComponent(item.detailId)}">
+    return `<a class="card-with-image${toneClass}" href="${window.BNTShell.routeHref(`/equipment-detail?id=${encodeURIComponent(item.detailId)}`)}">
       <span class="card-with-image__media" aria-hidden="true"><img src="${escape(item.image)}" alt=""></span>
       ${item.status ? ui.badge(item.status, tone) : ""}
       <div class="card-with-image__body">
         <div class="card-with-image__heading">
           <span class="card-with-image__eyebrow typography-indicator-small">${escape(category)}</span>
-          <h3 class="card-with-image__title typography-caption-small">${escape(item.name)}</h3>
+          <h3 class="card-with-image__title typography-caption-smallest">${escape(item.name)}</h3>
         </div>
         <div class="card-with-image__progress">
           <div class="card-with-image__progress-head typography-body-smallest"><span>Износ по нагрузке</span><b>${escape(wear)}%</b></div>
@@ -1046,12 +980,12 @@
 
   function render() {
     const rows = visibleTreeRows();
-    document.getElementById("asset-rows").innerHTML = rows.length ? rows.map(({item, level, branches, isFlat, hasVisibleChildren}) => `<tr data-tree-level="${level}"><td class="data-table__tree-cell">${treeCell(item, level, branches, isFlat, hasVisibleChildren)}</td><td>${escape(item.type)}</td><td>${escape(item.location)}</td><td>${escape(item.internal)}</td><td class="data-table__numeric-cell table-number-cell">${numericContent(item.age, "лет")}</td><td class="data-table__numeric-cell data-table__progress-cell">${progressContent(item.load)}</td><td class="data-table__numeric-cell data-table__progress-cell">${progressContent(item.wear, item.wear > 70 ? "red" : "")}</td><td class="data-table__date-cell">${item.lastService ? escape(item.lastService) : emptyCell}</td><td class="data-table__date-cell">${item.nextService ? escape(item.nextService) : emptyCell}</td><td>${item.status ? ui.badge(item.status, statusTone(item)) : emptyCell}</td><td class="data-table__action-cell">${passportAction(item)}</td></tr>`).join("") : `<tr><td colspan="11"><div class="empty-state">По выбранным фильтрам активы не найдены</div></td></tr>`;
+    document.getElementById("asset-rows").innerHTML = rows.length ? rows.map(({item, level, branches, isFlat, hasVisibleChildren}) => `<tr data-tree-level="${level}"><td class="data-table__tree-cell">${treeCell(item, level, branches, isFlat, hasVisibleChildren)}</td><td>${escape(item.type)}</td><td>${escape(item.location)}</td><td>${escape(item.internal)}</td><td class="data-table__numeric-cell table-number-cell">${numericContent(item.age, "лет")}</td><td class="data-table__numeric-cell data-table__progress-cell">${progressContent(item.load)}</td><td class="data-table__numeric-cell data-table__progress-cell">${progressContent(item.wear, item.wear > 70 ? "red" : "")}</td><td class="data-table__date-cell">${item.lastService ? escape(item.lastService) : emptyCell}</td><td class="data-table__date-cell">${item.nextService ? escape(item.nextService) : emptyCell}</td><td>${item.status ? ui.badge(item.status, statusTone(item)) : emptyCell}</td><td class="data-table__action-cell">${passportAction(item)}</td></tr>`).join("") : ui.renderEmptyTableRow(11, "По выбранным фильтрам активы не найдены");
     updateSortControls();
     renderFilterSummary();
     scheduleTableGeometrySync();
     const attention = assets.filter(item => item.detailId && item.tone && item.tone !== "green").slice(0, 4);
-    document.getElementById("asset-cards").innerHTML = attention.map(attentionCard).join("") || `<article class="card empty-state">Нет активов повышенного внимания</article>`;
+    document.getElementById("asset-cards").innerHTML = attention.map(attentionCard).join("") || ui.renderEmptyState("Нет активов повышенного внимания", {size: "smallest"});
   }
 
   function formInput(name, label, options) {
@@ -1075,114 +1009,15 @@
   }
 
   function dateField(name, label) {
-    return `<div class="equipment-date-field" data-equipment-date-root="${escape(name)}">
-      <span class="typography-label-smallest">${escape(label)}</span>
-      <span class="equipment-date-input">
-        <button class="equipment-date-display typography-body-smallest" type="button" data-equipment-date-toggle aria-haspopup="dialog" aria-expanded="false">
-          <span data-equipment-date-text>${datePlaceholder}</span>
-          ${icons.calendar}
-        </button>
-        <input type="hidden" data-equipment-date="${escape(name)}">
-        <span class="equipment-date-popover" data-equipment-date-popover hidden></span>
-      </span>
-    </div>`;
-  }
-
-  function renderDatePicker(root) {
-    const name = root.dataset.equipmentDateRoot;
-    const selected = parseISODate(draftFilters[name]);
-    const today = new Date();
-    const current = parseMonthKey(root.dataset.equipmentDateMonth) || new Date(selected || today);
-    current.setDate(1);
-    root.dataset.equipmentDateMonth = monthKey(current);
-    const start = new Date(current);
-    start.setDate(1 - ((start.getDay() + 6) % 7));
-    const selectedISO = selected ? toISODate(selected) : "";
-    const todayISO = toISODate(today);
-    const days = Array.from({length: 42}, (_, index) => {
-      const date = new Date(start);
-      date.setDate(start.getDate() + index);
-      const iso = toISODate(date);
-      const classes = [
-        "equipment-date-popover__day",
-        "typography-body-smallest",
-        date.getMonth() !== current.getMonth() ? "is-outside" : "",
-        iso === todayISO ? "is-today" : "",
-        iso === selectedISO ? "is-selected" : ""
-      ].filter(Boolean).join(" ");
-      return `<button class="${classes}" type="button" data-equipment-date-day="${iso}" aria-pressed="${iso === selectedISO}">${date.getDate()}</button>`;
-    }).join("");
-    const title = dateMonthFormatter.format(current);
-    const prevIcon = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    const nextIcon = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    root.querySelector("[data-equipment-date-popover]").innerHTML = `
-      <span class="equipment-date-popover__head">
-        <span class="equipment-date-popover__title typography-caption-small">${escape(title)}</span>
-        <button class="equipment-date-popover__nav" type="button" data-equipment-date-nav="-1" aria-label="Предыдущий месяц">${prevIcon}</button>
-        <button class="equipment-date-popover__nav" type="button" data-equipment-date-nav="1" aria-label="Следующий месяц">${nextIcon}</button>
-      </span>
-      <span class="equipment-date-popover__grid" aria-hidden="true">
-        ${dateWeekdays.map(day => `<span class="equipment-date-popover__weekday typography-caption-smallest">${day}</span>`).join("")}
-      </span>
-      <span class="equipment-date-popover__grid" role="grid" aria-label="${escape(title)}">${days}</span>
-      <span class="equipment-date-popover__footer">
-        <button class="equipment-date-popover__action button-smallest-ghost typography-button-smallest" type="button" data-equipment-date-clear>Удалить</button>
-        <button class="equipment-date-popover__action button-smallest-ghost typography-button-smallest" type="button" data-equipment-date-today>Сегодня</button>
-      </span>`;
-  }
-
-  function positionDatePicker(root) {
-    const control = root.querySelector(".equipment-date-input");
-    const popover = root.querySelector("[data-equipment-date-popover]");
-    if (!control || !popover || popover.hidden) return;
-    const gap = 4;
-    const viewportGap = 16;
-    const rect = control.getBoundingClientRect();
-    const desiredHeight = popover.scrollHeight || 360;
-    const availableBelow = window.innerHeight - viewportGap - rect.bottom - gap;
-    const availableAbove = rect.top - viewportGap - gap;
-    root.classList.toggle("is-open-up", availableBelow < desiredHeight && availableAbove > availableBelow);
-  }
-
-  function openDatePicker(root) {
-    const name = root.dataset.equipmentDateRoot;
-    const selected = parseISODate(draftFilters[name]);
-    root.dataset.equipmentDateMonth = monthKey(selected || new Date());
-    root.classList.add("is-open");
-    root.querySelector("[data-equipment-date-toggle]")?.setAttribute("aria-expanded", "true");
-    const popover = root.querySelector("[data-equipment-date-popover]");
-    if (popover) popover.hidden = false;
-    renderDatePicker(root);
-    requestAnimationFrame(() => positionDatePicker(root));
-  }
-
-  function closeDatePicker(root) {
-    root.classList.remove("is-open", "is-open-up");
-    root.querySelector("[data-equipment-date-toggle]")?.setAttribute("aria-expanded", "false");
-    const popover = root.querySelector("[data-equipment-date-popover]");
-    if (popover) popover.hidden = true;
+    return ui.renderDateField({name: `equipment-${name}`, label, value: draftFilters[name] || ""});
   }
 
   function closeDatePickers(except = null) {
-    filterModal?.querySelectorAll(".equipment-date-field.is-open").forEach(root => {
-      if (root !== except) closeDatePicker(root);
-    });
-  }
-
-  function syncDateField(name) {
-    const root = getDateRoot(name);
-    if (!root) return;
-    const value = draftFilters[name] || "";
-    const input = root.querySelector("[data-equipment-date]");
-    root.classList.toggle("has-value", Boolean(value));
-    if (input) input.value = value;
-    root.querySelector("[data-equipment-date-text]").textContent = formatDisplayDate(value);
-    if (root.classList.contains("is-open")) renderDatePicker(root);
+    if (filterModal) ui.closeDatePickers("bnt", except, filterModal);
   }
 
   function syncDateFields() {
-    syncDateField("last");
-    syncDateField("next");
+    ["last", "next"].forEach(name => ui.syncDateField(getDateRoot(name), draftFilters[name] || ""));
   }
 
   function createFilterModal() {
@@ -1238,17 +1073,6 @@
       </section>`;
     document.body.appendChild(modal);
     return modal;
-  }
-
-  function syncFilterHeaderFlow() {
-    if (!filterModal || filterModal.hidden) return;
-    const head = filterModal.querySelector(".filter-modal__head");
-    const title = filterModal.querySelector(".filter-modal__title");
-    if (!head || !title) return;
-    const lineHeight = parseFloat(getComputedStyle(title).lineHeight);
-    const titleHeight = title.getBoundingClientRect().height;
-    const lines = lineHeight > 0 ? Math.round(titleHeight / lineHeight) : 1;
-    head.classList.toggle("is-title-long", lines >= 2);
   }
 
   function closeAllDropdowns(except) {
@@ -1337,8 +1161,8 @@
 
   function syncModal() {
     filterModal.querySelector("[data-equipment-filter-search]").value = draftFilters.search;
-    filterModal.querySelector('[data-equipment-date="last"]').value = draftFilters.last;
-    filterModal.querySelector('[data-equipment-date="next"]').value = draftFilters.next;
+    filterModal.querySelector('[data-bnt-date="equipment-last"]').value = draftFilters.last;
+    filterModal.querySelector('[data-bnt-date="equipment-next"]').value = draftFilters.next;
     syncDateFields();
     syncSearchScope();
     ["location", "type", "status", "age"].forEach(syncFormInput);
@@ -1354,7 +1178,6 @@
     filterModal.hidden = false;
     syncModal();
     filterToggle?.setAttribute("aria-expanded", "true");
-    requestAnimationFrame(syncFilterHeaderFlow);
     requestAnimationFrame(syncAllFormInputOverflow);
     filterModal.querySelector("[data-equipment-filter-search]")?.focus();
   }
@@ -1369,8 +1192,8 @@
 
   function applyFilters() {
     draftFilters.search = filterModal.querySelector("[data-equipment-filter-search]").value;
-    draftFilters.last = filterModal.querySelector('[data-equipment-date="last"]').value;
-    draftFilters.next = filterModal.querySelector('[data-equipment-date="next"]').value;
+    draftFilters.last = filterModal.querySelector('[data-bnt-date="equipment-last"]').value;
+    draftFilters.next = filterModal.querySelector('[data-bnt-date="equipment-next"]').value;
     filters = cloneFilters(draftFilters);
     render();
     closeModal();
@@ -1393,56 +1216,9 @@
         return;
       }
 
-      const dateToggle = event.target.closest("[data-equipment-date-toggle]");
-      if (dateToggle) {
-        event.preventDefault();
-        const root = dateToggle.closest("[data-equipment-date-root]");
-        const open = !root.classList.contains("is-open");
-        closeAllDropdowns(root);
-        if (open) openDatePicker(root);
-        else closeDatePicker(root);
-        return;
-      }
-
-      const dateNav = event.target.closest("[data-equipment-date-nav]");
-      if (dateNav) {
-        event.preventDefault();
-        const root = dateNav.closest("[data-equipment-date-root]");
-        const current = parseMonthKey(root.dataset.equipmentDateMonth) || new Date();
-        current.setMonth(current.getMonth() + Number(dateNav.dataset.equipmentDateNav));
-        root.dataset.equipmentDateMonth = monthKey(current);
-        renderDatePicker(root);
-        requestAnimationFrame(() => positionDatePicker(root));
-        return;
-      }
-
-      const dateDay = event.target.closest("[data-equipment-date-day]");
-      if (dateDay) {
-        event.preventDefault();
-        const root = dateDay.closest("[data-equipment-date-root]");
-        draftFilters[root.dataset.equipmentDateRoot] = dateDay.dataset.equipmentDateDay;
-        syncDateField(root.dataset.equipmentDateRoot);
-        closeDatePicker(root);
-        return;
-      }
-
-      const dateClear = event.target.closest("[data-equipment-date-clear]");
-      if (dateClear) {
-        event.preventDefault();
-        const root = dateClear.closest("[data-equipment-date-root]");
-        draftFilters[root.dataset.equipmentDateRoot] = "";
-        syncDateField(root.dataset.equipmentDateRoot);
-        closeDatePicker(root);
-        return;
-      }
-
-      const dateToday = event.target.closest("[data-equipment-date-today]");
-      if (dateToday) {
-        event.preventDefault();
-        const root = dateToday.closest("[data-equipment-date-root]");
-        draftFilters[root.dataset.equipmentDateRoot] = toISODate(new Date());
-        syncDateField(root.dataset.equipmentDateRoot);
-        closeDatePicker(root);
+      const dateRoot = event.target.closest("[data-bnt-date-root]");
+      if (dateRoot) {
+        closeAllDropdowns(dateRoot);
         return;
       }
 
@@ -1564,11 +1340,8 @@
 
     window.addEventListener("resize", () => {
       scheduleTableGeometrySync();
-      requestAnimationFrame(syncFilterHeaderFlow);
       requestAnimationFrame(syncAllFormInputOverflow);
-      requestAnimationFrame(() => filterModal?.querySelectorAll(".equipment-date-field.is-open").forEach(positionDatePicker));
     });
-    document.addEventListener("scroll", () => requestAnimationFrame(() => filterModal?.querySelectorAll(".equipment-date-field.is-open").forEach(positionDatePicker)), true);
   }
 
   function bindHeaderControls() {
@@ -1577,19 +1350,6 @@
 
       const columnSearchButton = event.target.closest("[data-equipment-column-search]");
       if (!columnSearchButton && columnFilterPopover && !columnFilterPopover.hidden) closeColumnFilterPopover();
-
-      const summaryToggle = event.target.closest("[data-equipment-filter-summary-toggle]");
-      if (summaryToggle) {
-        event.preventDefault();
-        const group = summaryToggle.closest("[data-equipment-filter-summary-group]");
-        const menu = group?.querySelector("[data-equipment-filter-summary-menu]");
-        const open = summaryToggle.getAttribute("aria-expanded") !== "true";
-        closeFilterSummaryMenus(group);
-        group?.classList.toggle("is-open", open);
-        summaryToggle.setAttribute("aria-expanded", String(open));
-        if (menu) menu.hidden = !open;
-        return;
-      }
 
       const summaryValueRemove = event.target.closest("[data-equipment-filter-remove-value]");
       if (summaryValueRemove) {

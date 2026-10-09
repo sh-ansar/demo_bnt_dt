@@ -24,10 +24,6 @@
       "destination": "/operations.html"
     },
     {
-      "source": "/operations_archiv",
-      "destination": "/operations_archiv.html"
-    },
-    {
       "source": "/equipment",
       "destination": "/equipment.html"
     },

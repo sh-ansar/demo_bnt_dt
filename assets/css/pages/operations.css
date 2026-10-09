@@ -79,12 +79,12 @@
 }
 
 .daily-flow-board {
-  --daily-pier-svm-fill: rgb(106 207 239 / 20%);
-  --daily-pier-one-fill: rgb(106 207 239 / 20%);
+  --daily-pier-svm-fill: var(--system-elements-semantic-neutral-secondary-fade);
+  --daily-pier-one-fill: var(--system-elements-semantic-neutral-secondary-fade);
   --daily-pier-one-connection: var(--design-elements-border-strong);
-  --daily-pier-two-fill: rgb(106 207 239 / 20%);
+  --daily-pier-two-fill: var(--system-elements-semantic-neutral-secondary-fade);
   --daily-pier-two-connection: var(--design-elements-border-strong);
-  --daily-pier-three-fill: rgb(106 207 239 / 20%);
+  --daily-pier-three-fill: var(--system-elements-semantic-neutral-secondary-fade);
   --daily-pier-three-connection: var(--design-elements-border-strong);
   position: relative;
   isolation: isolate;
@@ -164,8 +164,7 @@
   border: 1px solid var(--design-elements-border-primary);
   border-radius: var(--space-2);
   background: var(--background-quarternary);
-  box-shadow: var(--shadow-raised);
-  backdrop-filter: var(--backdrop-blur-raised);
+  box-shadow: var(--card-shadow);
   opacity: 1;
   transition: height .24s ease, margin-top .24s ease, padding .24s ease, border-width .24s ease, opacity .18s ease;
 }
@@ -174,8 +173,7 @@
 .pier-panel {
   border: 1px solid var(--design-elements-border-primary);
   background: var(--background-quarternary);
-  box-shadow: var(--shadow-raised);
-  backdrop-filter: var(--backdrop-blur-raised);
+  box-shadow: var(--card-shadow);
 }
 
 .flow-panel,
@@ -317,15 +315,15 @@
   border: 0;
   border-radius: var(--space-2);
   background: var(--background-quarternary);
-  box-shadow: var(--shadow-primary);
+  box-shadow: var(--card-shadow);
 }
 
 .metric-card--incoming {
-  background: rgb(90 201 132 / 20%);
+  background: var(--system-elements-semantic-positive-secondary-fade);
 }
 
 .metric-card--outgoing {
-  background: rgb(254 174 101 / 20%);
+  background: var(--system-elements-semantic-warning-secondary-fade);
 }
 
 .metric-grid {
@@ -484,7 +482,7 @@
   border: 0;
   border-radius: var(--space-2);
   text-align: center;
-  box-shadow: var(--shadow-primary);
+  box-shadow: var(--card-shadow);
 }
 
 .pier-card span {
@@ -1212,8 +1210,7 @@
   border: 1px solid var(--design-elements-border-default);
   border-radius: var(--space-2);
   background: var(--background-surface-4);
-  box-shadow: var(--shadow-raised);
-  backdrop-filter: var(--backdrop-blur-raised);
+  box-shadow: var(--card-shadow);
 }
 
 .financial-plan-fact__title-row {
@@ -1295,8 +1292,7 @@
   border: 1px solid var(--design-elements-border-default);
   border-radius: var(--space-2);
   background: var(--background-surface-4);
-  box-shadow: var(--shadow-raised);
-  backdrop-filter: var(--backdrop-blur-raised);
+  box-shadow: var(--card-shadow);
 }
 
 .egpz-summary__header {
@@ -1519,10 +1515,6 @@
   gap: var(--space-4);
 }
 
-.logistics-overview__card {
-  min-height: 360px;
-}
-
 .logistics-overview-container {
   width: 100%;
   min-width: 0;
@@ -1654,7 +1646,7 @@
   width: var(--logistics-bar-value);
   height: 100%;
   display: block;
-  background: rgb(24 132 204 / 70%);
+  background: var(--chart-series-primary);
 }
 
 .logistics-bar-row__value {
@@ -1683,11 +1675,10 @@
 
 .logistics-overview__legend {
   width: 100%;
-  padding-top: var(--space-2);
 }
 
 .logistics-overview__legend-dot {
-  background: rgb(24 132 204 / 70%);
+  background: var(--chart-series-primary);
 }
 
 @media (max-width: 1180px) {
