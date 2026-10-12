@@ -1116,7 +1116,7 @@
 
                     <span class="analytics-capacity-chart__track" style="--capacity-value:${row[1] / capacityAxisMax * 100}%" aria-hidden="true">
                       <i class="analytics-capacity-chart__bar analytics-capacity-chart__bar--${row[2]}"></i>
-                      <span class="analytics-capacity-chart__value">${row[1]}%</span>
+                      <span class="analytics-capacity-chart__value" data-capacity-value="${row[1]}">${row[1]}%</span>
                     </span>
 
                   </div>
@@ -1659,28 +1659,43 @@
     }, 0);
     const plot = capacityForecast.querySelector(".analytics-capacity-chart__plot");
     const axis = capacityForecast.querySelector(".analytics-capacity-chart__axis");
-    const ticks = Array.from(axis.querySelectorAll("span"));
     const styles = window.getComputedStyle(capacityForecast);
     const gap = parseFloat(styles.getPropertyValue("--space-2"));
-    const labelLimit = plot.clientWidth
-      - parseFloat(styles.getPropertyValue("--capacity-chart-gap"))
-      - parseFloat(styles.getPropertyValue("--capacity-value-space"))
-      - ticks[0].scrollWidth - ticks[ticks.length - 1].scrollWidth - gap;
-
-    capacityForecast.style.setProperty(
-      "--capacity-label-width",
-      `${Math.max(0, Math.min(Math.ceil(labelWidth), plot.clientWidth / 2, labelLimit))}px`
-    );
-
-    const lastLabelLeft = axis.clientWidth - ticks[ticks.length - 1].scrollWidth;
-    let previousRight = ticks[0].scrollWidth;
-    ticks.forEach((tick, index) => {
-      const position = axis.clientWidth * index / (ticks.length - 1);
-      const visible = index === 0 || index === ticks.length - 1
-        || (position - tick.scrollWidth >= previousRight + gap && position <= lastLabelLeft - gap);
-      tick.style.visibility = visible ? "visible" : "hidden";
-      if (visible && index > 0) previousRight = position;
-    });
+    const chartGap = parseFloat(styles.getPropertyValue("--capacity-chart-gap"));
+    const values = Array.from(capacityForecast.querySelectorAll(".analytics-capacity-chart__value")).map(value => ({
+      value: Number(value.dataset.capacityValue),
+      track: value.closest(".analytics-capacity-chart__track"),
+      width: value.getBoundingClientRect().width
+    }));
+    if (!plot.clientWidth) return;
+    const measureTick = value => ui.measureChartLabel(`${value}%`, axis);
+    function fitLabels(maximum) {
+      const minimumAxisWidth = measureTick(0) + measureTick(maximum) + gap;
+      const minimumValueSpace = Math.ceil(values.reduce((space, item) => Math.max(space, (item.value / maximum - 1) * minimumAxisWidth + gap + item.width), 0));
+      const labelLimit = plot.clientWidth - chartGap - minimumAxisWidth - minimumValueSpace;
+      const measuredLabelWidth = Math.max(0, Math.min(Math.ceil(labelWidth), plot.clientWidth / 2, Math.floor(labelLimit)));
+      const availableAxisWidth = Math.max(0, plot.clientWidth - chartGap - measuredLabelWidth);
+      // Use the axis's unused tail before reserving space for value labels.
+      const valueSpace = Math.ceil(values.reduce((space, item) => {
+        const position = item.value / maximum;
+        return position > 0 ? Math.max(space, ((position - 1) * availableAxisWidth + gap + item.width) / position) : space;
+      }, 0));
+      capacityForecast.style.setProperty("--capacity-label-width", `${measuredLabelWidth}px`);
+      capacityForecast.style.setProperty("--capacity-value-space", `${valueSpace}px`);
+    }
+    fitLabels(capacityAxisMax);
+    const scale = ui.chartScale(0, capacityAxisMax, {step: 25, width: axis.clientWidth, measureTick, gap});
+    fitLabels(scale.max);
+    const count = Math.round(scale.max / scale.step);
+    const tickMarkup = Array.from({length: count + 1}, (_, index) => {
+      const value = index * scale.step;
+      return `<span style="--capacity-tick-position:${value / scale.max * 100}%">${value}%</span>`;
+    }).join("");
+    const grid = capacityForecast.querySelector(".analytics-capacity-chart__grid");
+    const gridMarkup = "<span></span>".repeat(count + 1);
+    if (axis.innerHTML !== tickMarkup) axis.innerHTML = tickMarkup;
+    if (grid.innerHTML !== gridMarkup) grid.innerHTML = gridMarkup;
+    values.forEach(item => item.track.style.setProperty("--capacity-value", `${item.value / scale.max * 100}%`));
   }
 
 
@@ -1690,6 +1705,10 @@
   renderFinancialForecastCharts();
   initFinancialForecastActions();
   window.addEventListener("resize", syncCapacityLabelWidth);
+  if (typeof ResizeObserver !== "undefined") {
+    const capacityResizeObserver = new ResizeObserver(syncCapacityLabelWidth);
+    capacityResizeObserver.observe(capacityForecast);
+  }
   window.addEventListener("resize", renderResourceStability);
   window.addEventListener("resize", renderTransshipmentLoadChart);
   window.addEventListener("resize", renderFinancialForecastCharts);

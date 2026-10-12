@@ -890,34 +890,11 @@
 
   const statusTone = item => item.tone || (item.status === "Онлайн" ? "purple" : item.status === "Работает" ? "green" : "");
 
-  function treeChevron() {
-    return '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>';
-  }
-
-  function treeBranch(type) {
-    if (type === "spacer") return "";
-    if (type === "line") {
-      return '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="26" viewBox="0 0 16 26" fill="none" aria-hidden="true"><path d="M8 0L8 26" stroke="currentColor" vector-effect="non-scaling-stroke"/></svg>';
-    }
-    return type === "last"
-      ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="25" viewBox="0 0 16 25" fill="none" aria-hidden="true"><path d="M8 0L8 5C8 9.41828 11.5817 13 16 13" stroke="currentColor" vector-effect="non-scaling-stroke"/></svg>'
-      : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="26" viewBox="0 0 16 26" fill="none" aria-hidden="true"><path d="M16 13C11.5817 13 8.00001 9.41829 8.00001 5.00001L8.00001 0L8 26" stroke="currentColor" vector-effect="non-scaling-stroke"/></svg>';
-  }
-
   function treeCell(item, level, branches = [], isFlat = false, hasVisibleChildren = item.children.length > 0) {
-    const depth = Math.min(level, 5);
-    const hasChildren = hasVisibleChildren && !isFlat;
-    const branch = branches.map(type => `<span class="data-table__tree-branch data-table__tree-branch--${escape(type)}" aria-hidden="true">${treeBranch(type)}</span>`).join("");
-    const toggle = hasChildren
-      ? `<button class="data-table__tree-toggle" type="button" data-equipment-tree-toggle="${escape(item.id)}" aria-expanded="${expandedRows.has(item.id)}" aria-label="${expandedRows.has(item.id) ? "Свернуть" : "Раскрыть"} ${escape(item.name)}">${treeChevron()}</button>`
-      : level === 0 && !isFlat
-        ? '<span class="data-table__tree-spacer" aria-hidden="true"></span>'
-        : "";
-    const caption = item.category ? `<small class="data-table__tree-caption">${escape(item.category)}</small>` : "";
-    return `<span class="data-table__tree-node data-table__tree-node--depth-${depth}${hasChildren ? " data-table__tree-node--parent" : ""}">
-      ${branch}${toggle}
-      <span class="data-table__tree-label"><strong class="data-table__tree-title">${escape(item.name)}</strong>${caption}</span>
-    </span>`;
+    return ui.renderTableTreeNode({
+      id: item.id, label: item.name, caption: item.category, depth: level, branches,
+      hasChildren: hasVisibleChildren, expanded: expandedRows.has(item.id), flat: isFlat
+    });
   }
 
   function numericContent(value, unit = "") {
@@ -1383,14 +1360,11 @@
 
       if (!event.target.closest("[data-equipment-filter-summary]")) closeFilterSummaryMenus();
 
-      const treeToggle = event.target.closest("[data-equipment-tree-toggle]");
-      if (treeToggle) {
-        const id = treeToggle.dataset.equipmentTreeToggle;
-        if (expandedRows.has(id)) expandedRows.delete(id);
-        else expandedRows.add(id);
+      if (ui.handleTableTreeEvent(event, (id, open) => {
+        if (open) expandedRows.add(id);
+        else expandedRows.delete(id);
         render();
-        return;
-      }
+      }, document.getElementById("asset-rows"))) return;
 
       const sortButton = event.target.closest("[data-equipment-sort]");
       if (sortButton) {

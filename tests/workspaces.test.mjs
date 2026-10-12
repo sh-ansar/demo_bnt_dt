@@ -18,7 +18,7 @@ class Element {
   clientWidth = 624;
   scrollHeight = 600;
   scrollTop = 0;
-  style = {values: new Map(), getPropertyValue(name) { return this.values.get(name) || ''; }, setProperty(name, value) { this.values.set(name, value); }};
+  style = {values: new Map(), getPropertyValue(name) { return this.values.get(name) || ''; }, setProperty(name, value) { this.values.set(name, value); }, removeProperty(name) { this.values.delete(name); }};
   classList = {
     contains: name => this.classes.has(name),
     toggle: (name, on) => on ? this.classes.add(name) : this.classes.delete(name)
@@ -83,8 +83,8 @@ function element(attrs = {}, classes = []) {
   classes.forEach(name => result.classes.add(name));
   return result;
 }
-function workspace({fill = false, dismiss = false, tabs = false} = {}) {
-  const root = element({'data-workspace': '', ...(fill ? {'data-workspace-fill': ''} : {}), ...(dismiss ? {'data-workspace-dismiss': ''} : {})}, ['layout-workspace']);
+function workspace({fill = false, fillOpen = false, dismiss = false, tabs = false} = {}) {
+  const root = element({'data-workspace': '', ...(fill ? {'data-workspace-fill': ''} : {}), ...(fillOpen ? {'data-workspace-fill-open': ''} : {}), ...(dismiss ? {'data-workspace-dismiss': ''} : {})}, ['layout-workspace']);
   const toggle = element({'data-workspace-toggle': '', 'aria-expanded': 'true', 'data-workspace-label-open': 'Close', 'data-workspace-label-closed': 'Open'});
   const add = element({'data-workspace-open': 'library'}), close = element({'data-workspace-close': ''});
   const expanded = element({'data-workspace-expanded': ''}), collapsed = element({'data-workspace-collapsed': ''});
@@ -112,11 +112,18 @@ assert.equal(observers.length, 0, 'No workspace resize observer before insertion
 const canvas = workspace({fill: true, dismiss: true, tabs: true});
 const grid = element({}, ['canvas-grid']); canvas.root.append(grid);
 const twin = workspace();
+const conditional = workspace({fill: true, fillOpen: true});
+conditional.root.classes.add('is-drawer-collapsed');
 ui.workspaceMutations.callback(); ui.workspaceMutations.callback();
 assert.equal(frames.length, 1, 'Insertion updates are batched');
 flush();
 assert.equal(canvas.root.style.getPropertyValue('--layout-workspace-height'), '696px');
 assert.equal(twin.root.style.getPropertyValue('--layout-workspace-height'), '', 'The twin keeps its existing sizing');
+assert.equal(conditional.root.style.getPropertyValue('--layout-workspace-height'), '', 'Open-only workspaces keep their intrinsic height while the drawer is closed');
+ui.setWorkspaceDrawerOpen(conditional.root, true, {notify: false});
+assert.equal(conditional.root.style.getPropertyValue('--layout-workspace-height'), '696px', 'Open-only workspaces fill the available height with the drawer open');
+ui.setWorkspaceDrawerOpen(conditional.root, false, {notify: false});
+assert.equal(conditional.root.style.getPropertyValue('--layout-workspace-height'), '', 'Closing an open-only workspace restores its intrinsic height');
 assert.equal(canvas.group.classes.has('has-fade-top'), false);
 assert.equal(canvas.group.classes.has('has-fade-bottom'), true);
 const observer = observers[0];

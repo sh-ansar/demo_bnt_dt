@@ -7,6 +7,8 @@
   const bottomHost = document.querySelector('[data-summary-bottom]');
   const pageContent = document.querySelector('#page-content.operations-page');
   if (!viewport || !board || !overview || !primaryHost || !importHost || !bottomHost || !pageContent) return;
+  const ui = window.BNTUI;
+  const summary = board.closest('.daily-summary');
 
   const assetBase = '/assets/icons/daily-summary/';
   const assetSizes = {
@@ -186,11 +188,11 @@
   const pierThreeTrunk = board.querySelector('[data-pier-three-trunk]');
   const pierThreeBranches = Array.from(board.querySelectorAll('[data-pier-three-branch]'));
   const summaryToggle = document.querySelector('[data-summary-toggle]');
-  const zoomControl = viewport.querySelector('[data-zoom-control]');
-  const zoomRange = viewport.querySelector('[data-zoom-range]');
-  const zoomOut = viewport.querySelector('[data-zoom-out]');
-  const zoomIn = viewport.querySelector('[data-zoom-in]');
-  const zoomValue = viewport.querySelector('[data-zoom-value]');
+  const zoomControl = summary.querySelector('[data-zoom-control]');
+  const zoomRange = summary.querySelector('[data-zoom-range]');
+  const zoomOut = summary.querySelector('[data-zoom-out]');
+  const zoomIn = summary.querySelector('[data-zoom-in]');
+  const zoomValue = summary.querySelector('[data-zoom-value]');
   if (!svg || !path || !pierOneColdPath || !importPierOnePath || !importSvmBranch
     || !source || !target || !pierOneColdTarget || !pierSvmTarget || !importPanel
     || !toggle || !symbol || !detail
@@ -550,7 +552,7 @@
 
   function clampPan() {
     const viewportWidth = viewport.clientWidth;
-    const viewportHeight = board.offsetHeight;
+    const viewportHeight = viewport.clientHeight;
     const scaledWidth = board.offsetWidth * viewScale;
     const scaledHeight = board.offsetHeight * viewScale;
 
@@ -595,7 +597,7 @@
       panY = 0;
     } else {
       const focusX = viewport.clientWidth / 2;
-      const focusY = board.offsetHeight / 2;
+      const focusY = viewport.clientHeight / 2;
       const sceneX = (focusX - panX) / previousScale;
       const sceneY = (focusY - panY) / previousScale;
       panX = focusX - sceneX * next;
@@ -609,6 +611,7 @@
   }
 
   function syncViewportHeight() {
+    if (summary.hasAttribute('data-workspace') && !summary.classList.contains('is-drawer-collapsed')) return;
     const content = board.classList.contains('is-summary-collapsed') ? overview : bottomHost;
     const viewportRect = viewport.getBoundingClientRect();
     const contentRect = content.getBoundingClientRect();
@@ -1515,6 +1518,104 @@
     });
   }
 
+  function dailyTableRows() {
+    const territories = {1: 'Газовый терминал', 2: 'Нефтебаза', 3: 'Холодная слобода', 4: 'Капрешуми', 5: 'Дизельный', 6: 'Керосиновый', 7: 'Нефти и мазута'};
+    const rows = [];
+    function append(card, territory, place, operation, tone = card.tone) {
+      card.products.forEach((product, index) => {
+        const day = Number(String(card.values[index]).replace(/\s/g, ''));
+        const factor = rows.length % 4;
+        rows.push({tone, operation, product, territory, place, values: [day, day * (12 + factor), day * (150 + factor * 7), day * (138 + factor * 5)]});
+      });
+    }
+    [topPanels[0], topPanels[1], ...bottomPanels].forEach(panelItem => {
+      panelItem.facilities.filter(facility => facility.icon !== 'storage').forEach(facility => {
+        facility.cards.forEach(card => append(card, territories[panelItem.stationNumber], facility.name,
+          card.tone === 'incoming' ? 'Слив вагонов' : facility.icon === 'car' ? 'Погрузка автоцистерн' : 'Погрузка вагонов'));
+      });
+    });
+    // Demonstration sea movements use the same station/connection data as the board.
+    topPanels[1].facilities[0].cards.forEach(card => append({...card, values: card.values.map(value => String(Math.round(Number(value.replace(/\s/g, '')) / 6)))}, 'Нефтебаза', 'Причал №3', 'Слив танкеров', 'incoming'));
+    primaryRailFacility.cards.forEach(card => append(card, 'Газовый терминал', 'Причал №1', 'Погрузка танкеров', 'outgoing'));
+    pierOneColdConnection.cards.forEach(card => append(card, 'Холодная слобода', 'Причал №1', 'Погрузка танкеров', 'outgoing'));
+    pierTwoConnection.cards.forEach(card => append(card, 'Капрешуми', 'Причал №2', 'Погрузка танкеров', 'outgoing'));
+    return rows;
+  }
+
+  const collapsedDailyRows = new Set();
+
+  function renderDailyTableBody() {
+    const rows = dailyTableRows();
+    const numericCells = values => values.map(value => `<td class="data-table__numeric-cell">${numberFormatter.format(value)}</td>`).join('');
+    const totals = entries => entries.reduce((sum, row) => sum.map((value, index) => value + row.values[index]), [0, 0, 0, 0]);
+    const groupRow = (id, label, entries, depth, branches = []) => `<tr data-tree-level="${depth}"><td class="data-table__tree-cell" colspan="3">${ui.renderTableTreeNode({id, label, depth, branches, hasChildren: true, expanded: !collapsedDailyRows.has(id)})}</td>${numericCells(totals(entries))}</tr>`;
+    return [['incoming', 'Приёмка'], ['outgoing', 'Выдача']].map(([tone, title]) => {
+      const group = rows.filter(row => row.tone === tone);
+      const heading = groupRow(tone, title, group, 0);
+      if (collapsedDailyRows.has(tone)) return heading;
+      const operations = new Map();
+      group.forEach(row => {
+        if (!operations.has(row.operation)) operations.set(row.operation, []);
+        operations.get(row.operation).push(row);
+      });
+      const body = Array.from(operations, ([operation, entries], index) => {
+        const id = `${tone}-operation-${index}`;
+        const lastOperation = index === operations.size - 1;
+        const operationHeading = groupRow(id, operation, entries, 1, [lastOperation ? 'last' : 'fork']);
+        if (collapsedDailyRows.has(id)) return operationHeading;
+        const leaves = entries.map((row, rowIndex) => `<tr data-tree-level="2"><td class="data-table__tree-cell">${ui.renderTableTreeNode({label: row.product, depth: 2, branches: [lastOperation ? 'spacer' : 'line', rowIndex === entries.length - 1 ? 'last' : 'fork']})}</td><td>${ui.escape(row.territory)}</td><td>${ui.escape(row.place)}</td>${numericCells(row.values)}</tr>`).join('');
+        return operationHeading + leaves;
+      }).join('');
+      return heading + body;
+    }).join('');
+  }
+
+  function renderDailyTable() {
+    return `<section class="table-block"><div class="table-wrap"><table class="data-table" aria-label="Суточная сводка: приёмка и выдача"><thead><tr><th scope="col">Операция / продукт</th><th scope="col">Территория</th><th scope="col">Место</th><th scope="col" class="data-table__numeric-cell">За день</th><th scope="col" class="data-table__numeric-cell">За месяц</th><th scope="col" class="data-table__numeric-cell">2025 год</th><th scope="col" class="data-table__numeric-cell">2024 год</th></tr></thead><tbody>${renderDailyTableBody()}</tbody></table></div></section>`;
+  }
+
+  function initDailyTable() {
+    const fullscreen = summary.querySelector('[data-daily-fullscreen]');
+    const tableContent = summary.querySelector('[data-daily-table-content]');
+    if (!fullscreen || !tableContent) return;
+    tableContent.innerHTML = renderDailyTable();
+    tableContent.addEventListener('click', event => {
+      ui.handleTableTreeEvent(event, (id, open) => {
+        if (open) collapsedDailyRows.delete(id);
+        else collapsedDailyRows.add(id);
+        tableContent.querySelector('tbody').innerHTML = renderDailyTableBody();
+      }, tableContent);
+    });
+    const splitWindow = new URL(window.location.href).searchParams.get('daily-view') === 'split';
+    if (splitWindow) {
+      document.body.classList.add('daily-summary-window');
+      document.title = 'Суточная сводка';
+      fullscreen.hidden = true;
+    }
+    ui.bindWorkspaces();
+    ui.setWorkspaceDrawerOpen(summary, splitWindow, {notify: false});
+    summary.addEventListener('workspacechange', event => {
+      if (event?.detail?.open) viewport.style.removeProperty('height');
+      ui.bindTableViewports();
+      requestAnimationFrame(() => {
+        if (!userAdjustedZoom) fitInitialView();
+        else {
+          renderViewport();
+          syncViewportHeight();
+        }
+        renderConnection();
+      });
+    });
+    fullscreen.addEventListener('click', () => {
+      const url = new URL('/operations.html', window.location.href);
+      url.searchParams.set('daily-view', 'split');
+      window.open(url.href, '_blank', `popup,noopener,width=${window.screen.availWidth},height=${window.screen.availHeight}`);
+    });
+    ui.bindTableViewports();
+  }
+
+  initDailyTable();
+
   toggle.addEventListener('click', function () {
     setExpanded(!expanded);
   });
@@ -1611,7 +1712,10 @@
   const resizeObserver = typeof ResizeObserver === 'function'
     ? new ResizeObserver(function () {
       if (!userAdjustedZoom) fitInitialView();
-      else renderViewport();
+      else {
+        renderViewport();
+        syncViewportHeight();
+      }
       renderConnection();
     })
     : null;
@@ -1632,7 +1736,10 @@
 
   window.addEventListener('resize', function () {
     if (!userAdjustedZoom) fitInitialView();
-    else renderViewport();
+    else {
+      renderViewport();
+      syncViewportHeight();
+    }
     renderConnection();
   }, { passive: true });
   window.addEventListener('load', function () {

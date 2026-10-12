@@ -165,6 +165,19 @@ document.fonts.emit('loadingdone'); flush();
 assert.equal(multiline(measured), true, 'Font loading remeasures actual text lines');
 
 const css = await read('assets/css/components.css');
+const drawerOptions = {id: 'daily-summary-table', title: 'Суточная сводка', form: false,
+  content: '<section class="table-block"><div class="table-wrap"><table class="data-table"></table></div></section>'};
+const standardDrawer = ui.renderDrawer(drawerOptions);
+const halfDrawer = ui.renderDrawer({...drawerOptions, size: 'half-screen'});
+assert.match(standardDrawer, /class="filter-modal" role="dialog" aria-modal="true"/);
+assert.match(halfDrawer, /class="filter-modal filter-modal--half-screen" role="dialog" aria-modal="true"/);
+assert.equal(halfDrawer.replace(' filter-modal--half-screen', ''), standardDrawer, 'Half-screen reuses the full markup and ARIA contract, changing only its size');
+assert.match(halfDrawer, /<section class="filter-modal__drawer dt3-drawer"/);
+assert.doesNotMatch(halfDrawer, /<form\b/, 'Read-only tables do not need a form wrapper');
+assert.equal(ui.renderDrawer({...drawerOptions, size: 'unknown'}), standardDrawer, 'Unrecognized sizes preserve the standard drawer');
+assert.match(css, /\.filter-modal--half-screen\s*\{\s*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/);
+assert.match(css, /@media \(max-width: 620px\)\s*\{\s*\.filter-modal,\s*\.filter-modal--half-screen\s*\{\s*grid-template-columns: minmax\(0, 1fr\);/);
+assert.match(css, /\.filter-modal__drawer\.dt3-drawer,[\s\S]*?grid-column: 2;[\s\S]*?height: 100vh;/);
 assert.match(css, /\.filter-modal__head\s*\{[^}]*align-items: first baseline;/);
 assert.match(css, /\.filter-modal__head\.is-title-long\s*\{[^}]*align-items: flex-start;/);
 const baselineRule = css.match(/\.filter-modal__head \.dt3-drawer-toggle\.button-smallest-secondary-radius--icon::before\s*\{([^}]*)\}/)[1];

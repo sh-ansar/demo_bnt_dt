@@ -84,6 +84,6 @@ pages.push('legacy/report-studio-v5/index.html');
 for (const page of pages) {
   const html = await read(page);
   if (html.includes('assets/css/tokens.css')) assert.match(html, /tokens\.css\?v=37/);
-  if (html.includes('assets/css/components.css')) assert.match(html, /components\.css\?v=336/);
+  if (html.includes('assets/css/components.css')) assert.match(html, /components\.css\?v=348/);
 }
 console.log('Chart hues: four approved six-role groups, all 24 exact colors preserved, three existing aliases reused, 70% alpha applied once, fixed Light/Dark palette and synchronized consumer versions. Browser pixels excluded.');

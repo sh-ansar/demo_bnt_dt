@@ -119,11 +119,12 @@
       const upper = Math.max(Number(options.axisMax) || 0, ...endpoints);
       const rawMax = upper === rawMin ? rawMin + 1 : upper;
       const scale = window.BNTUI.chartScale(rawMin, rawMax, {step: options.tickStep});
-      const {step, min, max} = scale;
-      const range = max - min || 1;
-      const tickCount = Math.round(range / step);
-      const tickValues = Array.from({length: tickCount + 1}, (_, tick) => Number((min + tick * step).toPrecision(12)));
-      const tickLabels = tickValues.map(value => options.formatTick ? options.formatTick(value) : axisNumberFormat.format(value));
+      let {step, min, max} = scale;
+      let range = max - min || 1;
+      let tickCount = Math.round(range / step);
+      let tickValues = Array.from({length: tickCount + 1}, (_, tick) => Number((min + tick * step).toPrecision(12)));
+      const formatTick = value => options.formatTick ? options.formatTick(value) : axisNumberFormat.format(value);
+      let tickLabels = tickValues.map(formatTick);
       let tickWidths = [];
       let horizontalBarSize = 0;
       let rowHeight = 0;
@@ -169,6 +170,19 @@
         }));
         margin.left = Math.max(margin.left, Math.ceil(categoryWidth) + categoryGap + tickOffset);
         categoryX = margin.left - categoryGap;
+        label.setAttribute('class', 'chart-bars__tick');
+        const fittedScale = window.BNTUI.chartScale(min, max, {
+          step, width: Math.max(1, width - margin.left - margin.right - valueWidth - valueGap), gap: tickOffset,
+          measureTick: value => {
+            label.textContent = formatTick(value);
+            return label.getComputedTextLength();
+          }
+        });
+        ({step, min, max} = fittedScale);
+        range = max - min || 1;
+        tickCount = Math.round(range / step);
+        tickValues = Array.from({length: tickCount + 1}, (_, tick) => min + tick * step);
+        tickLabels = tickValues.map(formatTick);
         tickWidths = tickLabels.map(text => {
           label.textContent = text;
           return label.getComputedTextLength();
@@ -179,9 +193,7 @@
         rowHeight = Math.max(horizontalBarSize, labelHeight) + rowPadding * 2;
         if (showValues && layout === 'grouped') rowHeight = Math.max(rowHeight, (valueHeight + valueGap) * series.length + rowPadding * 2);
         axisHeight = labelHeight + tickOffset;
-        const minimumPlotWidth = options.tickStep
-          ? tickWidths[0] + tickWidth + tickOffset * 2
-          : tickCount * Math.max(tickWidth + tickOffset, tickWidths[0] + tickWidths[1] + tickOffset * 2);
+        const minimumPlotWidth = tickWidths[0] + tickWidth + tickOffset * 2;
         const baseLeft = margin.left, baseRight = margin.right;
         const minPlot = Math.max(64, minimumPlotWidth);
         const gutters = plotWidth => {
@@ -262,15 +274,12 @@
       const plotWidth = width - margin.left - margin.right;
       const plotHeight = height - margin.top - margin.bottom;
       const bottom = height - margin.bottom;
-      const tickSpacing = plotWidth / tickCount;
-      const labelStride = Math.max(1, Math.ceil((tickWidth + tickOffset) / tickSpacing));
       const order = series.map((_, index) => index);
       if (selectedSeries !== null && layout === 'stacked') order.unshift(...order.splice(order.indexOf(selectedSeries), 1));
       const xFor = value => margin.left + plotWidth * (value - min) / range;
       const yFor = value => bottom - plotHeight * (value - min) / range;
       const svg = [];
       const axisLabels = [];
-      let previousLabelRight = -Infinity;
       for (let tick = 0; tick <= tickCount; tick += 1) {
         const value = tickValues[tick];
         const x = xFor(value);
@@ -278,11 +287,7 @@
         const label = escape(tickLabels[tick]);
         if (horizontal) {
           svg.push(`<line class="chart-bars__vertical-line" x1="${x}" y1="${margin.top}" x2="${x}" y2="${bottom}"/>`);
-          const labelRight = x - tickOffset;
-          const labelLeft = labelRight - tickWidths[tick];
-          const visible = value === 0 || tick === 0 || tick === tickCount || (tick % labelStride === 0 && labelLeft >= previousLabelRight + tickOffset && (tickCount - tick) * tickSpacing >= tickWidths[tickCount] + tickOffset);
-          if (visible) previousLabelRight = labelRight;
-          axisLabels.push(`<text class="chart-bars__tick" x="${x - tickOffset}" y="${labelHeight}" text-anchor="end" data-tick-value="${value}"${visible ? '' : ' visibility="hidden"'}>${label}</text>`);
+          axisLabels.push(`<text class="chart-bars__tick" x="${x - tickOffset}" y="${labelHeight}" text-anchor="end" data-tick-value="${value}">${label}</text>`);
         } else {
           svg.push(`<line class="chart-bars__grid-line" x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}"${tick === 0 ? ' data-chart-closing-axis' : ''}/><text class="chart-bars__tick" x="${margin.left - tickOffset}" y="${y + tickOffset}" dominant-baseline="hanging" text-anchor="end" data-tick-value="${value}">${label}</text>`);
         }

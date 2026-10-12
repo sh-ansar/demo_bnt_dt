@@ -33,6 +33,14 @@ for (const minimum of [-8127.65, -600, -3, -.001, -0, 0, .01, 37, 2675.87]) {
 }
 for (const step of [0, -3, NaN, Infinity]) check(-12.7, 194.35, {step});
 assert.deepEqual({...ui.chartScale(NaN, Infinity)}, {step: 1, min: 0, max: 4});
+const measured = {step: 25, measureTick: value => `${value}%`.length * 7, gap: 8};
+assert.deepEqual(check(0, 125, {...measured, width: 960}), {step: 25, min: 0, max: 125});
+assert.deepEqual(check(0, 125, {...measured, width: 130}), {step: 50, min: 0, max: 150});
+assert.deepEqual(check(0, 125, {...measured, width: 90}), {step: 100, min: 0, max: 200});
+assert.deepEqual(check(0, 135, {...measured, step: 45, width: 130}), {step: 45, min: 0, max: 135});
+assert.deepEqual(check(0, 135, {...measured, step: 45, width: 90}), {step: 90, min: 0, max: 180});
+assert.deepEqual(check(0, 125, {...measured, width: 60}), {step: 200, min: 0, max: 200});
+check(-125, 125, {...measured, width: 100});
 const bars = await readFile(new URL('../assets/js/chart-stacked-bars.js', import.meta.url), 'utf8');
 assert.match(bars, /window\.BNTUI\.chartScale\(rawMin, rawMax, \{step: options\.tickStep\}\)/);
 assert.doesNotMatch(bars, /function roundedScale/);

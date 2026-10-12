@@ -1121,7 +1121,9 @@ const axisTicks = axis => [...axis.innerHTML.matchAll(/<text class="chart-bars__
 }));
 function assertAxisLabels(axis) {
   const ticks = axisTicks(axis);
-  assert.equal(ticks.length, 5, 'Automatic axes have four rounded intervals');
+  assert.ok(ticks.length >= 2 && ticks.length <= 5, 'Narrow axes increase the step instead of hiding labels');
+  const step = ticks[1].value - ticks[0].value;
+  for (let index = 1; index < ticks.length; index++) assert.equal(ticks[index].value - ticks[index - 1].value, step);
   assert.ok(ticks.every(tick => tick.visible), 'Every axis mark stays labelled');
   assert.equal(new Set(ticks.map(tick => tick.text)).size, ticks.length, 'Small values must not round to duplicate labels');
   for (let index = 1; index < ticks.length; index++) {
@@ -1239,8 +1241,8 @@ screenshotObserver.callback();
 assert.equal(screenshotGrid.classList.contains('chart-grid--chart-emphasis'), false, 'One measured gutter fits the screenshot chart into an equal split');
 screenshotGrid.clientWidth = 900; screenshotColumn.clientWidth = 444; screenshotChart.viewport.clientWidth = 418;
 screenshotObserver.callback();
-assert.equal(screenshotGrid.classList.contains('chart-grid--chart-emphasis'), true);
-assert.equal(Number(screenshotChart.chart.getAttribute('viewBox').split(' ')[2]), Math.round(screenshotChart.viewport.clientWidth), 'Render against the new column width immediately after applying two-thirds layout');
+assert.equal(screenshotGrid.classList.contains('chart-grid--chart-emphasis'), false, 'A coarser uniform scale fits without widening the chart column');
+assert.equal(Number(screenshotChart.chart.getAttribute('viewBox').split(' ')[2]), Math.round(screenshotChart.viewport.clientWidth), 'Render against the actual column width');
 
 const tableGrid = new Element(), chartColumn = new Element(), twoColumnTable = {tHead: {rows: [{cells: [{colSpan: 1}, {colSpan: 1}]}]}};
 tableGrid.queries.set(':scope > .table-block .data-table', twoColumnTable);
@@ -1248,7 +1250,7 @@ receiptFixture.chart.grid = tableGrid;
 receiptFixture.viewport.parentElement = chartColumn;
 chartColumn.parentElement = tableGrid;
 const receiptObserver = cf.observers.find(observer => observer.target === receiptFixture.viewport);
-tableGrid.clientWidth = 812; receiptFixture.viewport.clientWidth = 374; chartColumn.clientWidth = 400;
+tableGrid.clientWidth = 500; receiptFixture.viewport.clientWidth = 218; chartColumn.clientWidth = 244;
 receiptObserver.callback();
 assert.ok(tableGrid.classList.contains('chart-grid--chart-emphasis'), 'A cramped chart with a two-column table takes two thirds');
 receiptFixture.viewport.clientWidth = 507; chartColumn.clientWidth = 533;
@@ -1257,7 +1259,7 @@ assert.ok(tableGrid.classList.contains('chart-grid--chart-emphasis'), 'Expanding
 tableGrid.clientWidth = 3000; receiptFixture.viewport.clientWidth = 1468; chartColumn.clientWidth = 1494;
 receiptObserver.callback();
 assert.ok(!tableGrid.classList.contains('chart-grid--chart-emphasis'), 'A wider block restores equal columns when the chart fits');
-tableGrid.clientWidth = 812; receiptFixture.viewport.clientWidth = 374; chartColumn.clientWidth = 400;
+tableGrid.clientWidth = 500; receiptFixture.viewport.clientWidth = 218; chartColumn.clientWidth = 244;
 twoColumnTable.tHead.rows[0].cells.push({colSpan: 1});
 receiptObserver.callback();
 assert.ok(!tableGrid.classList.contains('chart-grid--chart-emphasis'), 'A three-column table retains the ordinary split');

@@ -37,6 +37,6 @@ const pages = (await readdir(new URL('../', import.meta.url))).filter(name => na
 pages.push('legacy/report-studio-v5/index.html');
 for (const page of pages) {
   const html = await read(page);
-  if (html.includes('assets/css/components.css')) assert.match(html, /components\.css\?v=336/, `${page}: shared secondary cache version`);
+  if (html.includes('assets/css/components.css')) assert.match(html, /components\.css\?v=348/, `${page}: shared secondary cache version`);
 }
 console.log('Secondary buttons: shared raised shadow, token overlay hover, retained base and semantic surfaces, no disabled hover, unchanged geometry and synchronized versions. Browser pixels excluded.');

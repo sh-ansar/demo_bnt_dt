@@ -153,11 +153,14 @@ function assertGeometry({ chart, axis, viewport }) {
   assert.equal(Number(ticks[0][1]), left - 8);
   assert.match(ticks[0][0], /text-anchor="end"/);
   assert.match(ticks[1][0], /text-anchor="end"/);
-  assert.equal(Number(ticks.at(-1)[2]), 2000000);
+  assert.ok(Number(ticks.at(-1)[2]) >= 2000000);
+  const step = Number(ticks[1][2]) - Number(ticks[0][2]);
+  assert.equal(step % 200000, 0);
   for (let index = 1; index < ticks.length; index += 1) {
-    assert.equal(Number(ticks[index][2]) - Number(ticks[index - 1][2]), 200000);
+    assert.equal(Number(ticks[index][2]) - Number(ticks[index - 1][2]), step);
   }
-  const visibleTicks = [...axis.innerHTML.matchAll(/<text[^>]+>([^<]+)<\/text>/g)].filter(([text]) => !text.includes('visibility="hidden"'));
+  assert.doesNotMatch(axis.innerHTML, /visibility="hidden"/);
+  const visibleTicks = [...axis.innerHTML.matchAll(/<text[^>]+>([^<]+)<\/text>/g)];
   for (let index = 1; index < visibleTicks.length; index += 1) {
     const previousX = Number(visibleTicks[index - 1][0].match(/x="([^"]+)"/)[1]);
     const nextX = Number(visibleTicks[index][0].match(/x="([^"]+)"/)[1]);

@@ -40,8 +40,8 @@ for (const page of pages) {
     references += 1;
   }
   assert.match(html, /tokens\.css\?v=37/);
-  assert.match(html, /components\.css\?v=336/);
-  assert.match(html, /ui\.js\?v=61/);
+  assert.match(html, /components\.css\?v=348/);
+  assert.match(html, /ui\.js\?v=67/);
   if (html.includes('chart-donut.js')) assert.match(html, /chart-donut\.js\?v=14/);
   assert.match(html, /navigation\.js\?v=12002/);
 }

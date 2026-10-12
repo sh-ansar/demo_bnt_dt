@@ -34,14 +34,43 @@
   letter-spacing: var(--typography-label-smallest-letter-spacing);
 }
 
+.daily-summary.layout-workspace {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--space-3);
+  row-gap: var(--space-4);
+  background-color: color-mix(in srgb, var(--design-elements-icon-secondary) 24%, var(--background-page));
+  background-image: radial-gradient(circle, var(--design-elements-icon-secondary) .8px, transparent .9px);
+  background-position: var(--space-3) var(--space-3);
+  background-size: calc(var(--space-6) - var(--space-2)) calc(var(--space-6) - var(--space-2));
+  overflow: visible;
+}
+
+.daily-summary.layout-workspace.is-drawer-collapsed {
+  column-gap: 0;
+  height: auto;
+  grid-template-rows: auto auto;
+}
+
+.daily-summary.layout-workspace > .layout-surface,
+.daily-summary.layout-workspace > .layout-drawer {
+  background: transparent;
+}
+
+.daily-summary.layout-workspace > .layout-drawer {
+  padding: 0;
+  border-left: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
 .daily-summary.is-pier-detail-open {
   position: relative;
   z-index: 10;
 }
 
-.daily-summary h2,
-.daily-summary h3,
-.daily-summary p {
+.daily-summary h2:not([class*="typography-"]),
+.daily-summary h3:not([class*="typography-"]),
+.daily-summary p:not([class*="typography-"]) {
   margin: 0;
   font: inherit;
 }
@@ -49,6 +78,8 @@
 .daily-summary-scroll {
   position: relative;
   width: 100%;
+  height: 100%;
+  min-height: 0;
   margin-bottom: 0;
   overflow: visible;
 }
@@ -56,15 +87,13 @@
 .daily-summary-viewport {
   position: relative;
   width: 100%;
+  height: 100%;
   min-width: 0;
   padding-bottom: var(--space-4);
   overflow: hidden;
-  border: 1px solid var(--design-elements-border-default);
-  border-radius: var(--radius);
-  background-color: color-mix(in srgb, var(--design-elements-icon-secondary) 24%, var(--background-page));
-  background-image: radial-gradient(circle, var(--design-elements-icon-secondary) .8px, transparent .9px);
-  background-position: var(--space-3) var(--space-3);
-  background-size: calc(var(--space-6) - var(--space-2)) calc(var(--space-6) - var(--space-2));
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   cursor: grab;
   touch-action: none;
 }
@@ -75,7 +104,13 @@
 }
 
 .daily-summary-viewport.is-summary-collapsed {
+  height: auto;
   overflow: visible;
+}
+
+.daily-summary.layout-workspace.is-drawer-collapsed:has(.daily-flow-board.is-summary-collapsed) {
+  height: auto;
+  grid-template-rows: auto auto;
 }
 
 .daily-flow-board {
@@ -90,11 +125,15 @@
   isolation: isolate;
   width: 100%;
   min-width: 1120px;
-  padding: 56px var(--space-4) var(--space-4);
+  padding: 0 var(--space-4) var(--space-4);
   overflow: visible;
   transform-origin: 0 0;
   transition: padding .24s ease;
   will-change: transform;
+}
+
+.daily-summary:not(.is-drawer-collapsed) .daily-flow-board {
+  padding-right: 0;
 }
 
 .daily-summary__overview {
@@ -790,20 +829,60 @@
   font-style: normal;
 }
 
+.daily-summary.layout-workspace > .daily-summary-tools {
+  position: relative;
+  grid-template-columns: inherit;
+  column-gap: inherit;
+  padding: var(--space-3) 0 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  cursor: default;
+  transition: grid-template-columns .24s ease;
+}
+
+.daily-summary.layout-workspace .layout-toolbar-group--center {
+  grid-column: 1;
+  justify-content: center;
+}
+
+.daily-summary.layout-workspace .layout-toolbar-group--right {
+  position: absolute;
+  grid-column: 1 / -1;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: max-content;
+  max-width: calc(100% - var(--space-3) * 2);
+  padding: 0;
+  gap: var(--space-2);
+  transform: none;
+}
+
+@media (max-width: 800px) {
+  .daily-summary.layout-workspace > .daily-summary-tools {
+    row-gap: var(--space-3);
+  }
+  .daily-summary.layout-workspace .layout-toolbar-group--right {
+    position: static;
+    grid-column: 1;
+    grid-row: 2;
+    padding: 0 var(--space-3);
+    transform: none;
+  }
+}
+
 .daily-summary-zoom {
   --zoom-progress: 50%;
   --ui-zoom-button-size: 36px;
-  position: absolute;
+  position: relative;
   z-index: 7;
-  top: var(--space-3);
-  left: 50%;
-  width: min(360px, calc(100% - var(--space-6)));
+  max-width: 360px;
+  width: min(360px, 100%);
   height: var(--ui-zoom-button-size);
   display: grid;
   grid-template-columns: var(--ui-zoom-button-size) minmax(0, 1fr) var(--ui-zoom-button-size);
   gap: var(--ui-zoom-gap);
   align-items: center;
-  transform: translateX(-50%);
   transition: opacity .18s ease, visibility .18s ease;
 }
 
@@ -965,7 +1044,7 @@
 
 .daily-summary-toggle {
   position: absolute;
-  z-index: 6;
+  z-index: 41;
   left: 50%;
   bottom: calc(-1 * var(--space-4));
   width: var(--space-6);
@@ -982,6 +1061,10 @@
   backdrop-filter: var(--backdrop-blur-raised);
   cursor: pointer;
   transform: translateX(-50%);
+}
+
+.daily-summary.layout-workspace:not(.is-drawer-collapsed) .daily-summary-toggle {
+  display: none;
 }
 
 .daily-summary-toggle::after {
@@ -1012,10 +1095,6 @@
 
 .daily-summary-toggle.is-expanded svg {
   transform: rotate(180deg);
-}
-
-.daily-flow-board.is-summary-collapsed {
-  padding-top: var(--space-4);
 }
 
 .daily-flow-board.is-summary-collapsed.is-pier-detail-open {
@@ -1064,10 +1143,38 @@
   pointer-events: none;
 }
 
-.daily-flow-board.is-summary-collapsed + .daily-summary-zoom {
-  visibility: hidden;
-  opacity: 0;
-  pointer-events: none;
+.daily-summary:has(.daily-flow-board.is-summary-collapsed) .daily-summary-zoom {
+  display: none;
+}
+
+.daily-summary:has(.daily-flow-board.is-summary-collapsed) > .daily-summary-tools {
+  min-height: calc(var(--ui-zoom-button-size, 36px) + var(--space-3) * 2);
+}
+
+body.daily-summary-window {
+  overflow: hidden;
+}
+
+body.daily-summary-window > .app-shell {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+body.daily-summary-window > .app-shell > .app-sidebar,
+body.daily-summary-window .app-main > :is(.app-topbar, .app-contextbar),
+body.daily-summary-window #page-content > :not(.daily-summary) {
+  display: none !important;
+}
+
+body.daily-summary-window #page-content.operations-page {
+  height: 100dvh;
+  min-height: 0 !important;
+  padding: var(--space-3) !important;
+  overflow: hidden;
+}
+
+body.daily-summary-window .daily-summary.layout-workspace {
+  height: 100%;
+  min-height: 0;
 }
 
 .daily-flow-board.is-summary-collapsed .daily-connections,

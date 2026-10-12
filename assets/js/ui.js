@@ -40,7 +40,7 @@ window.BNTUI = {
   renderDrawerCancel(attributes = {}) {
     return `<button class="button-smallest-secondary-radius typography-button-smallest" type="button"${this.attrs({"data-close": true, ...attributes})}>${this.icon("close")}<span>Отмена</span></button>`;
   },
-  renderDrawer({id, title, description = "", fields = "", content = null, footer = "", form = true, formAttributes = {}, emptyMessage = null}) {
+  renderDrawer({id, title, description = "", fields = "", content = null, footer = "", form = true, formAttributes = {}, emptyMessage = null, size = "default"}) {
     const heading = `<h2 id="${this.escape(id)}-title" class="filter-modal__title typography-caption-small">${this.escape(title)}</h2>`;
     const titleRow = description ? `<div class="scenario-copy__title-row">${heading}<button class="sign_BTN_smallest" type="button" data-drawer-info="${this.escape(description)}" data-drawer-info-title="${this.escape(title)}" aria-label="О форме: ${this.escape(title)}" aria-haspopup="dialog" aria-expanded="false"><svg width="14" height="14" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=14#Info"></use></svg></button></div>` : heading;
     const body = emptyMessage == null ? `<div class="filter-modal__body filter-modal__body--form">${content ?? `<div class="filter-modal__fields ui-scrollbar">${fields}</div>`}</div>${content == null || footer ? `
@@ -48,7 +48,7 @@ window.BNTUI = {
         <footer class="filter-modal__footer">${footer}</footer>` : ''}` : `<div class="filter-modal__body filter-modal__body--empty ui-scrollbar">
           ${this.renderEmptyState(emptyMessage, {size: "smallest"})}
         </div>`;
-    return `<div id="${this.escape(id)}" class="filter-modal" role="dialog" aria-modal="true" aria-labelledby="${this.escape(id)}-title" data-studio-drawer>
+    return `<div id="${this.escape(id)}" class="filter-modal${size === "half-screen" ? " filter-modal--half-screen" : ""}" role="dialog" aria-modal="true" aria-labelledby="${this.escape(id)}-title" data-studio-drawer>
       <div class="filter-modal__overlay" data-close></div>
       <${form ? 'form' : 'section'} class="filter-modal__drawer dt3-drawer"${this.attrs(formAttributes)} aria-label="${this.escape(title)}"${form ? ' novalidate' : ''}>
         <header class="filter-modal__head">
@@ -144,10 +144,15 @@ window.BNTUI = {
   updateWorkspace(root) {
     if (!root) return;
     if (root.hasAttribute("data-workspace-fill") && root.getClientRects().length) {
-      const gutter = parseFloat(window.getComputedStyle(root).getPropertyValue("--space-5")) || 0;
-      const height = Math.round(Math.max(410, (window.innerHeight || document.documentElement.clientHeight) - root.getBoundingClientRect().top - gutter));
-      const value = `${height}px`;
-      if (root.style.getPropertyValue("--layout-workspace-height") !== value) root.style.setProperty("--layout-workspace-height", value);
+      const fillOnlyWhenOpen = root.hasAttribute("data-workspace-fill-open");
+      if (fillOnlyWhenOpen && root.classList.contains("is-drawer-collapsed")) {
+        root.style.removeProperty("--layout-workspace-height");
+      } else {
+        const gutter = parseFloat(window.getComputedStyle(root).getPropertyValue("--space-5")) || 0;
+        const height = Math.round(Math.max(410, (window.innerHeight || document.documentElement.clientHeight) - root.getBoundingClientRect().top - gutter));
+        const value = `${height}px`;
+        if (root.style.getPropertyValue("--layout-workspace-height") !== value) root.style.setProperty("--layout-workspace-height", value);
+      }
     }
     const body = root.querySelector(".layout-drawer-body"), group = root.querySelector(".layout-drawer-list-group");
     if (body && group) {
@@ -1410,6 +1415,34 @@ window.BNTUI = {
     set.delete(value);
     if (!set.size && !allowEmpty) set.add(allValue);
   },
+  tableTreeBranch(type) {
+    if (type === "spacer") return "";
+    if (type === "line") {
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="26" viewBox="0 0 16 26" fill="none" aria-hidden="true"><path d="M8 0L8 26" stroke="currentColor" vector-effect="non-scaling-stroke"/></svg>';
+    }
+    return type === "last"
+      ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="25" viewBox="0 0 16 25" fill="none" aria-hidden="true"><path d="M8 0L8 5C8 9.41828 11.5817 13 16 13" stroke="currentColor" vector-effect="non-scaling-stroke"/></svg>'
+      : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="26" viewBox="0 0 16 26" fill="none" aria-hidden="true"><path d="M16 13C11.5817 13 8.00001 9.41829 8.00001 5.00001L8.00001 0L8 26" stroke="currentColor" vector-effect="non-scaling-stroke"/></svg>';
+  },
+  renderTableTreeNode({id = "", label = "", caption = "", depth = 0, branches = [], hasChildren = false, expanded = false, flat = false} = {}) {
+    const level = Math.max(0, Math.min(Number(depth) || 0, 5));
+    const parent = hasChildren && !flat;
+    const branch = branches.map(type => `<span class="data-table__tree-branch data-table__tree-branch--${this.escape(type)}" aria-hidden="true">${this.tableTreeBranch(type)}</span>`).join("");
+    const toggle = parent
+      ? `<button class="data-table__tree-toggle" type="button" data-table-tree-toggle="${this.escape(id)}" aria-expanded="${expanded}" aria-label="${expanded ? "Свернуть" : "Раскрыть"} ${this.escape(label)}">${'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>'}</button>`
+      : level === 0 && !flat ? '<span class="data-table__tree-spacer" aria-hidden="true"></span>' : "";
+    return `<span class="data-table__tree-node data-table__tree-node--depth-${level}${parent ? " data-table__tree-node--parent" : ""}">${branch}${toggle}<span class="data-table__tree-label"><strong class="data-table__tree-title">${this.escape(label)}</strong>${caption ? `<small class="data-table__tree-caption">${this.escape(caption)}</small>` : ""}</span></span>`;
+  },
+  handleTableTreeEvent(event, onToggle, root = document) {
+    const button = event.target.closest?.("[data-table-tree-toggle]");
+    if (!button || (root !== document && !root?.contains(button))) return false;
+    const id = button.dataset.tableTreeToggle;
+    const expanded = button.getAttribute("aria-expanded") !== "true";
+    const focused = document.activeElement === button;
+    onToggle(id, expanded);
+    if (focused) Array.from(root.querySelectorAll("[data-table-tree-toggle]")).find(node => node.dataset.tableTreeToggle === id)?.focus({preventScroll: true});
+    return true;
+  },
   updateTableViewport(wrap) {
     const table = wrap?.querySelector(":scope > table");
     if (!table || !wrap.getClientRects().length) return;
@@ -1423,7 +1456,7 @@ window.BNTUI = {
     const outsideScrollbarHeight = outsideBar?.getBoundingClientRect().height || 0;
     const readableHeight = headerHeight + footerHeight + scrollbarHeight + rows.slice(0, rowCount).reduce((height, row) => height + row.getBoundingClientRect().height, 0);
     const rect = wrap.getBoundingClientRect();
-    const boundary = wrap.closest(".filter-modal__fields, .filter-modal__body, .drawer-body, .dt-drawer-body, .quality-detail-drawer-card__body");
+    const boundary = wrap.closest(".filter-modal__fields, .filter-modal__body, .layout-drawer-body, .drawer-body, .dt-drawer-body, .quality-detail-drawer-card__body");
     let available;
     if (boundary) {
       const offset = Math.max(0, rect.top - boundary.getBoundingClientRect().top + boundary.scrollTop);
@@ -1443,7 +1476,8 @@ window.BNTUI = {
     const height = `${Math.max(Math.ceil(readableHeight), Math.floor(available))}px`;
     if (wrap.style.getPropertyValue("--table-wrap-max-height") !== height) wrap.style.setProperty("--table-wrap-max-height", height);
     const block = wrap.closest(".table-block");
-    const head = `${headerHeight}px`;
+    const head = `${Math.ceil(headerHeight)}px`;
+    if (wrap.style.getPropertyValue("--table-block-sticky-head-height") !== head) wrap.style.setProperty("--table-block-sticky-head-height", head);
     if (block && block.style.getPropertyValue("--table-block-sticky-head-height") !== head) block.style.setProperty("--table-block-sticky-head-height", head);
   },
   updateTableHeightGroup(group) {
@@ -1517,19 +1551,29 @@ window.BNTUI = {
     this.tableViewportsBound = true;
     let pending = false;
     const targets = new Set();
+    let scrollbars = new Set();
     const update = () => {
       pending = false;
       const next = new Set([document.documentElement]);
+      const nextScrollbars = new Set();
       document.querySelectorAll(".table-wrap").forEach(wrap => {
         this.updateTableEmptyState(wrap);
         this.updateTableColumns(wrap);
         this.updateTableViewport(wrap);
-        [wrap, wrap.querySelector(":scope > table"), wrap.closest(".filter-modal__fields, .filter-modal__body, .drawer-body, .dt-drawer-body, .quality-detail-drawer-card__body")].filter(Boolean).forEach(element => next.add(element));
+        const block = wrap.parentElement;
+        if (block?.matches?.(".table-block") && wrap.querySelector(":scope > table")?.matches?.(".data-table, .analytics-table")) {
+          if (!block.classList.contains("table-block--scroll-outside")) block.classList.add("table-block--scroll-outside");
+          this.bindTableBlockScrollbar(block);
+          nextScrollbars.add(block);
+        }
+        [wrap, wrap.querySelector(":scope > table"), wrap.querySelector(":scope > table")?.tHead, wrap.closest(".filter-modal__fields, .filter-modal__body, .drawer-body, .dt-drawer-body, .quality-detail-drawer-card__body")].filter(Boolean).forEach(element => next.add(element));
       });
       document.querySelectorAll('[data-table-height-group="smallest"]').forEach(group => {
         this.updateTableHeightGroup(group);
         next.add(group);
       });
+      scrollbars.forEach(block => { if (!nextScrollbars.has(block)) block.__bntTableScrollbars?.destroy(); });
+      scrollbars = nextScrollbars;
       targets.forEach(element => { if (!next.has(element)) { observer?.unobserve(element); targets.delete(element); } });
       next.forEach(element => { if (element && !targets.has(element)) { observer?.observe(element); targets.add(element); } });
     };
@@ -1559,6 +1603,18 @@ window.BNTUI = {
   bindTableBlockScrollbar(block) {
     const wrap = block?.querySelector(":scope > .table-wrap");
     if (!wrap) return;
+    const previous = block.__bntTableScrollbars;
+    if (previous?.wrap === wrap) {
+      previous.requestUpdate();
+      return;
+    }
+    previous?.destroy();
+    const removers = [];
+    const activeDrags = new Set();
+    const listen = (target, name, handler, options) => {
+      target.addEventListener(name, handler, options);
+      removers.push(() => target.removeEventListener(name, handler, options));
+    };
 
     const ensureBar = axis => {
       const modifier = `table-scrollbar--${axis}`;
@@ -1582,11 +1638,12 @@ window.BNTUI = {
 
     const vertical = ensureBar("vertical");
     const horizontal = ensureBar("horizontal");
-    let state = block.__bntTableScrollbars;
+    const state = {wrap, frame: 0, destroyed: false};
+    block.__bntTableScrollbars = state;
 
     const setVisible = (bar, visible) => {
-      bar.hidden = !visible;
-      bar.classList.toggle("is-visible", visible);
+      if (bar.hidden === visible) bar.hidden = !visible;
+      if (bar.classList.contains("is-visible") !== visible) bar.classList.toggle("is-visible", visible);
     };
 
     const update = () => {
@@ -1595,13 +1652,24 @@ window.BNTUI = {
       const canScrollY = maxTop > 1;
       const canScrollX = maxLeft > 1;
 
-      wrap.classList.toggle("is-drag-scrollable", canScrollY || canScrollX);
+      if ((canScrollY || canScrollX) && !wrap.hasAttribute("tabindex")) {
+        wrap.setAttribute("tabindex", "0");
+        state.addedTabIndex = true;
+      } else if (!canScrollY && !canScrollX && state.addedTabIndex) {
+        wrap.removeAttribute("tabindex");
+        state.addedTabIndex = false;
+      }
+
+      if (wrap.classList.contains("is-drag-scrollable") !== (canScrollY || canScrollX)) wrap.classList.toggle("is-drag-scrollable", canScrollY || canScrollX);
       setVisible(vertical.bar, canScrollY);
       setVisible(horizontal.bar, canScrollX);
 
       if (canScrollY) {
         const trackHeight = vertical.bar.clientHeight;
-        const thumbHeight = Math.max(24, Math.round(trackHeight * wrap.clientHeight / wrap.scrollHeight));
+        const headerHeight = parseFloat(block.style.getPropertyValue("--table-block-sticky-head-height")) || 0;
+        const visibleBody = Math.max(0, wrap.clientHeight - headerHeight);
+        const fullBody = Math.max(1, wrap.scrollHeight - headerHeight);
+        const thumbHeight = Math.min(trackHeight, Math.max(24, Math.round(trackHeight * visibleBody / fullBody)));
         const thumbTop = Math.round((trackHeight - thumbHeight) * wrap.scrollTop / maxTop);
         vertical.thumb.style.height = `${Math.min(trackHeight, thumbHeight)}px`;
         vertical.thumb.style.transform = `translateY(${Math.max(0, thumbTop)}px)`;
@@ -1623,9 +1691,10 @@ window.BNTUI = {
     };
 
     const requestUpdate = () => {
-      if (state?.frame) return;
+      if (state.destroyed || state.frame) return;
       state.frame = requestAnimationFrame(() => {
         state.frame = 0;
+        if (state.destroyed) return;
         update();
       });
     };
@@ -1646,7 +1715,7 @@ window.BNTUI = {
     const bindDrag = (elements, axis) => {
       if (elements.bar.dataset.bntScrollbarBound) return;
       elements.bar.dataset.bntScrollbarBound = "true";
-      elements.bar.addEventListener("pointerdown", event => {
+      listen(elements.bar, "pointerdown", event => {
         if (event.button !== 0) return;
         event.preventDefault();
 
@@ -1675,11 +1744,14 @@ window.BNTUI = {
           update();
         };
         const stopDrag = endEvent => {
-          elements.bar.releasePointerCapture?.(endEvent.pointerId);
+          const pointerId = endEvent?.pointerId ?? event.pointerId;
+          if (elements.bar.hasPointerCapture?.(pointerId)) elements.bar.releasePointerCapture?.(pointerId);
           elements.bar.removeEventListener("pointermove", handlePointerMove);
           elements.bar.removeEventListener("pointerup", stopDrag);
           elements.bar.removeEventListener("pointercancel", stopDrag);
+          activeDrags.delete(stopDrag);
         };
+        activeDrags.add(stopDrag);
         elements.bar.addEventListener("pointermove", handlePointerMove);
         elements.bar.addEventListener("pointerup", stopDrag);
         elements.bar.addEventListener("pointercancel", stopDrag);
@@ -1691,7 +1763,7 @@ window.BNTUI = {
       wrap.dataset.bntTableDragBound = "true";
       const ignoreSelector = "a, button, input, textarea, select, label, summary, [role='button'], [contenteditable='true'], .table-scrollbar";
 
-      wrap.addEventListener("pointerdown", event => {
+      listen(wrap, "pointerdown", event => {
         if (event.button !== 0 || event.pointerType !== "mouse") return;
         if (event.target.closest(ignoreSelector)) return;
         const maxTop = wrap.scrollHeight - wrap.clientHeight;
@@ -1704,13 +1776,14 @@ window.BNTUI = {
         const startTop = wrap.scrollTop;
         let dragging = false;
 
-        wrap.setPointerCapture?.(event.pointerId);
-
         const handlePointerMove = moveEvent => {
           const deltaX = moveEvent.clientX - startX;
           const deltaY = moveEvent.clientY - startY;
           if (!dragging && Math.hypot(deltaX, deltaY) < 4) return;
-          dragging = true;
+          if (!dragging) {
+            dragging = true;
+            wrap.setPointerCapture?.(event.pointerId);
+          }
           moveEvent.preventDefault();
           wrap.classList.add("is-dragging");
           wrap.scrollLeft = startLeft - deltaX;
@@ -1719,12 +1792,15 @@ window.BNTUI = {
         };
 
         const stopDrag = endEvent => {
-          wrap.releasePointerCapture?.(endEvent.pointerId);
+          const pointerId = endEvent?.pointerId ?? event.pointerId;
+          if (wrap.hasPointerCapture?.(pointerId)) wrap.releasePointerCapture?.(pointerId);
           wrap.classList.remove("is-dragging");
           wrap.removeEventListener("pointermove", handlePointerMove);
           wrap.removeEventListener("pointerup", stopDrag);
           wrap.removeEventListener("pointercancel", stopDrag);
+          activeDrags.delete(stopDrag);
         };
+        activeDrags.add(stopDrag);
 
         wrap.addEventListener("pointermove", handlePointerMove);
         wrap.addEventListener("pointerup", stopDrag);
@@ -1732,16 +1808,24 @@ window.BNTUI = {
       });
     };
 
-    if (!state) {
-      state = {frame: 0};
-      block.__bntTableScrollbars = state;
-      wrap.addEventListener("scroll", requestUpdate, {passive: true});
-      window.addEventListener("resize", requestUpdate);
-
-      if (typeof ResizeObserver !== "undefined") {
-        state.resizeObserver = new ResizeObserver(requestUpdate);
-        [block, wrap, wrap.firstElementChild].filter(Boolean).forEach(element => state.resizeObserver.observe(element));
-      }
+    state.requestUpdate = requestUpdate;
+    state.destroy = () => {
+      state.destroyed = true;
+      activeDrags.forEach(stop => stop());
+      if (state.frame && typeof cancelAnimationFrame !== "undefined") cancelAnimationFrame(state.frame);
+      removers.forEach(remove => remove());
+      state.resizeObserver?.disconnect();
+      delete vertical.bar.dataset.bntScrollbarBound;
+      delete horizontal.bar.dataset.bntScrollbarBound;
+      delete wrap.dataset.bntTableDragBound;
+      if (state.addedTabIndex) wrap.removeAttribute("tabindex");
+      if (block.__bntTableScrollbars === state) delete block.__bntTableScrollbars;
+    };
+    listen(wrap, "scroll", requestUpdate, {passive: true});
+    listen(window, "resize", requestUpdate);
+    if (typeof ResizeObserver !== "undefined") {
+      state.resizeObserver = new ResizeObserver(requestUpdate);
+      [block, wrap, wrap.firstElementChild].filter(Boolean).forEach(element => state.resizeObserver.observe(element));
     }
 
     bindDrag(vertical, "y");
@@ -2021,15 +2105,29 @@ window.BNTUI = {
     const halfWidth = (grid.clientWidth - gap) / 2 - inset;
     grid.classList.toggle("chart-grid--chart-emphasis", columns === 2 && minimumWidth > halfWidth);
   },
-  chartScale(minimum, maximum, {intervals = 4, step} = {}) {
+  chartScale(minimum, maximum, {intervals = 4, step, width, measureTick, gap = 0} = {}) {
     const values = [minimum, maximum].map(Number).filter(Number.isFinite);
     minimum = Math.min(0, ...values);
     maximum = Math.max(0, ...values);
     intervals = Math.max(minimum < 0 && maximum > 0 ? 2 : 1, Math.trunc(Number(intervals) || 4));
     if (maximum === minimum) maximum = minimum + 1;
+    const fit = scale => {
+      if (!(Number(width) > 0) || typeof measureTick !== "function") return scale;
+      let count = Math.round((scale.max - scale.min) / scale.step);
+      const minimumCount = minimum < 0 && maximum > 0 ? 2 : 1;
+      while (count > minimumCount) {
+        const tickWidth = Math.max(...Array.from({length: count + 1}, (_, index) => Number(measureTick(scale.min + index * scale.step)) || 0));
+        const firstWidth = Number(measureTick(scale.min)) || 0;
+        if (firstWidth + count * (tickWidth + Math.max(0, Number(gap) || 0)) <= Number(width)) break;
+        const step = scale.step * 2;
+        scale = {step, min: Math.floor(minimum / step) * step || 0, max: Math.ceil(maximum / step) * step};
+        count = Math.round((scale.max - scale.min) / scale.step);
+      }
+      return scale;
+    };
     if (Number.isFinite(Number(step)) && Number(step) > 0) {
       step = Math.max(1, Math.ceil(Number(step)));
-      return {step, min: Math.floor(minimum / step) * step || 0, max: Math.ceil(maximum / step) * step};
+      return fit({step, min: Math.floor(minimum / step) * step || 0, max: Math.ceil(maximum / step) * step});
     }
     const rawStep = (maximum - minimum) / intervals;
     const magnitude = Math.max(1, Math.pow(10, Math.floor(Math.log10(rawStep))));
@@ -2037,7 +2135,7 @@ window.BNTUI = {
       const step = Math.ceil(factor * magnitude);
       const min = Math.floor(minimum / step) * step || 0;
       const max = min + step * intervals;
-      if (step >= rawStep && max >= maximum) return {step, min, max};
+      if (step >= rawStep && max >= maximum) return fit({step, min, max});
     }
   },
   renderFinancialLineChart(chart, {

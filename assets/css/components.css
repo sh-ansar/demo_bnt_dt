@@ -136,6 +136,12 @@
   box-shadow: none;
   backdrop-filter: none;
 }
+.data-block > :is(.ranking, .timeline, .analytics-capacity-chart) {
+  padding: 0;
+}
+.ranking > .rank-row:first-child {
+  padding-top: 0;
+}
 .data-block.scenario-panel {
   overflow: visible;
   align-content: start;
@@ -1123,7 +1129,7 @@
 
 .card-with-image--horizontal .card-with-image__media img,
 .card-with-image--horizontal:hover .card-with-image__media img {
-  object-fit: contain;
+  object-fit: cover;
   transform: none;
   transition: none;
 }
@@ -1316,6 +1322,7 @@
 .table-wrap {
   --table-wrap-readable-rows: 6;
   --table-wrap-bottom-space: var(--space-5);
+  --table-block-sticky-head-height: 0px;
   width: 100%;
   max-height: var(--table-wrap-max-height, calc(100dvh - var(--table-wrap-bottom-space)));
   overflow: auto;
@@ -1928,6 +1935,7 @@
   position: sticky;
   z-index: 2;
   top: 0;
+  background: var(--background-secondary);
 }
 
 .table-block--sticky-head {
@@ -1938,6 +1946,10 @@
   .table-wrap {
     max-height: none;
     overflow: visible;
+  }
+
+  .table-scrollbar {
+    display: none;
   }
 
   .table-wrap > :is(.data-table, .analytics-table) > thead {
@@ -2099,6 +2111,15 @@ button.data-table__tree-toggle:focus-visible {
 .layout-workspace {
   --layout-drawer-width: 400px;
   --layout-drawer-bg: var(--background-nonoverlay-2);
+}
+
+.layout-workspace.layout-workspace--half-screen {
+  --layout-drawer-width: 50%;
+  border-radius: var(--space-2);
+}
+
+.layout-workspace.layout-workspace--half-screen.is-drawer-collapsed {
+  grid-template-columns: minmax(0, 1fr) 0%;
 }
 
 .layout-workspace,
@@ -2307,6 +2328,44 @@ button.data-table__tree-toggle:focus-visible {
   scroll-padding-bottom: var(--space-2);
   font-size: var(--typography-body-small-size);
   line-height: var(--typography-body-small-line-height);
+}
+
+.layout-drawer-body--table {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+}
+
+.layout-drawer-body--table > .table-block {
+  flex: 0 1 auto;
+  min-height: 0;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-drawer-body--table > .table-block > .table-wrap {
+  flex: 0 1 auto;
+  min-height: 0;
+}
+
+.layout-drawer-body--table > .table-block > .table-scrollbar--vertical {
+  right: 0;
+  bottom: 0;
+}
+
+.layout-drawer-body--table > .table-block > .table-scrollbar--horizontal {
+  right: 0;
+  bottom: 0;
+}
+
+.layout-drawer-body--table > .table-block:has(> .table-scrollbar--horizontal.is-visible) > .table-scrollbar--vertical {
+  bottom: var(--progress-bar-track-scroll-size);
+}
+
+.layout-drawer-body--table > .table-block:has(> .table-scrollbar--vertical.is-visible) > .table-scrollbar--horizontal {
+  right: var(--progress-bar-track-scroll-size);
 }
 
 .layout-drawer-list-group {
@@ -2620,6 +2679,28 @@ button.data-table__tree-toggle:focus-visible {
 
   .layout-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .layout-workspace.is-drawer-collapsed .layout-surface { grid-column: 1; }
+  .layout-workspace.layout-workspace--half-screen,
+  .layout-workspace.layout-workspace--half-screen.is-drawer-collapsed {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    height: var(--layout-workspace-height, 100%);
+    min-height: 0;
+  }
+  .layout-workspace--half-screen .layout-surface {
+    grid-column: 1;
+    grid-row: 2;
+    height: auto;
+    min-height: 0;
+  }
+  .layout-workspace--half-screen .layout-drawer {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    grid-column: 1;
+    grid-row: 2;
+    height: 100%;
+    border-top: 0;
+  }
 }
 
 /* Canvas content uses the shared workspace. */
@@ -2811,6 +2892,10 @@ button.data-table__tree-toggle:focus-visible {
 
 .filter-modal[hidden] {
   display: none;
+}
+
+.filter-modal--half-screen {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .filter-modal__overlay {
@@ -3276,6 +3361,9 @@ button.data-table__tree-toggle:focus-visible {
 /* Smallest secondary button */
 .button-smallest-secondary-radius {
   position: relative;
+  flex: none;
+  width: max-content;
+  max-width: 100%;
   min-height: 36px;
   display: inline-flex;
   align-items: center;
@@ -3317,6 +3405,19 @@ button.data-table__tree-toggle:focus-visible {
   height: 20px;
   flex: none;
   color: var(--design-elements-icon-primary);
+}
+
+.button-smallest-secondary-radius__icon-slot {
+  width: var(--space-5);
+  height: var(--space-5);
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--design-elements-icon-primary);
+}
+
+.button-smallest-secondary-radius__icon-slot[hidden] {
+  display: none;
 }
 
 .button-smallest-secondary-radius:hover {
@@ -6051,13 +6152,13 @@ textarea.form-input__control--text {
 .chart-footer-actions__row {
   min-width: 0;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
 }
 
 .contracts-page [data-contract-types] .chart-footer-actions {
-  padding-top: var(--space-3);
   gap: 0;
 }
 
@@ -6099,6 +6200,10 @@ textarea.form-input__control--text {
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-4);
+}
+
+.chart-card__header:not(:has(.chart-card__filters, .chart-actions)) {
+  min-height: 0;
 }
 
 .chart-card__heading {
@@ -7365,8 +7470,10 @@ textarea.form-input__control--text {
 }
 
 .department-performance-card .payment-deviation-chart {
-  --payment-deviation-label-width: 320px;
-  --payment-deviation-divisions: 10;
+  --payment-deviation-label-width: 0px;
+  min-width: 0;
+  padding-right: var(--payment-deviation-value-space, 0px);
+  box-sizing: border-box;
 }
 
 .origin-breakdown__row,
@@ -7429,6 +7536,10 @@ textarea.form-input__control--text {
   min-width: 0;
   padding-inline: var(--space-3);
   box-sizing: border-box;
+}
+
+.chart-card > :is(.payment-deviation-chart__viewport, .procurement-stock-chart__viewport) {
+  padding-inline: 0;
 }
 
 .payment-deviation-chart {
@@ -8075,7 +8186,7 @@ textarea.form-input__control--text {
 }
 
 .procurement-stock-card {
-  min-height: 420px;
+  min-height: 0;
 }
 
 .procurement-stock__tabs {
@@ -8084,7 +8195,7 @@ textarea.form-input__control--text {
 
 .procurement-stock-chart__viewport {
   min-width: 0;
-  min-height: 300px;
+  min-height: 0;
   padding-inline: var(--space-3);
   overflow: hidden;
   box-sizing: border-box;
@@ -9122,7 +9233,7 @@ path.chart-donut__connector.series-negative {
 }
 
 .chart-card > :is(.chart-legend, .financial-chart__legend) {
-  margin-top: auto;
+  margin-top: 0;
 }
 
 .chart-card--wide-vertical > :is(.chart-legend, .financial-chart__legend),
@@ -9251,7 +9362,8 @@ svg [class*="series-"],
 }
 
 @media (max-width: 620px) {
-  .filter-modal {
+  .filter-modal,
+  .filter-modal--half-screen {
     grid-template-columns: minmax(0, 1fr);
   }
 

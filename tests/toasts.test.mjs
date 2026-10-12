@@ -174,7 +174,7 @@ const pages = (await readdir(new URL('../', import.meta.url))).filter(path => pa
 pages.push('legacy/report-studio-v5/index.html');
 for (const path of pages) {
   const html = await read(path);
-  if (html.includes('assets/js/ui.js')) assert.match(html, /ui\.js\?v=61/, `${path}: shared toast code cache version`);
-  if (html.includes('assets/css/components.css')) assert.match(html, /components\.css\?v=336/, `${path}: shared toast styles cache version`);
+  if (html.includes('assets/js/ui.js')) assert.match(html, /ui\.js\?v=67/, `${path}: shared toast code cache version`);
+  if (html.includes('assets/css/components.css')) assert.match(html, /components\.css\?v=348/, `${path}: shared toast styles cache version`);
 }
 console.log('Toasts: five semantic variants, exact shared typography, token backgrounds/border, 32/24px icon frames, manual stacked close, escaped text, focus return and consumer cache versions passed. Browser rendering excluded.');

@@ -243,6 +243,7 @@ assert.match(components, /\.dt3-risk-toggle--positive\s*\{[^}]*--toggle-active-b
 assert.match(components, /\.dt3-risk-toggle\s*\{[^}]*--toggle-active-background: var\(--background-brand-solid\)/);
 assert.match(components, /\.card-with-image__media\[hidden\],[^]*?\.card-with-image__video\[hidden\]\s*\{\s*display: none/);
 assert.match(components, /\.card-with-image--horizontal:hover \.card-with-image__media img\s*\{[^}]*transform: none;[^}]*transition: none;/);
+assert.match(components, /\.card-with-image--horizontal:hover \.card-with-image__media img\s*\{\s*object-fit: cover;/, 'Equipment photos fill the whole media area instead of letterboxing');
 assert.match(components, /\.card-with-image--horizontal \.card-with-image__media\s*\{[^}]*background: var\(--system-elements-static-primary\)/, 'Photo letterboxing has a neutral static background, not page-colored side strips');
 const progressVariant = components.match(/\.dt3-metrics\.scenario-impact--progress > div\s*\{([^}]+)\}/)[1];
 assert.doesNotMatch(progressVariant, /padding:/, 'Progress cells keep the shared metric padding');

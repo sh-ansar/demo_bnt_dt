@@ -29,6 +29,9 @@ class Element {
     const listeners = this.listeners.get(name) || [];
     listeners.push(callback); this.listeners.set(name, listeners);
   }
+  removeEventListener(name, callback) {
+    this.listeners.set(name, (this.listeners.get(name) || []).filter(listener => listener !== callback));
+  }
   emit(name) { for (const callback of this.listeners.get(name) || []) callback({target: this}); }
   getBoundingClientRect() { return {top: this.top, height: this.height, bottom: this.top + this.height}; }
   getClientRects() { return this.visible ? [this.getBoundingClientRect()] : []; }
@@ -53,6 +56,7 @@ class ResizeObserver {
   constructor(callback) { this.callback = callback; resizeObservers.push(this); }
   observe(element) { this.targets.add(element); }
   unobserve(element) { this.targets.delete(element); }
+  disconnect() { this.targets.clear(); this.disconnected = true; }
 }
 class MutationObserver {
   constructor(callback) { this.callback = callback; mutationObservers.push(this); }
@@ -101,8 +105,10 @@ assert.equal(resizeObservers.length, 0, 'Initialization waits for the DOM');
 document.emit('DOMContentLoaded'); flush();
 assert.equal(cap(main), 595, 'Long tables end at the viewport minus space-5 and surface border');
 assert.equal(main.block.style.getPropertyValue('--table-block-sticky-head-height'), '40px');
+assert.equal(main.style.getPropertyValue('--table-block-sticky-head-height'), '40px', 'The native vertical scrollbar starts below the whole table header');
 assert.equal(main.scrollTop, 120); assert.equal(main.scrollLeft, 660);
 assert.ok(resizeObservers[0].targets.has(main.table));
+assert.ok(resizeObservers[0].targets.has(main.table.tHead), 'Header resizing is observed even if the total table height stays the same');
 assert.equal(mutationObservers[0].root, document.documentElement);
 assert.deepEqual(Array.from(mutationObservers[0].options.attributeFilter), ['class', 'hidden', 'open', 'data-table-height-group']);
 assert.equal(mutationObservers[0].options.characterData, true);
@@ -144,6 +150,16 @@ const outside = makeWrap();
 outside.parentElement.outsideBar = Object.assign(new Element(), {height: 4});
 ui.updateTableViewport(outside);
 assert.equal(cap(outside), 591, 'External horizontal scrollbars retain the bottom space below the track');
+assert.equal(outside.block.style.getPropertyValue('--table-block-sticky-head-height'), '40px', 'Native and external scrollbars share the measured header boundary');
+const noHead = makeWrap(); noHead.table.tHead = null; noHead.block = null;
+ui.updateTableViewport(noHead);
+assert.equal(noHead.style.getPropertyValue('--table-block-sticky-head-height'), '0px', 'A headerless table starts at the top, including without a table-block wrapper');
+const fractionalHead = makeWrap({head: 40.25});
+ui.updateTableViewport(fractionalHead);
+assert.equal(fractionalHead.style.getPropertyValue('--table-block-sticky-head-height'), '41px', 'Fractional header pixels cannot overlap the scrollbar');
+fractionalHead.table.tHead = null;
+ui.updateTableViewport(fractionalHead);
+assert.equal(fractionalHead.style.getPropertyValue('--table-block-sticky-head-height'), '0px', 'Removing the header clears its old scrollbar offset');
 
 const wrapped = makeWrap({top: 420, heights: [80, 64, 48, 96, 64, 48, 100]});
 window.visualViewport.height = 700;
@@ -179,12 +195,14 @@ main.table.tBodies[0].rows.slice(0, 6).forEach(row => { row.height = 96; });
 fontsReady.forEach(callback => callback()); flush();
 assert.equal(cap(main), 652, 'Font loading recomputes the readable area');
 assert.equal(main.block.style.getPropertyValue('--table-block-sticky-head-height'), '72px');
+assert.equal(main.style.getPropertyValue('--table-block-sticky-head-height'), '72px', 'A wrapped or multi-row header moves the native track boundary too');
 main.table.tHead.height = 40; main.table.tBodies[0].rows.forEach(row => { row.height = 48; });
 document.fonts.emit('loadingdone'); flush();
 assert.equal(cap(main), 395);
 wraps.splice(wraps.indexOf(main), 1); mutationObservers[0].callback(); flush();
 assert.ok(!resizeObservers[0].targets.has(main));
 assert.ok(!resizeObservers[0].targets.has(main.table), 'Removed tables release their observations');
+assert.ok(!resizeObservers[0].targets.has(main.table.tHead), 'Removed table headers release their observations');
 
 function makeColumnTable(widths, available = 600) {
   const wrap = makeWrap(), table = wrap.table;
@@ -285,9 +303,117 @@ controlColumns.table.querySelector = () => null;
 ui.updateTableColumns(controlColumns);
 assert.equal(controlColumns.table.style.getPropertyValue('--data-table-layout'), 'fixed', 'Pure text and numeric tables retain the existing equal-share rule');
 
+class ScrollElement extends Element {
+  children = [];
+  tokens = new Set();
+  hidden = false;
+  capturedPointers = new Set();
+  setPointerCapture(id) { this.capturedPointers.add(id); }
+  hasPointerCapture(id) { return this.capturedPointers.has(id); }
+  releasePointerCapture(id) { this.capturedPointers.delete(id); }
+  classList = {
+    contains: name => this.tokens.has(name),
+    add: name => this.tokens.add(name),
+    remove: name => this.tokens.delete(name),
+    toggle: (name, selected) => selected ? this.tokens.add(name) : this.tokens.delete(name)
+  };
+  set className(value) { this.tokens = new Set(value.split(/\s+/).filter(Boolean)); }
+  get className() { return [...this.tokens].join(' '); }
+  setAttribute(name, value) { this.attributes.set(name, String(value)); }
+  removeAttribute(name) { this.attributes.delete(name); }
+  contains(node) { return node === this || this.children.some(child => child.contains?.(node)); }
+  matches(selector) { return selector === '.table-block' && this.classList.contains('table-block'); }
+  appendChild(child) {
+    child.parentElement = this; this.children.push(child); this.firstElementChild = this.children[0];
+    if (child.classList?.contains('table-scrollbar--vertical')) {
+      Object.defineProperty(child, 'clientHeight', {get: () => Math.max(0, this.wrap.clientHeight - parseFloat(this.style.getPropertyValue('--table-block-sticky-head-height') || '0'))});
+    }
+    if (child.classList?.contains('table-scrollbar--horizontal')) child.clientWidth = 300;
+    return child;
+  }
+  querySelector(selector) {
+    if (selector === ':scope > .table-wrap') return this.wrap || null;
+    if (selector === '.table-scrollbar__thumb') return this.children.find(child => child.classList.contains('table-scrollbar__thumb')) || null;
+    if (selector === ':scope > .table-scrollbar--horizontal.is-visible') return this.children.find(child => child.classList.contains('table-scrollbar--horizontal') && child.classList.contains('is-visible')) || null;
+    return super.querySelector(selector);
+  }
+  emitPointer(name, options = {}) {
+    const event = {button: 0, pointerId: 1, pointerType: 'mouse', target: this, preventDefault() {}, ...options};
+    for (const handler of [...(this.listeners.get(name) || [])]) handler(event);
+  }
+}
+document.createElement = () => new ScrollElement();
+const scrollWrap = Object.assign(new ScrollElement(), {top: 280, height: 300, clientHeight: 300, offsetHeight: 300, clientWidth: 300, scrollWidth: 300, scrollHeight: 1000});
+scrollWrap.table = makeWrap().table;
+scrollWrap.table.matches = selector => selector === '.data-table, .analytics-table';
+scrollWrap.table.rows = scrollWrap.table.tBodies[0].rows;
+scrollWrap.table.rows.forEach(row => { row.cells = [Object.assign(new Element(), {colSpan: 1, rowSpan: 1})]; });
+const scrollBlock = new ScrollElement(); scrollBlock.className = 'table-block'; scrollBlock.wrap = scrollWrap;
+scrollWrap.block = scrollWrap.parentElement = scrollBlock;
+scrollBlock.appendChild(scrollWrap);
+const resizeListeners = (window.listeners.get('resize') || []).length;
+wraps.push(scrollWrap); mutationObservers[0].callback(); flush();
+assert.ok(scrollBlock.classList.contains('table-block--scroll-outside'), 'The general table binding applies the existing flush-header scrollbar variant');
+const verticalBar = scrollBlock.children.find(child => child.classList?.contains('table-scrollbar--vertical'));
+const horizontalBar = scrollBlock.children.find(child => child.classList?.contains('table-scrollbar--horizontal'));
+const thumb = verticalBar.children[0];
+Object.defineProperty(thumb, 'offsetHeight', {get: () => parseFloat(thumb.style.height) || 0});
+assert.equal(verticalBar.clientHeight, 260, 'The whole 40px header is outside the track');
+assert.equal(thumb.style.height, '70px', 'The thumb represents the visible body, not the header plus body');
+assert.equal(horizontalBar.hidden, true);
+assert.equal(scrollWrap.attributes.get('tabindex'), '0', 'Native wheel and keyboard scrolling remain available after hiding the native scrollbar');
+const state = scrollBlock.__bntTableScrollbars;
+const scrollbarObserver = resizeObservers.find(observer => observer.targets.has(scrollBlock));
+ui.bindTableBlockScrollbar(scrollBlock); flush();
+assert.equal(scrollBlock.__bntTableScrollbars, state, 'Repeated initialization retains one controller');
+assert.equal(scrollBlock.children.length, 3, 'Repeated layout cannot duplicate tracks');
+assert.equal((window.listeners.get('resize') || []).length, resizeListeners + 1);
+const rowTarget = new ScrollElement();
+scrollWrap.emitPointer('pointerdown', {clientX: 0, clientY: 0, target: rowTarget});
+assert.equal(scrollWrap.capturedPointers.size, 0, 'An ordinary row click is not captured by the scroll wrapper');
+scrollWrap.emitPointer('pointerup');
+scrollWrap.emitPointer('pointerdown', {clientX: 0, clientY: 0, target: rowTarget});
+scrollWrap.emitPointer('pointermove', {clientX: 0, clientY: -10});
+assert.equal(scrollWrap.capturedPointers.size, 1, 'Content capture begins only after actual dragging');
+scrollWrap.emitPointer('pointercancel');
+assert.equal(scrollWrap.capturedPointers.size, 0);
+assert.ok(!scrollWrap.classList.contains('is-dragging'));
+scrollWrap.scrollTop = 700; scrollWrap.emit('scroll'); flush();
+assert.equal(thumb.style.transform, 'translateY(190px)', 'The thumb reaches the end at the last row');
+scrollWrap.table.tHead.height = 80; document.fonts.emit('loadingdone'); flush();
+assert.equal(verticalBar.clientHeight, 220, 'Header wrapping or font changes shorten the track without an empty header gutter');
+scrollWrap.table.tHead = null; mutationObservers[0].callback(); flush();
+assert.equal(verticalBar.clientHeight, 300, 'Headerless tables start at the top');
+verticalBar.emitPointer('pointerdown', {clientY: 0, target: verticalBar});
+assert.equal(scrollWrap.scrollTop, 0, 'Clicking the start of the track scrolls to the first row');
+verticalBar.emitPointer('pointerdown', {clientY: 0, target: thumb});
+verticalBar.emitPointer('pointermove', {clientY: 210});
+assert.equal(scrollWrap.scrollTop, 700, 'Dragging the thumb scrolls the body');
+verticalBar.emitPointer('pointerup');
+scrollWrap.scrollHeight = 300; scrollWrap.emit('scroll'); flush();
+assert.equal(verticalBar.hidden, true, 'Short tables retain intrinsic height without a scrollbar');
+assert.ok(!scrollWrap.attributes.has('tabindex'));
+scrollWrap.scrollWidth = 600; scrollWrap.emit('scroll'); flush();
+assert.equal(horizontalBar.hidden, false, 'Horizontal overflow still uses the existing horizontal component');
+assert.equal(horizontalBar.children[0].style.width, '150px');
+scrollWrap.emitPointer('pointerdown', {clientX: 0, clientY: 0, target: rowTarget});
+scrollWrap.emitPointer('pointermove', {clientX: -10, clientY: 0});
+wraps.splice(wraps.indexOf(scrollWrap), 1); mutationObservers[0].callback(); flush();
+assert.equal(state.destroyed, true);
+assert.equal(scrollBlock.__bntTableScrollbars, undefined);
+assert.equal(scrollbarObserver.disconnected, true);
+assert.equal((window.listeners.get('resize') || []).length, resizeListeners, 'Removed tables release window listeners and observers');
+assert.equal((scrollWrap.listeners.get('scroll') || []).length, 0);
+assert.equal(scrollWrap.capturedPointers.size, 0, 'Removing a table cancels an in-progress drag');
+
 const rule = css.match(/^\.table-wrap\s*\{([^}]+)\}/m)[1];
 assert.match(rule, /--table-wrap-readable-rows: 6;/);
 assert.match(rule, /--table-wrap-bottom-space: var\(--space-5\);/);
+assert.match(rule, /--table-block-sticky-head-height: 0px;/, 'Nested headerless tables do not inherit an outer header offset');
+assert.doesNotMatch(css, /\.table-wrap::-webkit-scrollbar-track:vertical/, 'The rejected native-track inset workaround is removed');
+assert.match(source, /if \(block\?\.matches\?\.\("\.table-block"\)[^]*?this\.bindTableBlockScrollbar\(block\);/, 'All shared tables use the existing external scrollbar, not just the equipment registry');
+assert.match(css, /\.table-scrollbar--vertical\s*\{[^}]*top: var\(--table-block-sticky-head-height, 0\);/, 'The existing external scrollbar retains the same header offset');
+assert.doesNotMatch(css, /\.layout-drawer-body--table > \.table-block--scroll-outside\s*\{[^}]*padding-(?:right|bottom):/, 'Drawer scrollbars never reserve a gutter beside the header or below a short table');
 assert.match(rule, /max-height: var\(--table-wrap-max-height, calc\(100dvh - var\(--table-wrap-bottom-space\)\)\);/);
 assert.doesNotMatch(rule, /832px|(?:^|;)\s*(?:min-)?height:/);
 assert.match(css, /\.data-table,\s*\.analytics-table\s*\{[^}]*table-layout: var\(--data-table-layout, auto\);/);

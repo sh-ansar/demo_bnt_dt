@@ -6,9 +6,9 @@
   <title>BNT — Операционная аналитика</title>
   <link rel="stylesheet" href="/assets/css/tokens.css?v=37">
   <link rel="stylesheet" href="/assets/css/layout.css?v=3">
-  <link rel="stylesheet" href="/assets/css/components.css?v=336">
+  <link rel="stylesheet" href="/assets/css/components.css?v=348">
   <link rel="stylesheet" href="/assets/css/pages/budget-payments.css?v=21">
-  <link rel="stylesheet" href="/assets/css/pages/operations.css?v=142">
+  <link rel="stylesheet" href="/assets/css/pages/operations.css?v=145">
   <link rel="stylesheet" href="/assets/css/shell-v91.css?v=9140">
 </head>
 <body data-page="operations">
@@ -85,8 +85,41 @@
       </article>
     </section>
 
-    <section class="daily-summary" aria-label="Суточная сводка за 18 февраля 2025 года">
-      <div class="daily-summary-scroll">
+    <section class="daily-summary layout-workspace layout-workspace--half-screen is-drawer-collapsed" data-workspace data-workspace-fill data-workspace-fill-open data-workspace-dismiss aria-label="Суточная сводка за 18 февраля 2025 года">
+        <div class="layout-toolbar daily-summary-tools" data-summary-tools>
+        <div class="layout-toolbar-group layout-toolbar-group--center">
+        <div class="daily-summary-zoom ui-zoom" data-zoom-control role="group" aria-label="Масштаб схемы">
+          <button class="ui-zoom__button" type="button" data-zoom-out aria-label="Уменьшить масштаб">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M4.375 10H15.625" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+            </svg>
+          </button>
+          <div class="daily-summary-zoom__range ui-zoom__range">
+            <span class="daily-summary-zoom__track ui-zoom__track" aria-hidden="true">
+              <span class="daily-summary-zoom__line ui-zoom__line"></span>
+            </span>
+            <input type="range" data-zoom-range min="50" max="150" step="5" value="100" aria-label="Масштаб схемы" aria-valuetext="100 процентов">
+          </div>
+          <button class="ui-zoom__button" type="button" data-zoom-in aria-label="Увеличить масштаб">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M10 4.375V15.625M15.625 10H4.375" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+            </svg>
+          </button>
+          <output class="daily-summary__zoom-value ui-zoom__value" data-zoom-value aria-live="polite">100%</output>
+        </div>
+        </div>
+        <div class="layout-toolbar-group layout-toolbar-group--right">
+          <button class="button-smallest-secondary-radius typography-button-smallest" type="button" data-daily-table-toggle data-workspace-toggle data-workspace-label-open="Скрыть таблицу" data-workspace-label-closed="Показать таблицу" aria-expanded="false" aria-controls="daily-summary-table">
+            <span class="button-smallest-secondary-radius__icon-slot" data-workspace-collapsed><svg width="22" height="13" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=18#ShowTables"></use></svg></span>
+            <span class="button-smallest-secondary-radius__icon-slot" data-workspace-expanded hidden><svg width="24" height="24" aria-hidden="true"><use href="/assets/icons/financial-interface.svg?v=18#HideTables"></use></svg></span>
+            <span data-workspace-expanded hidden>Скрыть таблицу</span><span data-workspace-collapsed>Показать таблицу</span>
+          </button>
+          <button class="button-smallest-secondary-radius button-smallest-secondary-radius--icon typography-button-smallest" type="button" data-daily-fullscreen aria-label="Открыть схему и таблицу в новом окне" title="Открыть схему и таблицу в новом окне">
+            <svg width="20" height="20" aria-hidden="true"><use href="/assets/icons/financial-interface.svg#FullScreen"></use></svg>
+          </button>
+        </div>
+        </div>
+      <div class="daily-summary-scroll layout-surface">
         <div class="daily-summary-viewport" data-flow-viewport>
           <div class="daily-flow-board" data-flow-board>
             <svg class="daily-connections" data-flow-svg aria-hidden="true">
@@ -157,25 +190,6 @@
             </button>
           </div>
 
-        <div class="daily-summary-zoom ui-zoom" data-zoom-control role="group" aria-label="Масштаб схемы">
-          <button class="ui-zoom__button" type="button" data-zoom-out aria-label="Уменьшить масштаб">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <path d="M4.375 10H15.625" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-            </svg>
-          </button>
-          <div class="daily-summary-zoom__range ui-zoom__range">
-            <span class="daily-summary-zoom__track ui-zoom__track" aria-hidden="true">
-              <span class="daily-summary-zoom__line ui-zoom__line"></span>
-            </span>
-            <input type="range" data-zoom-range min="50" max="150" step="5" value="100" aria-label="Масштаб схемы" aria-valuetext="100 процентов">
-          </div>
-          <button class="ui-zoom__button" type="button" data-zoom-in aria-label="Увеличить масштаб">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <path d="M10 4.375V15.625M15.625 10H4.375" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-            </svg>
-          </button>
-          <output class="daily-summary__zoom-value ui-zoom__value" data-zoom-value aria-live="polite">100%</output>
-        </div>
 
         </div>
 
@@ -185,6 +199,11 @@
           </svg>
         </button>
       </div>
+      <aside id="daily-summary-table" class="layout-drawer" data-workspace-drawer aria-label="Таблица суточной сводки" hidden inert>
+        <div class="layout-drawer-content">
+          <div class="layout-drawer-body layout-drawer-body--table" data-daily-table-content></div>
+        </div>
+      </aside>
     </section>
 
     <section class="financial-overview" data-financial-overview aria-labelledby="financial-overview-title">
@@ -452,13 +471,13 @@
 
   </main>
   <script src="/assets/js/navigation.js?v=12002"></script>
-  <script src="/assets/js/ui.js?v=61"></script>
+  <script src="/assets/js/ui.js?v=67"></script>
   <script src="/assets/js/data/logistics.js"></script>
   <script src="/assets/js/shell.js?v=9125"></script>
   <script src="/assets/js/chart-donut.js?v=14"></script>
   <script src="/assets/js/chart-filter.js?v=4"></script>
-  <script src="/assets/js/department-performance.js?v=3"></script>
+  <script src="/assets/js/department-performance.js?v=6"></script>
   <script src="/assets/js/transshipment-analytics.js?v=4"></script>
-  <script src="/assets/js/pages/operations.js?v=101"></script>
+  <script src="/assets/js/pages/operations.js?v=103"></script>
 </body>
 </html>

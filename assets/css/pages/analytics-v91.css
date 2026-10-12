@@ -676,12 +676,6 @@
   left: auto;
 }
 
-.analytics-page .analytics-bottom .ranking,
-.analytics-page .analytics-bottom .timeline,
-.analytics-page .analytics-capacity-chart {
-  padding: var(--space-3);
-}
-
 .analytics-page .analytics-bottom .timeline {
   display: grid;
   align-content: start;
@@ -803,7 +797,7 @@
 
 .analytics-page .analytics-capacity-chart {
   --capacity-label-width: 0px;
-  --capacity-value-space: 48px;
+  --capacity-value-space: 0px;
   --capacity-chart-gap: var(--space-3);
   min-width: 0;
   display: grid;
