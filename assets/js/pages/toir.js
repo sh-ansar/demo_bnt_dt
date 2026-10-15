@@ -23,6 +23,7 @@
   const filterModal=document.getElementById("toir-filter-modal");
   const qualityFilterToggle=document.querySelector("[data-toir-quality-filter-toggle]");
   const qualityFilterModal=document.getElementById("toir-quality-filter-modal");
+  ui.bindStaticChartLabelToggle(qualityFilterModal);
   const qualityDetailDrawer=document.getElementById("quality-detail-drawer");
   const qualityDetailTitle=qualityDetailDrawer?.querySelector("[data-quality-detail-title]");
   const qualityDetailActivityEquipment=qualityDetailDrawer?.querySelector("[data-quality-detail-activity-equipment]");

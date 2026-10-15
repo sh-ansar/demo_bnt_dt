@@ -56,7 +56,7 @@
   ];
   const linkedNodes = asset.nodes.map(([name, status]) => `<tr>
     <td><div class="table-cell-content"><strong>${escape(name)}</strong></div></td>
-    <td>${ui.badge(status, status === "Работает" ? "green" : status === "Норма" ? "neutral" : "default")}</td>
+    <td>${ui.badge(status, status === "Работает" ? "green" : status === "Норма" ? "neutral" : status === "Риск" ? "red" : "default")}</td>
   </tr>`).join("") || ui.renderEmptyTableRow(2, "Нет связанных узлов");
   const repairs = asset.repairs.map(row => `<tr>
     <td class="data-table__date-cell">${escape(row[0])}</td>

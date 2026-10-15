@@ -19,8 +19,10 @@ assert.match(geometry, /align-items: center;/);
 assert.match(geometry, /align-content: center;/);
 const tableSelector = ':is(table, [role="table"], .data-table, .analytics-table)';
 assert.ok(css.includes(`${tableSelector} {\n  --pill-badge-height: calc(var(--space-5) - var(--space-1));\n}`));
-assert.ok(css.includes(`@media (width > 1440px) {\n  :root,\n  ${tableSelector} {\n    --pill-badge-height: calc(var(--space-5) + var(--space-1));\n  }\n}`));
-assert.equal((css.match(/--pill-badge-height:/g) || []).length, 2);
+assert.ok(css.includes(`@media (width > 1440px) {\n  :root,\n  ${tableSelector} {\n    --pill-badge-height: calc(var(--space-5) + var(--space-1));\n  }`));
+assert.ok(css.includes(':root[data-ui-scale="fixed"] {\n    --pill-badge-height: var(--space-5);'));
+assert.ok(css.includes(`:root[data-ui-scale="fixed"] ${tableSelector} {\n    --pill-badge-height: calc(var(--space-5) - var(--space-1));`));
+assert.equal((css.match(/--pill-badge-height:/g) || []).length, 4);
 assert.match(pill, /width: fit-content;/);
 assert.match(pill, /max-width: 100%;/);
 assert.match(pill, /box-sizing: border-box;/);
@@ -74,7 +76,7 @@ function value(name, width) {
   assert.ok(text, name);
   const alias = text.match(/^var\((--[\w-]+)\)$/);
   if (alias) return value(alias[1], width);
-  const clamp = text.match(/^clamp\(([\d.]+)px,\s*([\d.]+)vw,\s*([\d.]+)px\)$/);
+  const clamp = text.match(/^clamp\(([\d.]+)px,\s*calc\(([\d.]+) \* var\(--ui-scale-unit\)\),\s*([\d.]+)px\)$/);
   return clamp ? Math.max(Number(clamp[1]), Math.min(width * Number(clamp[2]) / 100, Number(clamp[3]))) : parseFloat(text);
 }
 const outsideHeight = value('--space-5', 1440);

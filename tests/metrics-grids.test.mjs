@@ -76,4 +76,29 @@ assert.match(css, /\.dt3-risk-toggle\s*\{[^}]*gap: var\(--space-3\);/);
 assert.match(css, /\.dt3-risk-toggle\[aria-pressed="true"\] \.dt3-risk-toggle__knob\s*\{[^}]*transform: translateX\(17px\);/);
 assert.match(ui.renderToggle({label: 'Activate & <test>', pressed: false, attributes: {'data-action': 'toggle'}}), /aria-pressed="false" data-action="toggle"[^]*Activate &amp; &lt;test&gt;/);
 assert.match(ui.renderToggle({pressed: true}), /aria-pressed="true"/);
+let toggleMarkup = '', toggleClick, pressed = 'false';
+const chartLabelToggle = {
+  getAttribute: name => name === 'aria-pressed' ? pressed : null,
+  setAttribute: (name, value) => { assert.equal(name, 'aria-pressed'); pressed = value; }
+};
+const chartFields = {
+  querySelector: () => toggleMarkup ? chartLabelToggle : null,
+  insertAdjacentHTML: (position, markup) => { assert.equal(position, 'afterbegin'); toggleMarkup = markup; }
+};
+const chartModal = {
+  querySelector: selector => selector === '.dt3-drawer_static .filter-modal__fields' ? chartFields : null,
+  addEventListener: (name, callback) => { assert.equal(name, 'click'); toggleClick = callback; },
+  contains: element => element === chartLabelToggle
+};
+ui.bindStaticChartLabelToggle(chartModal);
+assert.match(toggleMarkup, /class="dt3-risk-toggle typography-label-smallest" aria-pressed="false" data-chart-label-toggle[^]*Показать подпись данных/);
+ui.bindStaticChartLabelToggle(chartModal);
+assert.equal((toggleMarkup.match(/data-chart-label-toggle/g) || []).length, 1, 'The shared toggle is mounted once');
+toggleClick({target: {closest: () => chartLabelToggle}});
+assert.equal(pressed, 'true');
+toggleClick({target: {closest: () => chartLabelToggle}});
+assert.equal(pressed, 'false');
+for (const page of ['chart-filter.js', 'pages/procurement.js', 'pages/toir.js']) {
+  assert.match(await read(`assets/js/${page}`), /bindStaticChartLabelToggle\(/, `${page} uses the shared placeholder`);
+}
 console.log('Paired metric grids: 1:2 proportions at fractional thresholds, shared space-3 edges, unchanged space-2 base, container/window resizing, visibility, cleanup and exact shared toggle markup passed. Browser pixels excluded.');

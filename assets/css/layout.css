@@ -11,7 +11,7 @@
 .app-main { min-width: 0; }
 .app-topbar { position: sticky; top: 0; z-index: 30; min-height: var(--topbar); display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 10px 22px; border-bottom: 1px solid var(--line); }
 .page-heading { min-width: 0; }
-.page-heading h1 { margin: 0; font-size: clamp(19px, 1.6vw, 25px); line-height: 1.2; letter-spacing: -.02em; }
+.page-heading h1 { margin: 0; font-size: clamp(19px, calc(1.6 * var(--ui-scale-unit)), 25px); line-height: 1.2; letter-spacing: -.02em; }
 .page-heading p { margin: 3px 0 0; max-width: 900px; overflow: hidden; color: var(--muted); font-size: 10px; line-height: 14px; text-overflow: ellipsis; white-space: nowrap; }
 .topbar-tools { display: flex; align-items: center; gap: 9px; flex: 0 0 auto; }
 .profile { display: flex; align-items: center; gap: 9px; }

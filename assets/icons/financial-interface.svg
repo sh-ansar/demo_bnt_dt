@@ -44,6 +44,9 @@
   <symbol id="FullScreen" fill="none" viewBox="0 0 18 18">
     <path d="M13.125 0.75H17.25V4.875M17.25 0.75L11 7M4.875 17.25H0.75V13.125M0.75 17.25L7 11M0.75 4.875V0.75H4.875M0.75 0.75L7 7M13.125 17.25H17.25V13.125M17.25 17.25L11 11" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
   </symbol>
+  <symbol id="ExitFullScreen" fill="none" viewBox="0 0 24 24">
+    <path d="M3.75 3.75L10 10M10 5.875V10H5.875M20.25 3.75L14 10M18.125 10H14V5.875M3.75 20.25L10 14M5.875 14H10V18.125M20.25 20.25L14 14M18.125 14H14V18.125" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+  </symbol>
   <symbol id="Expand_2" fill="none" viewBox="0 0 16 16">
     <path d="M5.33334 8.46667L8.00001 11.1333L10.6667 8.46667M5.33334 5.53333L8.00001 8.2L10.6667 5.53333" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
   </symbol>

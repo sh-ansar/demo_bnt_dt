@@ -107,6 +107,7 @@
   `;
   const filterModal = modalTemplate.content.firstElementChild;
   document.body.appendChild(filterModal);
+  window.BNTUI.bindStaticChartLabelToggle(filterModal);
 
 
   const title = filterModal.querySelector('#chart-filter-title');

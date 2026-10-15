@@ -11,7 +11,7 @@ const rule = selector => rules.find(item => item.selector === selector)?.body;
 assert.match(rule('.app-topbar .shell-sections'), /--shell-section-radius: var\(--space-4\);/);
 assert.match(tokens, /--space-4: 16px;/);
 assert.match(rule('.app-topbar .shell-section'), /border-radius: var\(--shell-section-radius\) var\(--shell-section-radius\) 0 0 !important;/);
-assert.match(rule('.app-topbar .shell-section'), /height: clamp\(44px, 3\.055556vw, 58\.666667px\) !important;/);
+assert.match(rule('.app-topbar .shell-section'), /height: clamp\(44px, calc\(3\.055556 \* var\(--ui-scale-unit\)\), 58\.666667px\) !important;/);
 const corners = rule('.app-topbar .shell-section:is(.active, :hover)::before,\n.app-topbar .shell-section:is(.active, :hover)::after');
 assert.ok(corners);
 assert.match(corners, /bottom: 0 !important;/);

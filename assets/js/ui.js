@@ -675,6 +675,19 @@ window.BNTUI = {
   renderToggle({label = "", pressed = false, tone = "", attributes = {}} = {}) {
     return `<button type="button" class="dt3-risk-toggle${tone === "positive" ? " dt3-risk-toggle--positive" : ""} typography-label-smallest" aria-pressed="${Boolean(pressed)}"${this.attrs(attributes)}><span class="dt3-risk-toggle__track" aria-hidden="true"><span class="dt3-risk-toggle__knob"></span></span><span class="dt3-risk-toggle__label">${this.escape(label)}</span></button>`;
   },
+  bindStaticChartLabelToggle(modal) {
+    const fields = modal?.querySelector(".dt3-drawer_static .filter-modal__fields");
+    if (!fields || fields.querySelector("[data-chart-label-toggle]")) return;
+    fields.insertAdjacentHTML("afterbegin", this.renderToggle({
+      label: "Показать подпись данных",
+      attributes: {"data-chart-label-toggle": true}
+    }));
+    modal.addEventListener("click", event => {
+      const toggle = event.target.closest("[data-chart-label-toggle]");
+      if (!toggle || !modal.contains(toggle)) return;
+      toggle.setAttribute("aria-pressed", String(toggle.getAttribute("aria-pressed") !== "true"));
+    });
+  },
   updateMetricsGrid(grid) {
     const target = document.getElementById(grid.dataset.metricsFor);
     if (!target) return;

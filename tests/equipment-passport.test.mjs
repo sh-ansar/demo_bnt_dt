@@ -150,10 +150,12 @@ for (const [name, status] of pump.window.BNT_DATA.assets[0].nodes) {
   const node = nodes.find(match => match[1].includes(name))?.[1];
   assert.ok(node, name);
   assert.ok(node.includes(status), `${name}: status preserved`);
-  const statusTone = status === 'Работает' ? 'green' : status === 'Норма' ? 'neutral' : 'default';
+  const statusTone = status === 'Работает' ? 'green' : status === 'Норма' ? 'neutral' : status === 'Риск' ? 'red' : 'default';
   assert.ok(node.includes(`class="badge ${statusTone}"`), `${status}: shared badge tone`);
   assert.doesNotMatch(node, /card-with-image__title|line-clamp/, 'Linked node names and statuses are preserved in full');
 }
+const tankNodes = passport('tankp3').html.split('<table class="data-table" aria-labelledby="equipment-nodes-title">')[1].split('</table>')[0];
+assert.match(tankNodes, /Клапан К-24[^]*?class="badge red"[^]*?Риск/);
 const risk = html.slice(riskStart);
 const historyFilter = risk.match(/<button[^>]*data-chart-filter[^>]*>[^]*?<\/button>/)[0];
 assert.match(historyFilter, /class="button-smallest-secondary-radius typography-button-smallest"/);

@@ -363,7 +363,7 @@ body[data-page="dispatcher"] #page-content.page-content.flush {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: clamp(2px, .138889vw, 2.666667px);
+  gap: clamp(2px, calc(.138889 * var(--ui-scale-unit)), 2.666667px);
   padding: 0;
   color: var(--text-primary);
   font-size: var(--typography-body-smallest-size);
@@ -379,7 +379,7 @@ body[data-page="dispatcher"] #page-content.page-content.flush {
 .layout-drawer-head .breadcrumb-segment {
   display: inline-flex;
   align-items: center;
-  gap: clamp(2px, .138889vw, 2.666667px);
+  gap: clamp(2px, calc(.138889 * var(--ui-scale-unit)), 2.666667px);
   flex: 0 0 auto;
   white-space: nowrap;
 }

@@ -2,11 +2,11 @@
 
 /* Reassert shell-only geometry after optional legacy page styles. */
 :root {
-  --sidebar: clamp(264px, 18.333333vw, 352px);
-  --topbar: clamp(52px, 3.611111vw, 69.333333px);
-  --contextbar: clamp(40px, 2.777778vw, 53.333333px);
-  --sidebar-gutter: clamp(12px, .833333vw, 16px);
-  --shell-gutter: clamp(24px, 1.666667vw, 32px);
+  --sidebar: clamp(264px, calc(18.333333 * var(--ui-scale-unit)), 352px);
+  --topbar: clamp(52px, calc(3.611111 * var(--ui-scale-unit)), 69.333333px);
+  --contextbar: clamp(40px, calc(2.777778 * var(--ui-scale-unit)), 53.333333px);
+  --sidebar-gutter: clamp(12px, calc(.833333 * var(--ui-scale-unit)), 16px);
+  --shell-gutter: clamp(24px, calc(1.666667 * var(--ui-scale-unit)), 32px);
   --shell-label-base-size: var(--typography-label-base-size);
   --shell-label-base-line: var(--typography-label-base-line-height);
   --shell-label-base-weight: var(--typography-label-base-weight);
@@ -33,7 +33,7 @@
   --shell-h4-line: var(--typography-h4-line-height);
   --shell-h4-weight: var(--typography-h4-weight);
   --shell-h4-letter: var(--typography-h4-letter-spacing);
-  --shell-search-max: clamp(380px, 26.388889vw, 506.666667px);
+  --shell-search-max: clamp(380px, calc(26.388889 * var(--ui-scale-unit)), 506.666667px);
 }
 
 /* Prevent the unwrapped page from flashing before shell.js initializes. */
@@ -114,15 +114,15 @@ body > .app-shell > .app-sidebar {
   min-width: 0 !important;
   display: flex !important;
   align-items: center !important;
-  gap: clamp(8px, .555556vw, 10.666667px) !important;
+  gap: clamp(8px, calc(.555556 * var(--ui-scale-unit)), 10.666667px) !important;
   color: inherit !important;
   text-decoration: none !important;
 }
 
 .app-sidebar .brand-mark {
-  width: clamp(36px, 2.5vw, 48px) !important;
-  height: clamp(36px, 2.5vw, 48px) !important;
-  min-width: clamp(36px, 2.5vw, 48px) !important;
+  width: clamp(36px, calc(2.5 * var(--ui-scale-unit)), 48px) !important;
+  height: clamp(36px, calc(2.5 * var(--ui-scale-unit)), 48px) !important;
+  min-width: clamp(36px, calc(2.5 * var(--ui-scale-unit)), 48px) !important;
   display: grid !important;
   place-items: center !important;
   border-radius: 0 !important;
@@ -155,14 +155,14 @@ body > .app-shell > .app-sidebar {
 
 .shell-icon-button {
   position: relative;
-  width: clamp(36px, 2.5vw, 48px);
-  height: clamp(36px, 2.5vw, 48px);
-  min-width: clamp(36px, 2.5vw, 48px);
+  width: clamp(36px, calc(2.5 * var(--ui-scale-unit)), 48px);
+  height: clamp(36px, calc(2.5 * var(--ui-scale-unit)), 48px);
+  min-width: clamp(36px, calc(2.5 * var(--ui-scale-unit)), 48px);
   display: inline-grid;
   place-items: center;
   padding: 0;
   border: 0;
-  border-radius: clamp(8px, .555556vw, 10.666667px);
+  border-radius: clamp(8px, calc(.555556 * var(--ui-scale-unit)), 10.666667px);
   background: transparent;
   color: var(--design-elements-icon-primary);
   cursor: pointer;
@@ -175,8 +175,8 @@ body > .app-shell > .app-sidebar {
 }
 
 .shell-icon-button svg {
-  width: clamp(24px, 1.666667vw, 32px) !important;
-  height: clamp(24px, 1.666667vw, 32px) !important;
+  width: clamp(24px, calc(1.666667 * var(--ui-scale-unit)), 32px) !important;
+  height: clamp(24px, calc(1.666667 * var(--ui-scale-unit)), 32px) !important;
 }
 
 .app-topbar .topbar-tools .shell-icon-button,
@@ -194,8 +194,8 @@ body > .app-shell > .app-sidebar {
 }
 
 .app-sidebar .brand-menu svg {
-  width: clamp(24px, 1.666667vw, 32px) !important;
-  height: clamp(24px, 1.666667vw, 32px) !important;
+  width: clamp(24px, calc(1.666667 * var(--ui-scale-unit)), 32px) !important;
+  height: clamp(24px, calc(1.666667 * var(--ui-scale-unit)), 32px) !important;
   stroke-width: 1.5 !important;
 }
 
@@ -253,7 +253,7 @@ body > .app-shell > .app-sidebar {
   display: flex !important;
   align-items: center !important;
   justify-content: flex-start !important;
-  gap: clamp(8px, .555556vw, 10.666667px) !important;
+  gap: clamp(8px, calc(.555556 * var(--ui-scale-unit)), 10.666667px) !important;
   border: 0 !important;
   border-radius: 4px !important;
   background: transparent !important;
@@ -293,7 +293,7 @@ body > .app-shell > .app-sidebar {
 }
 
 .app-sidebar .nav-children {
-  --nav-submenu-gap: clamp(4px, .277778vw, 5.333333px);
+  --nav-submenu-gap: clamp(4px, calc(.277778 * var(--ui-scale-unit)), 5.333333px);
   position: relative !important;
   display: grid !important;
   padding-left: 0 !important;
@@ -311,7 +311,7 @@ body > .app-shell > .app-sidebar {
   width: calc(100% - 16px) !important;
   margin-left: 16px !important;
   margin-bottom: var(--nav-submenu-gap) !important;
-  padding-left: calc(12px + clamp(8px, .555556vw, 10.666667px)) !important;
+  padding-left: calc(12px + clamp(8px, calc(.555556 * var(--ui-scale-unit)), 10.666667px)) !important;
   font-family: var(--shell-body-small-family) !important;
   font-size: var(--shell-body-small-size) !important;
   line-height: var(--shell-body-small-line) !important;
@@ -340,16 +340,16 @@ body > .app-shell > .app-sidebar {
 
 .app-sidebar .nav-tree-branch-standard {
   top: 0 !important;
-  left: calc(clamp(8px, .555556vw, 10.666667px) * -1 - clamp(.5px, .034722vw, .666667px)) !important;
-  width: clamp(9px, .625vw, 12px) !important;
-  height: clamp(40px, 2.777778vw, 53.333333px) !important;
+  left: calc(clamp(8px, calc(.555556 * var(--ui-scale-unit)), 10.666667px) * -1 - clamp(.5px, calc(.034722 * var(--ui-scale-unit)), .666667px)) !important;
+  width: clamp(9px, calc(.625 * var(--ui-scale-unit)), 12px) !important;
+  height: clamp(40px, calc(2.777778 * var(--ui-scale-unit)), 53.333333px) !important;
 }
 
 .app-sidebar .nav-tree-branch-last {
   top: 0 !important;
-  left: calc(clamp(16px, 1.111111vw, 21.333333px) * -1) !important;
-  width: clamp(16px, 1.111111vw, 21.333333px) !important;
-  height: clamp(40px, 2.777778vw, 53.333333px) !important;
+  left: calc(clamp(16px, calc(1.111111 * var(--ui-scale-unit)), 21.333333px) * -1) !important;
+  width: clamp(16px, calc(1.111111 * var(--ui-scale-unit)), 21.333333px) !important;
+  height: clamp(40px, calc(2.777778 * var(--ui-scale-unit)), 53.333333px) !important;
   display: none !important;
 }
 
@@ -450,8 +450,8 @@ body > .app-shell > .app-sidebar {
 }
 
 .app-sidebar .nav-chevron {
-  width: clamp(24px, 1.666667vw, 32px) !important;
-  height: clamp(24px, 1.666667vw, 32px) !important;
+  width: clamp(24px, calc(1.666667 * var(--ui-scale-unit)), 32px) !important;
+  height: clamp(24px, calc(1.666667 * var(--ui-scale-unit)), 32px) !important;
   margin-left: auto !important;
   display: grid !important;
   place-items: center !important;
@@ -496,7 +496,34 @@ body > .app-shell > .app-sidebar {
 }
 
 .app-sidebar .live-dot {
-  --live-dot-size: clamp(8px, .555556vw, 10.666667px);
+  --live-dot-size: clamp(8px, calc(.555556 * var(--ui-scale-unit)), 10.666667px);
+}
+
+.app-sidebar .sidebar-scale-control {
+  display: none;
+}
+
+@media (width > 1440px) {
+  body:not(.shell-sidebar-collapsed) .app-sidebar .sidebar-scale-control {
+    display: block;
+    margin-top: var(--space-3);
+  }
+
+  .app-sidebar .sidebar-scale-control .dt3-risk-toggle {
+    max-width: 100%;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .app-sidebar .sidebar-scale-control .dt3-risk-toggle__label {
+    white-space: normal;
+    color: var(--text-tertiary);
+    font-family: var(--font-family-primary);
+    font-size: var(--typography-body-smallest-size);
+    line-height: var(--typography-body-smallest-line-height);
+    font-weight: var(--typography-body-smallest-weight);
+    letter-spacing: var(--typography-body-smallest-letter-spacing);
+  }
 }
 
 body > .app-shell > .app-main {
@@ -519,7 +546,7 @@ body > .app-shell > .app-main {
   display: grid !important;
   grid-template-columns: max-content minmax(240px, 1fr) max-content !important;
   align-items: center !important;
-  gap: clamp(8px, .555556vw, 10.666667px) !important;
+  gap: clamp(8px, calc(.555556 * var(--ui-scale-unit)), 10.666667px) !important;
   background: var(--background-nonoverlay-2) !important;
   border-bottom: 0 !important;
   box-shadow: none !important;
@@ -553,13 +580,13 @@ body > .app-shell > .app-main {
   --shell-section-background: transparent;
   position: relative !important;
   min-width: 0 !important;
-  height: clamp(44px, 3.055556vw, 58.666667px) !important;
+  height: clamp(44px, calc(3.055556 * var(--ui-scale-unit)), 58.666667px) !important;
   margin-top: 0 !important;
-  padding: clamp(8px, .555556vw, 10.666667px) clamp(24px, 1.666667vw, 32px) clamp(16px, 1.111111vw, 21.333333px) !important;
+  padding: clamp(8px, calc(.555556 * var(--ui-scale-unit)), 10.666667px) clamp(24px, calc(1.666667 * var(--ui-scale-unit)), 32px) clamp(16px, calc(1.111111 * var(--ui-scale-unit)), 21.333333px) !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: clamp(8px, .555556vw, 10.666667px) !important;
+  gap: clamp(8px, calc(.555556 * var(--ui-scale-unit)), 10.666667px) !important;
   border-radius: var(--shell-section-radius) var(--shell-section-radius) 0 0 !important;
   border: 0 !important;
   background: var(--shell-section-background) !important;
@@ -652,9 +679,9 @@ body > .app-shell > .app-main {
   justify-self: center !important;
   min-width: 0 !important;
   display: grid !important;
-  grid-template-columns: minmax(0, 1fr) clamp(36px, 2.5vw, 48px) !important;
+  grid-template-columns: minmax(0, 1fr) clamp(36px, calc(2.5 * var(--ui-scale-unit)), 48px) !important;
   align-items: center !important;
-  gap: clamp(8px, .555556vw, 10.666667px) !important;
+  gap: clamp(8px, calc(.555556 * var(--ui-scale-unit)), 10.666667px) !important;
 }
 
 .app-main > .app-topbar.search-expanded {
@@ -674,12 +701,12 @@ body > .app-shell > .app-main {
 }
 
 .app-topbar .shell-search-field {
-  height: clamp(36px, 2.5vw, 48px) !important;
+  height: clamp(36px, calc(2.5 * var(--ui-scale-unit)), 48px) !important;
   min-width: 0 !important;
   display: flex !important;
   align-items: center !important;
-  gap: clamp(8px, .555556vw, 10.666667px) !important;
-  padding: 0 clamp(12px, .833333vw, 16px) !important;
+  gap: clamp(8px, calc(.555556 * var(--ui-scale-unit)), 10.666667px) !important;
+  padding: 0 clamp(12px, calc(.833333 * var(--ui-scale-unit)), 16px) !important;
   border: 1px solid var(--design-elements-border-default) !important;
   border-radius: var(--space-2) !important;
   background: var(--background-page) !important;
@@ -690,9 +717,9 @@ body > .app-shell > .app-main {
 
 .app-topbar .shell-search-leading,
 .app-topbar .shell-search-microphone {
-  width: clamp(20px, 1.388889vw, 26.666667px) !important;
-  height: clamp(20px, 1.388889vw, 26.666667px) !important;
-  flex: 0 0 clamp(20px, 1.388889vw, 26.666667px) !important;
+  width: clamp(20px, calc(1.388889 * var(--ui-scale-unit)), 26.666667px) !important;
+  height: clamp(20px, calc(1.388889 * var(--ui-scale-unit)), 26.666667px) !important;
+  flex: 0 0 clamp(20px, calc(1.388889 * var(--ui-scale-unit)), 26.666667px) !important;
   display: grid !important;
   place-items: center !important;
   color: var(--design-elements-icon-primary) !important;
@@ -731,13 +758,13 @@ body > .app-shell > .app-main {
 }
 
 .app-topbar .shell-search-button {
-  width: clamp(36px, 2.5vw, 48px) !important;
-  height: clamp(36px, 2.5vw, 48px) !important;
+  width: clamp(36px, calc(2.5 * var(--ui-scale-unit)), 48px) !important;
+  height: clamp(36px, calc(2.5 * var(--ui-scale-unit)), 48px) !important;
   display: grid !important;
   place-items: center !important;
-  padding: clamp(6px, .416667vw, 8px) !important;
+  padding: clamp(6px, calc(.416667 * var(--ui-scale-unit)), 8px) !important;
   border: 0 !important;
-  border-radius: clamp(8px, .555556vw, 10.666667px) !important;
+  border-radius: clamp(8px, calc(.555556 * var(--ui-scale-unit)), 10.666667px) !important;
   background: var(--background-brand-solid) !important;
   color: var(--system-elements-static-primary) !important;
   box-shadow: var(--shadow-primary) !important;
@@ -745,8 +772,8 @@ body > .app-shell > .app-main {
 }
 
 .app-topbar .shell-search-button svg {
-  width: clamp(14px, .972222vw, 18.666667px) !important;
-  height: clamp(14px, .972222vw, 18.666667px) !important;
+  width: clamp(14px, calc(.972222 * var(--ui-scale-unit)), 18.666667px) !important;
+  height: clamp(14px, calc(.972222 * var(--ui-scale-unit)), 18.666667px) !important;
 }
 
 .app-topbar .topbar-tools {
@@ -754,7 +781,7 @@ body > .app-shell > .app-main {
   display: flex !important;
   align-items: center !important;
   justify-content: flex-end !important;
-  gap: clamp(8px, .555556vw, 10.666667px) !important;
+  gap: clamp(8px, calc(.555556 * var(--ui-scale-unit)), 10.666667px) !important;
 }
 
 .app-topbar [data-shell-theme-icon] {
@@ -768,15 +795,15 @@ body > .app-shell > .app-main {
   min-width: 0 !important;
   display: flex !important;
   align-items: center !important;
-  gap: clamp(8px, .555556vw, 10.666667px) !important;
-  margin-left: clamp(4px, .277778vw, 5.333333px) !important;
+  gap: clamp(8px, calc(.555556 * var(--ui-scale-unit)), 10.666667px) !important;
+  margin-left: clamp(4px, calc(.277778 * var(--ui-scale-unit)), 5.333333px) !important;
 }
 
 .app-topbar .avatar {
   position: relative !important;
-  width: clamp(32px, 2.222222vw, 42.666667px) !important;
-  height: clamp(32px, 2.222222vw, 42.666667px) !important;
-  min-width: clamp(32px, 2.222222vw, 42.666667px) !important;
+  width: clamp(32px, calc(2.222222 * var(--ui-scale-unit)), 42.666667px) !important;
+  height: clamp(32px, calc(2.222222 * var(--ui-scale-unit)), 42.666667px) !important;
+  min-width: clamp(32px, calc(2.222222 * var(--ui-scale-unit)), 42.666667px) !important;
   display: grid !important;
   place-items: center !important;
   border: 0 !important;
@@ -799,8 +826,8 @@ body > .app-shell > .app-main {
   position: absolute !important;
   right: -1px !important;
   bottom: -1px !important;
-  width: clamp(7px, .486111vw, 9.333333px) !important;
-  height: clamp(7px, .486111vw, 9.333333px) !important;
+  width: clamp(7px, calc(.486111 * var(--ui-scale-unit)), 9.333333px) !important;
+  height: clamp(7px, calc(.486111 * var(--ui-scale-unit)), 9.333333px) !important;
   border: 1px solid var(--background-surface-4) !important;
   border-radius: 50% !important;
   background: var(--system-elements-semantic-success-primary) !important;
@@ -887,7 +914,7 @@ body > .app-shell > .app-main {
   display: flex !important;
   align-items: center !important;
   flex-wrap: wrap !important;
-  gap: clamp(2px, .138889vw, 2.666667px) !important;
+  gap: clamp(2px, calc(.138889 * var(--ui-scale-unit)), 2.666667px) !important;
   padding: calc((var(--contextbar) - var(--shell-body-small-line)) / 2) 0 !important;
   color: var(--text-primary) !important;
 }
@@ -895,7 +922,7 @@ body > .app-shell > .app-main {
 .app-contextbar .breadcrumb-segment {
   display: inline-flex !important;
   align-items: center !important;
-  gap: clamp(2px, .138889vw, 2.666667px) !important;
+  gap: clamp(2px, calc(.138889 * var(--ui-scale-unit)), 2.666667px) !important;
   flex: 0 0 auto !important;
   white-space: nowrap !important;
 }
@@ -942,8 +969,8 @@ body > .app-shell > .app-main {
 }
 
 .app-contextbar .context-separator {
-  width: clamp(16px, 1.111111vw, 21.333333px) !important;
-  height: clamp(16px, 1.111111vw, 21.333333px) !important;
+  width: clamp(16px, calc(1.111111 * var(--ui-scale-unit)), 21.333333px) !important;
+  height: clamp(16px, calc(1.111111 * var(--ui-scale-unit)), 21.333333px) !important;
   flex: 0 0 auto !important;
   display: grid !important;
   place-items: center !important;

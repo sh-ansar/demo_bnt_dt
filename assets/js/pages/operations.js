@@ -1576,8 +1576,9 @@
 
   function initDailyTable() {
     const fullscreen = summary.querySelector('[data-daily-fullscreen]');
+    const returnButton = summary.querySelector('[data-daily-return]');
     const tableContent = summary.querySelector('[data-daily-table-content]');
-    if (!fullscreen || !tableContent) return;
+    if (!fullscreen || !returnButton || !tableContent) return;
     tableContent.innerHTML = renderDailyTable();
     tableContent.addEventListener('click', event => {
       ui.handleTableTreeEvent(event, (id, open) => {
@@ -1591,6 +1592,7 @@
       document.body.classList.add('daily-summary-window');
       document.title = 'Суточная сводка';
       fullscreen.hidden = true;
+      returnButton.hidden = false;
     }
     ui.bindWorkspaces();
     ui.setWorkspaceDrawerOpen(summary, splitWindow, {notify: false});
@@ -1609,7 +1611,15 @@
     fullscreen.addEventListener('click', () => {
       const url = new URL('/operations.html', window.location.href);
       url.searchParams.set('daily-view', 'split');
-      window.open(url.href, '_blank', `popup,noopener,width=${window.screen.availWidth},height=${window.screen.availHeight}`);
+      window.open(url.href, '_blank', `popup,width=${window.screen.availWidth},height=${window.screen.availHeight}`);
+    });
+    returnButton.addEventListener('click', () => {
+      if (window.opener && !window.opener.closed) {
+        window.opener.focus();
+        window.close();
+      } else {
+        window.location.replace('/operations.html');
+      }
     });
     ui.bindTableViewports();
   }

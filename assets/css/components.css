@@ -889,6 +889,14 @@
   :is(table, [role="table"], .data-table, .analytics-table) {
     --pill-badge-height: calc(var(--space-5) + var(--space-1));
   }
+
+  :root[data-ui-scale="fixed"] {
+    --pill-badge-height: var(--space-5);
+  }
+
+  :root[data-ui-scale="fixed"] :is(table, [role="table"], .data-table, .analytics-table) {
+    --pill-badge-height: calc(var(--space-5) - var(--space-1));
+  }
 }
 
 .badge {
@@ -4706,14 +4714,14 @@ textarea.form-input__control--text {
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: clamp(8px, .555556vw, 10.666667px);
+  gap: clamp(8px, calc(.555556 * var(--ui-scale-unit)), 10.666667px);
 }
 
 .avatar {
   position: relative;
-  width: clamp(32px, 2.222222vw, 42.666667px);
-  height: clamp(32px, 2.222222vw, 42.666667px);
-  min-width: clamp(32px, 2.222222vw, 42.666667px);
+  width: clamp(32px, calc(2.222222 * var(--ui-scale-unit)), 42.666667px);
+  height: clamp(32px, calc(2.222222 * var(--ui-scale-unit)), 42.666667px);
+  min-width: clamp(32px, calc(2.222222 * var(--ui-scale-unit)), 42.666667px);
   display: grid;
   place-items: center;
   border: 0;
@@ -4736,8 +4744,8 @@ textarea.form-input__control--text {
   position: absolute;
   right: -1px;
   bottom: -1px;
-  width: clamp(7px, .486111vw, 9.333333px);
-  height: clamp(7px, .486111vw, 9.333333px);
+  width: clamp(7px, calc(.486111 * var(--ui-scale-unit)), 9.333333px);
+  height: clamp(7px, calc(.486111 * var(--ui-scale-unit)), 9.333333px);
   border: 1px solid var(--background-surface-4);
   border-radius: 50%;
   background: var(--system-elements-semantic-success-primary);
@@ -5543,7 +5551,7 @@ textarea.form-input__control--text {
 /* Shared KPI card with circular progress */
 .payment-summary-card {
   --payment-semantic-color: var(--system-elements-semantic-info-primary);
-  --payment-progress-ring-size: clamp(52px, 3.611111vw, 69px);
+  --payment-progress-ring-size: clamp(52px, calc(3.611111 * var(--ui-scale-unit)), 69px);
 }
 
 .payment-summary-card--error {
@@ -8097,8 +8105,8 @@ textarea.form-input__control--text {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: clamp(4px, .65vw, 10px);
-  padding-inline: clamp(3px, .6vw, 12px);
+  gap: clamp(4px, calc(.65 * var(--ui-scale-unit)), 10px);
+  padding-inline: clamp(3px, calc(.6 * var(--ui-scale-unit)), 12px);
 }
 
 .procurement-annual-chart__bar {

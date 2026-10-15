@@ -278,6 +278,12 @@
   }
 
   const themeKey = "bnt-color-theme";
+  const scaleKey = "bnt-ui-scale";
+  let scaleEnabled = true;
+  try {
+    scaleEnabled = window.localStorage.getItem(scaleKey) !== "off";
+  } catch (_) {}
+  document.documentElement.dataset.uiScale = scaleEnabled ? "fluid" : "fixed";
   let currentTheme = "light";
   try {
     const savedTheme = window.localStorage.getItem(themeKey);
@@ -313,8 +319,23 @@
         <i class="live-dot" aria-hidden="true"></i>
         <span class="typography-body-smallest">Данные обновляются</span>
       </div>
+      <div class="sidebar-scale-control">
+        ${window.BNTUI.renderToggle({label: scaleEnabled ? "Отключить масштабирование" : "Масштабировать", pressed: scaleEnabled, attributes: {"data-shell-scale": "", "aria-label": "Масштабирование интерфейса"}})}
+      </div>
     </div>
   `;
+
+  const scaleButton = sidebar.querySelector("[data-shell-scale]");
+  scaleButton.addEventListener("click", () => {
+    scaleEnabled = !scaleEnabled;
+    document.documentElement.dataset.uiScale = scaleEnabled ? "fluid" : "fixed";
+    scaleButton.setAttribute("aria-pressed", String(scaleEnabled));
+    scaleButton.querySelector(".dt3-risk-toggle__label").textContent = scaleEnabled ? "Отключить масштабирование" : "Масштабировать";
+    try {
+      window.localStorage.setItem(scaleKey, scaleEnabled ? "on" : "off");
+    } catch (_) {}
+    window.requestAnimationFrame(() => window.dispatchEvent(new Event("resize")));
+  });
 
   const topbar = document.createElement("header");
   topbar.className = "app-topbar";

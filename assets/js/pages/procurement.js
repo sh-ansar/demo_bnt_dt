@@ -23,6 +23,7 @@
   const egpzChartFilterToggles = [...document.querySelectorAll("[data-egpz-chart-filter]")];
   const egpzFilterToggles = [egpzFilterToggle, ...egpzChartFilterToggles].filter(Boolean);
   const egpzFilterModal = document.getElementById("egpz-filter-modal");
+  ui.bindStaticChartLabelToggle(egpzFilterModal);
   const filterToggle = document.querySelector("[data-procurement-filter-toggle]");
   const filterModal = document.getElementById("procurement-filter-modal");
   const purchaseDrawer = document.getElementById("procurement-purchase-drawer");

@@ -1,35 +1,36 @@
 @import url("https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap");
 
 :root {
+  --ui-scale-unit: 1vw;
   --chart-motion-duration: 650ms;
   --chart-motion-easing: cubic-bezier(.22, 1, .36, 1);
   --font-family-primary: "Golos Text", Golos, "Segoe UI", Arial, sans-serif;
-  --typography-label-base-size: clamp(16px, 1.111111vw, 21.333333px);
-  --typography-label-base-line-height: clamp(24px, 1.666667vw, 32px);
+  --typography-label-base-size: clamp(16px, calc(1.111111 * var(--ui-scale-unit)), 21.333333px);
+  --typography-label-base-line-height: clamp(24px, calc(1.666667 * var(--ui-scale-unit)), 32px);
   --typography-label-base-weight: 500;
   --typography-label-base-letter-spacing: 0;
-  --typography-label-smallest-size: clamp(12px, .833333vw, 16px);
-  --typography-label-smallest-line-height: clamp(16px, 1.111111vw, 21.333333px);
+  --typography-label-smallest-size: clamp(12px, calc(.833333 * var(--ui-scale-unit)), 16px);
+  --typography-label-smallest-line-height: clamp(16px, calc(1.111111 * var(--ui-scale-unit)), 21.333333px);
   --typography-label-smallest-weight: 500;
   --typography-label-smallest-letter-spacing: 0;
-  --typography-label-small-size: clamp(14px, .972222vw, 18.666667px);
-  --typography-label-small-line-height: clamp(20px, 1.388889vw, 26.666667px);
+  --typography-label-small-size: clamp(14px, calc(.972222 * var(--ui-scale-unit)), 18.666667px);
+  --typography-label-small-line-height: clamp(20px, calc(1.388889 * var(--ui-scale-unit)), 26.666667px);
   --typography-label-small-weight: 500;
   --typography-label-small-letter-spacing: 0;
-  --typography-body-small-size: clamp(14px, .972222vw, 18.666667px);
-  --typography-body-small-line-height: clamp(20px, 1.388889vw, 26.666667px);
+  --typography-body-small-size: clamp(14px, calc(.972222 * var(--ui-scale-unit)), 18.666667px);
+  --typography-body-small-line-height: clamp(20px, calc(1.388889 * var(--ui-scale-unit)), 26.666667px);
   --typography-body-small-weight: 400;
   --typography-body-small-letter-spacing: 0;
-  --typography-body-smallest-size: clamp(12px, .833333vw, 16px);
-  --typography-body-smallest-line-height: clamp(16px, 1.111111vw, 21.333333px);
+  --typography-body-smallest-size: clamp(12px, calc(.833333 * var(--ui-scale-unit)), 16px);
+  --typography-body-smallest-line-height: clamp(16px, calc(1.111111 * var(--ui-scale-unit)), 21.333333px);
   --typography-body-smallest-weight: 400;
   --typography-body-smallest-letter-spacing: 0;
-  --typography-h4-size: clamp(24px, 1.666667vw, 32px);
-  --typography-h4-line-height: clamp(32px, 2.222222vw, 42.666667px);
+  --typography-h4-size: clamp(24px, calc(1.666667 * var(--ui-scale-unit)), 32px);
+  --typography-h4-line-height: clamp(32px, calc(2.222222 * var(--ui-scale-unit)), 42.666667px);
   --typography-h4-weight: 700;
   --typography-h4-letter-spacing: 0;
-  --typography-h5-size: clamp(20px, 1.388889vw, 26.666667px);
-  --typography-h5-line-height: clamp(28px, 1.944444vw, 37.333333px);
+  --typography-h5-size: clamp(20px, calc(1.388889 * var(--ui-scale-unit)), 26.666667px);
+  --typography-h5-line-height: clamp(28px, calc(1.944444 * var(--ui-scale-unit)), 37.333333px);
   --typography-h5-weight: 700;
   --typography-h5-letter-spacing: 0;
   /* Canonical names from the corporate typography scale. */
@@ -41,8 +42,8 @@
   --typography-button-smallest-line-height: var(--typography-label-smallest-line-height);
   --typography-button-smallest-weight: 600;
   --typography-button-smallest-letter-spacing: 0;
-  --typography-indicator-small-size: clamp(10px, .666667vw, 12.8px);
-  --typography-indicator-small-line-height: clamp(16px, 1.145833vw, 22px);
+  --typography-indicator-small-size: clamp(10px, calc(.666667 * var(--ui-scale-unit)), 12.8px);
+  --typography-indicator-small-line-height: clamp(16px, calc(1.145833 * var(--ui-scale-unit)), 22px);
   --typography-indicator-small-weight: 500;
   --typography-indicator-small-letter-spacing: 0;
   --typography-indicator-base-size: 32px;
@@ -250,11 +251,11 @@
   --red-soft: #fde8e8;
   --purple: #705ac8;
   /* Shell: fixed design values through 1440px, proportional growth up to 1920px. */
-  --sidebar: clamp(264px, 18.333333vw, 352px);
-  --topbar: clamp(52px, 3.611111vw, 69.333333px);
-  --contextbar: clamp(40px, 2.777778vw, 53.333333px);
-  --sidebar-gutter: clamp(12px, .833333vw, 16px);
-  --shell-gutter: clamp(24px, 1.666667vw, 32px);
+  --sidebar: clamp(264px, calc(18.333333 * var(--ui-scale-unit)), 352px);
+  --topbar: clamp(52px, calc(3.611111 * var(--ui-scale-unit)), 69.333333px);
+  --contextbar: clamp(40px, calc(2.777778 * var(--ui-scale-unit)), 53.333333px);
+  --sidebar-gutter: clamp(12px, calc(.833333 * var(--ui-scale-unit)), 16px);
+  --shell-gutter: clamp(24px, calc(1.666667 * var(--ui-scale-unit)), 32px);
   --shell-label-small-family: var(--font-family-primary);
   --shell-label-small-size: var(--typography-label-small-size);
   --shell-label-small-line: var(--typography-label-small-line-height);
@@ -269,7 +270,7 @@
   --shell-h4-line: var(--typography-h4-line-height);
   --shell-h4-weight: var(--typography-h4-weight);
   --shell-h4-letter: var(--typography-h4-letter-spacing);
-  --shell-search-max: clamp(380px, 26.388889vw, 506.666667px);
+  --shell-search-max: clamp(380px, calc(26.388889 * var(--ui-scale-unit)), 506.666667px);
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -286,6 +287,12 @@
   --radius: 14px;
   --shadow: 0 8px 28px rgba(24, 66, 103, .08);
   --shadow-sm: 0 3px 13px rgba(24, 66, 103, .06);
+}
+
+@media (width > 1440px) {
+  :root[data-ui-scale="fixed"] {
+    --ui-scale-unit: 14.4px;
+  }
 }
 
 :root[data-theme="dark"] {
