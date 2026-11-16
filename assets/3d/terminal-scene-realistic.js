@@ -1,6 +1,6 @@
 import * as T from 'three';
 import {OrbitControls} from './vendor/OrbitControls.js';
-import {createTerminalAtmosphere} from './terminal-atmosphere.js?v=5';
+import {createTerminalAtmosphere} from './terminal-atmosphere.js?v=6';
 import {tankPixels,plan,coastPixels,scopePixels,roads,parks,buildings,UNITS_PER_METRE as U,METRES_PER_PIXEL as MPP} from './site-plan.js';
 import {createSurfaces} from './surface-materials.js';
 import {buildInfrastructure} from './mapped-infrastructure.js';
