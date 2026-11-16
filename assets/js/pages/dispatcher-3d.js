@@ -160,7 +160,7 @@ window.addEventListener('pagehide',e=>{if(!e.persisted){themeObserver?.disconnec
 const cameraButtons=[...document.querySelectorAll('.dt3-view-select button,#dt-motion,.dt3-zoom button,.dt3-zoom input')];
 cameraButtons.forEach(button=>button.disabled=true);
 try {
- const {createTerminalScene}=await import('/assets/3d/terminal-scene-realistic.js?v=11010');
+ const {createTerminalScene}=await import('/assets/3d/terminal-scene-realistic.js?v=11011');
  scene=createTerminalScene(viewport,id=>select(id));
  syncSceneTheme();
  themeObserver=new MutationObserver(syncSceneTheme);

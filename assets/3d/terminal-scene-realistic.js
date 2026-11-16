@@ -1,26 +1,30 @@
 import * as T from 'three';
 import {OrbitControls} from './vendor/OrbitControls.js';
-import {createTerminalAtmosphere} from './terminal-atmosphere.js?v=5';
+import {createTerminalAtmosphere} from './terminal-atmosphere.js?v=6';
 import {tankPixels,plan,coastPixels,scopePixels,roads,parks,buildings,UNITS_PER_METRE as U,METRES_PER_PIXEL as MPP} from './site-plan.js';
 import {createSurfaces} from './surface-materials.js';
 import {buildInfrastructure} from './mapped-infrastructure.js';
 import {terminalSceneTheme} from './theme.js';
-export function createTerminalScene(container, onSelect, rendererFactory = () => new T.WebGLRenderer({antialias:true})) {
+export function createTerminalScene(container, onSelect, rendererFactory = options => new T.WebGLRenderer(options)) {
+// Keep desktop quality; use a GPU-safe tier for narrow/touch-first devices.
+const mobile = typeof window !== 'undefined' && (window.matchMedia?.('(max-width: 800px)').matches ||
+  (typeof navigator !== 'undefined' && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)));
+const initialWidth = Math.max(1,container.clientWidth),initialHeight = Math.max(1,container.clientHeight);
 const colors=['#29AAE1','#FFB228','#55C98C','#A782EF'],names=['Газ','Дизтопливо','Бензин','Нефть'];
-const renderer=rendererFactory();
-renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.setSize(container.clientWidth,container.clientHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;container.append(renderer.domElement);
+const renderer=rendererFactory({antialias:!mobile,powerPreference:mobile?'low-power':'high-performance'});
+renderer.setPixelRatio(mobile?1:Math.min(typeof devicePixelRatio==='number'?devicePixelRatio:1,1.75));renderer.setSize(initialWidth,initialHeight);renderer.shadowMap.enabled=!mobile;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;container.append(renderer.domElement);
 const scene=new T.Scene();scene.background=new T.Color(terminalSceneTheme.sky.light);scene.fog=new T.Fog(terminalSceneTheme.fog.light,750,1600);
 const foundationTop=-.19,foundationDepth=80*U;
 const [foundationMinX,foundationMinZ]=plan(-40,-70),[foundationMaxX,foundationMaxZ]=plan(1260,800);
 const foundationBounds=new T.Box3(new T.Vector3(foundationMinX,foundationTop-foundationDepth,foundationMinZ),new T.Vector3(foundationMaxX,foundationTop,foundationMaxZ));
-const atmosphere=createTerminalAtmosphere({exposure:renderer.toneMappingExposure,fogTop:foundationTop-foundationDepth*.12,fogDepth:foundationDepth*2.5,far:1800,foundationBounds});
+const atmosphere=createTerminalAtmosphere({exposure:renderer.toneMappingExposure,fogTop:foundationTop-foundationDepth*.12,fogDepth:foundationDepth*2.5,far:1800,foundationBounds,lite:mobile});
 const sky=atmosphere.sky;scene.add(sky);
-const camera=new T.PerspectiveCamera(38,container.clientWidth/container.clientHeight,.5,1800);
+const camera=new T.PerspectiveCamera(38,initialWidth/initialHeight,.5,1800);
 // Preserve overview distance and azimuth while leaving sky above the horizon.
 function overviewOffset(x,y,z){const offset=new T.Vector3(x,y,z);return offset.setFromSphericalCoords(offset.length(),T.MathUtils.degToRad(90-camera.fov*.09),Math.atan2(x,z));}
 const home=overviewOffset(0,455,510),openingTarget=new T.Vector3(...[plan(805,505)[0],0,plan(805,505)[1]]),openingCamera=openingTarget.clone().add(overviewOffset(12,192,267));camera.position.copy(openingCamera);
 const controls=new OrbitControls(camera,renderer.domElement);controls.target.copy(openingTarget);controls.enableDamping=true;controls.minDistance=3.5;controls.maxDistance=1000;controls.maxPolarAngle=T.MathUtils.degToRad(87);controls.minPolarAngle=.03;
-const hemisphere=new T.HemisphereLight('#e7f4ff','#879083',1.8);scene.add(hemisphere);const sun=new T.DirectionalLight('#fff8ee',3);sun.position.set(-110,200,-70);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-205,right:205,top:160,bottom:-160,near:1,far:500});sun.shadow.bias=-.00025;sun.shadow.normalBias=.045;scene.add(sun);
+const hemisphere=new T.HemisphereLight('#e7f4ff','#879083',1.8);scene.add(hemisphere);const sun=new T.DirectionalLight('#fff8ee',3);sun.position.set(-110,200,-70);sun.castShadow=!mobile;sun.shadow.mapSize.set(mobile?512:2048,mobile?512:2048);Object.assign(sun.shadow.camera,{left:-205,right:205,top:160,bottom:-160,near:1,far:500});sun.shadow.bias=-.00025;sun.shadow.normalBias=.045;scene.add(sun);
 sun.position.copy(atmosphere.daylightDirection.clone().multiplyScalar(sun.position.length()));
 const fixed=new T.Group(),dynamic=new T.Group();scene.add(fixed,dynamic);const surfaces=createSurfaces();
 const mat=(color,opts={})=>new T.MeshStandardMaterial({color,roughness:.6,metalness:.15,...opts});
@@ -138,7 +142,7 @@ for(const [px,py,angle] of [[546,218,-.4],[492,145,-.4],[382,306,1.3],[285,285,1
 for(const root of dynamic.children){root.updateMatrixWorld(true);const inverse=root.matrixWorld.clone().invert(),groups=new Map();root.traverse(o=>{if(!o.isMesh||o.userData.tank)return;const key=o.geometry.uuid+o.material.uuid;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(o);});for(const items of groups.values()){if(items.length<3)continue;const inst=new T.InstancedMesh(items[0].geometry,items[0].material,items.length);items.forEach((o,i)=>inst.setMatrixAt(i,inverse.clone().multiply(o.matrixWorld)));inst.castShadow=true;inst.receiveShadow=true;inst.computeBoundingSphere();items.forEach(o=>o.removeFromParent());root.add(inst);}}
 fixed.updateMatrixWorld(true);const batches=new Map(),remove=[];fixed.traverse(o=>{if(!o.isMesh||o.material.transparent)return;const key=o.geometry.uuid+o.material.uuid;let b=batches.get(key);if(!b)batches.set(key,b={geo:o.geometry,mat:o.material,items:[]});b.items.push(o)});for(const b of batches.values()){if(b.items.length<3)continue;const inst=new T.InstancedMesh(b.geo,b.mat,b.items.length);b.items.forEach((o,i)=>{inst.setMatrixAt(i,o.matrixWorld);remove.push(o)});inst.castShadow=true;inst.receiveShadow=true;inst.computeBoundingSphere();scene.add(inst)}remove.forEach(o=>o.removeFromParent());
 const records=new Map(), pickables=[],zoneMeshes=[],equipmentRoot=new T.Group();scene.add(equipmentRoot);
-let catalog, currentId='terminal', selectionBox=null,down=null,animating=!matchMedia('(prefers-reduced-motion: reduce)').matches,isLight=true,clock=0,last=0,cameraGoal=null,frameId;
+let catalog, currentId='terminal', selectionBox=null,down=null,animating=!matchMedia('(prefers-reduced-motion: reduce)').matches,isLight=true,clock=0,last=0,lastDraw=0,cameraGoal=null,frameId;
 const ray=new T.Raycaster(),pointer=new T.Vector2();
 const highlightMaterial=new T.MeshBasicMaterial({color:'#2bb8ff',transparent:true,opacity:.24,depthWrite:false});
 const selectionGroup=new T.Group();scene.add(selectionGroup);
@@ -241,7 +245,10 @@ atmosphere.attach(scene);
 function zoom(f){const p=camera.position.clone().sub(controls.target);p.setLength(T.MathUtils.clamp(p.length()*f,controls.minDistance,controls.maxDistance));go(p.add(controls.target),controls.target);}
 function setTheme(mode){isLight=mode!=='dark';const key=isLight?'light':'dark';scene.background.set(terminalSceneTheme.sky[key]);scene.fog.color.set(terminalSceneTheme.fog[key]);ground.color.set(terminalSceneTheme.ground[key]);foundationMaterial.color.set(terminalSceneTheme.ground[key]);asphalt.color.set(terminalSceneTheme.asphalt[key]);water.color.set(terminalSceneTheme.water[key]);atmosphere.setTheme(key);hemisphere.intensity=isLight?1.8:1.1;hemisphere.color.set(isLight?'#e7f4ff':terminalSceneTheme.sky.light);hemisphere.groundColor.set(isLight?'#879083':terminalSceneTheme.ground.dark);sun.intensity=isLight?3:.75;sun.color.set(isLight?'#fff8ee':terminalSceneTheme.sky.light);applySelectionTheme();return isLight;}
 function theme(){return setTheme(isLight?'dark':'light');}
-function frame(now){frameId=requestAnimationFrame(frame);if(document.hidden){last=now;return;}const dt=Math.min((now-last)/1000,.05);last=now;if(animating)clock+=dt;if(cameraGoal){const a=1-Math.exp(-dt*5);camera.position.lerp(cameraGoal.pos,a);controls.target.lerp(cameraGoal.target,a);if(camera.position.distanceTo(cameraGoal.pos)<.05)cameraGoal=null;}if(water.userData.shader)water.userData.shader.uniforms.waveTime.value=clock;if(animating){trainU+=trainDirection*dt*1.2*U/tracks[12].getLength();const lower=movingWagons.at(-1).offset+.03;if(trainU>.97){trainU=.97;trainDirection=-1;}if(trainU<lower){trainU=lower;trainDirection=1;}}for(const w of movingWagons)onCurve(w.g,tracks[12],(trainU-w.offset+1)%1);for(const v of vehicles){if(animating)v.u=(v.u+dt*2.8*U/v.curve.getLength())%1;onCurve(v.g,v.curve,v.u);}controls.update();sky.position.copy(camera.position);atmosphere.update(clock,container.clientWidth);renderer.render(scene,camera);}
+function frame(now){frameId=requestAnimationFrame(frame);if(document.hidden){last=now;return;}
+// Cap phone rendering to 30fps: conserve battery and avoid thermal throttling.
+if(mobile && lastDraw && now-lastDraw<1000/30)return;
+lastDraw=now;const dt=Math.min((now-last)/1000,.05);last=now;if(animating)clock+=dt;if(cameraGoal){const a=1-Math.exp(-dt*5);camera.position.lerp(cameraGoal.pos,a);controls.target.lerp(cameraGoal.target,a);if(camera.position.distanceTo(cameraGoal.pos)<.05)cameraGoal=null;}if(water.userData.shader)water.userData.shader.uniforms.waveTime.value=clock;if(animating){trainU+=trainDirection*dt*1.2*U/tracks[12].getLength();const lower=movingWagons.at(-1).offset+.03;if(trainU>.97){trainU=.97;trainDirection=-1;}if(trainU<lower){trainU=lower;trainDirection=1;}}for(const w of movingWagons)onCurve(w.g,tracks[12],(trainU-w.offset+1)%1);for(const v of vehicles){if(animating)v.u=(v.u+dt*2.8*U/v.curve.getLength())%1;onCurve(v.g,v.curve,v.u);}controls.update();sky.position.copy(camera.position);atmosphere.update(clock,container.clientWidth);renderer.render(scene,camera);}
 frameId=requestAnimationFrame(frame);
 return {tanks,bind,select:selectEntity,zoom,theme,setTheme,
  setFill(id,value){const rec=records.get(id);if(rec?.tank)setFill(rec.tank,value/100);},
