@@ -2,9 +2,7 @@ body[data-page="dispatcher"] {
   background: var(--background-page) !important;
 }
 
-.layout-body {
-  grid-template-columns: minmax(0, 1fr) 400px;
-}
+/* The shared workspace grid owns the two-column and mobile stacked layout. */
 
 .layout-surface {
   background: var(--background-page);
@@ -17,12 +15,3 @@ body[data-page="dispatcher"] {
   backdrop-filter: var(--backdrop-blur-raised);
 }
 
-@media (max-width: 800px) {
-  .layout-body {
-    display: flex;
-  }
-
-  .layout-surface {
-    height: 62dvh;
-  }
-}
