@@ -180,8 +180,10 @@ function createFogTexture() {
   return texture;
 }
 
-export function createTerminalAtmosphere({exposure, fogTop, fogDepth, far, foundationBounds}) {
-  const fogTexture = createFogTexture();
+export function createTerminalAtmosphere({exposure, fogTop, fogDepth, far, foundationBounds, lite = false}) {
+  // On phones the volume raymarch is prohibitively expensive and WebGL2 3D textures
+  // may exhaust the GPU budget before the first frame. Retain the standard Sky.
+  const fogTexture = lite ? null : createFogTexture();
   const attachedMaterials = new WeakSet();
   const foundationDepth = foundationBounds.max.y - foundationBounds.min.y;
   const nightTintStrength = 0.08;
@@ -228,7 +230,7 @@ export function createTerminalAtmosphere({exposure, fogTop, fogDepth, far, found
   uniforms.rayleigh.value = 1.562;
   uniforms.mieCoefficient.value = 0.015;
   uniforms.mieDirectionalG.value = 0.543;
-  uniforms.cloudCoverage.value = 0.36;
+  uniforms.cloudCoverage.value = lite ? 0 : 0.36;
   uniforms.cloudDensity.value = 0.48;
   uniforms.cloudElevation.value = 0.76;
   const daylightDirection = new T.Vector3().setFromSphericalCoords(1,
@@ -238,7 +240,7 @@ export function createTerminalAtmosphere({exposure, fogTop, fogDepth, far, found
   uniforms.sunPosition.value.copy(daylightDirection);
 
   // Keep the vendor shader intact; stars are blended before its cloud layer.
-  sky.material.fragmentShader = heightFogShader + nightSkyShader + `
+  if (!lite) sky.material.fragmentShader = heightFogShader + nightSkyShader + `
     uniform float terminalMoonSkyLight;
     uniform float terminalMoonCloudLight;
   ` + sky.material.fragmentShader
@@ -258,7 +260,7 @@ export function createTerminalAtmosphere({exposure, fogTop, fogDepth, far, found
       gl_FragColor = vec4(mix(texColor, lowerFog.rgb, lowerFog.a), 1.0);`);
 
   function attachMaterial(material) {
-    if (!material?.isMeshStandardMaterial || attachedMaterials.has(material)) return;
+    if (lite || !material?.isMeshStandardMaterial || attachedMaterials.has(material)) return;
     attachedMaterials.add(material);
     const previous = material.onBeforeCompile;
     const cacheKey = material.customProgramCacheKey();
@@ -304,14 +306,16 @@ export function createTerminalAtmosphere({exposure, fogTop, fogDepth, far, found
       .multiplyScalar(uniforms.terminalMoonCloudLight.value);
     uniforms.sunPosition.value.copy(night ? nightDirection : daylightDirection);
     uniforms.showSunDisc.value = night ? 0 : 1;
+    // The lightweight Sky has no custom night shader; show the dark scene background.
+    if (lite) sky.visible = !night;
   }
 
   function update(time, width) {
     uniforms.time.value = time;
     uniforms.terminalFogWind.value.set(time * 0.001, 0, time * 0.0006);
-    uniforms.terminalFogSteps.value = width < 700 ? 64 : 113;
+    uniforms.terminalFogSteps.value = lite ? 0 : width < 700 ? 64 : 113;
   }
 
   return {sky, daylightDirection, attachMaterial, attach, setTheme, update,
-    dispose: () => fogTexture.dispose()};
+    dispose: () => fogTexture?.dispose()};
 }
